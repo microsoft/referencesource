@@ -319,7 +319,7 @@ namespace System
             get
             {
                 Boxed boxed = null;
-                if (m_boxed != null )
+                if (m_boxed != null)
                 {
                     // Do a quick check up front for the fast path.
                     boxed = m_boxed as Boxed;
