@@ -16,8 +16,8 @@ using System.Xml.Serialization;
 using CultureInfo = System.Globalization.CultureInfo;
 using System.Runtime.Versioning;
 
-[module:SuppressMessage("Microsoft.Performance","CA1811:AvoidUncalledPrivateCode", Scope="member", Target="System.Xml.Linq.Res.#GetObject(System.String)", Justification="Build generated code.")]
-[module:SuppressMessage("Microsoft.Performance","CA1811:AvoidUncalledPrivateCode", Scope="member", Target="System.Xml.Linq.Res.#get_Resources()", Justification="Build generated code.")]
+[module: SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "System.Xml.Linq.Res.#GetObject(System.String)", Justification = "Build generated code.")]
+[module: SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope = "member", Target = "System.Xml.Linq.Res.#get_Resources()", Justification = "Build generated code.")]
 
 namespace System.Xml.Linq
 {
@@ -41,38 +41,43 @@ namespace System.Xml.Linq
         /// <summary>
         /// Constructor, internal so that external users must go through the Get() method to create an XName.
         /// </summary>
-        internal XName(XNamespace ns, string localName) {
+        internal XName(XNamespace ns, string localName)
+        {
             this.ns = ns;
             this.localName = XmlConvert.VerifyNCName(localName);
             this.hashCode = ns.GetHashCode() ^ localName.GetHashCode();
         }
-        
+
         /// <summary>
         /// Gets the local (unqualified) part of the name.
         /// </summary>
         /// <seealso cref="XName.Namespace"/>
-        public string LocalName {
+        public string LocalName
+        {
             get { return localName; }
         }
 
         /// <summary>
         /// Gets the namespace of the name.
         /// </summary>
-        public XNamespace Namespace {
+        public XNamespace Namespace
+        {
             get { return ns; }
         }
 
         /// <summary>
         /// Gets the namespace name part of the name.
         /// </summary>
-        public string NamespaceName {
+        public string NamespaceName
+        {
             get { return ns.NamespaceName; }
         }
 
         /// <summary>
         /// Returns the expanded XML name in the format: {namespaceName}localName.
         /// </summary>
-        public override string ToString() {
+        public override string ToString()
+        {
             if (ns.NamespaceName.Length == 0) return localName;
             return "{" + ns.NamespaceName + "}" + localName;
         }
@@ -86,15 +91,18 @@ namespace System.Xml.Linq
         /// <returns>
         /// An <see cref="XName"/> object constructed from the specified expanded name.
         /// </returns>
-        public static XName Get(string expandedName) {
+        public static XName Get(string expandedName)
+        {
             if (expandedName == null) throw new ArgumentNullException("expandedName");
             if (expandedName.Length == 0) throw new ArgumentException(Res.GetString(Res.Argument_InvalidExpandedName, expandedName));
-            if (expandedName[0] == '{') {
+            if (expandedName[0] == '{')
+            {
                 int i = expandedName.LastIndexOf('}');
                 if (i <= 1 || i == expandedName.Length - 1) throw new ArgumentException(Res.GetString(Res.Argument_InvalidExpandedName, expandedName));
                 return XNamespace.Get(expandedName, 1, i - 1).GetName(expandedName, i + 1, expandedName.Length - i - 1);
             }
-            else {
+            else
+            {
                 return XNamespace.None.GetName(expandedName);
             }
         }
@@ -105,7 +113,8 @@ namespace System.Xml.Linq
         /// <param name="localName">A local (unqualified) name.</param>
         /// <param name="namespaceName">An XML namespace.</param>
         /// <returns>An XName object created from the specified local name and namespace.</returns>
-        public static XName Get(string localName, string namespaceName) {
+        public static XName Get(string localName, string namespaceName)
+        {
             return XNamespace.Get(namespaceName).GetName(localName);
         }
 
@@ -115,7 +124,8 @@ namespace System.Xml.Linq
         /// <param name="expandedName">A string containing an expanded XML name in the format: {namespace}localname.</param>
         /// <returns>An XName object constructed from the expanded name.</returns>        
         [CLSCompliant(false)]
-        public static implicit operator XName(string expandedName) {
+        public static implicit operator XName(string expandedName)
+        {
             return expandedName != null ? Get(expandedName) : null;
         }
 
@@ -129,7 +139,8 @@ namespace System.Xml.Linq
         /// <remarks>
         /// For two <see cref="XName"/> objects to be equal, they must have the same expanded name.
         /// </remarks>
-        public override bool Equals(object obj) {
+        public override bool Equals(object obj)
+        {
             return (object)this == obj;
         }
 
@@ -137,7 +148,8 @@ namespace System.Xml.Linq
         /// Serves as a hash function for <see cref="XName"/>. GetHashCode is suitable 
         /// for use in hashing algorithms and data structures like a hash table.  
         /// </summary>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return hashCode;
         }
 
@@ -157,7 +169,8 @@ namespace System.Xml.Linq
         /// This overload is included to enable the comparison between
         /// an instance of XName and string.
         /// </remarks>
-        public static bool operator ==(XName left, XName right) {
+        public static bool operator ==(XName left, XName right)
+        {
             return (object)left == (object)right;
         }
 
@@ -171,7 +184,8 @@ namespace System.Xml.Linq
         /// This overload is included to enable the comparison between
         /// an instance of XName and string.
         /// </remarks>
-        public static bool operator !=(XName left, XName right) {
+        public static bool operator !=(XName left, XName right)
+        {
             return (object)left != (object)right;
         }
 
@@ -185,7 +199,8 @@ namespace System.Xml.Linq
         /// Returns true if the current <see cref="XName"/> is equal to
         /// the specified <see cref="XName"/>. Returns false otherwise. 
         /// </returns>
-        bool IEquatable<XName>.Equals(XName other) {
+        bool IEquatable<XName>.Equals(XName other)
+        {
             return (object)this == (object)other;
         }
 
@@ -199,7 +214,8 @@ namespace System.Xml.Linq
         [System.Security.Permissions.SecurityPermission(
             System.Security.Permissions.SecurityAction.LinkDemand,
             Flags = System.Security.Permissions.SecurityPermissionFlag.SerializationFormatter)]
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
             if (info == null) throw new ArgumentNullException("info");
             info.AddValue("name", ToString());
             info.SetType(typeof(NameSerializer));
@@ -213,16 +229,19 @@ namespace System.Xml.Linq
     {
         string expandedName;
 
-        private NameSerializer(SerializationInfo info, StreamingContext context) {
+        private NameSerializer(SerializationInfo info, StreamingContext context)
+        {
             if (info == null) throw new ArgumentNullException("info");
             expandedName = info.GetString("name");
         }
 
-        object IObjectReference.GetRealObject(StreamingContext context) {
+        object IObjectReference.GetRealObject(StreamingContext context)
+        {
             return XName.Get(expandedName);
         }
 
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
             throw new NotSupportedException(); // nop
         }
     }
@@ -251,7 +270,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Constructor, internal so that external users must go through the Get() method to create an XNamespace.
         /// </summary>
-        internal XNamespace(string namespaceName) {
+        internal XNamespace(string namespaceName)
+        {
             this.namespaceName = namespaceName;
             this.hashCode = namespaceName.GetHashCode();
             names = new XHashtable<XName>(ExtractLocalName, NamesCapacity);
@@ -260,7 +280,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the namespace name of the namespace.
         /// </summary>
-        public string NamespaceName {
+        public string NamespaceName
+        {
             get { return namespaceName; }
         }
 
@@ -271,7 +292,8 @@ namespace System.Xml.Linq
         /// The returned XName object is guaranteed to be atomic (i.e. the only one in the system for this
         /// particular expanded name).
         /// </remarks>
-        public XName GetName(string localName) {
+        public XName GetName(string localName)
+        {
             if (localName == null) throw new ArgumentNullException("localName");
             return GetName(localName, 0, localName.Length);
         }
@@ -280,7 +302,8 @@ namespace System.Xml.Linq
         /// Returns the namespace name of this <see cref="XNamespace"/>.
         /// </summary>
         /// <returns>A string value containing the namespace name.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return namespaceName;
         }
 
@@ -291,8 +314,10 @@ namespace System.Xml.Linq
         /// If an element or attribute is in no namespace, its namespace
         /// will be set to the namespace returned by this property.
         /// </remarks>
-        public static XNamespace None {
-            get {
+        public static XNamespace None
+        {
+            get
+            {
                 return EnsureNamespace(ref refNone, string.Empty);
             }
         }
@@ -300,8 +325,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the XNamespace object that corresponds to the xml uri (http://www.w3.org/XML/1998/namespace).
         /// </summary>
-        public static XNamespace Xml {
-            get {
+        public static XNamespace Xml
+        {
+            get
+            {
                 return EnsureNamespace(ref refXml, xmlPrefixNamespace);
             }
         }
@@ -309,8 +336,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the XNamespace object that corresponds to the xmlns uri (http://www.w3.org/2000/xmlns/).
         /// </summary>
-        public static XNamespace Xmlns {
-            get {
+        public static XNamespace Xmlns
+        {
+            get
+            {
                 return EnsureNamespace(ref refXmlns, xmlnsPrefixNamespace);
             }
         }
@@ -322,7 +351,8 @@ namespace System.Xml.Linq
         /// The returned XNamespace object is guaranteed to be atomic
         /// (i.e. the only one in the system for that particular namespace name).
         /// </remarks>
-        public static XNamespace Get(string namespaceName) {
+        public static XNamespace Get(string namespaceName)
+        {
             if (namespaceName == null) throw new ArgumentNullException("namespaceName");
             return Get(namespaceName, 0, namespaceName.Length);
         }
@@ -333,7 +363,8 @@ namespace System.Xml.Linq
         /// <param name="namespaceName">A string containing the namespace name.</param>
         /// <returns>An XNamespace constructed from the namespace name string.</returns>
         [CLSCompliant(false)]
-        public static implicit operator XNamespace(string namespaceName) {
+        public static implicit operator XNamespace(string namespaceName)
+        {
             return namespaceName != null ? Get(namespaceName) : null;
         }
 
@@ -344,7 +375,8 @@ namespace System.Xml.Linq
         /// <param name="localName">The local name for the expanded name.</param>
         /// <returns>The new XName constructed from the namespace and local name.</returns>        
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Functionality available via XNamespace.Get().")]
-        public static XName operator +(XNamespace ns, string localName) {
+        public static XName operator +(XNamespace ns, string localName)
+        {
             if (ns == null) throw new ArgumentNullException("ns");
             return ns.GetName(localName);
         }
@@ -360,7 +392,8 @@ namespace System.Xml.Linq
         /// For two <see cref="XNamespace"/> objects to be equal they must have the same 
         /// namespace name.
         /// </remarks>
-        public override bool Equals(object obj) {
+        public override bool Equals(object obj)
+        {
             return (object)this == obj;
         }
 
@@ -368,7 +401,8 @@ namespace System.Xml.Linq
         /// Serves as a hash function for <see cref="XNamespace"/>. GetHashCode is suitable 
         /// for use in hashing algorithms and data structures like a hash table.  
         /// </summary>
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return hashCode;
         }
 
@@ -389,7 +423,8 @@ namespace System.Xml.Linq
         /// This overload is included to enable the comparison between
         /// an instance of XNamespace and string.
         /// </remarks>
-        public static bool operator ==(XNamespace left, XNamespace right) {
+        public static bool operator ==(XNamespace left, XNamespace right)
+        {
             return (object)left == (object)right;
         }
 
@@ -403,7 +438,8 @@ namespace System.Xml.Linq
         /// This overload is included to enable the comparison between
         /// an instance of XNamespace and string.
         /// </remarks>
-        public static bool operator !=(XNamespace left, XNamespace right) {
+        public static bool operator !=(XNamespace left, XNamespace right)
+        {
             return (object)left != (object)right;
         }
 
@@ -412,7 +448,8 @@ namespace System.Xml.Linq
         /// local name parameter.  The returned XName object is guaranteed to be atomic (i.e. the only one in the system for
         /// this particular expanded name).
         /// </summary>
-        internal XName GetName(string localName, int index, int count) {
+        internal XName GetName(string localName, int index, int count)
+        {
             Debug.Assert(index >= 0 && index <= localName.Length, "Caller should have checked that index was in bounds");
             Debug.Assert(count >= 0 && index + count <= localName.Length, "Caller should have checked that count was in bounds");
 
@@ -429,7 +466,8 @@ namespace System.Xml.Linq
         /// Returns an <see cref="XNamespace"/> created from a portion of the passed in namespace name parameter.  The returned XNamespace
         /// object is guaranteed to be atomic (i.e. the only one in the system for this particular namespace name).
         /// </summary>
-        internal static XNamespace Get(string namespaceName, int index, int count) {
+        internal static XNamespace Get(string namespaceName, int index, int count)
+        {
             Debug.Assert(index >= 0 && index <= namespaceName.Length, "Caller should have checked that index was in bounds");
             Debug.Assert(count >= 0 && index + count <= namespaceName.Length, "Caller should have checked that count was in bounds");
 
@@ -443,9 +481,11 @@ namespace System.Xml.Linq
             XNamespace ns;
 
             // Keep looping until a non-null namespace has been retrieved
-            do {
+            do
+            {
                 // Attempt to get the WeakReference for the namespace from the hash table
-                if (!namespaces.TryGetValue(namespaceName, index, count, out refNamespace)) {
+                if (!namespaces.TryGetValue(namespaceName, index, count, out refNamespace))
+                {
                     // If it is not there, first determine whether it's a special namespace
                     if (count == xmlPrefixNamespace.Length && string.CompareOrdinal(namespaceName, index, xmlPrefixNamespace, 0, count) == 0) return Xml;
                     if (count == xmlnsPrefixNamespace.Length && string.CompareOrdinal(namespaceName, index, xmlnsPrefixNamespace, 0, count) == 0) return Xmlns;
@@ -454,7 +494,7 @@ namespace System.Xml.Linq
                     refNamespace = namespaces.Add(new WeakReference(new XNamespace(namespaceName.Substring(index, count))));
                 }
 
-                ns = (refNamespace != null) ? (XNamespace) refNamespace.Target : null;
+                ns = (refNamespace != null) ? (XNamespace)refNamespace.Target : null;
             }
             while (ns == null);
 
@@ -465,7 +505,8 @@ namespace System.Xml.Linq
         /// This function is used by the <![CDATA[XHashtable<XName>]]> to extract the local name part from an XName.  The hash table
         /// uses the local name as the hash key.
         /// </summary>
-        private static string ExtractLocalName(XName n) {
+        private static string ExtractLocalName(XName n)
+        {
             Debug.Assert(n != null, "Null name should never exist here");
             return n.LocalName;
         }
@@ -474,10 +515,11 @@ namespace System.Xml.Linq
         /// This function is used by the <![CDATA[XHashtable<WeakReference>]]> to extract the XNamespace that the WeakReference is
         /// referencing.  In cases where the XNamespace has been cleaned up, this function returns null.
         /// </summary>
-        private static string ExtractNamespace(WeakReference r) {
+        private static string ExtractNamespace(WeakReference r)
+        {
             XNamespace ns;
 
-            if (r == null || (ns = (XNamespace) r.Target) == null)
+            if (r == null || (ns = (XNamespace)r.Target) == null)
                 return null;
 
             return ns.NamespaceName;
@@ -489,17 +531,20 @@ namespace System.Xml.Linq
         /// since other threads can be concurrently calling this method, and the target of a WeakReference can be cleaned up
         /// at any time by the GC.
         /// </summary>
-        private static XNamespace EnsureNamespace(ref WeakReference refNmsp, string namespaceName) {
+        private static XNamespace EnsureNamespace(ref WeakReference refNmsp, string namespaceName)
+        {
             WeakReference refOld;
 
             // Keep looping until a non-null namespace has been retrieved
-            while (true) {
+            while (true)
+            {
                 // Save refNmsp in local variable, so we can work on a value that will not be changed by another thread
                 refOld = refNmsp;
 
-                if (refOld != null) {
+                if (refOld != null)
+                {
                     // If the target of the WeakReference is non-null, then we're done--just return the value
-                    XNamespace ns = (XNamespace) refOld.Target;
+                    XNamespace ns = (XNamespace)refOld.Target;
                     if (ns != null) return ns;
                 }
 
@@ -576,25 +621,29 @@ namespace System.Xml.Linq
         /// <summary>
         /// Construct a new XHashtable with the specified starting capacity.
         /// </summary>
-        public XHashtable(ExtractKeyDelegate extractKey, int capacity) {
+        public XHashtable(ExtractKeyDelegate extractKey, int capacity)
+        {
             state = new XHashtableState(extractKey, capacity);
         }
 
         /// <summary>
         /// Get an existing value from the hash table.  Return false if no such value exists.
         /// </summary>
-        public bool TryGetValue(string key, int index, int count, out TValue value) {
+        public bool TryGetValue(string key, int index, int count, out TValue value)
+        {
             return state.TryGetValue(key, index, count, out value);
         }
 
         /// <summary>
         /// Add a value to the hash table, hashed based on a string key embedded in it.  Return the added value (may be a different object than "value").
         /// </summary>
-        public TValue Add(TValue value) {
+        public TValue Add(TValue value)
+        {
             TValue newValue;
 
             // Loop until value is in hash table
-            while (true) {
+            while (true)
+            {
                 // Add new value
                 // XHashtableState.TryAdd returns false if hash table is not big enough
                 if (state.TryAdd(value, out newValue))
@@ -605,7 +654,8 @@ namespace System.Xml.Linq
                 // We only want one thread to perform a resize, as it is an expensive operation
                 // First thread will perform resize; waiting threads will call Resize(), but should immediately
                 // return since there will almost always be space in the hash table resized by the first thread.
-                lock (this) {
+                lock (this)
+                {
                     XHashtableState newState = state.Resize();
 
                     // Use memory barrier to ensure that the resized XHashtableState object is fully constructed before it is assigned
@@ -637,7 +687,8 @@ namespace System.Xml.Linq
         /// XHashtableState, while writer threads (those that need to add a new value to the table) are blocked waiting for
         /// the resize to complete.
         /// </remarks>
-        private sealed class XHashtableState {
+        private sealed class XHashtableState
+        {
             private int[] buckets;                  // Buckets contain indexes into entries array (bucket values are SHARED STATE)
             private Entry[] entries;                // Entries contain linked lists of buckets (next pointers are SHARED STATE)
             private int numEntries;                 // SHARED STATE: Current number of entries (including orphaned entries)
@@ -649,7 +700,8 @@ namespace System.Xml.Linq
             /// <summary>
             /// Construct a new XHashtableState object with the specified capacity.
             /// </summary>
-            public XHashtableState(ExtractKeyDelegate extractKey, int capacity) {
+            public XHashtableState(ExtractKeyDelegate extractKey, int capacity)
+            {
                 Debug.Assert((capacity & (capacity - 1)) == 0, "capacity must be a power of 2");
                 Debug.Assert(extractKey != null, "extractKey may not be null");
 
@@ -665,7 +717,8 @@ namespace System.Xml.Linq
             /// If this table is not full, then just return "this".  Otherwise, create and return a new table with
             /// additional capacity, and rehash all values in the table.
             /// </summary>
-            public XHashtableState Resize() {
+            public XHashtableState Resize()
+            {
                 // No need to resize if there are open entries
                 if (numEntries < buckets.Length)
                     return this;
@@ -674,25 +727,30 @@ namespace System.Xml.Linq
 
                 // Determine capacity of resized hash table by first counting number of valid, non-orphaned entries
                 // As this count proceeds, close all linked lists so that no additional entries can be added to them
-                for (int bucketIdx = 0; bucketIdx < buckets.Length; bucketIdx++) {
+                for (int bucketIdx = 0; bucketIdx < buckets.Length; bucketIdx++)
+                {
                     int entryIdx = buckets[bucketIdx];
 
-                    if (entryIdx == EndOfList) {
+                    if (entryIdx == EndOfList)
+                    {
                         // Replace EndOfList with FullList, so that any threads still attempting to add will be forced to resize
                         entryIdx = Interlocked.CompareExchange(ref buckets[bucketIdx], FullList, EndOfList);
                     }
 
                     // Loop until we've guaranteed that the list has been counted and closed to further adds
-                    while (entryIdx > EndOfList) {
+                    while (entryIdx > EndOfList)
+                    {
                         // Count each valid entry
                         if (extractKey(entries[entryIdx].Value) != null)
                             newSize++;
 
-                        if (entries[entryIdx].Next == EndOfList) {
+                        if (entries[entryIdx].Next == EndOfList)
+                        {
                             // Replace EndOfList with FullList, so that any threads still attempting to add will be forced to resize
                             entryIdx = Interlocked.CompareExchange(ref entries[entryIdx].Next, FullList, EndOfList);
                         }
-                        else {
+                        else
+                        {
                             // Move to next entry in the list
                             entryIdx = entries[entryIdx].Next;
                         }
@@ -701,10 +759,12 @@ namespace System.Xml.Linq
                 }
 
                 // Double number of valid entries; if result is less than current capacity, then use current capacity
-                if (newSize < buckets.Length / 2) {
+                if (newSize < buckets.Length / 2)
+                {
                     newSize = buckets.Length;
                 }
-                else {
+                else
+                {
                     newSize = buckets.Length * 2;
 
                     if (newSize < 0)
@@ -717,11 +777,13 @@ namespace System.Xml.Linq
                 // Rehash names (TryAdd will always succeed, since we won't fill the new table)
                 // Do not simply walk over entries and add them to table, as that would add orphaned
                 // entries.  Instead, walk the linked lists and add each name.
-                for (int bucketIdx = 0; bucketIdx < buckets.Length; bucketIdx++) {
+                for (int bucketIdx = 0; bucketIdx < buckets.Length; bucketIdx++)
+                {
                     int entryIdx = buckets[bucketIdx];
                     TValue newValue;
 
-                    while (entryIdx > EndOfList) {
+                    while (entryIdx > EndOfList)
+                    {
                         newHashtable.TryAdd(entries[entryIdx].Value, out newValue);
                         Debug.Assert((object)entries[entryIdx].Value == (object)newValue);
 
@@ -737,12 +799,14 @@ namespace System.Xml.Linq
             /// Attempt to find "key" in the table.  If the key exists, return the associated value in "value" and
             /// return true.  Otherwise return false.
             /// </summary>
-            public bool TryGetValue(string key, int index, int count, out TValue value) {
+            public bool TryGetValue(string key, int index, int count, out TValue value)
+            {
                 int hashCode = ComputeHashCode(key, index, count);
                 int entryIndex = 0;
 
                 // If a matching entry is found, return its value
-                if (FindEntry(hashCode, key, index, count, ref entryIndex)) {
+                if (FindEntry(hashCode, key, index, count, ref entryIndex))
+                {
                     value = entries[entryIndex].Value;
                     return true;
                 }
@@ -758,7 +822,8 @@ namespace System.Xml.Linq
             ///
             /// If the hash table is full, return false.  Otherwise, return true.
             /// </summary>
-            public bool TryAdd(TValue value, out TValue newValue) {
+            public bool TryAdd(TValue value, out TValue newValue)
+            {
                 int newEntry, entryIndex;
                 string key;
                 int hashCode;
@@ -800,7 +865,8 @@ namespace System.Xml.Linq
 
                 // Loop until a matching entry is found, a new entry is added, or linked list is found to be full
                 entryIndex = 0;
-                while (!FindEntry(hashCode, key, 0, key.Length, ref entryIndex)) {
+                while (!FindEntry(hashCode, key, 0, key.Length, ref entryIndex))
+                {
                     // PUBLISH (buckets slot)
                     // No matching entry found, so add the new entry to the end of the list ("entryIndex" is index of last entry)
                     if (entryIndex == 0)
@@ -832,7 +898,8 @@ namespace System.Xml.Linq
             /// <remarks>
             /// This method has the side effect of removing invalid entries from the list as it is traversed.
             /// </remarks>
-            private bool FindEntry(int hashCode, string key, int index, int count, ref int entryIndex) {
+            private bool FindEntry(int hashCode, string key, int index, int count, ref int entryIndex)
+            {
                 int previousIndex = entryIndex;
                 int currentIndex;
 
@@ -843,17 +910,21 @@ namespace System.Xml.Linq
                     currentIndex = previousIndex;
 
                 // Loop while not at end of list
-                while (currentIndex > EndOfList) {
+                while (currentIndex > EndOfList)
+                {
 
                     // Check for matching hash code, then matching key
-                    if (entries[currentIndex].HashCode == hashCode) {
+                    if (entries[currentIndex].HashCode == hashCode)
+                    {
                         string keyCompare = extractKey(entries[currentIndex].Value);
 
                         // If the key is invalid, then attempt to remove the current entry from the linked list.
                         // This is thread-safe in the case where the Next field points to another entry, since once a Next field points
                         // to another entry, it will never be modified to be EndOfList or FullList.
-                        if (keyCompare == null) {
-                            if (entries[currentIndex].Next > EndOfList) {
+                        if (keyCompare == null)
+                        {
+                            if (entries[currentIndex].Next > EndOfList)
+                            {
                                 // PUBLISH (buckets slot or entries slot)
                                 // Entry is invalid, so modify previous entry to point to its next entry
                                 entries[currentIndex].Value = default(TValue);
@@ -867,9 +938,11 @@ namespace System.Xml.Linq
                                 continue;
                             }
                         }
-                        else {
+                        else
+                        {
                             // Valid key, so compare keys
-                            if (count == keyCompare.Length && string.CompareOrdinal(key, index, keyCompare, 0, count) == 0) {
+                            if (count == keyCompare.Length && string.CompareOrdinal(key, index, keyCompare, 0, count) == 0)
+                            {
                                 // Found match, so return true and matching entry in list
                                 entryIndex = currentIndex;
                                 return true;
@@ -890,7 +963,8 @@ namespace System.Xml.Linq
             /// <summary>
             /// Compute hash code for a string key (index, count substring of "key").  The algorithm used is the same on used in NameTable.cs in System.Xml.
             /// </summary>
-            private static int ComputeHashCode(string key, int index, int count) {
+            private static int ComputeHashCode(string key, int index, int count)
+            {
                 int hashCode = StartingHash;
                 int end = index + count;
                 Debug.Assert(key != null, "key should have been checked previously for null");
@@ -900,8 +974,8 @@ namespace System.Xml.Linq
                     hashCode += (hashCode << 7) ^ key[i];
 
                 // Mix up hash code a bit more and clear the sign bit.  This code was taken from NameTable.cs in System.Xml.
-                hashCode -= hashCode >> 17; 
-                hashCode -= hashCode >> 11; 
+                hashCode -= hashCode >> 17;
+                hashCode -= hashCode >> 11;
                 hashCode -= hashCode >> 5;
                 return hashCode & 0x7FFFFFFF;
             }
@@ -934,11 +1008,15 @@ namespace System.Xml.Linq
         /// Get the BaseUri for this <see cref="XObject"/>.
         /// </summary>
         [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Back-compat with System.Xml.")]
-        public string BaseUri {
-            get {
+        public string BaseUri
+        {
+            get
+            {
                 XObject o = this;
-                while (true) {
-                    while (o != null && o.annotations == null) {
+                while (true)
+                {
+                    while (o != null && o.annotations == null)
+                    {
                         o = o.parent;
                     }
                     if (o == null) break;
@@ -953,8 +1031,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the XDocument object for this <see cref="XObject"/>.
         /// </summary>
-        public XDocument Document {
-            get {
+        public XDocument Document
+        {
+            get
+            {
                 XObject n = this;
                 while (n.parent != null) n = n.parent;
                 return n as XDocument;
@@ -972,7 +1052,8 @@ namespace System.Xml.Linq
         /// <remarks>
         /// If this <see cref="XObject"/> has no parent <see cref="XElement"/>, this property returns null.
         /// </remarks>
-        public XElement Parent {
+        public XElement Parent
+        {
             get { return parent as XElement; }
         }
 
@@ -980,20 +1061,26 @@ namespace System.Xml.Linq
         /// Adds an object to the annotation list of this <see cref="XObject"/>.
         /// </summary>
         /// <param name="annotation">The annotation to add.</param>
-        public void AddAnnotation(object annotation) {
+        public void AddAnnotation(object annotation)
+        {
             if (annotation == null) throw new ArgumentNullException("annotation");
-            if (annotations == null) {
+            if (annotations == null)
+            {
                 annotations = annotation is object[] ? new object[] { annotation } : annotation;
             }
-            else {
+            else
+            {
                 object[] a = annotations as object[];
-                if (a == null) {
+                if (a == null)
+                {
                     annotations = new object[] { annotations, annotation };
                 }
-                else {
+                else
+                {
                     int i = 0;
                     while (i < a.Length && a[i] != null) i++;
-                    if (i == a.Length) {
+                    if (i == a.Length)
+                    {
                         Array.Resize(ref a, i * 2);
                         annotations = a;
                     }
@@ -1011,15 +1098,20 @@ namespace System.Xml.Linq
         /// The first matching annotation object, or null
         /// if no annotation is the specified type.
         /// </returns>
-        public object Annotation(Type type) {
+        public object Annotation(Type type)
+        {
             if (type == null) throw new ArgumentNullException("type");
-            if (annotations != null) {
+            if (annotations != null)
+            {
                 object[] a = annotations as object[];
-                if (a == null) {
+                if (a == null)
+                {
                     if (type.IsInstanceOfType(annotations)) return annotations;
                 }
-                else {
-                    for (int i = 0; i < a.Length; i++) {
+                else
+                {
+                    for (int i = 0; i < a.Length; i++)
+                    {
                         object obj = a[i];
                         if (obj == null) break;
                         if (type.IsInstanceOfType(obj)) return obj;
@@ -1040,10 +1132,12 @@ namespace System.Xml.Linq
         /// </returns>
         public T Annotation<T>() where T : class
         {
-            if (annotations != null) {
+            if (annotations != null)
+            {
                 object[] a = annotations as object[];
                 if (a == null) return annotations as T;
-                for (int i = 0; i < a.Length; i++) {
+                for (int i = 0; i < a.Length; i++)
+                {
                     object obj = a[i];
                     if (obj == null) break;
                     T result = obj as T;
@@ -1059,19 +1153,25 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="type">The type of the annotations to retrieve.</param>
         /// <returns>An enumerable collection of annotations for this XObject.</returns>
-        public IEnumerable<object> Annotations(Type type) {
+        public IEnumerable<object> Annotations(Type type)
+        {
             if (type == null) throw new ArgumentNullException("type");
             return AnnotationsIterator(type);
         }
 
-        IEnumerable<object> AnnotationsIterator(Type type) {
-            if (annotations != null) {
+        IEnumerable<object> AnnotationsIterator(Type type)
+        {
+            if (annotations != null)
+            {
                 object[] a = annotations as object[];
-                if (a == null) {
+                if (a == null)
+                {
                     if (type.IsInstanceOfType(annotations)) yield return annotations;
                 }
-                else {
-                    for (int i = 0; i < a.Length; i++) {
+                else
+                {
+                    for (int i = 0; i < a.Length; i++)
+                    {
                         object obj = a[i];
                         if (obj == null) break;
                         if (type.IsInstanceOfType(obj)) yield return obj;
@@ -1086,15 +1186,20 @@ namespace System.Xml.Linq
         /// </summary>
         /// <typeparam name="T">The type of the annotations to retrieve.</typeparam>
         /// <returns>An enumerable collection of annotations for this XObject.</returns>
-        public IEnumerable<T> Annotations<T>() where T : class {
-            if (annotations != null) {
+        public IEnumerable<T> Annotations<T>() where T : class
+        {
+            if (annotations != null)
+            {
                 object[] a = annotations as object[];
-                if (a == null) {
+                if (a == null)
+                {
                     T result = annotations as T;
                     if (result != null) yield return result;
                 }
-                else {
-                    for (int i = 0; i < a.Length; i++) {
+                else
+                {
+                    for (int i = 0; i < a.Length; i++)
+                    {
                         object obj = a[i];
                         if (obj == null) break;
                         T result = obj as T;
@@ -1108,25 +1213,32 @@ namespace System.Xml.Linq
         /// Removes the annotations of the specified type from this <see cref="XObject"/>.
         /// </summary>
         /// <param name="type">The type of annotations to remove.</param>
-        public void RemoveAnnotations(Type type) {
+        public void RemoveAnnotations(Type type)
+        {
             if (type == null) throw new ArgumentNullException("type");
-            if (annotations != null) {
+            if (annotations != null)
+            {
                 object[] a = annotations as object[];
-                if (a == null) {
+                if (a == null)
+                {
                     if (type.IsInstanceOfType(annotations)) annotations = null;
                 }
-                else {
+                else
+                {
                     int i = 0, j = 0;
-                    while (i < a.Length) {
+                    while (i < a.Length)
+                    {
                         object obj = a[i];
                         if (obj == null) break;
                         if (!type.IsInstanceOfType(obj)) a[j++] = obj;
                         i++;
                     }
-                    if (j == 0) {
+                    if (j == 0)
+                    {
                         annotations = null;
                     }
-                    else {
+                    else
+                    {
                         while (j < i) a[j++] = null;
                     }
                 }
@@ -1137,24 +1249,31 @@ namespace System.Xml.Linq
         /// Removes the annotations of the specified type from this <see cref="XObject"/>.
         /// </summary>
         /// <typeparam name="T">The type of annotations to remove.</typeparam>
-        public void RemoveAnnotations<T>() where T : class {
-            if (annotations != null) {
+        public void RemoveAnnotations<T>() where T : class
+        {
+            if (annotations != null)
+            {
                 object[] a = annotations as object[];
-                if (a == null) {
+                if (a == null)
+                {
                     if (annotations is T) annotations = null;
                 }
-                else {
+                else
+                {
                     int i = 0, j = 0;
-                    while (i < a.Length) {
+                    while (i < a.Length)
+                    {
                         object obj = a[i];
                         if (obj == null) break;
                         if (!(obj is T)) a[j++] = obj;
                         i++;
                     }
-                    if (j == 0) {
+                    if (j == 0)
+                    {
                         annotations = null;
                     }
-                    else {
+                    else
+                    {
                         while (j < i) a[j++] = null;
                     }
                 }
@@ -1164,22 +1283,27 @@ namespace System.Xml.Linq
         /// <summary>
         /// Occurs when this <see cref="XObject"/> or any of its descendants have changed.
         /// </summary>
-        public event EventHandler<XObjectChangeEventArgs> Changed {
-            add {
+        public event EventHandler<XObjectChangeEventArgs> Changed
+        {
+            add
+            {
                 if (value == null) return;
                 XObjectChangeAnnotation a = Annotation<XObjectChangeAnnotation>();
-                if (a == null) {
+                if (a == null)
+                {
                     a = new XObjectChangeAnnotation();
                     AddAnnotation(a);
                 }
                 a.changed += value;
             }
-            remove {
+            remove
+            {
                 if (value == null) return;
                 XObjectChangeAnnotation a = Annotation<XObjectChangeAnnotation>();
                 if (a == null) return;
                 a.changed -= value;
-                if (a.changing == null && a.changed == null) {
+                if (a.changing == null && a.changed == null)
+                {
                     RemoveAnnotations<XObjectChangeAnnotation>();
                 }
             }
@@ -1188,65 +1312,82 @@ namespace System.Xml.Linq
         /// <summary>
         /// Occurs when this <see cref="XObject"/> or any of its descendants are about to change.
         /// </summary>
-        public event EventHandler<XObjectChangeEventArgs> Changing {
-            add {
+        public event EventHandler<XObjectChangeEventArgs> Changing
+        {
+            add
+            {
                 if (value == null) return;
                 XObjectChangeAnnotation a = Annotation<XObjectChangeAnnotation>();
-                if (a == null) {
+                if (a == null)
+                {
                     a = new XObjectChangeAnnotation();
                     AddAnnotation(a);
                 }
                 a.changing += value;
             }
-            remove {
+            remove
+            {
                 if (value == null) return;
                 XObjectChangeAnnotation a = Annotation<XObjectChangeAnnotation>();
                 if (a == null) return;
                 a.changing -= value;
-                if (a.changing == null && a.changed == null) {
+                if (a.changing == null && a.changed == null)
+                {
                     RemoveAnnotations<XObjectChangeAnnotation>();
                 }
             }
         }
 
-        bool IXmlLineInfo.HasLineInfo() {
+        bool IXmlLineInfo.HasLineInfo()
+        {
             return Annotation<LineInfoAnnotation>() != null;
         }
 
-        int IXmlLineInfo.LineNumber {
-            get {
+        int IXmlLineInfo.LineNumber
+        {
+            get
+            {
                 LineInfoAnnotation a = Annotation<LineInfoAnnotation>();
                 if (a != null) return a.lineNumber;
                 return 0;
             }
         }
 
-        int IXmlLineInfo.LinePosition {
-            get {
+        int IXmlLineInfo.LinePosition
+        {
+            get
+            {
                 LineInfoAnnotation a = Annotation<LineInfoAnnotation>();
                 if (a != null) return a.linePosition;
                 return 0;
             }
         }
 
-        internal bool HasBaseUri {
-            get {
+        internal bool HasBaseUri
+        {
+            get
+            {
                 return Annotation<BaseUriAnnotation>() != null;
             }
         }
 
-        internal bool NotifyChanged(object sender, XObjectChangeEventArgs e) {
+        internal bool NotifyChanged(object sender, XObjectChangeEventArgs e)
+        {
             bool notify = false;
             XObject o = this;
-            while (true) {
-                while (o != null && o.annotations == null) {
+            while (true)
+            {
+                while (o != null && o.annotations == null)
+                {
                     o = o.parent;
                 }
                 if (o == null) break;
                 XObjectChangeAnnotation a = o.Annotation<XObjectChangeAnnotation>();
-                if (a != null) {
+                if (a != null)
+                {
                     notify = true;
-                    if (a.changed != null) {
+                    if (a.changed != null)
+                    {
                         a.changed(sender, e);
                     }
                 }
@@ -1254,19 +1395,24 @@ namespace System.Xml.Linq
             }
             return notify;
         }
-        
-        internal bool NotifyChanging(object sender, XObjectChangeEventArgs e) {
+
+        internal bool NotifyChanging(object sender, XObjectChangeEventArgs e)
+        {
             bool notify = false;
             XObject o = this;
-            while (true) {
-                while (o != null && o.annotations == null) {
+            while (true)
+            {
+                while (o != null && o.annotations == null)
+                {
                     o = o.parent;
                 }
                 if (o == null) break;
                 XObjectChangeAnnotation a = o.Annotation<XObjectChangeAnnotation>();
-                if (a != null) {
+                if (a != null)
+                {
                     notify = true;
-                    if (a.changing != null) {
+                    if (a.changing != null)
+                    {
                         a.changing(sender, e);
                     }
                 }
@@ -1275,22 +1421,27 @@ namespace System.Xml.Linq
             return notify;
         }
 
-        internal void SetBaseUri(string baseUri) {
+        internal void SetBaseUri(string baseUri)
+        {
             AddAnnotation(new BaseUriAnnotation(baseUri));
         }
 
-        internal void SetLineInfo(int lineNumber, int linePosition) {
+        internal void SetLineInfo(int lineNumber, int linePosition)
+        {
             AddAnnotation(new LineInfoAnnotation(lineNumber, linePosition));
         }
 
-        internal bool SkipNotify() {
+        internal bool SkipNotify()
+        {
             XObject o = this;
-            while (true) {
-                while (o != null && o.annotations == null) {
+            while (true)
+            {
+                while (o != null && o.annotations == null)
+                {
                     o = o.parent;
                 }
                 if (o == null) return true;
-                if (o.Annotations<XObjectChangeAnnotation>() != null) return false; 
+                if (o.Annotations<XObjectChangeAnnotation>() != null) return false;
                 o = o.parent;
             }
         }
@@ -1300,17 +1451,22 @@ namespace System.Xml.Linq
         ///   found in the ancestors.
         /// </summary>
         /// <returns>The effective <see cref="SaveOptions"/> for this <see cref="XObject"/></returns>
-        internal SaveOptions GetSaveOptionsFromAnnotations() {
+        internal SaveOptions GetSaveOptionsFromAnnotations()
+        {
             XObject o = this;
-            while (true) {
-                while (o != null && o.annotations == null) {
+            while (true)
+            {
+                while (o != null && o.annotations == null)
+                {
                     o = o.parent;
                 }
-                if (o == null) {
+                if (o == null)
+                {
                     return SaveOptions.None;
                 }
                 object saveOptions = o.Annotation(typeof(SaveOptions));
-                if (saveOptions != null) {
+                if (saveOptions != null)
+                {
                     return (SaveOptions)saveOptions;
                 }
                 o = o.parent;
@@ -1322,7 +1478,8 @@ namespace System.Xml.Linq
     {
         internal string baseUri;
 
-        public BaseUriAnnotation(string baseUri) {
+        public BaseUriAnnotation(string baseUri)
+        {
             this.baseUri = baseUri;
         }
     }
@@ -1340,7 +1497,8 @@ namespace System.Xml.Linq
         internal int lineNumber;
         internal int linePosition;
 
-        public LineInfoAnnotation(int lineNumber, int linePosition) {
+        public LineInfoAnnotation(int lineNumber, int linePosition)
+        {
             this.lineNumber = lineNumber;
             this.linePosition = linePosition;
         }
@@ -1351,9 +1509,11 @@ namespace System.Xml.Linq
     /// if that element is not empty element and we want to store the line info
     /// for its end element tag.
     /// </summary>
-    class LineInfoEndElementAnnotation : LineInfoAnnotation {
+    class LineInfoEndElementAnnotation : LineInfoAnnotation
+    {
         public LineInfoEndElementAnnotation(int lineNumber, int linePosition)
-            : base(lineNumber, linePosition) { }
+            : base(lineNumber, linePosition)
+        { }
     }
 
     class XObjectChangeAnnotation
@@ -1361,7 +1521,8 @@ namespace System.Xml.Linq
         internal EventHandler<XObjectChangeEventArgs> changing;
         internal EventHandler<XObjectChangeEventArgs> changed;
 
-        public XObjectChangeAnnotation() {
+        public XObjectChangeAnnotation()
+        {
         }
     }
 
@@ -1428,14 +1589,16 @@ namespace System.Xml.Linq
         /// <summary>
         /// Initializes a new instance of the <see cref="XObjectChangeEventArgs"/> class.
         /// </summary>
-        public XObjectChangeEventArgs(XObjectChange objectChange) {
+        public XObjectChangeEventArgs(XObjectChange objectChange)
+        {
             this.objectChange = objectChange;
         }
 
         /// <summary>
         /// Gets the type (<see cref="XObjectChange"/>) of change.
         /// </summary>
-        public XObjectChange ObjectChange {
+        public XObjectChange ObjectChange
+        {
             get { return objectChange; }
         }
     }
@@ -1470,8 +1633,10 @@ namespace System.Xml.Linq
         /// If this property does not have a parent, or if there is no next node,
         /// then this property returns null.
         /// </remarks>
-        public XNode NextNode {
-            get {
+        public XNode NextNode
+        {
+            get
+            {
                 return parent == null || this == parent.content ? null : next;
             }
         }
@@ -1483,12 +1648,15 @@ namespace System.Xml.Linq
         /// If this property does not have a parent, or if there is no previous node,
         /// then this property returns null.
         /// </remarks>
-        public XNode PreviousNode {
-            get {
+        public XNode PreviousNode
+        {
+            get
+            {
                 if (parent == null) return null;
                 XNode n = ((XNode)parent.content).next;
                 XNode p = null;
-                while (n != this) {
+                while (n != this)
+                {
                     p = n;
                     n = n.next;
                 }
@@ -1499,8 +1667,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets a comparer that can compare the relative position of two nodes.
         /// </summary>
-        public static XNodeDocumentOrderComparer DocumentOrderComparer {
-            get {
+        public static XNodeDocumentOrderComparer DocumentOrderComparer
+        {
+            get
+            {
                 if (documentOrderComparer == null) documentOrderComparer = new XNodeDocumentOrderComparer();
                 return documentOrderComparer;
             }
@@ -1509,8 +1679,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets a comparer that can compare two nodes for value equality.
         /// </summary>
-        public static XNodeEqualityComparer EqualityComparer {
-            get {
+        public static XNodeEqualityComparer EqualityComparer
+        {
+            get
+            {
                 if (equalityComparer == null) equalityComparer = new XNodeEqualityComparer();
                 return equalityComparer;
             }
@@ -1536,7 +1708,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void AddAfterSelf(object content) {
+        public void AddAfterSelf(object content)
+        {
             if (parent == null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_MissingParent));
             new Inserter(parent, this).Add(content);
         }
@@ -1554,7 +1727,8 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the parent is null.
         /// </exception>
-        public void AddAfterSelf(params object[] content) {
+        public void AddAfterSelf(params object[] content)
+        {
             AddAfterSelf((object)content);
         }
 
@@ -1578,7 +1752,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void AddBeforeSelf(object content) {
+        public void AddBeforeSelf(object content)
+        {
             if (parent == null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_MissingParent));
             XNode p = (XNode)parent.content;
             while (p.next != this) p = p.next;
@@ -1599,7 +1774,8 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the parent is null.
         /// </exception>
-        public void AddBeforeSelf(params object[] content) {
+        public void AddBeforeSelf(params object[] content)
+        {
             AddBeforeSelf((object)content);
         }
 
@@ -1616,7 +1792,8 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This method will not return itself in the results.
         /// </remarks>
-        public IEnumerable<XElement> Ancestors() {
+        public IEnumerable<XElement> Ancestors()
+        {
             return GetAncestors(null, false);
         }
 
@@ -1632,7 +1809,8 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This method will not return itself in the results.
         /// </remarks>
-        public IEnumerable<XElement> Ancestors(XName name) {
+        public IEnumerable<XElement> Ancestors(XName name)
+        {
             return name != null ? GetAncestors(name, false) : XElement.EmptySequence;
         }
 
@@ -1647,48 +1825,59 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the two nodes do not share a common ancestor.
         /// </exception>
-        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "Reviewed.")]
-        public static int CompareDocumentOrder(XNode n1, XNode n2) {
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "Reviewed.")]
+        public static int CompareDocumentOrder(XNode n1, XNode n2)
+        {
             if (n1 == n2) return 0;
             if (n1 == null) return -1;
             if (n2 == null) return 1;
-            if (n1.parent != n2.parent) {
+            if (n1.parent != n2.parent)
+            {
                 int height = 0;
                 XNode p1 = n1;
-                while (p1.parent != null) {
+                while (p1.parent != null)
+                {
                     p1 = p1.parent;
                     height++;
                 }
                 XNode p2 = n2;
-                while (p2.parent != null) {
+                while (p2.parent != null)
+                {
                     p2 = p2.parent;
                     height--;
                 }
                 if (p1 != p2) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_MissingAncestor));
-                if (height < 0) {
-                    do {
+                if (height < 0)
+                {
+                    do
+                    {
                         n2 = n2.parent;
                         height++;
                     } while (height != 0);
                     if (n1 == n2) return -1;
                 }
-                else if (height > 0) {
-                    do {
+                else if (height > 0)
+                {
+                    do
+                    {
                         n1 = n1.parent;
                         height--;
                     } while (height != 0);
                     if (n1 == n2) return 1;
                 }
-                while (n1.parent != n2.parent) {
+                while (n1.parent != n2.parent)
+                {
                     n1 = n1.parent;
                     n2 = n2.parent;
                 }
             }
-            else if (n1.parent == null) {
+            else if (n1.parent == null)
+            {
                 throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_MissingAncestor));
             }
             XNode n = (XNode)n1.parent.content;
-            while (true) {
+            while (true)
+            {
                 n = n.next;
                 if (n == n1) return -1;
                 if (n == n2) return 1;
@@ -1699,7 +1888,8 @@ namespace System.Xml.Linq
         /// Creates an <see cref="XmlReader"/> for the node.
         /// </summary>
         /// <returns>An <see cref="XmlReader"/> that can be used to read the node and its descendants.</returns>
-        public XmlReader CreateReader() {
+        public XmlReader CreateReader()
+        {
             return new XNodeReader(this, null);
         }
 
@@ -1710,7 +1900,8 @@ namespace System.Xml.Linq
         /// Options to be used for the returned reader. These override the default usage of annotations from the tree.
         /// </param>
         /// <returns>An <see cref="XmlReader"/> that can be used to read the node and its descendants.</returns>
-        public XmlReader CreateReader(ReaderOptions readerOptions) {
+        public XmlReader CreateReader(ReaderOptions readerOptions)
+        {
             return new XNodeReader(this, null, readerOptions);
         }
 
@@ -1721,9 +1912,11 @@ namespace System.Xml.Linq
         /// This method only includes sibling nodes in the returned collection.
         /// </remarks>
         /// <returns>The nodes after this node.</returns>
-        public IEnumerable<XNode> NodesAfterSelf() {
+        public IEnumerable<XNode> NodesAfterSelf()
+        {
             XNode n = this;
-            while (n.parent != null && n != n.parent.content) {
+            while (n.parent != null && n != n.parent.content)
+            {
                 n = n.next;
                 yield return n;
             }
@@ -1736,10 +1929,13 @@ namespace System.Xml.Linq
         /// This method only includes sibling nodes in the returned collection.
         /// </remarks>
         /// <returns>The nodes after this node.</returns>
-        public IEnumerable<XNode> NodesBeforeSelf() {
-            if (parent != null) {
+        public IEnumerable<XNode> NodesBeforeSelf()
+        {
+            if (parent != null)
+            {
                 XNode n = (XNode)parent.content;
-                do {
+                do
+                {
                     n = n.next;
                     if (n == this) break;
                     yield return n;
@@ -1754,7 +1950,8 @@ namespace System.Xml.Linq
         /// This method only includes sibling element nodes in the returned collection.
         /// </remarks>
         /// <returns>The element nodes after this node.</returns>
-        public IEnumerable<XElement> ElementsAfterSelf() {
+        public IEnumerable<XElement> ElementsAfterSelf()
+        {
             return GetElementsAfterSelf(null);
         }
 
@@ -1767,7 +1964,8 @@ namespace System.Xml.Linq
         /// </remarks>
         /// <returns>The element nodes after this node with the specified name.</returns>
         /// <param name="name">The name of elements to enumerate.</param>
-        public IEnumerable<XElement> ElementsAfterSelf(XName name) {
+        public IEnumerable<XElement> ElementsAfterSelf(XName name)
+        {
             return name != null ? GetElementsAfterSelf(name) : XElement.EmptySequence;
         }
 
@@ -1778,7 +1976,8 @@ namespace System.Xml.Linq
         /// This method only includes sibling element nodes in the returned collection.
         /// </remarks>
         /// <returns>The element nodes before this node.</returns>
-        public IEnumerable<XElement> ElementsBeforeSelf() {
+        public IEnumerable<XElement> ElementsBeforeSelf()
+        {
             return GetElementsBeforeSelf(null);
         }
 
@@ -1791,7 +1990,8 @@ namespace System.Xml.Linq
         /// </remarks>
         /// <returns>The element nodes before this node with the specified name.</returns>
         /// <param name="name">The name of elements to enumerate.</param>
-        public IEnumerable<XElement> ElementsBeforeSelf(XName name) {
+        public IEnumerable<XElement> ElementsBeforeSelf(XName name)
+        {
             return name != null ? GetElementsBeforeSelf(name) : XElement.EmptySequence;
         }
 
@@ -1801,7 +2001,8 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="node">The node to compare for document order.</param>
         /// <returns>True if this node appears after the specified node; false if not.</returns>
-        public bool IsAfter(XNode node) {
+        public bool IsAfter(XNode node)
+        {
             return CompareDocumentOrder(this, node) > 0;
         }
 
@@ -1811,7 +2012,8 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="node">The node to compare for document order.</param>
         /// <returns>True if this node appears before the specified node; false if not.</returns>
-        public bool IsBefore(XNode node) {
+        public bool IsBefore(XNode node)
+        {
             return CompareDocumentOrder(this, node) < 0;
         }
 
@@ -1826,26 +2028,28 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the <see cref="XmlReader"/> is not positioned on a recognized node type.
         /// </exception>
-        public static XNode ReadFrom(XmlReader reader) {
+        public static XNode ReadFrom(XmlReader reader)
+        {
             if (reader == null) throw new ArgumentNullException("reader");
             if (reader.ReadState != ReadState.Interactive) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExpectedInteractive));
-            switch (reader.NodeType) {
-                case XmlNodeType.Text:
-                case XmlNodeType.SignificantWhitespace:
-                case XmlNodeType.Whitespace:
-                    return new XText(reader);
-                case XmlNodeType.CDATA:
-                    return new XCData(reader);
-                case XmlNodeType.Comment:
-                    return new XComment(reader);
-                case XmlNodeType.DocumentType:
-                    return new XDocumentType(reader);
-                case XmlNodeType.Element:
-                    return new XElement(reader);
-                case XmlNodeType.ProcessingInstruction:
-                    return new XProcessingInstruction(reader);
-                default:
-                    throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnexpectedNodeType, reader.NodeType));
+            switch (reader.NodeType)
+            {
+            case XmlNodeType.Text:
+            case XmlNodeType.SignificantWhitespace:
+            case XmlNodeType.Whitespace:
+                return new XText(reader);
+            case XmlNodeType.CDATA:
+                return new XCData(reader);
+            case XmlNodeType.Comment:
+                return new XComment(reader);
+            case XmlNodeType.DocumentType:
+                return new XDocumentType(reader);
+            case XmlNodeType.Element:
+                return new XElement(reader);
+            case XmlNodeType.ProcessingInstruction:
+                return new XProcessingInstruction(reader);
+            default:
+                throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnexpectedNodeType, reader.NodeType));
             }
         }
 
@@ -1855,7 +2059,8 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the parent is null.
         /// </exception>
-        public void Remove() {
+        public void Remove()
+        {
             if (parent == null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_MissingParent));
             parent.RemoveNode(this);
         }
@@ -1870,7 +2075,8 @@ namespace System.Xml.Linq
         /// Replaces the content of this <see cref="XNode"/>.
         /// </summary>
         /// <param name="content">Content that replaces this node.</param>
-        public void ReplaceWith(object content) {
+        public void ReplaceWith(object content)
+        {
             if (parent == null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_MissingParent));
             XContainer c = parent;
             XNode p = (XNode)parent.content;
@@ -1885,7 +2091,8 @@ namespace System.Xml.Linq
         /// Replaces this node with the specified content.
         /// </summary>
         /// <param name="content">Content that replaces this node.</param>
-        public void ReplaceWith(params object[] content) {
+        public void ReplaceWith(params object[] content)
+        {
             ReplaceWith((object)content);
         }
 
@@ -1894,7 +2101,8 @@ namespace System.Xml.Linq
         /// You can use the SaveOptions as an annotation on this node or its ancestors, then this method will use those options.
         /// </summary>
         /// <returns>A formatted XML string.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return GetXmlString(GetSaveOptionsFromAnnotations());
         }
 
@@ -1906,7 +2114,8 @@ namespace System.Xml.Linq
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
         /// <returns>An XML string.</returns>
-        public string ToString(SaveOptions options) {
+        public string ToString(SaveOptions options)
+        {
             return GetXmlString(options);
         }
 
@@ -1928,8 +2137,9 @@ namespace System.Xml.Linq
         /// Two <see cref="XProcessingInstruction"/> nodes are equal if they have the same
         /// target and data. Two <see cref="XDocumentType"/> nodes are equal if the have the
         /// same name, public id, system id, and internal subset.</remarks>
-        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "Reviewed.")]
-        public static bool DeepEquals(XNode n1, XNode n2) {
+        [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", Justification = "Reviewed.")]
+        public static bool DeepEquals(XNode n1, XNode n2)
+        {
             if (n1 == n2) return true;
             if (n1 == null || n2 == null) return false;
             return n1.DeepEquals(n2);
@@ -1941,34 +2151,42 @@ namespace System.Xml.Linq
         /// <param name="writer">The <see cref="XmlWriter"/> to write the current node into.</param>
         public abstract void WriteTo(XmlWriter writer);
 
-        internal virtual void AppendText(StringBuilder sb) {
+        internal virtual void AppendText(StringBuilder sb)
+        {
         }
 
         internal abstract XNode CloneNode();
 
         internal abstract bool DeepEquals(XNode node);
 
-        internal IEnumerable<XElement> GetAncestors(XName name, bool self) {
+        internal IEnumerable<XElement> GetAncestors(XName name, bool self)
+        {
             XElement e = (self ? this : parent) as XElement;
-            while (e != null) {
+            while (e != null)
+            {
                 if (name == null || e.name == name) yield return e;
                 e = e.parent as XElement;
             }
         }
 
-        IEnumerable<XElement> GetElementsAfterSelf(XName name) {
+        IEnumerable<XElement> GetElementsAfterSelf(XName name)
+        {
             XNode n = this;
-            while (n.parent != null && n != n.parent.content) {
+            while (n.parent != null && n != n.parent.content)
+            {
                 n = n.next;
                 XElement e = n as XElement;
                 if (e != null && (name == null || e.name == name)) yield return e;
             }
         }
 
-        IEnumerable<XElement> GetElementsBeforeSelf(XName name) {
-            if (parent != null) {
+        IEnumerable<XElement> GetElementsBeforeSelf(XName name)
+        {
+            if (parent != null)
+            {
                 XNode n = (XNode)parent.content;
-                do {
+                do
+                {
                     n = n.next;
                     if (n == this) break;
                     XElement e = n as XElement;
@@ -1983,7 +2201,8 @@ namespace System.Xml.Linq
         // entity resolution disabled. The processing of the internal subset is 
         // enabled by default. In order to prevent DoS attacks, the expanded 
         // size of the internal subset is limited to 10 million characters.
-        internal static XmlReaderSettings GetXmlReaderSettings(LoadOptions o) {
+        internal static XmlReaderSettings GetXmlReaderSettings(LoadOptions o)
+        {
             XmlReaderSettings rs = new XmlReaderSettings();
             if ((o & LoadOptions.PreserveWhitespace) == 0) rs.IgnoreWhitespace = true;
             rs.DtdProcessing = DtdProcessing.Parse;
@@ -1992,26 +2211,32 @@ namespace System.Xml.Linq
             return rs;
         }
 
-        internal static XmlWriterSettings GetXmlWriterSettings(SaveOptions o) {
+        internal static XmlWriterSettings GetXmlWriterSettings(SaveOptions o)
+        {
             XmlWriterSettings ws = new XmlWriterSettings();
             if ((o & SaveOptions.DisableFormatting) == 0) ws.Indent = true;
             if ((o & SaveOptions.OmitDuplicateNamespaces) != 0) ws.NamespaceHandling |= NamespaceHandling.OmitDuplicates;
             return ws;
         }
 
-        string GetXmlString(SaveOptions o) {
-            using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture)) {
+        string GetXmlString(SaveOptions o)
+        {
+            using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
+            {
                 XmlWriterSettings ws = new XmlWriterSettings();
                 ws.OmitXmlDeclaration = true;
                 if ((o & SaveOptions.DisableFormatting) == 0) ws.Indent = true;
                 if ((o & SaveOptions.OmitDuplicateNamespaces) != 0) ws.NamespaceHandling |= NamespaceHandling.OmitDuplicates;
                 if (this is XText) ws.ConformanceLevel = ConformanceLevel.Fragment;
-                using (XmlWriter w = XmlWriter.Create(sw, ws)) {
+                using (XmlWriter w = XmlWriter.Create(sw, ws))
+                {
                     XDocument n = this as XDocument;
-                    if (n != null) {
+                    if (n != null)
+                    {
                         n.WriteContentTo(w);
                     }
-                    else {
+                    else
+                    {
                         WriteTo(w);
                     }
                 }
@@ -2024,7 +2249,7 @@ namespace System.Xml.Linq
     /// Contains functionality to compare nodes for their document order.
     /// This class cannot be inherited.
     /// </summary>
-    public sealed class XNodeDocumentOrderComparer: 
+    public sealed class XNodeDocumentOrderComparer :
 #if !SILVERLIGHT || FEATURE_LEGACYNETCF // IComparer is obsolete in SL
         IComparer,
 #endif // !SILVERLIGHT || FEATURE_LEGACYNETCF
@@ -2043,7 +2268,8 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the two nodes do not share a common ancestor.
         /// </exception>
-        public int Compare(XNode x, XNode y) {
+        public int Compare(XNode x, XNode y)
+        {
             return XNode.CompareDocumentOrder(x, y);
         }
 
@@ -2064,7 +2290,8 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentException">
         /// Thrown if either of the two nodes are not derived from XNode.
         /// </exception>        
-        int IComparer.Compare(object x, object y) {
+        int IComparer.Compare(object x, object y)
+        {
             XNode n1 = x as XNode;
             if (n1 == null && x != null) throw new ArgumentException(Res.GetString(Res.Argument_MustBeDerivedFrom, typeof(XNode)), "x");
             XNode n2 = y as XNode;
@@ -2078,9 +2305,9 @@ namespace System.Xml.Linq
     /// Contains functionality to compare nodes for value equality.
     /// This class cannot be inherited.
     /// </summary>
-    public sealed class XNodeEqualityComparer: 
+    public sealed class XNodeEqualityComparer :
 #if !SILVERLIGHT || FEATURE_LEGACYNETCF // IEqualityComparer is obsolete in SL
-        IEqualityComparer, 
+        IEqualityComparer,
 #endif // !SILVERLIGHT || FEATURE_LEGACYNETCF
         IEqualityComparer<XNode>
     {
@@ -2103,7 +2330,8 @@ namespace System.Xml.Linq
         /// target and data. Two <see cref="XDocumentType"/> nodes are equal if the have the
         /// same name, public id, system id, and internal subset.
         /// </remarks>
-        public bool Equals(XNode x, XNode y) {
+        public bool Equals(XNode x, XNode y)
+        {
             return XNode.DeepEquals(x, y);
         }
 
@@ -2117,7 +2345,8 @@ namespace System.Xml.Linq
         /// is based on the referential identity of the node. This method computes a
         /// hash code based on the value of the node.
         /// </remarks>
-        public int GetHashCode(XNode obj) {
+        public int GetHashCode(XNode obj)
+        {
             return obj != null ? obj.GetDeepHashCode() : 0;
         }
 
@@ -2141,7 +2370,8 @@ namespace System.Xml.Linq
         /// target and data. Two <see cref="XDocumentType"/> nodes are equal if the have the
         /// same name, public id, system id, and internal subset.
         /// </remarks>
-        bool IEqualityComparer.Equals(object x, object y) {
+        bool IEqualityComparer.Equals(object x, object y)
+        {
             XNode n1 = x as XNode;
             if (n1 == null && x != null) throw new ArgumentException(Res.GetString(Res.Argument_MustBeDerivedFrom, typeof(XNode)), "x");
             XNode n2 = y as XNode;
@@ -2159,7 +2389,8 @@ namespace System.Xml.Linq
         /// is based on the referential identity of the node. This method computes a
         /// hash code based on the value of the node.
         /// </remarks>
-        int IEqualityComparer.GetHashCode(object obj) {
+        int IEqualityComparer.GetHashCode(object obj)
+        {
             XNode n = obj as XNode;
             if (n == null && obj != null) throw new ArgumentException(Res.GetString(Res.Argument_MustBeDerivedFrom, typeof(XNode)), "obj");
             return GetHashCode(n);
@@ -2178,7 +2409,8 @@ namespace System.Xml.Linq
         /// Initializes a new instance of the XText class.
         /// </summary>
         /// <param name="value">The string that contains the value of the text node.</param>
-        public XText(string value) {
+        public XText(string value)
+        {
             if (value == null) throw new ArgumentNullException("value");
             text = value;
         }
@@ -2187,12 +2419,14 @@ namespace System.Xml.Linq
         /// Initializes a new instance of the XText class from another XText object.
         /// </summary>
         /// <param name="other">The text node to copy from.</param>
-        public XText(XText other) {
+        public XText(XText other)
+        {
             if (other == null) throw new ArgumentNullException("other");
             text = other.text;
         }
 
-        internal XText(XmlReader r) {
+        internal XText(XmlReader r)
+        {
             text = r.Value;
             r.Read();
         }
@@ -2203,8 +2437,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.Text.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.Text;
             }
         }
@@ -2212,11 +2448,14 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets or sets the value of this node.
         /// </summary>
-        public string Value {
-            get {
+        public string Value
+        {
+            get
+            {
                 return text;
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("value");
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Value);
                 text = value;
@@ -2230,29 +2469,36 @@ namespace System.Xml.Linq
         /// <param name="writer">
         /// The <see cref="XmlWriter"/> to write this <see cref="XText"/> to.
         /// </param>
-        public override void WriteTo(XmlWriter writer) {
+        public override void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
-            if (parent is XDocument) {
+            if (parent is XDocument)
+            {
                 writer.WriteWhitespace(text);
             }
-            else {
+            else
+            {
                 writer.WriteString(text);
             }
         }
 
-        internal override void AppendText(StringBuilder sb) {
+        internal override void AppendText(StringBuilder sb)
+        {
             sb.Append(text);
         }
 
-        internal override XNode CloneNode() {
+        internal override XNode CloneNode()
+        {
             return new XText(this);
         }
 
-        internal override bool DeepEquals(XNode node) {
+        internal override bool DeepEquals(XNode node)
+        {
             return node != null && NodeType == node.NodeType && text == ((XText)node).text;
         }
 
-        internal override int GetDeepHashCode() {
+        internal override int GetDeepHashCode()
+        {
             return text.GetHashCode();
         }
     }
@@ -2282,8 +2528,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.CDATA.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.CDATA;
             }
         }
@@ -2294,12 +2542,14 @@ namespace System.Xml.Linq
         /// <param name="writer">
         /// The <see cref="XmlWriter"/> to write this <see cref="XCData"/> to.
         /// </param>
-        public override void WriteTo(XmlWriter writer) {
+        public override void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             writer.WriteCData(text);
         }
 
-        internal override XNode CloneNode() {
+        internal override XNode CloneNode()
+        {
             return new XCData(this);
         }
     }
@@ -2317,15 +2567,20 @@ namespace System.Xml.Linq
 
         internal XContainer() { }
 
-        internal XContainer(XContainer other) {
+        internal XContainer(XContainer other)
+        {
             if (other == null) throw new ArgumentNullException("other");
-            if (other.content is string) {
+            if (other.content is string)
+            {
                 this.content = other.content;
             }
-            else {
+            else
+            {
                 XNode n = (XNode)other.content;
-                if (n != null) {
-                    do {
+                if (n != null)
+                {
+                    do
+                    {
                         n = n.next;
                         AppendNodeSkipNotify(n.CloneNode());
                     } while (n != other.content);
@@ -2336,8 +2591,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Get the first child node of this node.
         /// </summary>
-        public XNode FirstNode {
-            get {
+        public XNode FirstNode
+        {
+            get
+            {
                 XNode last = LastNode;
                 return last != null ? last.next : null;
             }
@@ -2346,13 +2603,16 @@ namespace System.Xml.Linq
         /// <summary>
         /// Get the last child node of this node.
         /// </summary>
-        public XNode LastNode {
-            get {
+        public XNode LastNode
+        {
+            get
+            {
                 if (content == null) return null;
                 XNode n = content as XNode;
                 if (n != null) return n;
                 string s = content as string;
-                if (s != null) {
+                if (s != null)
+                {
                     if (s.Length == 0) return null;
                     XText t = new XText(s);
                     t.parent = this;
@@ -2414,39 +2674,47 @@ namespace System.Xml.Linq
         /// An added attribute must have a unique name within the element to
         /// which it is being added.
         /// </remarks>
-        public void Add(object content) {
-            if (SkipNotify()) {
+        public void Add(object content)
+        {
+            if (SkipNotify())
+            {
                 AddContentSkipNotify(content);
                 return;
             }
             if (content == null) return;
             XNode n = content as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 AddNode(n);
                 return;
             }
             string s = content as string;
-            if (s != null) {
+            if (s != null)
+            {
                 AddString(s);
                 return;
             }
             XAttribute a = content as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 AddAttribute(a);
                 return;
             }
             XStreamingElement x = content as XStreamingElement;
-            if (x != null) {
+            if (x != null)
+            {
                 AddNode(new XElement(x));
                 return;
             }
             object[] o = content as object[];
-            if (o != null) {
+            if (o != null)
+            {
                 foreach (object obj in o) Add(obj);
                 return;
             }
             IEnumerable e = content as IEnumerable;
-            if (e != null) {
+            if (e != null)
+            {
                 foreach (object obj in e) Add(obj);
                 return;
             }
@@ -2463,7 +2731,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void Add(params object[] content) {
+        public void Add(params object[] content)
+        {
             Add((object)content);
         }
 
@@ -2483,10 +2752,11 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void AddFirst(object content) {
+        public void AddFirst(object content)
+        {
             new Inserter(this, null).Add(content);
         }
-        
+
         /// <summary>
         /// Adds the specified content as the first children of this document or element.
         /// </summary>
@@ -2500,7 +2770,8 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the parent is null.
         /// </exception>
-        public void AddFirst(params object[] content) {
+        public void AddFirst(params object[] content)
+        {
             AddFirst((object)content);
         }
 
@@ -2510,7 +2781,8 @@ namespace System.Xml.Linq
         /// applies only for <see cref="XElement"/>.
         /// </summary>
         /// <returns>An <see cref="XmlWriter"/></returns>
-        public XmlWriter CreateWriter() {
+        public XmlWriter CreateWriter()
+        {
             XmlWriterSettings settings = new XmlWriterSettings();
             settings.ConformanceLevel = this is XDocument ? ConformanceLevel.Document : ConformanceLevel.Fragment;
             return XmlWriter.Create(new XNodeBuilder(this), settings);
@@ -2520,7 +2792,8 @@ namespace System.Xml.Linq
         /// Get descendant elements plus leaf nodes contained in an <see cref="XContainer"/>
         /// </summary>
         /// <returns>IEnumerable<XNode> over all descendants</XNode></returns>
-        public IEnumerable<XNode> DescendantNodes() {
+        public IEnumerable<XNode> DescendantNodes()
+        {
             return GetDescendantNodes(false);
         }
 
@@ -2533,7 +2806,8 @@ namespace System.Xml.Linq
         /// <returns>
         /// An IEnumerable of <see cref="XElement"/> with all of the descendants below this <see cref="XContainer"/> in the XML tree.
         /// </returns>
-        public IEnumerable<XElement> Descendants() {
+        public IEnumerable<XElement> Descendants()
+        {
             return GetDescendants(null, false);
         }
 
@@ -2543,7 +2817,8 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="name">The <see cref="XName"/> to match against descendant <see cref="XElement"/>s.</param>
         /// <returns>An <see cref="IEnumerable"/> of <see cref="XElement"/></returns>        
-        public IEnumerable<XElement> Descendants(XName name) {
+        public IEnumerable<XElement> Descendants(XName name)
+        {
             return name != null ? GetDescendants(name, false) : XElement.EmptySequence;
         }
 
@@ -2558,10 +2833,13 @@ namespace System.Xml.Linq
         /// <returns>
         /// An <see cref="XElement"/> child that matches the <see cref="XName"/> passed in, or null.
         /// </returns>
-        public XElement Element(XName name) {
+        public XElement Element(XName name)
+        {
             XNode n = content as XNode;
-            if (n != null) {
-                do {
+            if (n != null)
+            {
+                do
+                {
                     n = n.next;
                     XElement e = n as XElement;
                     if (e != null && e.name == name) return e;
@@ -2579,7 +2857,8 @@ namespace System.Xml.Linq
         /// <returns>
         /// An <see cref="IEnumerable"/> over all of this <see cref="XContainer"/>'s child <see cref="XElement"/>s.
         /// </returns>
-        public IEnumerable<XElement> Elements() {
+        public IEnumerable<XElement> Elements()
+        {
             return GetElements(null);
         }
 
@@ -2593,7 +2872,8 @@ namespace System.Xml.Linq
         /// An <see cref="IEnumerable"/> of <see cref="XElement"/> children of this <see cref="XContainer"/> that have
         /// a matching <see cref="XName"/>.
         /// </returns>
-        public IEnumerable<XElement> Elements(XName name) {
+        public IEnumerable<XElement> Elements(XName name)
+        {
             return name != null ? GetElements(name) : XElement.EmptySequence;
         }
 
@@ -2608,10 +2888,13 @@ namespace System.Xml.Linq
         /// <seealso cref="XElement.Attributes()"/>
         /// </summary>
         /// <returns>The contents of this <see cref="XContainer"/></returns>        
-        public IEnumerable<XNode> Nodes() {
+        public IEnumerable<XNode> Nodes()
+        {
             XNode n = LastNode;
-            if (n != null) {
-                do {
+            if (n != null)
+            {
+                do
+                {
                     n = n.next;
                     yield return n;
                 } while (n.parent == this && n != content);
@@ -2623,19 +2906,26 @@ namespace System.Xml.Linq
         /// methods does not remove attributes.  See <see cref="XElement.RemoveAttributes()"/>.
         /// <seealso cref="XElement.RemoveAttributes()"/>
         /// </summary>
-        public void RemoveNodes() {
-            if (SkipNotify()) {
+        public void RemoveNodes()
+        {
+            if (SkipNotify())
+            {
                 RemoveNodesSkipNotify();
                 return;
             }
-            while (content != null) {
-                string s = content as string; 
-                if (s != null) {
-                    if (s.Length > 0) {
+            while (content != null)
+            {
+                string s = content as string;
+                if (s != null)
+                {
+                    if (s.Length > 0)
+                    {
                         ConvertTextToNode();
                     }
-                    else {
-                        if (this is XElement) {
+                    else
+                    {
+                        if (this is XElement)
+                        {
                             // Change in the serialization of an empty element: 
                             // from start/end tag pair to empty tag
                             NotifyChanging(this, XObjectChangeEventArgs.Value);
@@ -2643,20 +2933,24 @@ namespace System.Xml.Linq
                             content = null;
                             NotifyChanged(this, XObjectChangeEventArgs.Value);
                         }
-                        else {
+                        else
+                        {
                             content = null;
                         }
                     }
                 }
                 XNode last = content as XNode;
-                if (last != null) {
+                if (last != null)
+                {
                     XNode n = last.next;
                     NotifyChanging(n, XObjectChangeEventArgs.Remove);
                     if (last != content || n != last.next) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExternalCode));
-                    if (n != last) {
+                    if (n != last)
+                    {
                         last.next = n.next;
                     }
-                    else {
+                    else
+                    {
                         content = null;
                     }
                     n.parent = null;
@@ -2682,7 +2976,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void ReplaceNodes(object content) {
+        public void ReplaceNodes(object content)
+        {
             content = GetContentSnapshot(content);
             RemoveNodes();
             Add(content);
@@ -2698,57 +2993,70 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void ReplaceNodes(params object[] content) {
+        public void ReplaceNodes(params object[] content)
+        {
             ReplaceNodes((object)content);
         }
 
-        internal virtual void AddAttribute(XAttribute a) {
+        internal virtual void AddAttribute(XAttribute a)
+        {
         }
 
-        internal virtual void AddAttributeSkipNotify(XAttribute a) {
+        internal virtual void AddAttributeSkipNotify(XAttribute a)
+        {
         }
 
-        internal void AddContentSkipNotify(object content) {
+        internal void AddContentSkipNotify(object content)
+        {
             if (content == null) return;
             XNode n = content as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 AddNodeSkipNotify(n);
                 return;
             }
             string s = content as string;
-            if (s != null) {
+            if (s != null)
+            {
                 AddStringSkipNotify(s);
                 return;
             }
             XAttribute a = content as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 AddAttributeSkipNotify(a);
                 return;
             }
             XStreamingElement x = content as XStreamingElement;
-            if (x != null) {
+            if (x != null)
+            {
                 AddNodeSkipNotify(new XElement(x));
                 return;
             }
             object[] o = content as object[];
-            if (o != null) {
+            if (o != null)
+            {
                 foreach (object obj in o) AddContentSkipNotify(obj);
                 return;
             }
             IEnumerable e = content as IEnumerable;
-            if (e != null) {
+            if (e != null)
+            {
                 foreach (object obj in e) AddContentSkipNotify(obj);
                 return;
             }
             AddStringSkipNotify(GetStringValue(content));
         }
 
-        internal void AddNode(XNode n) {
+        internal void AddNode(XNode n)
+        {
             ValidateNode(n, this);
-            if (n.parent != null) {
+            if (n.parent != null)
+            {
                 n = n.CloneNode();
             }
-            else {
+            else
+            {
                 XNode p = this;
                 while (p.parent != null) p = p.parent;
                 if (n == p) n = n.CloneNode();
@@ -2757,12 +3065,15 @@ namespace System.Xml.Linq
             AppendNode(n);
         }
 
-        internal void AddNodeSkipNotify(XNode n) {
+        internal void AddNodeSkipNotify(XNode n)
+        {
             ValidateNode(n, this);
-            if (n.parent != null) {
+            if (n.parent != null)
+            {
                 n = n.CloneNode();
             }
-            else {
+            else
+            {
                 XNode p = this;
                 while (p.parent != null) p = p.parent;
                 if (n == p) n = n.CloneNode();
@@ -2771,14 +3082,19 @@ namespace System.Xml.Linq
             AppendNodeSkipNotify(n);
         }
 
-        internal void AddString(string s) {
+        internal void AddString(string s)
+        {
             ValidateString(s);
-            if (content == null) {
-                if (s.Length > 0) {
+            if (content == null)
+            {
+                if (s.Length > 0)
+                {
                     AppendNode(new XText(s));
                 }
-                else {
-                    if (this is XElement) {
+                else
+                {
+                    if (this is XElement)
+                    {
                         // Change in the serialization of an empty element: 
                         // from empty tag to start/end tag pair
                         NotifyChanging(this, XObjectChangeEventArgs.Value);
@@ -2786,57 +3102,72 @@ namespace System.Xml.Linq
                         content = s;
                         NotifyChanged(this, XObjectChangeEventArgs.Value);
                     }
-                    else {
+                    else
+                    {
                         content = s;
                     }
-                } 
+                }
             }
-            else if (s.Length > 0) {
+            else if (s.Length > 0)
+            {
                 ConvertTextToNode();
                 XText tn = content as XText;
-                if (tn != null && !(tn is XCData)) {
+                if (tn != null && !(tn is XCData))
+                {
                     tn.Value += s;
                 }
-                else {
+                else
+                {
                     AppendNode(new XText(s));
                 }
             }
         }
 
-        internal void AddStringSkipNotify(string s) {
+        internal void AddStringSkipNotify(string s)
+        {
             ValidateString(s);
-            if (content == null) {
+            if (content == null)
+            {
                 content = s;
             }
-            else if (s.Length > 0) {
-                if (content is string) {
+            else if (s.Length > 0)
+            {
+                if (content is string)
+                {
                     content = (string)content + s;
                 }
-                else {
+                else
+                {
                     XText tn = content as XText;
-                    if (tn != null && !(tn is XCData)) {
+                    if (tn != null && !(tn is XCData))
+                    {
                         tn.text += s;
                     }
-                    else {
+                    else
+                    {
                         AppendNodeSkipNotify(new XText(s));
                     }
                 }
             }
         }
 
-        internal void AppendNode(XNode n) {
+        internal void AppendNode(XNode n)
+        {
             bool notify = NotifyChanging(n, XObjectChangeEventArgs.Add);
             if (n.parent != null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExternalCode));
             AppendNodeSkipNotify(n);
             if (notify) NotifyChanged(n, XObjectChangeEventArgs.Add);
         }
 
-        internal void AppendNodeSkipNotify(XNode n) {
+        internal void AppendNodeSkipNotify(XNode n)
+        {
             n.parent = this;
-            if (content == null || content is string) {
+            if (content == null || content is string)
+            {
                 n.next = n;
             }
-            else {
+            else
+            {
                 XNode x = (XNode)content;
                 n.next = x.next;
                 x.next = n;
@@ -2844,15 +3175,20 @@ namespace System.Xml.Linq
             content = n;
         }
 
-        internal override void AppendText(StringBuilder sb) {
+        internal override void AppendText(StringBuilder sb)
+        {
             string s = content as string;
-            if (s != null) {
+            if (s != null)
+            {
                 sb.Append(s);
             }
-            else {
+            else
+            {
                 XNode n = (XNode)content;
-                if (n != null) {
-                    do {
+                if (n != null)
+                {
+                    do
+                    {
                         n = n.next;
                         n.AppendText(sb);
                     } while (n != content);
@@ -2860,12 +3196,15 @@ namespace System.Xml.Linq
             }
         }
 
-        string GetTextOnly() {
+        string GetTextOnly()
+        {
             if (content == null) return null;
             string s = content as string;
-            if (s == null) {
+            if (s == null)
+            {
                 XNode n = (XNode)content;
-                do {
+                do
+                {
                     n = n.next;
                     if (n.NodeType != XmlNodeType.Text) return null;
                     s += ((XText)n).Value;
@@ -2874,25 +3213,30 @@ namespace System.Xml.Linq
             return s;
         }
 
-        string CollectText(ref XNode n) {
+        string CollectText(ref XNode n)
+        {
             string s = "";
-            while (n != null && n.NodeType == XmlNodeType.Text) {
+            while (n != null && n.NodeType == XmlNodeType.Text)
+            {
                 s += ((XText)n).Value;
                 n = n != content ? n.next : null;
             }
             return s;
         }
 
-        internal bool ContentsEqual(XContainer e) {
+        internal bool ContentsEqual(XContainer e)
+        {
             if (content == e.content) return true;
             string s = GetTextOnly();
             if (s != null) return s == e.GetTextOnly();
             XNode n1 = content as XNode;
             XNode n2 = e.content as XNode;
-            if (n1 != null && n2 != null) {
+            if (n1 != null && n2 != null)
+            {
                 n1 = n1.next;
                 n2 = n2.next;
-                while (true) {
+                while (true)
+                {
                     if (CollectText(ref n1) != e.CollectText(ref n2)) break;
                     if (n1 == null && n2 == null) return true;
                     if (n1 == null || n2 == null || !n1.DeepEquals(n2)) break;
@@ -2903,16 +3247,20 @@ namespace System.Xml.Linq
             return false;
         }
 
-        internal int ContentsHashCode() {
+        internal int ContentsHashCode()
+        {
             string s = GetTextOnly();
             if (s != null) return s.GetHashCode();
             int h = 0;
             XNode n = content as XNode;
-            if (n != null) {
-                do {
+            if (n != null)
+            {
+                do
+                {
                     n = n.next;
-                    string text = CollectText(ref n); 
-                    if (text.Length > 0) {
+                    string text = CollectText(ref n);
+                    if (text.Length > 0)
+                    {
                         h ^= text.GetHashCode();
                     }
                     if (n == null) break;
@@ -2922,9 +3270,11 @@ namespace System.Xml.Linq
             return h;
         }
 
-        internal void ConvertTextToNode() {
+        internal void ConvertTextToNode()
+        {
             string s = content as string;
-            if (s != null && s.Length > 0) {
+            if (s != null && s.Length > 0)
+            {
                 XText t = new XText(s);
                 t.parent = this;
                 t.next = t;
@@ -2932,20 +3282,25 @@ namespace System.Xml.Linq
             }
         }
 
-        internal static string GetDateTimeString(DateTime value) {
-            return XmlConvert.ToString(value, XmlDateTimeSerializationMode.RoundtripKind); 
+        internal static string GetDateTimeString(DateTime value)
+        {
+            return XmlConvert.ToString(value, XmlDateTimeSerializationMode.RoundtripKind);
         }
 
-        internal IEnumerable<XNode> GetDescendantNodes(bool self) {
+        internal IEnumerable<XNode> GetDescendantNodes(bool self)
+        {
             if (self) yield return this;
             XNode n = this;
-            while (true) {
+            while (true)
+            {
                 XContainer c = n as XContainer;
                 XNode first;
-                if (c != null && (first = c.FirstNode) != null) {
+                if (c != null && (first = c.FirstNode) != null)
+                {
                     n = first;
                 }
-                else {
+                else
+                {
                     while (n != null && n != this && n == n.parent.content) n = n.parent;
                     if (n == null || n == this) break;
                     n = n.next;
@@ -2954,18 +3309,23 @@ namespace System.Xml.Linq
             }
         }
 
-        internal IEnumerable<XElement> GetDescendants(XName name, bool self) {
-            if (self) {
+        internal IEnumerable<XElement> GetDescendants(XName name, bool self)
+        {
+            if (self)
+            {
                 XElement e = (XElement)this;
                 if (name == null || e.name == name) yield return e;
             }
             XNode n = this;
             XContainer c = this;
-            while (true) {
-                if (c != null && c.content is XNode) {
+            while (true)
+            {
+                if (c != null && c.content is XNode)
+                {
                     n = ((XNode)c.content).next;
                 }
-                else {
+                else
+                {
                     while (n != this && n == n.parent.content) n = n.parent;
                     if (n == this) break;
                     n = n.next;
@@ -2976,10 +3336,13 @@ namespace System.Xml.Linq
             }
         }
 
-        IEnumerable<XElement> GetElements(XName name) {
+        IEnumerable<XElement> GetElements(XName name)
+        {
             XNode n = content as XNode;
-            if (n != null) {
-                do {
+            if (n != null)
+            {
+                do
+                {
                     n = n.next;
                     XElement e = n as XElement;
                     if (e != null && (name == null || e.name == name)) yield return e;
@@ -2987,104 +3350,124 @@ namespace System.Xml.Linq
             }
         }
 
-        internal static string GetStringValue(object value) {
+        internal static string GetStringValue(object value)
+        {
             string s;
-            if (value is string) {
+            if (value is string)
+            {
                 s = (string)value;
             }
-            else if (value is double) {
+            else if (value is double)
+            {
                 s = XmlConvert.ToString((double)value);
             }
-            else if (value is float) {
+            else if (value is float)
+            {
                 s = XmlConvert.ToString((float)value);
             }
-            else if (value is decimal) {
+            else if (value is decimal)
+            {
                 s = XmlConvert.ToString((decimal)value);
             }
-            else if (value is bool) {
+            else if (value is bool)
+            {
                 s = XmlConvert.ToString((bool)value);
             }
-            else if (value is DateTime) {
+            else if (value is DateTime)
+            {
                 s = GetDateTimeString((DateTime)value);
             }
-            else if (value is DateTimeOffset) {
+            else if (value is DateTimeOffset)
+            {
                 s = XmlConvert.ToString((DateTimeOffset)value);
             }
-            else if (value is TimeSpan) {
+            else if (value is TimeSpan)
+            {
                 s = XmlConvert.ToString((TimeSpan)value);
             }
-            else if (value is XObject) {
+            else if (value is XObject)
+            {
                 throw new ArgumentException(Res.GetString(Res.Argument_XObjectValue));
             }
-            else {
+            else
+            {
                 s = value.ToString();
             }
             if (s == null) throw new ArgumentException(Res.GetString(Res.Argument_ConvertToString));
             return s;
         }
 
-        internal void ReadContentFrom(XmlReader r) {
+        internal void ReadContentFrom(XmlReader r)
+        {
             if (r.ReadState != ReadState.Interactive) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExpectedInteractive));
             XContainer c = this;
             NamespaceCache eCache = new NamespaceCache();
             NamespaceCache aCache = new NamespaceCache();
-            do {
-                switch (r.NodeType) {
-                    case XmlNodeType.Element:
-                        XElement e = new XElement(eCache.Get(r.NamespaceURI).GetName(r.LocalName));
-                        if (r.MoveToFirstAttribute()) {
-                            do {
-                                e.AppendAttributeSkipNotify(new XAttribute(aCache.Get(r.Prefix.Length == 0 ? string.Empty : r.NamespaceURI).GetName(r.LocalName), r.Value));
-                            } while (r.MoveToNextAttribute());
-                            r.MoveToElement();
-                        }
-                        c.AddNodeSkipNotify(e);
-                        if (!r.IsEmptyElement) {
-                            c = e;
-                        }
-                        break;
-                    case XmlNodeType.EndElement:
-                        if (c.content == null) {
-                            c.content = string.Empty;
-                        }
-                        if (c == this) return;
-                        c = c.parent;
-                        break;
-                    case XmlNodeType.Text:
-                    case XmlNodeType.SignificantWhitespace:
-                    case XmlNodeType.Whitespace:
-                        c.AddStringSkipNotify(r.Value);
-                        break;
-                    case XmlNodeType.CDATA:
-                        c.AddNodeSkipNotify(new XCData(r.Value));
-                        break;
-                    case XmlNodeType.Comment:
-                        c.AddNodeSkipNotify(new XComment(r.Value));
-                        break;                        
-                    case XmlNodeType.ProcessingInstruction:
-                        c.AddNodeSkipNotify(new XProcessingInstruction(r.Name, r.Value));
-                        break;
-                    case XmlNodeType.DocumentType:
+            do
+            {
+                switch (r.NodeType)
+                {
+                case XmlNodeType.Element:
+                    XElement e = new XElement(eCache.Get(r.NamespaceURI).GetName(r.LocalName));
+                    if (r.MoveToFirstAttribute())
+                    {
+                        do
+                        {
+                            e.AppendAttributeSkipNotify(new XAttribute(aCache.Get(r.Prefix.Length == 0 ? string.Empty : r.NamespaceURI).GetName(r.LocalName), r.Value));
+                        } while (r.MoveToNextAttribute());
+                        r.MoveToElement();
+                    }
+                    c.AddNodeSkipNotify(e);
+                    if (!r.IsEmptyElement)
+                    {
+                        c = e;
+                    }
+                    break;
+                case XmlNodeType.EndElement:
+                    if (c.content == null)
+                    {
+                        c.content = string.Empty;
+                    }
+                    if (c == this) return;
+                    c = c.parent;
+                    break;
+                case XmlNodeType.Text:
+                case XmlNodeType.SignificantWhitespace:
+                case XmlNodeType.Whitespace:
+                    c.AddStringSkipNotify(r.Value);
+                    break;
+                case XmlNodeType.CDATA:
+                    c.AddNodeSkipNotify(new XCData(r.Value));
+                    break;
+                case XmlNodeType.Comment:
+                    c.AddNodeSkipNotify(new XComment(r.Value));
+                    break;
+                case XmlNodeType.ProcessingInstruction:
+                    c.AddNodeSkipNotify(new XProcessingInstruction(r.Name, r.Value));
+                    break;
+                case XmlNodeType.DocumentType:
 #if SILVERLIGHT
                         c.AddNodeSkipNotify(new XDocumentType(r.LocalName, r.GetAttribute("PUBLIC"), r.GetAttribute("SYSTEM"), r.Value));
 #else
-                        c.AddNodeSkipNotify(new XDocumentType(r.LocalName, r.GetAttribute("PUBLIC"), r.GetAttribute("SYSTEM"), r.Value, r.DtdInfo));
+                    c.AddNodeSkipNotify(new XDocumentType(r.LocalName, r.GetAttribute("PUBLIC"), r.GetAttribute("SYSTEM"), r.Value, r.DtdInfo));
 #endif
-                        break;
-                    case XmlNodeType.EntityReference:
-                        if (!r.CanResolveEntity) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnresolvedEntityReference));
-                        r.ResolveEntity();
-                        break;
-                    case XmlNodeType.EndEntity:
-                        break;                        
-                    default:
-                        throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnexpectedNodeType, r.NodeType));
+                    break;
+                case XmlNodeType.EntityReference:
+                    if (!r.CanResolveEntity) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnresolvedEntityReference));
+                    r.ResolveEntity();
+                    break;
+                case XmlNodeType.EndEntity:
+                    break;
+                default:
+                    throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnexpectedNodeType, r.NodeType));
                 }
             } while (r.Read());
         }
 
-        internal void ReadContentFrom(XmlReader r, LoadOptions o) {
-            if ((o & (LoadOptions.SetBaseUri | LoadOptions.SetLineInfo)) == 0) {
+        internal void ReadContentFrom(XmlReader r, LoadOptions o)
+        {
+            if ((o & (LoadOptions.SetBaseUri | LoadOptions.SetLineInfo)) == 0)
+            {
                 ReadContentFrom(r);
                 return;
             }
@@ -3095,95 +3478,114 @@ namespace System.Xml.Linq
             NamespaceCache aCache = new NamespaceCache();
             string baseUri = (o & LoadOptions.SetBaseUri) != 0 ? r.BaseURI : null;
             IXmlLineInfo li = (o & LoadOptions.SetLineInfo) != 0 ? r as IXmlLineInfo : null;
-            do {
-                string uri = r.BaseURI; 
-                switch (r.NodeType) {
-                    case XmlNodeType.Element: {
-                            XElement e = new XElement(eCache.Get(r.NamespaceURI).GetName(r.LocalName));
-                            if (baseUri != null && baseUri != uri) {
-                                e.SetBaseUri(uri);
-                            }
-                            if (li != null && li.HasLineInfo()) {
-                                e.SetLineInfo(li.LineNumber, li.LinePosition);
-                            }
-                            if (r.MoveToFirstAttribute()) {
-                                do {
-                                    XAttribute a = new XAttribute(aCache.Get(r.Prefix.Length == 0 ? string.Empty : r.NamespaceURI).GetName(r.LocalName), r.Value);
-                                    if (li != null && li.HasLineInfo()) {
-                                        a.SetLineInfo(li.LineNumber, li.LinePosition);
-                                    }
-                                    e.AppendAttributeSkipNotify(a);
-                                } while (r.MoveToNextAttribute());
-                                r.MoveToElement();
-                            }
-                            c.AddNodeSkipNotify(e);
-                            if (!r.IsEmptyElement) {
-                                c = e;
-                                if (baseUri != null) {
-                                    baseUri = uri;
+            do
+            {
+                string uri = r.BaseURI;
+                switch (r.NodeType)
+                {
+                case XmlNodeType.Element:
+                    {
+                        XElement e = new XElement(eCache.Get(r.NamespaceURI).GetName(r.LocalName));
+                        if (baseUri != null && baseUri != uri)
+                        {
+                            e.SetBaseUri(uri);
+                        }
+                        if (li != null && li.HasLineInfo())
+                        {
+                            e.SetLineInfo(li.LineNumber, li.LinePosition);
+                        }
+                        if (r.MoveToFirstAttribute())
+                        {
+                            do
+                            {
+                                XAttribute a = new XAttribute(aCache.Get(r.Prefix.Length == 0 ? string.Empty : r.NamespaceURI).GetName(r.LocalName), r.Value);
+                                if (li != null && li.HasLineInfo())
+                                {
+                                    a.SetLineInfo(li.LineNumber, li.LinePosition);
                                 }
-                            }
-                            break;
+                                e.AppendAttributeSkipNotify(a);
+                            } while (r.MoveToNextAttribute());
+                            r.MoveToElement();
                         }
-                    case XmlNodeType.EndElement: {
-                            if (c.content == null) {
-                                c.content = string.Empty;
+                        c.AddNodeSkipNotify(e);
+                        if (!r.IsEmptyElement)
+                        {
+                            c = e;
+                            if (baseUri != null)
+                            {
+                                baseUri = uri;
                             }
-                            // Store the line info of the end element tag.
-                            // Note that since we've got EndElement the current container must be an XElement
-                            XElement e = c as XElement;
-                            Debug.Assert(e != null, "EndElement recieved but the current container is not an element.");
-                            if (e != null && li != null && li.HasLineInfo()) {
-                                e.SetEndElementLineInfo(li.LineNumber, li.LinePosition);
-                            }
-                            if (c == this) return;
-                            if (baseUri != null && c.HasBaseUri) {
-                                baseUri = c.parent.BaseUri;
-                            }
-                            c = c.parent;
-                            break;
-                        }
-                    case XmlNodeType.Text:
-                    case XmlNodeType.SignificantWhitespace:
-                    case XmlNodeType.Whitespace:
-                        if ((baseUri != null && baseUri != uri) ||
-                            (li != null && li.HasLineInfo())) {
-                            n = new XText(r.Value);
-                        }
-                        else {
-                            c.AddStringSkipNotify(r.Value);
                         }
                         break;
-                    case XmlNodeType.CDATA:
-                        n = new XCData(r.Value);
+                    }
+                case XmlNodeType.EndElement:
+                    {
+                        if (c.content == null)
+                        {
+                            c.content = string.Empty;
+                        }
+                        // Store the line info of the end element tag.
+                        // Note that since we've got EndElement the current container must be an XElement
+                        XElement e = c as XElement;
+                        Debug.Assert(e != null, "EndElement recieved but the current container is not an element.");
+                        if (e != null && li != null && li.HasLineInfo())
+                        {
+                            e.SetEndElementLineInfo(li.LineNumber, li.LinePosition);
+                        }
+                        if (c == this) return;
+                        if (baseUri != null && c.HasBaseUri)
+                        {
+                            baseUri = c.parent.BaseUri;
+                        }
+                        c = c.parent;
                         break;
-                    case XmlNodeType.Comment:
-                        n = new XComment(r.Value);
-                        break;                        
-                    case XmlNodeType.ProcessingInstruction:
-                        n = new XProcessingInstruction(r.Name, r.Value);
-                        break;
-                    case XmlNodeType.DocumentType:
+                    }
+                case XmlNodeType.Text:
+                case XmlNodeType.SignificantWhitespace:
+                case XmlNodeType.Whitespace:
+                    if ((baseUri != null && baseUri != uri) ||
+                        (li != null && li.HasLineInfo()))
+                    {
+                        n = new XText(r.Value);
+                    }
+                    else
+                    {
+                        c.AddStringSkipNotify(r.Value);
+                    }
+                    break;
+                case XmlNodeType.CDATA:
+                    n = new XCData(r.Value);
+                    break;
+                case XmlNodeType.Comment:
+                    n = new XComment(r.Value);
+                    break;
+                case XmlNodeType.ProcessingInstruction:
+                    n = new XProcessingInstruction(r.Name, r.Value);
+                    break;
+                case XmlNodeType.DocumentType:
 #if SILVERLIGHT
                         n = new XDocumentType(r.LocalName, r.GetAttribute("PUBLIC"), r.GetAttribute("SYSTEM"), r.Value);
 #else
-                        n = new XDocumentType(r.LocalName, r.GetAttribute("PUBLIC"), r.GetAttribute("SYSTEM"), r.Value, r.DtdInfo);
+                    n = new XDocumentType(r.LocalName, r.GetAttribute("PUBLIC"), r.GetAttribute("SYSTEM"), r.Value, r.DtdInfo);
 #endif
-                        break;
-                    case XmlNodeType.EntityReference:
-                        if (!r.CanResolveEntity) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnresolvedEntityReference));
-                        r.ResolveEntity();
-                        break;
-                    case XmlNodeType.EndEntity:
-                        break;                        
-                    default:
-                        throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnexpectedNodeType, r.NodeType));
+                    break;
+                case XmlNodeType.EntityReference:
+                    if (!r.CanResolveEntity) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnresolvedEntityReference));
+                    r.ResolveEntity();
+                    break;
+                case XmlNodeType.EndEntity:
+                    break;
+                default:
+                    throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_UnexpectedNodeType, r.NodeType));
                 }
-                if (n != null) {
-                    if (baseUri != null && baseUri != uri) {
+                if (n != null)
+                {
+                    if (baseUri != null && baseUri != uri)
+                    {
                         n.SetBaseUri(uri);
                     }
-                    if (li != null && li.HasLineInfo()) {
+                    if (li != null && li.HasLineInfo())
+                    {
                         n.SetLineInfo(li.LineNumber, li.LinePosition);
                     }
                     c.AddNodeSkipNotify(n);
@@ -3192,15 +3594,18 @@ namespace System.Xml.Linq
             } while (r.Read());
         }
 
-        internal void RemoveNode(XNode n) {
+        internal void RemoveNode(XNode n)
+        {
             bool notify = NotifyChanging(n, XObjectChangeEventArgs.Remove);
             if (n.parent != this) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExternalCode));
             XNode p = (XNode)content;
             while (p.next != n) p = p.next;
-            if (p == n) {
+            if (p == n)
+            {
                 content = null;
             }
-            else {
+            else
+            {
                 if (content == n) content = p;
                 p.next = n.next;
             }
@@ -3209,10 +3614,13 @@ namespace System.Xml.Linq
             if (notify) NotifyChanged(n, XObjectChangeEventArgs.Remove);
         }
 
-        void RemoveNodesSkipNotify() {
+        void RemoveNodesSkipNotify()
+        {
             XNode n = content as XNode;
-            if (n != null) {
-                do {
+            if (n != null)
+            {
+                do
+                {
                     XNode next = n.next;
                     n.parent = null;
                     n.next = null;
@@ -3224,25 +3632,34 @@ namespace System.Xml.Linq
 
         // Validate insertion of the given node. previous is the node after which insertion
         // will occur. previous == null means at beginning, previous == this means at end.
-        internal virtual void ValidateNode(XNode node, XNode previous) {
+        internal virtual void ValidateNode(XNode node, XNode previous)
+        {
         }
 
-        internal virtual void ValidateString(string s) {
+        internal virtual void ValidateString(string s)
+        {
         }
 
-        internal void WriteContentTo(XmlWriter writer) {
-            if (content != null) {
-                if (content is string) {
-                    if (this is XDocument) {
+        internal void WriteContentTo(XmlWriter writer)
+        {
+            if (content != null)
+            {
+                if (content is string)
+                {
+                    if (this is XDocument)
+                    {
                         writer.WriteWhitespace((string)content);
                     }
-                    else {
+                    else
+                    {
                         writer.WriteString((string)content);
                     }
                 }
-                else {
+                else
+                {
                     XNode n = (XNode)content;
-                    do {
+                    do
+                    {
                         n = n.next;
                         n.WriteTo(writer);
                     } while (n != content);
@@ -3250,19 +3667,24 @@ namespace System.Xml.Linq
             }
         }
 
-        static void AddContentToList(List<object> list, object content) {
+        static void AddContentToList(List<object> list, object content)
+        {
             IEnumerable e = content is string ? null : content as IEnumerable;
-            if (e == null) {
+            if (e == null)
+            {
                 list.Add(content);
             }
-            else {
-                foreach (object obj in e) {
+            else
+            {
+                foreach (object obj in e)
+                {
                     if (obj != null) AddContentToList(list, obj);
                 }
             }
         }
 
-        static internal object GetContentSnapshot(object content) {
+        static internal object GetContentSnapshot(object content)
+        {
             if (content is string || !(content is IEnumerable)) return content;
             List<object> list = new List<object>();
             AddContentToList(list, content);
@@ -3276,25 +3698,34 @@ namespace System.Xml.Linq
         XNode previous;
         string text;
 
-        public Inserter(XContainer parent, XNode anchor) {
+        public Inserter(XContainer parent, XNode anchor)
+        {
             this.parent = parent;
             this.previous = anchor;
             this.text = null;
         }
 
-        public void Add(object content) {
+        public void Add(object content)
+        {
             AddContent(content);
-            if (text != null) {
-                if (parent.content == null) {
-                    if (parent.SkipNotify()) {
+            if (text != null)
+            {
+                if (parent.content == null)
+                {
+                    if (parent.SkipNotify())
+                    {
                         parent.content = text;
                     }
-                    else {
-                        if (text.Length > 0) {
+                    else
+                    {
+                        if (text.Length > 0)
+                        {
                             InsertNode(new XText(text));
                         }
-                        else {
-                            if (parent is XElement) {
+                        else
+                        {
+                            if (parent is XElement)
+                            {
                                 // Change in the serialization of an empty element: 
                                 // from empty tag to start/end tag pair
                                 parent.NotifyChanging(parent, XObjectChangeEventArgs.Value);
@@ -3302,17 +3733,21 @@ namespace System.Xml.Linq
                                 parent.content = text;
                                 parent.NotifyChanged(parent, XObjectChangeEventArgs.Value);
                             }
-                            else {
+                            else
+                            {
                                 parent.content = text;
                             }
                         }
                     }
                 }
-                else if (text.Length > 0) {
-                    if (previous is XText && !(previous is XCData)) {
+                else if (text.Length > 0)
+                {
+                    if (previous is XText && !(previous is XCData))
+                    {
                         ((XText)previous).Value += text;
                     }
-                    else {
+                    else
+                    {
                         parent.ConvertTextToNode();
                         InsertNode(new XText(text));
                     }
@@ -3320,30 +3755,36 @@ namespace System.Xml.Linq
             }
         }
 
-        void AddContent(object content) {
+        void AddContent(object content)
+        {
             if (content == null) return;
             XNode n = content as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 AddNode(n);
                 return;
             }
             string s = content as string;
-            if (s != null) {
+            if (s != null)
+            {
                 AddString(s);
                 return;
             }
             XStreamingElement x = content as XStreamingElement;
-            if (x != null) {
+            if (x != null)
+            {
                 AddNode(new XElement(x));
                 return;
             }
             object[] o = content as object[];
-            if (o != null) {
+            if (o != null)
+            {
                 foreach (object obj in o) AddContent(obj);
                 return;
             }
             IEnumerable e = content as IEnumerable;
-            if (e != null) {
+            if (e != null)
+            {
                 foreach (object obj in e) AddContent(obj);
                 return;
             }
@@ -3351,23 +3792,30 @@ namespace System.Xml.Linq
             AddString(XContainer.GetStringValue(content));
         }
 
-        void AddNode(XNode n) {
+        void AddNode(XNode n)
+        {
             parent.ValidateNode(n, previous);
-            if (n.parent != null) {
+            if (n.parent != null)
+            {
                 n = n.CloneNode();
             }
-            else {
+            else
+            {
                 XNode p = parent;
                 while (p.parent != null) p = p.parent;
                 if (n == p) n = n.CloneNode();
             }
             parent.ConvertTextToNode();
-            if (text != null) {
-                if (text.Length > 0) {
-                    if (previous is XText && !(previous is XCData)) {
+            if (text != null)
+            {
+                if (text.Length > 0)
+                {
+                    if (previous is XText && !(previous is XCData))
+                    {
                         ((XText)previous).Value += text;
                     }
-                    else {
+                    else
+                    {
                         InsertNode(new XText(text));
                     }
                 }
@@ -3376,26 +3824,31 @@ namespace System.Xml.Linq
             InsertNode(n);
         }
 
-        void AddString(string s) {
+        void AddString(string s)
+        {
             parent.ValidateString(s);
             text += s;
         }
 
         // Prepends if previous == null, otherwise inserts after previous
-        void InsertNode(XNode n) {
+        void InsertNode(XNode n)
+        {
             bool notify = parent.NotifyChanging(n, XObjectChangeEventArgs.Add);
             if (n.parent != null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExternalCode));
             n.parent = parent;
-            if (parent.content == null || parent.content is string) {
+            if (parent.content == null || parent.content is string)
+            {
                 n.next = n;
                 parent.content = n;
             }
-            else if (previous == null) {
+            else if (previous == null)
+            {
                 XNode last = (XNode)parent.content;
                 n.next = last.next;
                 last.next = n;
             }
-            else {
+            else
+            {
                 n.next = previous.next;
                 previous.next = n;
                 if (parent.content == previous) parent.content = n;
@@ -3405,12 +3858,13 @@ namespace System.Xml.Linq
         }
     }
 
-    internal struct NamespaceCache 
+    internal struct NamespaceCache
     {
         XNamespace ns;
         string namespaceName;
 
-        public XNamespace Get(string namespaceName) {
+        public XNamespace Get(string namespaceName)
+        {
             if ((object)namespaceName == (object)this.namespaceName) return this.ns;
             this.namespaceName = namespaceName;
             this.ns = XNamespace.Get(namespaceName);
@@ -3432,7 +3886,7 @@ namespace System.Xml.Linq
     ///     <item><see cref="XProcessingInstruction"/></item>
     ///   </list>
     /// </remarks>
-    [XmlSchemaProvider(null, IsAny=true)]
+    [XmlSchemaProvider(null, IsAny = true)]
 #if !SILVERLIGHT // Serialization
     [System.ComponentModel.TypeDescriptionProvider(typeof(MS.Internal.Xml.Linq.ComponentModel.XTypeDescriptionProvider<XElement>))]
 #endif // !SILVERLIGHT
@@ -3443,8 +3897,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets an empty collection of elements.
         /// </summary>
-        public static IEnumerable<XElement> EmptySequence {
-            get {
+        public static IEnumerable<XElement> EmptySequence
+        {
+            get
+            {
                 if (emptySequence == null) emptySequence = new XElement[0];
                 return emptySequence;
             }
@@ -3459,7 +3915,8 @@ namespace System.Xml.Linq
         /// <param name="name">
         /// The name of the element.
         /// </param>
-        public XElement(XName name) {
+        public XElement(XName name)
+        {
             if (name == null) throw new ArgumentNullException("name");
             this.name = name;
         }
@@ -3475,7 +3932,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public XElement(XName name, object content) : this(name) {
+        public XElement(XName name, object content) : this(name)
+        {
             AddContentSkipNotify(content);
         }
 
@@ -3503,11 +3961,14 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This constructor makes a deep copy from one element to another.
         /// </remarks>
-        public XElement(XElement other) : base(other) {
+        public XElement(XElement other) : base(other)
+        {
             this.name = other.name;
             XAttribute a = other.lastAttr;
-            if (a != null) {
-                do {
+            if (a != null)
+            {
+                do
+                {
                     a = a.next;
                     AppendAttributeSkipNotify(new XAttribute(a));
                 } while (a != other.lastAttr);
@@ -3521,44 +3982,54 @@ namespace System.Xml.Linq
         /// The <see cref="XStreamingElement"/> object whose value will be used
         /// to initialise the new element.
         /// </param>
-        public XElement(XStreamingElement other) {
+        public XElement(XStreamingElement other)
+        {
             if (other == null) throw new ArgumentNullException("other");
             name = other.name;
             AddContentSkipNotify(other.content);
         }
 
-        internal XElement() : this("default") {
+        internal XElement() : this("default")
+        {
         }
 
-        internal XElement(XmlReader r) : this(r, LoadOptions.None) { 
+        internal XElement(XmlReader r) : this(r, LoadOptions.None)
+        {
         }
 
-        internal XElement(XmlReader r, LoadOptions o) {
+        internal XElement(XmlReader r, LoadOptions o)
+        {
             ReadElementFrom(r, o);
         }
 
         /// <summary>
         /// Gets the first attribute of an element.
         /// </summary>
-        public XAttribute FirstAttribute {
+        public XAttribute FirstAttribute
+        {
             get { return lastAttr != null ? lastAttr.next : null; }
         }
 
         /// <summary>
         /// Gets a value indicating whether the element as at least one attribute.
         /// </summary>
-        public bool HasAttributes {
+        public bool HasAttributes
+        {
             get { return lastAttr != null; }
         }
 
         /// <summary>
         /// Gets a value indicating whether the element has at least one child element.
         /// </summary>
-        public bool HasElements {
-            get {
+        public bool HasElements
+        {
+            get
+            {
                 XNode n = content as XNode;
-                if (n != null) {
-                    do {
+                if (n != null)
+                {
+                    do
+                    {
                         if (n is XElement) return true;
                         n = n.next;
                     } while (n != content);
@@ -3570,25 +4041,30 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets a value indicating whether the element contains no content.
         /// </summary>
-        public bool IsEmpty {
+        public bool IsEmpty
+        {
             get { return content == null; }
         }
 
         /// <summary>
         /// Gets the last attribute of an element.
         /// </summary>
-        public XAttribute LastAttribute {
+        public XAttribute LastAttribute
+        {
             get { return lastAttr; }
         }
 
         /// <summary>
         /// Gets the name of this element.
         /// </summary>
-        public XName Name {
-            get {
+        public XName Name
+        {
+            get
+            {
                 return name;
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("value");
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Name);
                 name = value;
@@ -3602,8 +4078,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.Text.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.Element;
             }
         }
@@ -3615,8 +4093,10 @@ namespace System.Xml.Linq
         /// If there is text content interspersed with nodes (mixed content) then the text content
         /// will be concatenated and returned.
         /// </remarks>
-        public string Value {
-            get {
+        public string Value
+        {
+            get
+            {
                 if (content == null) return string.Empty;
                 string s = content as string;
                 if (s != null) return s;
@@ -3624,7 +4104,8 @@ namespace System.Xml.Linq
                 AppendText(sb);
                 return sb.ToString();
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("value");
                 RemoveNodes();
                 Add(value);
@@ -3647,7 +4128,8 @@ namespace System.Xml.Linq
         /// this <see cref="XElement"/>'s ancestors up to the root node (including
         /// this <see cref="XElement"/>.
         /// </returns>
-        public IEnumerable<XElement> AncestorsAndSelf() {
+        public IEnumerable<XElement> AncestorsAndSelf()
+        {
             return GetAncestors(null, true);
         }
 
@@ -3665,7 +4147,8 @@ namespace System.Xml.Linq
         /// An <see cref="IEnumerable"/> of <see cref="XElement"/> containing the
         /// ancestors of this <see cref="XElement"/> with a matching <see cref="XName"/>.
         /// </returns>
-        public IEnumerable<XElement> AncestorsAndSelf(XName name) {
+        public IEnumerable<XElement> AncestorsAndSelf(XName name)
+        {
             return name != null ? GetAncestors(name, true) : XElement.EmptySequence;
         }
 
@@ -3680,10 +4163,13 @@ namespace System.Xml.Linq
         /// The <see cref="XAttribute"/> with the <see cref="XName"/> passed in.  If there is no <see cref="XAttribute"/>
         /// with this <see cref="XName"/> then null is returned.
         /// </returns>
-        public XAttribute Attribute(XName name) {
+        public XAttribute Attribute(XName name)
+        {
             XAttribute a = lastAttr;
-            if (a != null) {
-                do {
+            if (a != null)
+            {
+                do
+                {
                     a = a.next;
                     if (a.name == name) return a;
                 } while (a != lastAttr);
@@ -3703,7 +4189,8 @@ namespace System.Xml.Linq
         /// An <see cref="IEnumerable"/> of <see cref="XAttribute"/> containing all of the <see cref="XAttribute"/>s
         /// associated with this <see cref="XElement"/>.
         /// </returns>
-        public IEnumerable<XAttribute> Attributes() {
+        public IEnumerable<XAttribute> Attributes()
+        {
             return GetAttributes(null);
         }
 
@@ -3718,7 +4205,8 @@ namespace System.Xml.Linq
         /// <returns>
         /// The <see cref="XAttribute"/>(s) with the matching 
         /// </returns>
-        public IEnumerable<XAttribute> Attributes(XName name) {
+        public IEnumerable<XAttribute> Attributes(XName name)
+        {
             return name != null ? GetAttributes(name) : XAttribute.EmptySequence;
         }
 
@@ -3726,7 +4214,8 @@ namespace System.Xml.Linq
         /// Get the self and descendant nodes for an <see cref="XElement"/>
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<XNode> DescendantNodesAndSelf() {
+        public IEnumerable<XNode> DescendantNodesAndSelf()
+        {
             return GetDescendantNodes(true);
         }
 
@@ -3744,7 +4233,8 @@ namespace System.Xml.Linq
         /// An <see cref="IEnumerable"/> of <see cref="XElement"/> containing this <see cref="XElement"/>
         /// and all of it's descendants.
         /// </returns>
-        public IEnumerable<XElement> DescendantsAndSelf() {
+        public IEnumerable<XElement> DescendantsAndSelf()
+        {
             return GetDescendants(null, true);
         }
 
@@ -3760,14 +4250,16 @@ namespace System.Xml.Linq
         /// An <see cref="IEnumerable"/> of <see cref="XElement"/> containing all of the descendant
         /// <see cref="XElement"/>s that have this <see cref="XName"/>.
         /// </returns>
-        public IEnumerable<XElement> DescendantsAndSelf(XName name) {
+        public IEnumerable<XElement> DescendantsAndSelf(XName name)
+        {
             return name != null ? GetDescendants(name, true) : XElement.EmptySequence;
         }
 
         /// <summary>
         /// Returns the default <see cref="XNamespace"/> of an <see cref="XElement"/> 
         /// </summary>
-        public XNamespace GetDefaultNamespace() {
+        public XNamespace GetDefaultNamespace()
+        {
             string namespaceName = GetNamespaceOfPrefixInScope("xmlns", null);
             return namespaceName != null ? XNamespace.Get(namespaceName) : XNamespace.None;
         }
@@ -3778,7 +4270,8 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="prefix">The namespace prefix to look up</param>
         /// <returns>An <see cref="XNamespace"/> for the namespace bound to the prefix</returns>
-        public XNamespace GetNamespaceOfPrefix(string prefix) {
+        public XNamespace GetNamespaceOfPrefix(string prefix)
+        {
             if (prefix == null) throw new ArgumentNullException("prefix");
             if (prefix.Length == 0) throw new ArgumentException(Res.GetString(Res.Argument_InvalidPrefix, prefix));
             if (prefix == "xmlns") return XNamespace.Xmlns;
@@ -3793,22 +4286,29 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="ns">The <see cref="XNamespace"/> for which to get a prefix</param>
         /// <returns>The namespace prefix string</returns>
-        public string GetPrefixOfNamespace(XNamespace ns) {
+        public string GetPrefixOfNamespace(XNamespace ns)
+        {
             if (ns == null) throw new ArgumentNullException("ns");
             string namespaceName = ns.NamespaceName;
             bool hasInScopeNamespace = false;
             XElement e = this;
-            do {
+            do
+            {
                 XAttribute a = e.lastAttr;
-                if (a != null) {
+                if (a != null)
+                {
                     bool hasLocalNamespace = false;
-                    do {
+                    do
+                    {
                         a = a.next;
-                        if (a.IsNamespaceDeclaration) {
-                            if (a.Value == namespaceName) {
+                        if (a.IsNamespaceDeclaration)
+                        {
+                            if (a.Value == namespaceName)
+                            {
                                 if (a.Name.NamespaceName.Length != 0 &&
-                                    (!hasInScopeNamespace || 
-                                     GetNamespaceOfPrefixInScope(a.Name.LocalName, e) == null)) {
+                                    (!hasInScopeNamespace ||
+                                     GetNamespaceOfPrefixInScope(a.Name.LocalName, e) == null))
+                                {
                                     return a.Name.LocalName;
                                 }
                             }
@@ -3821,10 +4321,12 @@ namespace System.Xml.Linq
                 e = e.parent as XElement;
             }
             while (e != null);
-            if ((object)namespaceName == (object)XNamespace.xmlPrefixNamespace) {
+            if ((object)namespaceName == (object)XNamespace.xmlPrefixNamespace)
+            {
                 if (!hasInScopeNamespace || GetNamespaceOfPrefixInScope("xml", null) == null) return "xml";
             }
-            else if ((object)namespaceName == (object)XNamespace.xmlnsPrefixNamespace) {
+            else if ((object)namespaceName == (object)XNamespace.xmlnsPrefixNamespace)
+            {
                 return "xmlns";
             }
             return null;
@@ -3866,7 +4368,8 @@ namespace System.Xml.Linq
         [ResourceExposure(ResourceScope.Machine)]
 #endif
         [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", Justification = "Back-compat with System.Xml.")]
-        public static XElement Load(string uri) {
+        public static XElement Load(string uri)
+        {
             return Load(uri, LoadOptions.None);
         }
 
@@ -3899,9 +4402,11 @@ namespace System.Xml.Linq
         [ResourceExposure(ResourceScope.Machine)]
 #endif
         [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", Justification = "Back-compat with System.Xml.")]
-        public static XElement Load(string uri, LoadOptions options) { 
+        public static XElement Load(string uri, LoadOptions options)
+        {
             XmlReaderSettings rs = GetXmlReaderSettings(options);
-            using (XmlReader r = XmlReader.Create(uri, rs)) {
+            using (XmlReader r = XmlReader.Create(uri, rs))
+            {
                 return Load(r, options);
             }
         }
@@ -3918,7 +4423,8 @@ namespace System.Xml.Linq
         /// A new <see cref="XElement"/> containing the contents of the passed in
         /// <see cref="Stream"/>.
         /// </returns>
-        public static XElement Load(Stream stream) {
+        public static XElement Load(Stream stream)
+        {
             return Load(stream, LoadOptions.None);
         }
 
@@ -3943,12 +4449,14 @@ namespace System.Xml.Linq
         /// A new <see cref="XElement"/> containing the contents of the passed in
         /// <see cref="Stream"/>.
         /// </returns>
-        public static XElement Load(Stream stream, LoadOptions options) {
+        public static XElement Load(Stream stream, LoadOptions options)
+        {
             XmlReaderSettings rs = GetXmlReaderSettings(options);
-            using (XmlReader r = XmlReader.Create(stream, rs)) {
+            using (XmlReader r = XmlReader.Create(stream, rs))
+            {
                 return Load(r, options);
             }
-        }        
+        }
         /// <summary>
         /// Create a new <see cref="XElement"/> and initialize its underlying XML tree using
         /// the passed <see cref="TextReader"/> parameter.  
@@ -3961,7 +4469,8 @@ namespace System.Xml.Linq
         /// A new <see cref="XElement"/> containing the contents of the passed in
         /// <see cref="TextReader"/>.
         /// </returns>
-        public static XElement Load(TextReader textReader) {
+        public static XElement Load(TextReader textReader)
+        {
             return Load(textReader, LoadOptions.None);
         }
 
@@ -3986,13 +4495,15 @@ namespace System.Xml.Linq
         /// A new <see cref="XElement"/> containing the contents of the passed in
         /// <see cref="TextReader"/>.
         /// </returns>
-        public static XElement Load(TextReader textReader, LoadOptions options) {
+        public static XElement Load(TextReader textReader, LoadOptions options)
+        {
             XmlReaderSettings rs = GetXmlReaderSettings(options);
-            using (XmlReader r = XmlReader.Create(textReader, rs)) {
+            using (XmlReader r = XmlReader.Create(textReader, rs))
+            {
                 return Load(r, options);
             }
         }
-        
+
         /// <summary>
         /// Create a new <see cref="XElement"/> containing the contents of the
         /// passed in <see cref="XmlReader"/>.
@@ -4005,8 +4516,9 @@ namespace System.Xml.Linq
         /// A new <see cref="XElement"/> containing the contents of the passed
         /// in <see cref="XmlReader"/>.
         /// </returns>
-        public static XElement Load(XmlReader reader) {
-            return Load(reader, LoadOptions.None); 
+        public static XElement Load(XmlReader reader)
+        {
+            return Load(reader, LoadOptions.None);
         }
 
         /// <summary>
@@ -4024,7 +4536,8 @@ namespace System.Xml.Linq
         /// A new <see cref="XElement"/> containing the contents of the passed
         /// in <see cref="XmlReader"/>.
         /// </returns>
-        public static XElement Load(XmlReader reader, LoadOptions options) {
+        public static XElement Load(XmlReader reader, LoadOptions options)
+        {
             if (reader == null) throw new ArgumentNullException("reader");
             if (reader.MoveToContent() != XmlNodeType.Element) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExpectedNodeType, XmlNodeType.Element, reader.NodeType));
             XElement e = new XElement(reader, options);
@@ -4049,7 +4562,8 @@ namespace System.Xml.Linq
         /// <returns>
         /// An <see cref="XElement"/> created from the XML string passed in.
         /// </returns>
-        public static XElement Parse(string text) {
+        public static XElement Parse(string text)
+        {
             return Parse(text, LoadOptions.None);
         }
 
@@ -4076,21 +4590,25 @@ namespace System.Xml.Linq
         /// <returns>
         /// An <see cref="XElement"/> created from the XML string passed in.
         /// </returns>
-        public static XElement Parse(string text, LoadOptions options) { 
-            using (StringReader sr = new StringReader(text)) {
+        public static XElement Parse(string text, LoadOptions options)
+        {
+            using (StringReader sr = new StringReader(text))
+            {
                 XmlReaderSettings rs = GetXmlReaderSettings(options);
-                using (XmlReader r = XmlReader.Create(sr, rs)) {
+                using (XmlReader r = XmlReader.Create(sr, rs))
+                {
                     return Load(r, options);
                 }
             }
         }
-        
+
         /// <summary>
         /// Removes content and attributes from this <see cref="XElement"/>.
         /// <seealso cref="XElement.RemoveAttributes"/>
         /// <seealso cref="XContainer.RemoveNodes"/>
         /// </summary>
-        public void RemoveAll() {
+        public void RemoveAll()
+        {
             RemoveAttributes();
             RemoveNodes();
         }
@@ -4100,19 +4618,24 @@ namespace System.Xml.Linq
         /// <seealso cref="XElement.RemoveAll"/>
         /// <seealso cref="XElement.RemoveAttributes"/>
         /// </summary>
-        public void RemoveAttributes() {
-            if (SkipNotify()) {
+        public void RemoveAttributes()
+        {
+            if (SkipNotify())
+            {
                 RemoveAttributesSkipNotify();
                 return;
             }
-            while (lastAttr != null) {
+            while (lastAttr != null)
+            {
                 XAttribute a = lastAttr.next;
                 NotifyChanging(a, XObjectChangeEventArgs.Remove);
                 if (lastAttr == null || a != lastAttr.next) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExternalCode));
-                if (a != lastAttr) {
+                if (a != lastAttr)
+                {
                     lastAttr.next = a.next;
                 }
-                else {
+                else
+                {
                     lastAttr = null;
                 }
                 a.parent = null;
@@ -4136,7 +4659,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void ReplaceAll(object content) {
+        public void ReplaceAll(object content)
+        {
             content = GetContentSnapshot(content);
             RemoveAll();
             Add(content);
@@ -4152,7 +4676,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void ReplaceAll(params object[] content) {
+        public void ReplaceAll(params object[] content)
+        {
             ReplaceAll((object)content);
         }
 
@@ -4171,7 +4696,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void ReplaceAttributes(object content) {
+        public void ReplaceAttributes(object content)
+        {
             content = GetContentSnapshot(content);
             RemoveAttributes();
             Add(content);
@@ -4187,7 +4713,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public void ReplaceAttributes(params object[] content) {
+        public void ReplaceAttributes(params object[] content)
+        {
             ReplaceAttributes((object)content);
         }
 
@@ -4215,7 +4742,8 @@ namespace System.Xml.Linq
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
 #endif
-        public void Save(string fileName) {
+        public void Save(string fileName)
+        {
             Save(fileName, GetSaveOptionsFromAnnotations());
         }
 
@@ -4233,9 +4761,11 @@ namespace System.Xml.Linq
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
 #endif
-        public void Save(string fileName, SaveOptions options) { 
+        public void Save(string fileName, SaveOptions options)
+        {
             XmlWriterSettings ws = GetXmlWriterSettings(options);
-            using (XmlWriter w = XmlWriter.Create(fileName, ws)) {
+            using (XmlWriter w = XmlWriter.Create(fileName, ws))
+            {
                 Save(w);
             }
         }
@@ -4255,7 +4785,8 @@ namespace System.Xml.Linq
         /// <param name="stream">
         /// The <see cref="Stream"/> to output this <see cref="XElement"/> to.
         /// </param>
-        public void Save(Stream stream) {
+        public void Save(Stream stream)
+        {
             Save(stream, GetSaveOptionsFromAnnotations());
         }
 
@@ -4269,9 +4800,11 @@ namespace System.Xml.Linq
         /// If SaveOptions.DisableFormatting is enabled the output is not indented.
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
-        public void Save(Stream stream, SaveOptions options) {
+        public void Save(Stream stream, SaveOptions options)
+        {
             XmlWriterSettings ws = GetXmlWriterSettings(options);
-            using (XmlWriter w = XmlWriter.Create(stream, ws)) {
+            using (XmlWriter w = XmlWriter.Create(stream, ws))
+            {
                 Save(w);
             }
         }
@@ -4290,7 +4823,8 @@ namespace System.Xml.Linq
         /// <param name="textWriter">
         /// The <see cref="TextWriter"/> to output this <see cref="XElement"/> to.
         /// </param>
-        public void Save(TextWriter textWriter) {
+        public void Save(TextWriter textWriter)
+        {
             Save(textWriter, GetSaveOptionsFromAnnotations());
         }
 
@@ -4304,20 +4838,23 @@ namespace System.Xml.Linq
         /// If SaveOptions.DisableFormatting is enabled the output is not indented.
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
-        public void Save(TextWriter textWriter, SaveOptions options) { 
+        public void Save(TextWriter textWriter, SaveOptions options)
+        {
             XmlWriterSettings ws = GetXmlWriterSettings(options);
-            using (XmlWriter w = XmlWriter.Create(textWriter, ws)) {
+            using (XmlWriter w = XmlWriter.Create(textWriter, ws))
+            {
                 Save(w);
             }
         }
-        
+
         /// <summary>
         /// Output this <see cref="XElement"/> to an <see cref="XmlWriter"/>.
         /// </summary>
         /// <param name="writer">
         /// The <see cref="XmlWriter"/> to output the XML to.
         /// </param>
-        public void Save(XmlWriter writer) {
+        public void Save(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             writer.WriteStartDocument();
             WriteTo(writer);
@@ -4343,21 +4880,26 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentException">
         /// Thrown if the value is an instance of <see cref="XObject"/>.
         /// </exception>
-        public void SetAttributeValue(XName name, object value) {
+        public void SetAttributeValue(XName name, object value)
+        {
             XAttribute a = Attribute(name);
-            if (value == null) {
+            if (value == null)
+            {
                 if (a != null) RemoveAttribute(a);
             }
-            else {
-                if (a != null) {
+            else
+            {
+                if (a != null)
+                {
                     a.Value = GetStringValue(value);
                 }
-                else {
+                else
+                {
                     AppendAttribute(new XAttribute(name, value));
                 }
             }
         }
-        
+
         /// <summary>
         /// Sets the value of a child element. The value is assigned to the first child element
         /// with the given name. If no child element with the given name exists, a new child
@@ -4378,16 +4920,21 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentException">
         /// Thrown if the value is an instance of <see cref="XObject"/>.
         /// </exception>
-        public void SetElementValue(XName name, object value) {
+        public void SetElementValue(XName name, object value)
+        {
             XElement e = Element(name);
-            if (value == null) {
+            if (value == null)
+            {
                 if (e != null) RemoveNode(e);
             }
-            else {
-                if (e != null) {
+            else
+            {
+                if (e != null)
+                {
                     e.Value = GetStringValue(value);
                 }
-                else {
+                else
+                {
                     AddNode(new XElement(name, GetStringValue(value)));
                 }
             }
@@ -4406,7 +4953,8 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the specified value is null.
         /// </exception>
-        public void SetValue(object value) {
+        public void SetValue(object value)
+        {
             if (value == null) throw new ArgumentNullException("value");
             Value = GetStringValue(value);
         }
@@ -4417,7 +4965,8 @@ namespace System.Xml.Linq
         /// <param name="writer">
         /// The <see cref="XmlTextWriter"/> to write this <see cref="XElement"/> to.
         /// </param>
-        public override void WriteTo(XmlWriter writer) {
+        public override void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             new ElementWriter(writer).WriteElement(this);
         }
@@ -4439,7 +4988,8 @@ namespace System.Xml.Linq
         /// </returns>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator string(XElement element) {
+        public static explicit operator string (XElement element)
+        {
             if (element == null) return null;
             return element.Value;
         }
@@ -4461,11 +5011,12 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator bool(XElement element) {
+        public static explicit operator bool (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToBoolean(element.Value.ToLower(CultureInfo.InvariantCulture));
         }
-        
+
         /// <summary>
         /// Cast the value of this <see cref="XElement"/> to a <see cref="bool"/>?.
         /// </summary>
@@ -4480,7 +5031,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator bool?(XElement element) {
+        public static explicit operator bool? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToBoolean(element.Value.ToLower(CultureInfo.InvariantCulture));
         }
@@ -4502,7 +5054,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator int(XElement element) {
+        public static explicit operator int (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToInt32(element.Value);
         }
@@ -4521,7 +5074,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator int?(XElement element) {
+        public static explicit operator int? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToInt32(element.Value);
         }
@@ -4543,7 +5097,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator uint(XElement element) {
+        public static explicit operator uint (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToUInt32(element.Value);
         }
@@ -4562,7 +5117,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator uint?(XElement element) {
+        public static explicit operator uint? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToUInt32(element.Value);
         }
@@ -4584,7 +5140,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator long(XElement element) {
+        public static explicit operator long (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToInt64(element.Value);
         }
@@ -4603,7 +5160,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator long?(XElement element) {
+        public static explicit operator long? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToInt64(element.Value);
         }
@@ -4625,7 +5183,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator ulong(XElement element) {
+        public static explicit operator ulong (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToUInt64(element.Value);
         }
@@ -4644,7 +5203,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator ulong?(XElement element) {
+        public static explicit operator ulong? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToUInt64(element.Value);
         }
@@ -4666,7 +5226,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator float(XElement element) {
+        public static explicit operator float (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToSingle(element.Value);
         }
@@ -4685,7 +5246,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator float?(XElement element) {
+        public static explicit operator float? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToSingle(element.Value);
         }
@@ -4707,7 +5269,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator double(XElement element) {
+        public static explicit operator double (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToDouble(element.Value);
         }
@@ -4726,7 +5289,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator double?(XElement element) {
+        public static explicit operator double? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToDouble(element.Value);
         }
@@ -4748,7 +5312,8 @@ namespace System.Xml.Linq
         /// </exception>        
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator decimal(XElement element) {
+        public static explicit operator decimal (XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToDecimal(element.Value);
         }
@@ -4767,7 +5332,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator decimal?(XElement element) {
+        public static explicit operator decimal? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToDecimal(element.Value);
         }
@@ -4789,7 +5355,8 @@ namespace System.Xml.Linq
         /// </exception>        
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator DateTime(XElement element) {
+        public static explicit operator DateTime(XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return DateTime.Parse(element.Value, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
         }
@@ -4808,7 +5375,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator DateTime?(XElement element) {
+        public static explicit operator DateTime? (XElement element)
+        {
             if (element == null) return null;
             return DateTime.Parse(element.Value, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
         }
@@ -4830,7 +5398,8 @@ namespace System.Xml.Linq
         /// </exception>        
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator DateTimeOffset(XElement element) {
+        public static explicit operator DateTimeOffset(XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToDateTimeOffset(element.Value);
         }
@@ -4849,7 +5418,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator DateTimeOffset?(XElement element) {
+        public static explicit operator DateTimeOffset? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToDateTimeOffset(element.Value);
         }
@@ -4871,7 +5441,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator TimeSpan(XElement element) {
+        public static explicit operator TimeSpan(XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToTimeSpan(element.Value);
         }
@@ -4890,7 +5461,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator TimeSpan?(XElement element) {
+        public static explicit operator TimeSpan? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToTimeSpan(element.Value);
         }
@@ -4912,7 +5484,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator Guid(XElement element) {
+        public static explicit operator Guid(XElement element)
+        {
             if (element == null) throw new ArgumentNullException("element");
             return XmlConvert.ToGuid(element.Value);
         }
@@ -4931,7 +5504,8 @@ namespace System.Xml.Linq
         /// </exception>
         [CLSCompliant(false)]
         [SuppressMessage("Microsoft.Usage", "CA2225:OperatorOverloadsHaveNamedAlternates", Justification = "Operator marked with CLSCompliant(false).")]
-        public static explicit operator Guid?(XElement element) {
+        public static explicit operator Guid? (XElement element)
+        {
             if (element == null) return null;
             return XmlConvert.ToGuid(element.Value);
         }
@@ -4939,7 +5513,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// This method is obsolete for the IXmlSerializable contract.
         /// </summary>
-        XmlSchema IXmlSerializable.GetSchema() {
+        XmlSchema IXmlSerializable.GetSchema()
+        {
             return null;
         }
 
@@ -4950,7 +5525,8 @@ namespace System.Xml.Linq
         /// The <see cref="XmlReader"/> stream from which the <see cref="XElement"/>
         /// is deserialized.
         /// </param>
-        void IXmlSerializable.ReadXml(XmlReader reader) {
+        void IXmlSerializable.ReadXml(XmlReader reader)
+        {
             if (reader == null) throw new ArgumentNullException("reader");
             if (parent != null || annotations != null || content != null || lastAttr != null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_DeserializeInstance));
             if (reader.MoveToContent() != XmlNodeType.Element) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExpectedNodeType, XmlNodeType.Element, reader.NodeType));
@@ -4964,46 +5540,56 @@ namespace System.Xml.Linq
         /// The <see cref="XmlWriter"/> stream to which the <see cref="XElement"/>
         /// is serialized.
         /// </param>
-        void IXmlSerializable.WriteXml(XmlWriter writer) {
+        void IXmlSerializable.WriteXml(XmlWriter writer)
+        {
             WriteTo(writer);
         }
 
-        internal override void AddAttribute(XAttribute a) {
+        internal override void AddAttribute(XAttribute a)
+        {
             if (Attribute(a.Name) != null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_DuplicateAttribute));
             if (a.parent != null) a = new XAttribute(a);
             AppendAttribute(a);
         }
 
-        internal override void AddAttributeSkipNotify(XAttribute a) {
+        internal override void AddAttributeSkipNotify(XAttribute a)
+        {
             if (Attribute(a.Name) != null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_DuplicateAttribute));
             if (a.parent != null) a = new XAttribute(a);
             AppendAttributeSkipNotify(a);
         }
 
-        internal void AppendAttribute(XAttribute a) {
+        internal void AppendAttribute(XAttribute a)
+        {
             bool notify = NotifyChanging(a, XObjectChangeEventArgs.Add);
             if (a.parent != null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExternalCode));
             AppendAttributeSkipNotify(a);
             if (notify) NotifyChanged(a, XObjectChangeEventArgs.Add);
         }
 
-        internal void AppendAttributeSkipNotify(XAttribute a) {
+        internal void AppendAttributeSkipNotify(XAttribute a)
+        {
             a.parent = this;
-            if (lastAttr == null) {
+            if (lastAttr == null)
+            {
                 a.next = a;
             }
-            else {
+            else
+            {
                 a.next = lastAttr.next;
                 lastAttr.next = a;
             }
             lastAttr = a;
         }
 
-        bool AttributesEqual(XElement e) {
+        bool AttributesEqual(XElement e)
+        {
             XAttribute a1 = lastAttr;
             XAttribute a2 = e.lastAttr;
-            if (a1 != null && a2 != null) {
-                do {
+            if (a1 != null && a2 != null)
+            {
+                do
+                {
                     a1 = a1.next;
                     a2 = a2.next;
                     if (a1.name != a2.name || a1.value != a2.value) return false;
@@ -5013,31 +5599,40 @@ namespace System.Xml.Linq
             return a1 == null && a2 == null;
         }
 
-        internal override XNode CloneNode() {
+        internal override XNode CloneNode()
+        {
             return new XElement(this);
         }
 
-        internal override bool DeepEquals(XNode node) {
+        internal override bool DeepEquals(XNode node)
+        {
             XElement e = node as XElement;
             return e != null && name == e.name && ContentsEqual(e) && AttributesEqual(e);
         }
 
-        IEnumerable<XAttribute> GetAttributes(XName name) {
+        IEnumerable<XAttribute> GetAttributes(XName name)
+        {
             XAttribute a = lastAttr;
-            if (a != null) {
-                do {
+            if (a != null)
+            {
+                do
+                {
                     a = a.next;
                     if (name == null || a.name == name) yield return a;
                 } while (a.parent == this && a != lastAttr);
             }
         }
 
-        string GetNamespaceOfPrefixInScope(string prefix, XElement outOfScope) {
+        string GetNamespaceOfPrefixInScope(string prefix, XElement outOfScope)
+        {
             XElement e = this;
-            while (e != outOfScope) {
+            while (e != outOfScope)
+            {
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
                         if (a.IsNamespaceDeclaration && a.Name.LocalName == prefix) return a.Value;
                     }
@@ -5048,12 +5643,15 @@ namespace System.Xml.Linq
             return null;
         }
 
-        internal override int GetDeepHashCode() {
+        internal override int GetDeepHashCode()
+        {
             int h = name.GetHashCode();
             h ^= ContentsHashCode();
             XAttribute a = lastAttr;
-            if (a != null) {
-                do {
+            if (a != null)
+            {
+                do
+                {
                     a = a.next;
                     h ^= a.GetDeepHashCode();
                 } while (a != lastAttr);
@@ -5061,48 +5659,60 @@ namespace System.Xml.Linq
             return h;
         }
 
-        void ReadElementFrom(XmlReader r, LoadOptions o) {
+        void ReadElementFrom(XmlReader r, LoadOptions o)
+        {
             if (r.ReadState != ReadState.Interactive) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExpectedInteractive));
             name = XNamespace.Get(r.NamespaceURI).GetName(r.LocalName);
-            if ((o & LoadOptions.SetBaseUri) != 0) {
+            if ((o & LoadOptions.SetBaseUri) != 0)
+            {
                 string baseUri = r.BaseURI;
-                if (baseUri != null && baseUri.Length != 0) {
+                if (baseUri != null && baseUri.Length != 0)
+                {
                     SetBaseUri(baseUri);
                 }
             }
             IXmlLineInfo li = null;
-            if ((o & LoadOptions.SetLineInfo) != 0) {
+            if ((o & LoadOptions.SetLineInfo) != 0)
+            {
                 li = r as IXmlLineInfo;
-                if (li != null && li.HasLineInfo()) {
+                if (li != null && li.HasLineInfo())
+                {
                     SetLineInfo(li.LineNumber, li.LinePosition);
                 }
             }
-            if (r.MoveToFirstAttribute()) {
-                do {
+            if (r.MoveToFirstAttribute())
+            {
+                do
+                {
                     XAttribute a = new XAttribute(XNamespace.Get(r.Prefix.Length == 0 ? string.Empty : r.NamespaceURI).GetName(r.LocalName), r.Value);
-                    if (li != null && li.HasLineInfo()) {
+                    if (li != null && li.HasLineInfo())
+                    {
                         a.SetLineInfo(li.LineNumber, li.LinePosition);
                     }
                     AppendAttributeSkipNotify(a);
                 } while (r.MoveToNextAttribute());
                 r.MoveToElement();
             }
-            if (!r.IsEmptyElement) {
+            if (!r.IsEmptyElement)
+            {
                 r.Read();
                 ReadContentFrom(r, o);
             }
             r.Read();
         }
 
-        internal void RemoveAttribute(XAttribute a) {
+        internal void RemoveAttribute(XAttribute a)
+        {
             bool notify = NotifyChanging(a, XObjectChangeEventArgs.Remove);
             if (a.parent != this) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_ExternalCode));
             XAttribute p = lastAttr, n;
             while ((n = p.next) != a) p = n;
-            if (p == a) {
+            if (p == a)
+            {
                 lastAttr = null;
             }
-            else {
+            else
+            {
                 if (lastAttr == a) lastAttr = p;
                 p.next = a.next;
             }
@@ -5111,10 +5721,13 @@ namespace System.Xml.Linq
             if (notify) NotifyChanged(a, XObjectChangeEventArgs.Remove);
         }
 
-        void RemoveAttributesSkipNotify() {
-            if (lastAttr != null) {
+        void RemoveAttributesSkipNotify()
+        {
+            if (lastAttr != null)
+            {
                 XAttribute a = lastAttr;
-                do {
+                do
+                {
                     XAttribute next = a.next;
                     a.parent = null;
                     a.next = null;
@@ -5124,11 +5737,13 @@ namespace System.Xml.Linq
             }
         }
 
-        internal void SetEndElementLineInfo(int lineNumber, int linePosition) {
+        internal void SetEndElementLineInfo(int lineNumber, int linePosition)
+        {
             AddAnnotation(new LineInfoEndElementAnnotation(lineNumber, linePosition));
         }
 
-        internal override void ValidateNode(XNode node, XNode previous) {
+        internal override void ValidateNode(XNode node, XNode previous)
+        {
             if (node is XDocument) throw new ArgumentException(Res.GetString(Res.Argument_AddNode, XmlNodeType.Document));
             if (node is XDocumentType) throw new ArgumentException(Res.GetString(Res.Argument_AddNode, XmlNodeType.DocumentType));
         }
@@ -5139,38 +5754,48 @@ namespace System.Xml.Linq
         XmlWriter writer;
         NamespaceResolver resolver;
 
-        public ElementWriter(XmlWriter writer) {
+        public ElementWriter(XmlWriter writer)
+        {
             this.writer = writer;
             this.resolver = new NamespaceResolver();
         }
 
-        public void WriteElement(XElement e) {
+        public void WriteElement(XElement e)
+        {
             PushAncestors(e);
             XElement root = e;
             XNode n = e;
-            while (true) {
+            while (true)
+            {
                 e = n as XElement;
-                if (e != null) {
+                if (e != null)
+                {
                     WriteStartElement(e);
-                    if (e.content == null) {
+                    if (e.content == null)
+                    {
                         WriteEndElement();
                     }
-                    else {
+                    else
+                    {
                         string s = e.content as string;
-                        if (s != null) {
+                        if (s != null)
+                        {
                             writer.WriteString(s);
                             WriteFullEndElement();
                         }
-                        else {
+                        else
+                        {
                             n = ((XNode)e.content).next;
                             continue;
                         }
                     }
                 }
-                else {
+                else
+                {
                     n.WriteTo(writer);
                 }
-                while (n != root && n == n.parent.content) {
+                while (n != root && n == n.parent.content)
+                {
                     n = n.parent;
                     WriteFullEndElement();
 
@@ -5179,26 +5804,32 @@ namespace System.Xml.Linq
                 n = n.next;
             }
         }
-        
-        string GetPrefixOfNamespace(XNamespace ns, bool allowDefaultNamespace) {
+
+        string GetPrefixOfNamespace(XNamespace ns, bool allowDefaultNamespace)
+        {
             string namespaceName = ns.NamespaceName;
             if (namespaceName.Length == 0) return string.Empty;
-            string prefix = resolver.GetPrefixOfNamespace(ns, allowDefaultNamespace); 
+            string prefix = resolver.GetPrefixOfNamespace(ns, allowDefaultNamespace);
             if (prefix != null) return prefix;
             if ((object)namespaceName == (object)XNamespace.xmlPrefixNamespace) return "xml";
             if ((object)namespaceName == (object)XNamespace.xmlnsPrefixNamespace) return "xmlns";
-            return null; 
+            return null;
         }
 
-        void PushAncestors(XElement e) {
-            while (true) {
+        void PushAncestors(XElement e)
+        {
+            while (true)
+            {
                 e = e.parent as XElement;
                 if (e == null) break;
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
-                        if (a.IsNamespaceDeclaration) {
+                        if (a.IsNamespaceDeclaration)
+                        {
                             resolver.AddFirst(a.Name.NamespaceName.Length == 0 ? string.Empty : a.Name.LocalName, XNamespace.Get(a.Value));
                         }
                     } while (a != e.lastAttr);
@@ -5206,36 +5837,45 @@ namespace System.Xml.Linq
             }
         }
 
-        void PushElement(XElement e) {
+        void PushElement(XElement e)
+        {
             resolver.PushScope();
             XAttribute a = e.lastAttr;
-            if (a != null) {
-                do {
+            if (a != null)
+            {
+                do
+                {
                     a = a.next;
-                    if (a.IsNamespaceDeclaration) {
+                    if (a.IsNamespaceDeclaration)
+                    {
                         resolver.Add(a.Name.NamespaceName.Length == 0 ? string.Empty : a.Name.LocalName, XNamespace.Get(a.Value));
                     }
                 } while (a != e.lastAttr);
             }
         }
 
-        void WriteEndElement() {
+        void WriteEndElement()
+        {
             writer.WriteEndElement();
             resolver.PopScope();
         }
 
-        void WriteFullEndElement() {
+        void WriteFullEndElement()
+        {
             writer.WriteFullEndElement();
             resolver.PopScope();
         }
 
-        void WriteStartElement(XElement e) {
+        void WriteStartElement(XElement e)
+        {
             PushElement(e);
             XNamespace ns = e.Name.Namespace;
             writer.WriteStartElement(GetPrefixOfNamespace(ns, true), e.Name.LocalName, ns.NamespaceName);
             XAttribute a = e.lastAttr;
-            if (a != null) {
-                do {
+            if (a != null)
+            {
+                do
+                {
                     a = a.next;
                     ns = a.Name.Namespace;
                     string localName = a.Name.LocalName;
@@ -5246,8 +5886,10 @@ namespace System.Xml.Linq
         }
     }
 
-    internal struct NamespaceResolver {
-        class NamespaceDeclaration {
+    internal struct NamespaceResolver
+    {
+        class NamespaceDeclaration
+        {
             public string prefix;
             public XNamespace ns;
             public int scope;
@@ -5258,20 +5900,26 @@ namespace System.Xml.Linq
         NamespaceDeclaration declaration;
         NamespaceDeclaration rover;
 
-        public void PushScope() {
+        public void PushScope()
+        {
             scope++;
         }
 
-        public void PopScope() {
+        public void PopScope()
+        {
             NamespaceDeclaration d = declaration;
-            if (d != null) {
-                do {
+            if (d != null)
+            {
+                do
+                {
                     d = d.prev;
-                    if (d.scope != scope) break; 
-                    if (d == declaration) {
+                    if (d.scope != scope) break;
+                    if (d == declaration)
+                    {
                         declaration = null;
                     }
-                    else {
+                    else
+                    {
                         declaration.prev = d.prev;
                     }
                     rover = null;
@@ -5280,30 +5928,36 @@ namespace System.Xml.Linq
             scope--;
         }
 
-        public void Add(string prefix, XNamespace ns) {
+        public void Add(string prefix, XNamespace ns)
+        {
             NamespaceDeclaration d = new NamespaceDeclaration();
             d.prefix = prefix;
             d.ns = ns;
             d.scope = scope;
-            if (declaration == null) {
+            if (declaration == null)
+            {
                 declaration = d;
             }
-            else {
+            else
+            {
                 d.prev = declaration.prev;
             }
             declaration.prev = d;
             rover = null;
         }
 
-        public void AddFirst(string prefix, XNamespace ns) {
+        public void AddFirst(string prefix, XNamespace ns)
+        {
             NamespaceDeclaration d = new NamespaceDeclaration();
             d.prefix = prefix;
             d.ns = ns;
             d.scope = scope;
-            if (declaration == null) {
+            if (declaration == null)
+            {
                 d.prev = d;
             }
-            else {
+            else
+            {
                 d.prev = declaration.prev;
                 declaration.prev = d;
             }
@@ -5313,23 +5967,31 @@ namespace System.Xml.Linq
 
         // Only elements allow default namespace declarations. The rover 
         // caches the last namespace declaration used by an element.
-        public string GetPrefixOfNamespace(XNamespace ns, bool allowDefaultNamespace) {
+        public string GetPrefixOfNamespace(XNamespace ns, bool allowDefaultNamespace)
+        {
             if (rover != null && rover.ns == ns && (allowDefaultNamespace || rover.prefix.Length > 0)) return rover.prefix;
             NamespaceDeclaration d = declaration;
-            if (d != null) {
-                do {
+            if (d != null)
+            {
+                do
+                {
                     d = d.prev;
-                    if (d.ns == ns) {
+                    if (d.ns == ns)
+                    {
                         NamespaceDeclaration x = declaration.prev;
-                        while (x != d && x.prefix != d.prefix) {
+                        while (x != d && x.prefix != d.prefix)
+                        {
                             x = x.prev;
                         }
-                        if (x == d) {
-                            if (allowDefaultNamespace) {
+                        if (x == d)
+                        {
+                            if (allowDefaultNamespace)
+                            {
                                 rover = d;
                                 return d.prefix;
                             }
-                            else if (d.prefix.Length > 0) {
+                            else if (d.prefix.Length > 0)
+                            {
                                 return d.prefix;
                             }
                         }
@@ -5344,46 +6006,49 @@ namespace System.Xml.Linq
     /// Specifies a set of options for Load(). 
     /// </summary>
     [Flags()]
-    public enum LoadOptions {
+    public enum LoadOptions
+    {
         /// <summary>Default options.</summary>
-        None                = 0x00000000,
+        None = 0x00000000,
 
         /// <summary>Preserve whitespace.</summary>
-        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", Justification="Back-compat with System.Xml.")]
-        PreserveWhitespace  = 0x00000001,
+        [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", Justification = "Back-compat with System.Xml.")]
+        PreserveWhitespace = 0x00000001,
 
         /// <summary>Set the BaseUri property.</summary>
-        SetBaseUri          = 0x00000002,
+        SetBaseUri = 0x00000002,
 
         /// <summary>Set the IXmlLineInfo.</summary>
-        SetLineInfo         = 0x00000004, 
+        SetLineInfo = 0x00000004,
     }
 
     /// <summary>
     /// Specifies a set of options for Save().
     /// </summary>
     [Flags()]
-    public enum SaveOptions {
+    public enum SaveOptions
+    {
         /// <summary>Default options.</summary>
-        None                        = 0x00000000,
+        None = 0x00000000,
 
         /// <summary>Disable formatting.</summary>
-        DisableFormatting           = 0x00000001,
+        DisableFormatting = 0x00000001,
 
         /// <summary>Remove duplicate namespace declarations.</summary>
-        OmitDuplicateNamespaces     = 0x00000002,
+        OmitDuplicateNamespaces = 0x00000002,
     }
 
     /// <summary>
     /// Specifies a set of options for CreateReader().
     /// </summary>
     [Flags()]
-    public enum ReaderOptions {
+    public enum ReaderOptions
+    {
         /// <summary>Default options.</summary>
-        None                        = 0x00000000,
+        None = 0x00000000,
 
         /// <summary>Remove duplicate namespace declarations.</summary>
-        OmitDuplicateNamespaces     = 0x00000001,
+        OmitDuplicateNamespaces = 0x00000001,
     }
 
     /// <summary>
@@ -5401,7 +6066,7 @@ namespace System.Xml.Linq
     /// </list>
     /// </remarks>
     public class XDocument : XContainer
-    {        
+    {
         XDeclaration declaration;
 
         ///<overloads>
@@ -5414,7 +6079,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Initializes a new instance of the <see cref="XDocument"/> class.
         /// </summary>
-        public XDocument() {
+        public XDocument()
+        {
         }
 
         /// <summary>
@@ -5434,7 +6100,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public XDocument(params object[] content) : this() {
+        public XDocument(params object[] content) : this()
+        {
             AddContentSkipNotify(content);
         }
 
@@ -5460,7 +6127,8 @@ namespace System.Xml.Linq
         /// See XContainer.Add(object content) for details about the content that can be added
         /// using this method.
         /// </remarks>
-        public XDocument(XDeclaration declaration, params object[] content) : this(content) {
+        public XDocument(XDeclaration declaration, params object[] content) : this(content)
+        {
             this.declaration = declaration;
         }
 
@@ -5471,8 +6139,10 @@ namespace System.Xml.Linq
         /// <param name="other">
         /// The <see cref="XDocument"/> object that will be copied.
         /// </param>
-        public XDocument(XDocument other) : base(other) {
-            if (other.declaration != null) {
+        public XDocument(XDocument other) : base(other)
+        {
+            if (other.declaration != null)
+            {
                 declaration = new XDeclaration(other.declaration);
             }
         }
@@ -5480,7 +6150,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the XML declaration for this document.
         /// </summary>
-        public XDeclaration Declaration {
+        public XDeclaration Declaration
+        {
             get { return declaration; }
             set { declaration = value; }
         }
@@ -5488,8 +6159,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the Document Type Definition (DTD) for this document.
         /// </summary>
-        public XDocumentType DocumentType {
-            get {
+        public XDocumentType DocumentType
+        {
+            get
+            {
                 return GetFirstNode<XDocumentType>();
             }
         }
@@ -5500,8 +6173,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.Document.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.Document;
             }
         }
@@ -5509,8 +6184,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the root element of the XML Tree for this document.
         /// </summary>
-        public XElement Root {
-            get {
+        public XElement Root
+        {
+            get
+            {
                 return GetFirstNode<XElement>();
             }
         }
@@ -5548,8 +6225,9 @@ namespace System.Xml.Linq
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
 #endif
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId="0#", Justification = "Back-compat with System.Xml.")]
-        public static XDocument Load(string uri) {
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#", Justification = "Back-compat with System.Xml.")]
+        public static XDocument Load(string uri)
+        {
             return Load(uri, LoadOptions.None);
         }
 
@@ -5580,10 +6258,12 @@ namespace System.Xml.Linq
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
 #endif
-        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId="0#", Justification = "Back-compat with System.Xml.")]
-        public static XDocument Load(string uri, LoadOptions options) { 
+        [SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#", Justification = "Back-compat with System.Xml.")]
+        public static XDocument Load(string uri, LoadOptions options)
+        {
             XmlReaderSettings rs = GetXmlReaderSettings(options);
-            using (XmlReader r = XmlReader.Create(uri, rs)) {
+            using (XmlReader r = XmlReader.Create(uri, rs))
+            {
                 return Load(r, options);
             }
         }
@@ -5600,7 +6280,8 @@ namespace System.Xml.Linq
         /// A new <see cref="XDocument"/> containing the contents of the passed in
         /// <see cref="Stream"/>.
         /// </returns>
-        public static XDocument Load(Stream stream) {
+        public static XDocument Load(Stream stream)
+        {
             return Load(stream, LoadOptions.None);
         }
 
@@ -5625,13 +6306,15 @@ namespace System.Xml.Linq
         /// A new <see cref="XDocument"/> containing the contents of the passed in
         /// <see cref="Stream"/>.
         /// </returns>
-        public static XDocument Load(Stream stream, LoadOptions options) {
+        public static XDocument Load(Stream stream, LoadOptions options)
+        {
             XmlReaderSettings rs = GetXmlReaderSettings(options);
-            using (XmlReader r = XmlReader.Create(stream, rs)) {
+            using (XmlReader r = XmlReader.Create(stream, rs))
+            {
                 return Load(r, options);
             }
         }
-        
+
         /// <summary>
         /// Create a new <see cref="XDocument"/> and initialize its underlying XML tree using
         /// the passed <see cref="TextReader"/> parameter.  
@@ -5644,7 +6327,8 @@ namespace System.Xml.Linq
         /// A new <see cref="XDocument"/> containing the contents of the passed in
         /// <see cref="TextReader"/>.
         /// </returns>
-        public static XDocument Load(TextReader textReader) {
+        public static XDocument Load(TextReader textReader)
+        {
             return Load(textReader, LoadOptions.None);
         }
 
@@ -5669,13 +6353,15 @@ namespace System.Xml.Linq
         /// A new <see cref="XDocument"/> containing the contents of the passed in
         /// <see cref="TextReader"/>.
         /// </returns>
-        public static XDocument Load(TextReader textReader, LoadOptions options) { 
+        public static XDocument Load(TextReader textReader, LoadOptions options)
+        {
             XmlReaderSettings rs = GetXmlReaderSettings(options);
-            using (XmlReader r = XmlReader.Create(textReader, rs)) {
+            using (XmlReader r = XmlReader.Create(textReader, rs))
+            {
                 return Load(r, options);
             }
         }
-        
+
         /// <summary>
         /// Create a new <see cref="XDocument"/> containing the contents of the
         /// passed in <see cref="XmlReader"/>.
@@ -5688,8 +6374,9 @@ namespace System.Xml.Linq
         /// A new <see cref="XDocument"/> containing the contents of the passed
         /// in <see cref="XmlReader"/>.
         /// </returns>
-        public static XDocument Load(XmlReader reader) {
-            return Load(reader, LoadOptions.None); 
+        public static XDocument Load(XmlReader reader)
+        {
+            return Load(reader, LoadOptions.None);
         }
 
         /// <summary>
@@ -5707,23 +6394,29 @@ namespace System.Xml.Linq
         /// A new <see cref="XDocument"/> containing the contents of the passed
         /// in <see cref="XmlReader"/>.
         /// </returns>
-        public static XDocument Load(XmlReader reader, LoadOptions options) {
+        public static XDocument Load(XmlReader reader, LoadOptions options)
+        {
             if (reader == null) throw new ArgumentNullException("reader");
             if (reader.ReadState == ReadState.Initial) reader.Read();
             XDocument d = new XDocument();
-            if ((options & LoadOptions.SetBaseUri) != 0) {
+            if ((options & LoadOptions.SetBaseUri) != 0)
+            {
                 string baseUri = reader.BaseURI;
-                if (baseUri != null && baseUri.Length != 0) {
+                if (baseUri != null && baseUri.Length != 0)
+                {
                     d.SetBaseUri(baseUri);
                 }
             }
-            if ((options & LoadOptions.SetLineInfo) != 0) {
+            if ((options & LoadOptions.SetLineInfo) != 0)
+            {
                 IXmlLineInfo li = reader as IXmlLineInfo;
-                if (li != null && li.HasLineInfo()) {
+                if (li != null && li.HasLineInfo())
+                {
                     d.SetLineInfo(li.LineNumber, li.LinePosition);
                 }
             }
-            if (reader.NodeType == XmlNodeType.XmlDeclaration) {
+            if (reader.NodeType == XmlNodeType.XmlDeclaration)
+            {
                 d.Declaration = new XDeclaration(reader);
             }
             d.ReadContentFrom(reader, options);
@@ -5747,10 +6440,11 @@ namespace System.Xml.Linq
         /// An <see cref="XDocument"/> containing an XML tree initialized from the 
         /// passed in XML string.
         /// </returns>
-        public static XDocument Parse(string text) {
+        public static XDocument Parse(string text)
+        {
             return Parse(text, LoadOptions.None);
         }
-        
+
         /// <summary>
         /// Create a new <see cref="XDocument"/> from a string containing
         /// XML.  Optionally whitespace can be preserved.
@@ -5772,15 +6466,18 @@ namespace System.Xml.Linq
         /// An <see cref="XDocument"/> containing an XML tree initialized from the 
         /// passed in XML string.
         /// </returns>
-        public static XDocument Parse(string text, LoadOptions options) { 
-            using (StringReader sr = new StringReader(text)) {
+        public static XDocument Parse(string text, LoadOptions options)
+        {
+            using (StringReader sr = new StringReader(text))
+            {
                 XmlReaderSettings rs = GetXmlReaderSettings(options);
-                using (XmlReader r = XmlReader.Create(sr, rs)) {
+                using (XmlReader r = XmlReader.Create(sr, rs))
+                {
                     return Load(r, options);
                 }
             }
         }
-        
+
 #if !SILVERLIGHT // 
         ///<overloads>
         /// Outputs this <see cref="XDocument"/>'s underlying XML tree.  The output can
@@ -5805,7 +6502,8 @@ namespace System.Xml.Linq
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
 #endif
-        public void Save(string fileName) {
+        public void Save(string fileName)
+        {
             Save(fileName, GetSaveOptionsFromAnnotations());
         }
 
@@ -5823,16 +6521,21 @@ namespace System.Xml.Linq
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
 #endif
-        public void Save(string fileName, SaveOptions options) { 
+        public void Save(string fileName, SaveOptions options)
+        {
             XmlWriterSettings ws = GetXmlWriterSettings(options);
-            if (declaration != null && !string.IsNullOrEmpty(declaration.Encoding)) {
-                try {
+            if (declaration != null && !string.IsNullOrEmpty(declaration.Encoding))
+            {
+                try
+                {
                     ws.Encoding = Encoding.GetEncoding(declaration.Encoding);
                 }
-                catch (ArgumentException) {
+                catch (ArgumentException)
+                {
                 }
             }
-            using (XmlWriter w = XmlWriter.Create(fileName, ws)) {
+            using (XmlWriter w = XmlWriter.Create(fileName, ws))
+            {
                 Save(w);
             }
         }
@@ -5852,7 +6555,8 @@ namespace System.Xml.Linq
         /// <param name="stream">
         /// The <see cref="Stream"/> to output this <see cref="XDocument"/> to.
         /// </param>
-        public void Save(Stream stream) {
+        public void Save(Stream stream)
+        {
             Save(stream, GetSaveOptionsFromAnnotations());
         }
 
@@ -5866,16 +6570,21 @@ namespace System.Xml.Linq
         /// If SaveOptions.DisableFormatting is enabled the output is not indented.
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
-        public void Save(Stream stream, SaveOptions options) {
+        public void Save(Stream stream, SaveOptions options)
+        {
             XmlWriterSettings ws = GetXmlWriterSettings(options);
-            if (declaration != null && !string.IsNullOrEmpty(declaration.Encoding)) {
-                try {
+            if (declaration != null && !string.IsNullOrEmpty(declaration.Encoding))
+            {
+                try
+                {
                     ws.Encoding = Encoding.GetEncoding(declaration.Encoding);
                 }
-                catch (ArgumentException) {
+                catch (ArgumentException)
+                {
                 }
             }
-            using (XmlWriter w = XmlWriter.Create(stream, ws)) {
+            using (XmlWriter w = XmlWriter.Create(stream, ws))
+            {
                 Save(w);
             }
         }
@@ -5894,7 +6603,8 @@ namespace System.Xml.Linq
         /// <param name="textWriter">
         /// The <see cref="TextWriter"/> to output this <see cref="XDocument"/> to.
         /// </param>
-        public void Save(TextWriter textWriter) {
+        public void Save(TextWriter textWriter)
+        {
             Save(textWriter, GetSaveOptionsFromAnnotations());
         }
 
@@ -5908,24 +6618,27 @@ namespace System.Xml.Linq
         /// If SaveOptions.DisableFormatting is enabled the output is not indented.
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
-        public void Save(TextWriter textWriter, SaveOptions options) { 
+        public void Save(TextWriter textWriter, SaveOptions options)
+        {
             XmlWriterSettings ws = GetXmlWriterSettings(options);
-            using (XmlWriter w = XmlWriter.Create(textWriter, ws)) {
+            using (XmlWriter w = XmlWriter.Create(textWriter, ws))
+            {
                 Save(w);
             }
         }
-        
+
         /// <summary>
         /// Output this <see cref="XDocument"/> to an <see cref="XmlWriter"/>.
         /// </summary>
         /// <param name="writer">
         /// The <see cref="XmlWriter"/> to output the XML to.
         /// </param>
-        public void Save(XmlWriter writer) {
+        public void Save(XmlWriter writer)
+        {
             WriteTo(writer);
         }
 
-        
+
         /// <summary>
         /// Output this <see cref="XDocument"/>'s underlying XML tree to the
         /// passed in <see cref="XmlWriter"/>.
@@ -5935,46 +6648,58 @@ namespace System.Xml.Linq
         /// The <see cref="XmlWriter"/> to output the content of this 
         /// <see cref="XDocument"/>.
         /// </param>
-        public override void WriteTo(XmlWriter writer) {
+        public override void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
-            if (declaration != null && declaration.Standalone == "yes") {
+            if (declaration != null && declaration.Standalone == "yes")
+            {
                 writer.WriteStartDocument(true);
             }
-            else if (declaration != null && declaration.Standalone == "no") {
+            else if (declaration != null && declaration.Standalone == "no")
+            {
                 writer.WriteStartDocument(false);
             }
-            else {
+            else
+            {
                 writer.WriteStartDocument();
             }
             WriteContentTo(writer);
             writer.WriteEndDocument();
         }
 
-        internal override void  AddAttribute(XAttribute a) {
+        internal override void AddAttribute(XAttribute a)
+        {
             throw new ArgumentException(Res.GetString(Res.Argument_AddAttribute));
         }
-        
-        internal override void  AddAttributeSkipNotify(XAttribute a) {
+
+        internal override void AddAttributeSkipNotify(XAttribute a)
+        {
             throw new ArgumentException(Res.GetString(Res.Argument_AddAttribute));
         }
-        
-        internal override XNode CloneNode() {
+
+        internal override XNode CloneNode()
+        {
             return new XDocument(this);
         }
 
-        internal override bool DeepEquals(XNode node) {
+        internal override bool DeepEquals(XNode node)
+        {
             XDocument other = node as XDocument;
             return other != null && ContentsEqual(other);
         }
 
-        internal override int GetDeepHashCode() {
+        internal override int GetDeepHashCode()
+        {
             return ContentsHashCode();
         }
 
-        T GetFirstNode<T>() where T : XNode {
+        T GetFirstNode<T>() where T : XNode
+        {
             XNode n = content as XNode;
-            if (n != null) {
-                do {
+            if (n != null)
+            {
+                do
+                {
                     n = n.next;
                     T e = n as T;
                     if (e != null) return e;
@@ -5983,39 +6708,47 @@ namespace System.Xml.Linq
             return null;
         }
 
-        internal static bool IsWhitespace(string s) {
-            foreach (char ch in s) {
+        internal static bool IsWhitespace(string s)
+        {
+            foreach (char ch in s)
+            {
                 if (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n') return false;
             }
             return true;
         }
 
-        internal override void ValidateNode(XNode node, XNode previous) {
-            switch (node.NodeType) {
-                case XmlNodeType.Text:
-                    ValidateString(((XText)node).Value);
-                    break;
-                case XmlNodeType.Element:
-                    ValidateDocument(previous, XmlNodeType.DocumentType, XmlNodeType.None);
-                    break;
-                case XmlNodeType.DocumentType:
-                    ValidateDocument(previous, XmlNodeType.None, XmlNodeType.Element);
-                    break;
-                case XmlNodeType.CDATA:
-                    throw new ArgumentException(Res.GetString(Res.Argument_AddNode, XmlNodeType.CDATA));
-                case XmlNodeType.Document:
-                    throw new ArgumentException(Res.GetString(Res.Argument_AddNode, XmlNodeType.Document));
+        internal override void ValidateNode(XNode node, XNode previous)
+        {
+            switch (node.NodeType)
+            {
+            case XmlNodeType.Text:
+                ValidateString(((XText)node).Value);
+                break;
+            case XmlNodeType.Element:
+                ValidateDocument(previous, XmlNodeType.DocumentType, XmlNodeType.None);
+                break;
+            case XmlNodeType.DocumentType:
+                ValidateDocument(previous, XmlNodeType.None, XmlNodeType.Element);
+                break;
+            case XmlNodeType.CDATA:
+                throw new ArgumentException(Res.GetString(Res.Argument_AddNode, XmlNodeType.CDATA));
+            case XmlNodeType.Document:
+                throw new ArgumentException(Res.GetString(Res.Argument_AddNode, XmlNodeType.Document));
             }
         }
 
-        void ValidateDocument(XNode previous, XmlNodeType allowBefore, XmlNodeType allowAfter) {
+        void ValidateDocument(XNode previous, XmlNodeType allowBefore, XmlNodeType allowAfter)
+        {
             XNode n = content as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 if (previous == null) allowBefore = allowAfter;
-                do {
+                do
+                {
                     n = n.next;
                     XmlNodeType nt = n.NodeType;
-                    if (nt == XmlNodeType.Element || nt == XmlNodeType.DocumentType) {
+                    if (nt == XmlNodeType.Element || nt == XmlNodeType.DocumentType)
+                    {
                         if (nt != allowBefore) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_DocumentStructure));
                         allowBefore = XmlNodeType.None;
                     }
@@ -6024,7 +6757,8 @@ namespace System.Xml.Linq
             }
         }
 
-        internal override void ValidateString(string s) {
+        internal override void ValidateString(string s)
+        {
             if (!IsWhitespace(s)) throw new ArgumentException(Res.GetString(Res.Argument_AddNonWhitespace));
         }
     }
@@ -6049,7 +6783,8 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the specified value is null.
         /// </exception>
-        public XComment(string value) {
+        public XComment(string value)
+        {
             if (value == null) throw new ArgumentNullException("value");
             this.value = value;
         }
@@ -6058,12 +6793,14 @@ namespace System.Xml.Linq
         /// Initializes a new comment node from an existing comment node.
         /// </summary>
         /// <param name="other">Comment node to copy from.</param>
-        public XComment(XComment other) {
+        public XComment(XComment other)
+        {
             if (other == null) throw new ArgumentNullException("other");
             this.value = other.value;
         }
 
-        internal XComment(XmlReader r) {
+        internal XComment(XmlReader r)
+        {
             value = r.Value;
             r.Read();
         }
@@ -6074,8 +6811,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.Comment.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.Comment;
             }
         }
@@ -6086,11 +6825,14 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the specified value is null.
         /// </exception>
-        public string Value {
-            get {
+        public string Value
+        {
+            get
+            {
                 return value;
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("value");
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Value);
                 this.value = value;
@@ -6104,21 +6846,25 @@ namespace System.Xml.Linq
         /// <param name="writer">
         /// The <see cref="XmlWriter"/> to write this <see cref="XComment"/> to.
         /// </param>
-        public override void WriteTo(XmlWriter writer) {
+        public override void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             writer.WriteComment(value);
         }
 
-        internal override XNode CloneNode() {
+        internal override XNode CloneNode()
+        {
             return new XComment(this);
         }
 
-        internal override bool DeepEquals(XNode node) {
+        internal override bool DeepEquals(XNode node)
+        {
             XComment other = node as XComment;
             return other != null && value == other.value;
         }
 
-        internal override int GetDeepHashCode() {
+        internal override int GetDeepHashCode()
+        {
             return value.GetHashCode();
         }
     }
@@ -6143,10 +6889,11 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if either the target or data parameter are null.
         /// </exception>
-        public XProcessingInstruction(string target, string data) {
+        public XProcessingInstruction(string target, string data)
+        {
             if (data == null) throw new ArgumentNullException("data");
             ValidateName(target);
-            this.target = target; 
+            this.target = target;
             this.data = data;
         }
 
@@ -6155,13 +6902,15 @@ namespace System.Xml.Linq
         /// from another XML processing instruction.
         /// </summary>
         /// <param name="other">XML processing instruction to copy from.</param>
-        public XProcessingInstruction(XProcessingInstruction other) {
+        public XProcessingInstruction(XProcessingInstruction other)
+        {
             if (other == null) throw new ArgumentNullException("other");
             this.target = other.target;
             this.data = other.data;
         }
 
-        internal XProcessingInstruction(XmlReader r) {
+        internal XProcessingInstruction(XmlReader r)
+        {
             target = r.Name;
             data = r.Value;
             r.Read();
@@ -6173,11 +6922,14 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the value set is null.
         /// </exception>
-        public string Data {
-            get {
+        public string Data
+        {
+            get
+            {
                 return data;
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("value");
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Value);
                 data = value;
@@ -6191,8 +6943,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.ProcessingInstruction.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.ProcessingInstruction;
             }
         }
@@ -6203,11 +6957,14 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the value set is null.
         /// </exception>
-        public string Target {
-            get { 
-                return target; 
+        public string Target
+        {
+            get
+            {
+                return target;
             }
-            set { 
+            set
+            {
                 ValidateName(value);
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Name);
                 target = value;
@@ -6221,25 +6978,30 @@ namespace System.Xml.Linq
         /// <param name="writer">
         /// The <see cref="XmlWriter"/> to write this <see cref="XProcessingInstruction"/> to.
         /// </param>
-        public override void WriteTo(XmlWriter writer) {
+        public override void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             writer.WriteProcessingInstruction(target, data);
         }
 
-        internal override XNode CloneNode() {
+        internal override XNode CloneNode()
+        {
             return new XProcessingInstruction(this);
         }
 
-        internal override bool DeepEquals(XNode node) {
+        internal override bool DeepEquals(XNode node)
+        {
             XProcessingInstruction other = node as XProcessingInstruction;
             return other != null && target == other.target && data == other.data;
         }
 
-        internal override int GetDeepHashCode() {
+        internal override int GetDeepHashCode()
+        {
             return target.GetHashCode() ^ data.GetHashCode();
         }
 
-        static void ValidateName(string name) {
+        static void ValidateName(string name)
+        {
             XmlConvert.VerifyNCName(name);
             if (string.Compare(name, "xml", StringComparison.OrdinalIgnoreCase) == 0) throw new ArgumentException(Res.GetString(Res.Argument_InvalidPIName, name));
         }
@@ -6272,7 +7034,8 @@ namespace System.Xml.Linq
         /// Specifies whether the XML is standalone or requires external entities
         /// to be resolved.
         /// </param>
-        public XDeclaration(string version, string encoding, string standalone) {
+        public XDeclaration(string version, string encoding, string standalone)
+        {
             this.version = version;
             this.encoding = encoding;
             this.standalone = standalone;
@@ -6285,14 +7048,16 @@ namespace System.Xml.Linq
         /// <param name="other">
         /// The <see cref="XDeclaration"/> used to initialize this <see cref="XDeclaration"/> object.
         /// </param>
-        public XDeclaration(XDeclaration other) {
+        public XDeclaration(XDeclaration other)
+        {
             if (other == null) throw new ArgumentNullException("other");
             version = other.version;
             encoding = other.encoding;
             standalone = other.standalone;
         }
 
-        internal XDeclaration(XmlReader r) {
+        internal XDeclaration(XmlReader r)
+        {
             version = r.GetAttribute("version");
             encoding = r.GetAttribute("encoding");
             standalone = r.GetAttribute("standalone");
@@ -6302,7 +7067,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets or sets the encoding for this document.
         /// </summary>
-        public string Encoding {
+        public string Encoding
+        {
             get { return encoding; }
             set { encoding = value; }
         }
@@ -6313,7 +7079,8 @@ namespace System.Xml.Linq
         /// <remarks>
         /// The valid values for standalone are "yes" or "no".
         /// </remarks>
-        public string Standalone {
+        public string Standalone
+        {
             get { return standalone; }
             set { standalone = value; }
         }
@@ -6324,7 +7091,8 @@ namespace System.Xml.Linq
         /// <remarks>
         /// The value is usually "1.0".
         /// </remarks>
-        public string Version {
+        public string Version
+        {
             get { return version; }
             set { version = value; }
         }
@@ -6333,19 +7101,23 @@ namespace System.Xml.Linq
         /// Provides a formatted string.
         /// </summary>
         /// <returns>A formatted XML string.</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             StringBuilder sb = new StringBuilder("<?xml");
-            if (version != null) {
+            if (version != null)
+            {
                 sb.Append(" version=\"");
                 sb.Append(version);
                 sb.Append("\"");
             }
-            if (encoding != null) {
+            if (encoding != null)
+            {
                 sb.Append(" encoding=\"");
                 sb.Append(encoding);
                 sb.Append("\"");
             }
-            if (standalone != null) {
+            if (standalone != null)
+            {
                 sb.Append(" standalone=\"");
                 sb.Append(standalone);
                 sb.Append("\"");
@@ -6374,7 +7146,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Initializes an empty instance of the <see cref="XDocumentType"/> class.
         /// </summary>
-        public XDocumentType(string name, string publicId, string systemId, string internalSubset) {
+        public XDocumentType(string name, string publicId, string systemId, string internalSubset)
+        {
             this.name = XmlConvert.VerifyName(name);
             this.publicId = publicId;
             this.systemId = systemId;
@@ -6386,7 +7159,8 @@ namespace System.Xml.Linq
         /// from another XDocumentType object.
         /// </summary>
         /// <param name="other"><see cref="XDocumentType"/> object to copy from.</param>
-        public XDocumentType(XDocumentType other) {
+        public XDocumentType(XDocumentType other)
+        {
             if (other == null) throw new ArgumentNullException("other");
             this.name = other.name;
             this.publicId = other.publicId;
@@ -6397,7 +7171,8 @@ namespace System.Xml.Linq
 #endif
         }
 
-        internal XDocumentType(XmlReader r) {
+        internal XDocumentType(XmlReader r)
+        {
             name = r.Name;
             publicId = r.GetAttribute("PUBLIC");
             systemId = r.GetAttribute("SYSTEM");
@@ -6409,8 +7184,9 @@ namespace System.Xml.Linq
         }
 
 #if !SILVERLIGHT
-        internal XDocumentType(string name, string publicId, string systemId, string internalSubset, IDtdInfo dtdInfo) 
-            : this(name, publicId, systemId, internalSubset) {
+        internal XDocumentType(string name, string publicId, string systemId, string internalSubset, IDtdInfo dtdInfo)
+            : this(name, publicId, systemId, internalSubset)
+        {
             this.dtdInfo = dtdInfo;
         }
 #endif
@@ -6418,13 +7194,16 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets or sets the internal subset for this Document Type Definition (DTD).
         /// </summary>
-        public string InternalSubset {
-            get { 
-                return internalSubset; 
+        public string InternalSubset
+        {
+            get
+            {
+                return internalSubset;
             }
-            set { 
+            set
+            {
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Value);
-                internalSubset = value; 
+                internalSubset = value;
                 if (notify) NotifyChanged(this, XObjectChangeEventArgs.Value);
             }
         }
@@ -6432,12 +7211,15 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets or sets the name for this Document Type Definition (DTD).
         /// </summary>
-        public string Name {
-            get { 
-                return name; 
+        public string Name
+        {
+            get
+            {
+                return name;
             }
-            set {
-                value = XmlConvert.VerifyName(value); 
+            set
+            {
+                value = XmlConvert.VerifyName(value);
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Name);
                 name = value;
                 if (notify) NotifyChanged(this, XObjectChangeEventArgs.Name);
@@ -6450,8 +7232,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.DocumentType.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.DocumentType;
             }
         }
@@ -6459,13 +7243,16 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets or sets the public identifier for this Document Type Definition (DTD).
         /// </summary>
-        public string PublicId {
-            get { 
-                return publicId; 
+        public string PublicId
+        {
+            get
+            {
+                return publicId;
             }
-            set { 
+            set
+            {
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Value);
-                publicId = value; 
+                publicId = value;
                 if (notify) NotifyChanged(this, XObjectChangeEventArgs.Value);
             }
         }
@@ -6473,20 +7260,25 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets or sets the system identifier for this Document Type Definition (DTD).
         /// </summary>
-        public string SystemId {
-            get { 
-                return systemId; 
+        public string SystemId
+        {
+            get
+            {
+                return systemId;
             }
-            set { 
+            set
+            {
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Value);
-                systemId = value; 
+                systemId = value;
                 if (notify) NotifyChanged(this, XObjectChangeEventArgs.Value);
             }
         }
 
 #if !SILVERLIGHT
-        internal IDtdInfo DtdInfo {
-            get {
+        internal IDtdInfo DtdInfo
+        {
+            get
+            {
                 return this.dtdInfo;
             }
         }
@@ -6498,22 +7290,26 @@ namespace System.Xml.Linq
         /// <param name="writer">
         /// The <see cref="XmlWriter"/> to write this <see cref="XDocumentType"/> to.
         /// </param>
-        public override void WriteTo(XmlWriter writer) {
+        public override void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             writer.WriteDocType(name, publicId, systemId, internalSubset);
         }
 
-        internal override XNode CloneNode() {
+        internal override XNode CloneNode()
+        {
             return new XDocumentType(this);
         }
 
-        internal override bool DeepEquals(XNode node) {
+        internal override bool DeepEquals(XNode node)
+        {
             XDocumentType other = node as XDocumentType;
             return other != null && name == other.name && publicId == other.publicId &&
                 systemId == other.SystemId && internalSubset == other.internalSubset;
         }
 
-        internal override int GetDeepHashCode() {
+        internal override int GetDeepHashCode()
+        {
             return name.GetHashCode() ^
                 (publicId != null ? publicId.GetHashCode() : 0) ^
                 (systemId != null ? systemId.GetHashCode() : 0) ^
@@ -6538,8 +7334,10 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets an empty collection of attributes.
         /// </summary>
-        public static IEnumerable<XAttribute> EmptySequence {
-            get {
+        public static IEnumerable<XAttribute> EmptySequence
+        {
+            get
+            {
                 if (emptySequence == null) emptySequence = new XAttribute[0];
                 return emptySequence;
             }
@@ -6565,7 +7363,8 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the passed in name or value are null.
         /// </exception>
-        public XAttribute(XName name, object value) {
+        public XAttribute(XName name, object value)
+        {
             if (name == null) throw new ArgumentNullException("name");
             if (value == null) throw new ArgumentNullException("value");
             string s = XContainer.GetStringValue(value);
@@ -6582,7 +7381,8 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the specified <see cref="XAttribute"/> is null.
         /// </exception>
-        public XAttribute(XAttribute other) {
+        public XAttribute(XAttribute other)
+        {
             if (other == null) throw new ArgumentNullException("other");
             name = other.name;
             value = other.value;
@@ -6591,10 +7391,13 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets a value indicating if this attribute is a namespace declaration.
         /// </summary>
-        public bool IsNamespaceDeclaration {
-            get { 
+        public bool IsNamespaceDeclaration
+        {
+            get
+            {
                 string namespaceName = name.NamespaceName;
-                if (namespaceName.Length == 0) {
+                if (namespaceName.Length == 0)
+                {
                     return name.LocalName == "xmlns";
                 }
                 return (object)namespaceName == (object)XNamespace.xmlnsPrefixNamespace;
@@ -6604,7 +7407,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Gets the name of this attribute.
         /// </summary>
-        public XName Name {
+        public XName Name
+        {
             get { return name; }
         }
 
@@ -6615,7 +7419,8 @@ namespace System.Xml.Linq
         /// If this attribute does not have a parent, or if there is no next attribute,
         /// then this property returns null.
         /// </remarks>
-        public XAttribute NextAttribute {
+        public XAttribute NextAttribute
+        {
             get { return parent != null && ((XElement)parent).lastAttr != this ? next : null; }
         }
 
@@ -6625,8 +7430,10 @@ namespace System.Xml.Linq
         /// <remarks>
         /// This property will always return XmlNodeType.Attribute.
         /// </remarks>
-        public override XmlNodeType NodeType {
-            get {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
                 return XmlNodeType.Attribute;
             }
         }
@@ -6638,11 +7445,14 @@ namespace System.Xml.Linq
         /// If this attribute does not have a parent, or if there is no previous attribute,
         /// then this property returns null.
         /// </remarks>
-        public XAttribute PreviousAttribute {
-            get {
+        public XAttribute PreviousAttribute
+        {
+            get
+            {
                 if (parent == null) return null;
                 XAttribute a = ((XElement)parent).lastAttr;
-                while (a.next != this) {
+                while (a.next != this)
+                {
                     a = a.next;
                 }
                 return a != ((XElement)parent).lastAttr ? a : null;
@@ -6655,11 +7465,14 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the value set is null.
         /// </exception>
-        public string Value {
-            get {
+        public string Value
+        {
+            get
+            {
                 return value;
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("value");
                 ValidateAttribute(name, value);
                 bool notify = NotifyChanging(this, XObjectChangeEventArgs.Value);
@@ -6674,7 +7487,8 @@ namespace System.Xml.Linq
         /// <exception cref="InvalidOperationException">
         /// Thrown if the parent element is null.
         /// </exception>
-        public void Remove() {
+        public void Remove()
+        {
             if (parent == null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_MissingParent));
             ((XElement)parent).RemoveAttribute(this);
         }
@@ -6692,7 +7506,8 @@ namespace System.Xml.Linq
         /// <exception cref="ArgumentNullException">
         /// Thrown if the specified value is null.
         /// </exception>
-        public void SetValue(object value) {
+        public void SetValue(object value)
+        {
             if (value == null) throw new ArgumentNullException("value");
             Value = XContainer.GetStringValue(value);
         }
@@ -6701,11 +7516,14 @@ namespace System.Xml.Linq
         /// Override for <see cref="ToString()"/> on <see cref="XAttribute"/>
         /// </summary>
         /// <returns>XML text representation of an attribute and its value</returns>
-        public override string ToString() {
-            using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture)) {
+        public override string ToString()
+        {
+            using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
+            {
                 XmlWriterSettings ws = new XmlWriterSettings();
                 ws.ConformanceLevel = ConformanceLevel.Fragment;
-                using (XmlWriter w = XmlWriter.Create(sw, ws)) {
+                using (XmlWriter w = XmlWriter.Create(sw, ws))
+                {
                     w.WriteAttributeString(GetPrefixOfNamespace(name.Namespace), name.LocalName, name.NamespaceName, value);
                 }
                 return sw.ToString().Trim();
@@ -6722,7 +7540,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="string"/>.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator string(XAttribute attribute) {
+        public static explicit operator string (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return attribute.value;
         }
@@ -6740,7 +7559,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator bool(XAttribute attribute) {
+        public static explicit operator bool (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToBoolean(attribute.value.ToLower(CultureInfo.InvariantCulture));
         }
@@ -6755,7 +7575,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="bool"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator bool?(XAttribute attribute) {
+        public static explicit operator bool? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToBoolean(attribute.value.ToLower(CultureInfo.InvariantCulture));
         }
@@ -6773,11 +7594,12 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator int(XAttribute attribute) {
+        public static explicit operator int (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToInt32(attribute.value);
         }
-       
+
         /// <summary>
         /// Cast the value of this <see cref="XAttribute"/> to an <see cref="int"/>?.
         /// </summary>
@@ -6788,7 +7610,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as an <see cref="int"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator int?(XAttribute attribute) {
+        public static explicit operator int? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToInt32(attribute.value);
         }
@@ -6806,7 +7629,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator uint(XAttribute attribute) {
+        public static explicit operator uint (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToUInt32(attribute.value);
         }
@@ -6821,7 +7645,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as an <see cref="uint"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator uint?(XAttribute attribute) {
+        public static explicit operator uint? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToUInt32(attribute.value);
         }
@@ -6839,7 +7664,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator long(XAttribute attribute) {
+        public static explicit operator long (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToInt64(attribute.value);
         }
@@ -6854,7 +7680,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="long"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator long?(XAttribute attribute) {
+        public static explicit operator long? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToInt64(attribute.value);
         }
@@ -6872,12 +7699,13 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator ulong(XAttribute attribute) {
+        public static explicit operator ulong (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToUInt64(attribute.value);
         }
 
-         /// <summary>
+        /// <summary>
         /// Cast the value of this <see cref="XAttribute"/> to an <see cref="ulong"/>?.
         /// </summary>
         /// <param name="attribute">
@@ -6887,7 +7715,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as an <see cref="ulong"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator ulong?(XAttribute attribute) {
+        public static explicit operator ulong? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToUInt64(attribute.value);
         }
@@ -6905,7 +7734,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator float(XAttribute attribute) {
+        public static explicit operator float (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToSingle(attribute.value);
         }
@@ -6920,7 +7750,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="float"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator float?(XAttribute attribute) {
+        public static explicit operator float? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToSingle(attribute.value);
         }
@@ -6938,7 +7769,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator double(XAttribute attribute) {
+        public static explicit operator double (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToDouble(attribute.value);
         }
@@ -6953,7 +7785,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="double"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator double?(XAttribute attribute) {
+        public static explicit operator double? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToDouble(attribute.value);
         }
@@ -6971,7 +7804,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator decimal(XAttribute attribute) {
+        public static explicit operator decimal (XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToDecimal(attribute.value);
         }
@@ -6986,7 +7820,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="decimal"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator decimal?(XAttribute attribute) {
+        public static explicit operator decimal? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToDecimal(attribute.value);
         }
@@ -7004,7 +7839,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator DateTime(XAttribute attribute) {
+        public static explicit operator DateTime(XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return DateTime.Parse(attribute.value, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
         }
@@ -7019,11 +7855,12 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="DateTime"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator DateTime?(XAttribute attribute) {
+        public static explicit operator DateTime? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return DateTime.Parse(attribute.value, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
         }
-        
+
         /// <summary>
         /// Cast the value of this <see cref="XAttribute"/> to a <see cref="DateTimeOffset"/>.
         /// </summary>
@@ -7037,7 +7874,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator DateTimeOffset(XAttribute attribute) {
+        public static explicit operator DateTimeOffset(XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToDateTimeOffset(attribute.value);
         }
@@ -7052,7 +7890,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="DateTimeOffset"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator DateTimeOffset?(XAttribute attribute) {
+        public static explicit operator DateTimeOffset? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToDateTimeOffset(attribute.value);
         }
@@ -7070,7 +7909,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator TimeSpan(XAttribute attribute) {
+        public static explicit operator TimeSpan(XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToTimeSpan(attribute.value);
         }
@@ -7085,7 +7925,8 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="TimeSpan"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator TimeSpan?(XAttribute attribute) {
+        public static explicit operator TimeSpan? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToTimeSpan(attribute.value);
         }
@@ -7103,7 +7944,8 @@ namespace System.Xml.Linq
         /// Thrown if the specified attribute is null.
         /// </exception>
         [CLSCompliant(false)]
-        public static explicit operator Guid(XAttribute attribute) {
+        public static explicit operator Guid(XAttribute attribute)
+        {
             if (attribute == null) throw new ArgumentNullException("attribute");
             return XmlConvert.ToGuid(attribute.value);
         }
@@ -7118,16 +7960,19 @@ namespace System.Xml.Linq
         /// The content of this <see cref="XAttribute"/> as a <see cref="Guid"/>?.
         /// </returns>
         [CLSCompliant(false)]
-        public static explicit operator Guid?(XAttribute attribute) {
+        public static explicit operator Guid? (XAttribute attribute)
+        {
             if (attribute == null) return null;
             return XmlConvert.ToGuid(attribute.value);
         }
 
-        internal int GetDeepHashCode() {
+        internal int GetDeepHashCode()
+        {
             return name.GetHashCode() ^ value.GetHashCode();
         }
 
-        internal string GetPrefixOfNamespace(XNamespace ns) {
+        internal string GetPrefixOfNamespace(XNamespace ns)
+        {
             string namespaceName = ns.NamespaceName;
             if (namespaceName.Length == 0) return string.Empty;
             if (parent != null) return ((XElement)parent).GetPrefixOfNamespace(ns);
@@ -7136,45 +7981,56 @@ namespace System.Xml.Linq
             return null;
         }
 
-        static void ValidateAttribute(XName name, string value) {
+        static void ValidateAttribute(XName name, string value)
+        {
             // The following constraints apply for namespace declarations:
             string namespaceName = name.NamespaceName;
-            if ((object)namespaceName == (object)XNamespace.xmlnsPrefixNamespace) {
-                if (value.Length == 0) {
+            if ((object)namespaceName == (object)XNamespace.xmlnsPrefixNamespace)
+            {
+                if (value.Length == 0)
+                {
                     // The empty namespace name can only be declared by 
                     // the default namespace declaration
-                    throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationPrefixed, name.LocalName)); 
+                    throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationPrefixed, name.LocalName));
                 }
-                else if (value == XNamespace.xmlPrefixNamespace) {
+                else if (value == XNamespace.xmlPrefixNamespace)
+                {
                     // 'http://www.w3.org/XML/1998/namespace' can only
                     // be declared by the 'xml' prefix namespace declaration.
                     if (name.LocalName != "xml") throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationXml));
                 }
-                else if (value == XNamespace.xmlnsPrefixNamespace) { 
+                else if (value == XNamespace.xmlnsPrefixNamespace)
+                {
                     // 'http://www.w3.org/2000/xmlns/' must not be declared
                     // by any namespace declaration.
                     throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationXmlns));
                 }
-                else {
+                else
+                {
                     string localName = name.LocalName;
-                    if (localName == "xml") {
+                    if (localName == "xml")
+                    {
                         // No other namespace name can be declared by the 'xml' 
                         // prefix namespace declaration. 
                         throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationXml));
                     }
-                    else if (localName == "xmlns") {
+                    else if (localName == "xmlns")
+                    {
                         // The 'xmlns' prefix must not be declared. 
                         throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationXmlns));
                     }
                 }
             }
-            else if (namespaceName.Length == 0 && name.LocalName == "xmlns") {
-                if (value == XNamespace.xmlPrefixNamespace) {
+            else if (namespaceName.Length == 0 && name.LocalName == "xmlns")
+            {
+                if (value == XNamespace.xmlPrefixNamespace)
+                {
                     // 'http://www.w3.org/XML/1998/namespace' can only
                     // be declared by the 'xml' prefix namespace declaration.
                     throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationXml));
                 }
-                else if (value == XNamespace.xmlnsPrefixNamespace) { 
+                else if (value == XNamespace.xmlnsPrefixNamespace)
+                {
                     // 'http://www.w3.org/2000/xmlns/' must not be declared
                     // by any namespace declaration.
                     throw new ArgumentException(Res.GetString(Res.Argument_NamespaceDeclarationXmlns));
@@ -7196,7 +8052,8 @@ namespace System.Xml.Linq
         ///  Creates a <see cref="XStreamingElement"/> node with a given name
         /// </summary>
         /// <param name="name">The name to assign to the new <see cref="XStreamingElement"/> node</param>
-        public XStreamingElement(XName name) {
+        public XStreamingElement(XName name)
+        {
             if (name == null) throw new ArgumentNullException("name");
             this.name = name;
         }
@@ -7206,8 +8063,9 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="name">The name to assign to the new <see cref="XStreamingElement"/> node</param>
         /// <param name="content">The content to assign to the new <see cref="XStreamingElement"/> node</param>
-        public XStreamingElement(XName name, object content) : this(name) {
-            this.content = content is List<object>? new object[] { content } : content;
+        public XStreamingElement(XName name, object content) : this(name)
+        {
+            this.content = content is List<object> ? new object[] { content } : content;
         }
 
         /// <summary>
@@ -7215,18 +8073,22 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="name">The name to assign to the new <see cref="XStreamingElement"/> node</param>
         /// <param name="content">An array containing content to assign to the new <see cref="XStreamingElement"/> node</param>
-        public XStreamingElement(XName name, params object[] content) : this(name) {
+        public XStreamingElement(XName name, params object[] content) : this(name)
+        {
             this.content = content;
         }
 
         /// <summary>
         /// Gets or sets the name of this streaming element.
         /// </summary>
-        public XName Name {
-            get {
+        public XName Name
+        {
+            get
+            {
                 return name;
             }
-            set {
+            set
+            {
                 if (value == null) throw new ArgumentNullException("value");
                 name = value;
             }
@@ -7236,10 +8098,13 @@ namespace System.Xml.Linq
         /// Add content to an <see cref="XStreamingElement"/>
         /// </summary>
         /// <param name="content">Object containg content to add</param>
-        public void Add(object content) {
-            if (content != null) {
+        public void Add(object content)
+        {
+            if (content != null)
+            {
                 List<object> list = this.content as List<object>;
-                if (list == null) {
+                if (list == null)
+                {
                     list = new List<object>();
                     if (this.content != null) list.Add(this.content);
                     this.content = list;
@@ -7252,7 +8117,8 @@ namespace System.Xml.Linq
         /// Add content to an <see cref="XStreamingElement"/>
         /// </summary>
         /// <param name="content">array of objects containg content to add</param>
-        public void Add(params object[] content) {
+        public void Add(params object[] content)
+        {
             Add((object)content);
         }
 
@@ -7264,7 +8130,8 @@ namespace System.Xml.Linq
         /// <param name="fileName">Name of file to write content to</param>
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
-        public void Save(string fileName) {
+        public void Save(string fileName)
+        {
             Save(fileName, SaveOptions.None);
         }
 
@@ -7278,9 +8145,11 @@ namespace System.Xml.Linq
         /// </param>
         [ResourceConsumption(ResourceScope.Machine)]
         [ResourceExposure(ResourceScope.Machine)]
-        public void Save(string fileName, SaveOptions options) { 
+        public void Save(string fileName, SaveOptions options)
+        {
             XmlWriterSettings ws = XNode.GetXmlWriterSettings(options);
-            using (XmlWriter w = XmlWriter.Create(fileName, ws)) {
+            using (XmlWriter w = XmlWriter.Create(fileName, ws))
+            {
                 Save(w);
             }
         }
@@ -7291,7 +8160,8 @@ namespace System.Xml.Linq
         /// with formatting.
         /// </summary>
         /// <param name="stream"><see cref="Stream"/> to write to </param>      
-        public void Save(Stream stream) {
+        public void Save(Stream stream)
+        {
             Save(stream, SaveOptions.None);
         }
 
@@ -7304,9 +8174,11 @@ namespace System.Xml.Linq
         /// If SaveOptions.DisableFormatting is enabled the output is not indented.
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
-        public void Save(Stream stream, SaveOptions options) {
+        public void Save(Stream stream, SaveOptions options)
+        {
             XmlWriterSettings ws = XNode.GetXmlWriterSettings(options);
-            using (XmlWriter w = XmlWriter.Create(stream, ws)) {
+            using (XmlWriter w = XmlWriter.Create(stream, ws))
+            {
                 Save(w);
             }
         }
@@ -7316,7 +8188,8 @@ namespace System.Xml.Linq
         /// with formatting.
         /// </summary>
         /// <param name="textWriter"><see cref="TextWriter"/> to write to </param>      
-        public void Save(TextWriter textWriter) {
+        public void Save(TextWriter textWriter)
+        {
             Save(textWriter, SaveOptions.None);
         }
 
@@ -7329,9 +8202,11 @@ namespace System.Xml.Linq
         /// If SaveOptions.DisableFormatting is enabled the output is not indented.
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
-        public void Save(TextWriter textWriter, SaveOptions options) { 
+        public void Save(TextWriter textWriter, SaveOptions options)
+        {
             XmlWriterSettings ws = XNode.GetXmlWriterSettings(options);
-            using (XmlWriter w = XmlWriter.Create(textWriter, ws)) {
+            using (XmlWriter w = XmlWriter.Create(textWriter, ws))
+            {
                 Save(w);
             }
         }
@@ -7340,7 +8215,8 @@ namespace System.Xml.Linq
         /// Save the contents of an <see cref="XStreamingElement"/> to an XML writer, not preserving whitepace
         /// </summary>
         /// <param name="writer"><see cref="XmlWriter"/> to write to </param>    
-        public void Save(XmlWriter writer) {
+        public void Save(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             writer.WriteStartDocument();
             WriteTo(writer);
@@ -7352,7 +8228,8 @@ namespace System.Xml.Linq
         /// formatted string.
         /// </summary>
         /// <returns>The XML text as a formatted string</returns>
-        public override string ToString() {
+        public override string ToString()
+        {
             return GetXmlString(SaveOptions.None);
         }
 
@@ -7364,7 +8241,8 @@ namespace System.Xml.Linq
         /// If SaveOptions.OmitDuplicateNamespaces is enabled duplicate namespace declarations will be removed.
         /// </param>
         /// <returns>An XML string</returns>
-        public string ToString(SaveOptions options) {
+        public string ToString(SaveOptions options)
+        {
             return GetXmlString(options);
         }
 
@@ -7372,18 +8250,22 @@ namespace System.Xml.Linq
         /// Write this <see cref="XStreamingElement"/> to an <see cref="XmlWriter"/>
         /// </summary>
         /// <param name="writer"></param>
-        public void WriteTo(XmlWriter writer) {
+        public void WriteTo(XmlWriter writer)
+        {
             if (writer == null) throw new ArgumentNullException("writer");
             new StreamingElementWriter(writer).WriteStreamingElement(this);
         }
 
-        string GetXmlString(SaveOptions o) {
-            using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture)) {
+        string GetXmlString(SaveOptions o)
+        {
+            using (StringWriter sw = new StringWriter(CultureInfo.InvariantCulture))
+            {
                 XmlWriterSettings ws = new XmlWriterSettings();
                 ws.OmitXmlDeclaration = true;
                 if ((o & SaveOptions.DisableFormatting) == 0) ws.Indent = true;
                 if ((o & SaveOptions.OmitDuplicateNamespaces) != 0) ws.NamespaceHandling |= NamespaceHandling.OmitDuplicates;
-                using (XmlWriter w = XmlWriter.Create(sw, ws)) {
+                using (XmlWriter w = XmlWriter.Create(sw, ws))
+                {
                     WriteTo(w);
                 }
                 return sw.ToString();
@@ -7398,19 +8280,23 @@ namespace System.Xml.Linq
         List<XAttribute> attributes;
         NamespaceResolver resolver;
 
-        public StreamingElementWriter(XmlWriter w) {
+        public StreamingElementWriter(XmlWriter w)
+        {
             writer = w;
             element = null;
             attributes = new List<XAttribute>();
             resolver = new NamespaceResolver();
         }
 
-        void FlushElement() {
-            if (element != null) {
+        void FlushElement()
+        {
+            if (element != null)
+            {
                 PushElement();
                 XNamespace ns = element.Name.Namespace;
                 writer.WriteStartElement(GetPrefixOfNamespace(ns, true), element.Name.LocalName, ns.NamespaceName);
-                foreach (XAttribute a in attributes) {
+                foreach (XAttribute a in attributes)
+                {
                     ns = a.Name.Namespace;
                     string localName = a.Name.LocalName;
                     string namespaceName = ns.NamespaceName;
@@ -7421,7 +8307,8 @@ namespace System.Xml.Linq
             }
         }
 
-        string GetPrefixOfNamespace(XNamespace ns, bool allowDefaultNamespace) {
+        string GetPrefixOfNamespace(XNamespace ns, bool allowDefaultNamespace)
+        {
             string namespaceName = ns.NamespaceName;
             if (namespaceName.Length == 0) return string.Empty;
             string prefix = resolver.GetPrefixOfNamespace(ns, allowDefaultNamespace);
@@ -7431,76 +8318,92 @@ namespace System.Xml.Linq
             return null;
         }
 
-        void PushElement() {
+        void PushElement()
+        {
             resolver.PushScope();
-            foreach (XAttribute a in attributes) {
-                if (a.IsNamespaceDeclaration) {
+            foreach (XAttribute a in attributes)
+            {
+                if (a.IsNamespaceDeclaration)
+                {
                     resolver.Add(a.Name.NamespaceName.Length == 0 ? string.Empty : a.Name.LocalName, XNamespace.Get(a.Value));
                 }
             }
         }
 
-        void Write(object content) {
+        void Write(object content)
+        {
             if (content == null) return;
             XNode n = content as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 WriteNode(n);
                 return;
             }
             string s = content as string;
-            if (s != null) {
+            if (s != null)
+            {
                 WriteString(s);
                 return;
             }
             XAttribute a = content as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 WriteAttribute(a);
                 return;
             }
             XStreamingElement x = content as XStreamingElement;
-            if (x != null) {
+            if (x != null)
+            {
                 WriteStreamingElement(x);
                 return;
             }
             object[] o = content as object[];
-            if (o != null) {
+            if (o != null)
+            {
                 foreach (object obj in o) Write(obj);
                 return;
             }
             IEnumerable e = content as IEnumerable;
-            if (e != null) {
+            if (e != null)
+            {
                 foreach (object obj in e) Write(obj);
                 return;
             }
             WriteString(XContainer.GetStringValue(content));
         }
 
-        void WriteAttribute(XAttribute a) {
+        void WriteAttribute(XAttribute a)
+        {
             if (element == null) throw new InvalidOperationException(Res.GetString(Res.InvalidOperation_WriteAttribute));
             attributes.Add(a);
         }
 
-        void WriteNode(XNode n) {
+        void WriteNode(XNode n)
+        {
             FlushElement();
             n.WriteTo(writer);
         }
 
-        internal void WriteStreamingElement(XStreamingElement e) {
+        internal void WriteStreamingElement(XStreamingElement e)
+        {
             FlushElement();
             element = e;
             Write(e.content);
             bool contentWritten = element == null;
             FlushElement();
-            if (contentWritten) {
+            if (contentWritten)
+            {
                 writer.WriteFullEndElement();
             }
-            else {
+            else
+            {
                 writer.WriteEndElement();
             }
             resolver.PopScope();
         }
 
-        void WriteString(string s) {
+        void WriteString(string s)
+        {
             FlushElement();
             writer.WriteString(s);
         }
@@ -7520,7 +8423,8 @@ namespace System.Xml.Linq
         /// Attributes for every <see cref="XElement"/> in the target <see cref="IEnumerable"/>
         /// of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XAttribute> Attributes(this IEnumerable<XElement> source) {
+        public static IEnumerable<XAttribute> Attributes(this IEnumerable<XElement> source)
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetAttributes(source, null);
         }
@@ -7535,7 +8439,8 @@ namespace System.Xml.Linq
         /// Attributes with a matching <see cref="XName"/> for every <see cref="XElement"/> in 
         /// the target <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XAttribute> Attributes(this IEnumerable<XElement> source, XName name) {
+        public static IEnumerable<XAttribute> Attributes(this IEnumerable<XElement> source, XName name)
+        {
             if (source == null) throw new ArgumentNullException("source");
             return name != null ? GetAttributes(source, name) : XAttribute.EmptySequence;
         }
@@ -7550,7 +8455,8 @@ namespace System.Xml.Linq
         /// and it's parent up to the root) of each of the <see cref="XElement"/>s in this 
         /// <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> Ancestors<T>(this IEnumerable<T> source) where T: XNode {
+        public static IEnumerable<XElement> Ancestors<T>(this IEnumerable<T> source) where T : XNode
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetAncestors(source, null, false);
         }
@@ -7565,7 +8471,8 @@ namespace System.Xml.Linq
         /// and it's parent up to the root) that have a matching <see cref="XName"/>.  This is done for each 
         /// <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> Ancestors<T>(this IEnumerable<T> source, XName name) where T: XNode {
+        public static IEnumerable<XElement> Ancestors<T>(this IEnumerable<T> source, XName name) where T : XNode
+        {
             if (source == null) throw new ArgumentNullException("source");
             return name != null ? GetAncestors(source, name, false) : XElement.EmptySequence;
         }
@@ -7582,7 +8489,8 @@ namespace System.Xml.Linq
         /// This is done for each <see cref="XElement"/> in this <see cref="IEnumerable"/> of 
         /// <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> AncestorsAndSelf(this IEnumerable<XElement> source) {
+        public static IEnumerable<XElement> AncestorsAndSelf(this IEnumerable<XElement> source)
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetAncestors(source, null, true);
         }
@@ -7599,21 +8507,27 @@ namespace System.Xml.Linq
         /// that match the passed in <see cref="XName"/>.  This is done for each 
         /// <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> AncestorsAndSelf(this IEnumerable<XElement> source, XName name) {
+        public static IEnumerable<XElement> AncestorsAndSelf(this IEnumerable<XElement> source, XName name)
+        {
             if (source == null) throw new ArgumentNullException("source");
             return name != null ? GetAncestors(source, name, true) : XElement.EmptySequence;
         }
-  
+
         /// <summary>
         /// Returns an <see cref="IEnumerable"/> of <see cref="XNode"/> over the content of a set of nodes
         /// </summary>
-        public static IEnumerable<XNode> Nodes<T>(this IEnumerable<T> source) where T: XContainer {
+        public static IEnumerable<XNode> Nodes<T>(this IEnumerable<T> source) where T : XContainer
+        {
             if (source == null) throw new ArgumentNullException("source");
-            foreach (XContainer root in source) {
-                if (root != null) {
+            foreach (XContainer root in source)
+            {
+                if (root != null)
+                {
                     XNode n = root.LastNode;
-                    if (n != null) {
-                        do {
+                    if (n != null)
+                    {
+                        do
+                        {
                             n = n.next;
                             yield return n;
                         } while (n.parent == root && n != root.content);
@@ -7625,7 +8539,8 @@ namespace System.Xml.Linq
         /// <summary>
         /// Returns an <see cref="IEnumerable"/> of <see cref="XNode"/> over the descendants of a set of nodes
         /// </summary>     
-        public static IEnumerable<XNode> DescendantNodes<T>(this IEnumerable<T> source) where T: XContainer {
+        public static IEnumerable<XNode> DescendantNodes<T>(this IEnumerable<T> source) where T : XContainer
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetDescendantNodes(source, false);
         }
@@ -7640,7 +8555,8 @@ namespace System.Xml.Linq
         /// and their children down to the leaf level).  This is done for each <see cref="XElement"/> in  
         /// this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> Descendants<T>(this IEnumerable<T> source) where T: XContainer {
+        public static IEnumerable<XElement> Descendants<T>(this IEnumerable<T> source) where T : XContainer
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetDescendants(source, null, false);
         }
@@ -7655,7 +8571,8 @@ namespace System.Xml.Linq
         /// and their children down to the leaf level) that have a matching <see cref="XName"/>.  This is done 
         /// for each <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> Descendants<T>(this IEnumerable<T> source, XName name) where T: XContainer {
+        public static IEnumerable<XElement> Descendants<T>(this IEnumerable<T> source, XName name) where T : XContainer
+        {
             if (source == null) throw new ArgumentNullException("source");
             return name != null ? GetDescendants(source, name, false) : XElement.EmptySequence;
         }
@@ -7672,7 +8589,8 @@ namespace System.Xml.Linq
         /// This is done for each 
         /// <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>      
-        public static IEnumerable<XNode> DescendantNodesAndSelf(this IEnumerable<XElement> source) {
+        public static IEnumerable<XNode> DescendantNodesAndSelf(this IEnumerable<XElement> source)
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetDescendantNodes(source, true);
         }
@@ -7689,7 +8607,8 @@ namespace System.Xml.Linq
         /// to the leaf nodes).  This is done for each <see cref="XElement"/> in this <see cref="IEnumerable"/> 
         /// of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> DescendantsAndSelf(this IEnumerable<XElement> source) {
+        public static IEnumerable<XElement> DescendantsAndSelf(this IEnumerable<XElement> source)
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetDescendants(source, null, true);
         }
@@ -7706,7 +8625,8 @@ namespace System.Xml.Linq
         /// to the leaf nodes) that match the passed in <see cref="XName"/>.  This is done for 
         /// each <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> DescendantsAndSelf(this IEnumerable<XElement> source, XName name) {
+        public static IEnumerable<XElement> DescendantsAndSelf(this IEnumerable<XElement> source, XName name)
+        {
             if (source == null) throw new ArgumentNullException("source");
             return name != null ? GetDescendants(source, name, true) : XElement.EmptySequence;
         }
@@ -7719,7 +8639,8 @@ namespace System.Xml.Linq
         /// An <see cref="IEnumerable"/> of <see cref="XElement"/> containing the child elements
         /// for each <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> Elements<T>(this IEnumerable<T> source) where T: XContainer {
+        public static IEnumerable<XElement> Elements<T>(this IEnumerable<T> source) where T : XContainer
+        {
             if (source == null) throw new ArgumentNullException("source");
             return GetElements(source, null);
         }
@@ -7732,7 +8653,8 @@ namespace System.Xml.Linq
         /// An <see cref="IEnumerable"/> of <see cref="XElement"/> containing the child elements
         /// for each <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// </returns>
-        public static IEnumerable<XElement> Elements<T>(this IEnumerable<T> source, XName name) where T: XContainer {
+        public static IEnumerable<XElement> Elements<T>(this IEnumerable<T> source, XName name) where T : XContainer
+        {
             if (source == null) throw new ArgumentNullException("source");
             return name != null ? GetElements(source, name) : XElement.EmptySequence;
         }
@@ -7746,7 +8668,8 @@ namespace System.Xml.Linq
         /// for each <see cref="XElement"/> in this <see cref="IEnumerable"/> of <see cref="XElement"/>.
         /// in document order
         /// </returns>
-        public static IEnumerable<T> InDocumentOrder<T>(this IEnumerable<T> source) where T: XNode {
+        public static IEnumerable<T> InDocumentOrder<T>(this IEnumerable<T> source) where T : XNode
+        {
             return Enumerable.OrderBy(source, n => (XNode)n, XNode.DocumentOrderComparer);
         }
 
@@ -7755,7 +8678,8 @@ namespace System.Xml.Linq
         /// <see cref="XAttribute"/>.  Note that this method uses snapshot semantics (copies the
         /// attributes to a <see cref="List&lt;T>"/> before deleting each).
         /// </summary>
-        public static void Remove(this IEnumerable<XAttribute> source) {
+        public static void Remove(this IEnumerable<XAttribute> source)
+        {
             if (source == null) throw new ArgumentNullException("source");
             foreach (XAttribute a in new List<XAttribute>(source))
                 if (a != null) a.Remove();
@@ -7766,18 +8690,24 @@ namespace System.Xml.Linq
         /// T which must be a derived from <see cref="XNode"/>.  Note that this method uses snapshot semantics 
         /// (copies the <see cref="XNode"/>s to a List before deleting each).
         /// </summary>
-        public static void Remove<T>(this IEnumerable<T> source) where T: XNode {
+        public static void Remove<T>(this IEnumerable<T> source) where T : XNode
+        {
             if (source == null) throw new ArgumentNullException("source");
             foreach (T node in new List<T>(source))
                 if (node != null) node.Remove();
         }
 
-        static IEnumerable<XAttribute> GetAttributes(IEnumerable<XElement> source, XName name) {
-            foreach (XElement e in source) {
-                if (e != null) {
+        static IEnumerable<XAttribute> GetAttributes(IEnumerable<XElement> source, XName name)
+        {
+            foreach (XElement e in source)
+            {
+                if (e != null)
+                {
                     XAttribute a = e.lastAttr;
-                    if (a != null) {
-                        do {
+                    if (a != null)
+                    {
+                        do
+                        {
                             a = a.next;
                             if (name == null || a.name == name) yield return a;
                         } while (a.parent == e && a != e.lastAttr);
@@ -7786,11 +8716,15 @@ namespace System.Xml.Linq
             }
         }
 
-        static IEnumerable<XElement> GetAncestors<T>(IEnumerable<T> source, XName name, bool self) where T: XNode {
-            foreach (XNode node in source) {
-                if (node != null) {
+        static IEnumerable<XElement> GetAncestors<T>(IEnumerable<T> source, XName name, bool self) where T : XNode
+        {
+            foreach (XNode node in source)
+            {
+                if (node != null)
+                {
                     XElement e = (self ? node : node.parent) as XElement;
-                    while (e != null) {
+                    while (e != null)
+                    {
                         if (name == null || e.name == name) yield return e;
                         e = e.parent as XElement;
                     }
@@ -7798,18 +8732,24 @@ namespace System.Xml.Linq
             }
         }
 
-        static IEnumerable<XNode> GetDescendantNodes<T>(IEnumerable<T> source, bool self) where T: XContainer {
-            foreach (XContainer root in source) {
-                if (root != null) {
+        static IEnumerable<XNode> GetDescendantNodes<T>(IEnumerable<T> source, bool self) where T : XContainer
+        {
+            foreach (XContainer root in source)
+            {
+                if (root != null)
+                {
                     if (self) yield return root;
                     XNode n = root;
-                    while (true) {
+                    while (true)
+                    {
                         XContainer c = n as XContainer;
                         XNode first;
-                        if (c != null && (first = c.FirstNode) != null) {
+                        if (c != null && (first = c.FirstNode) != null)
+                        {
                             n = first;
                         }
-                        else {
+                        else
+                        {
                             while (n != null && n != root && n == n.parent.content) n = n.parent;
                             if (n == null || n == root) break;
                             n = n.next;
@@ -7820,20 +8760,27 @@ namespace System.Xml.Linq
             }
         }
 
-        static IEnumerable<XElement> GetDescendants<T>(IEnumerable<T> source, XName name, bool self) where T: XContainer {
-            foreach (XContainer root in source) {
-                if (root != null) {
-                    if (self) {
+        static IEnumerable<XElement> GetDescendants<T>(IEnumerable<T> source, XName name, bool self) where T : XContainer
+        {
+            foreach (XContainer root in source)
+            {
+                if (root != null)
+                {
+                    if (self)
+                    {
                         XElement e = (XElement)root;
                         if (name == null || e.name == name) yield return e;
                     }
                     XNode n = root;
                     XContainer c = root;
-                    while (true) {
-                        if (c != null && c.content is XNode) {
+                    while (true)
+                    {
+                        if (c != null && c.content is XNode)
+                        {
                             n = ((XNode)c.content).next;
                         }
-                        else {
+                        else
+                        {
                             while (n != null && n != root && n == n.parent.content) n = n.parent;
                             if (n == null || n == root) break;
                             n = n.next;
@@ -7846,12 +8793,17 @@ namespace System.Xml.Linq
             }
         }
 
-        static IEnumerable<XElement> GetElements<T>(IEnumerable<T> source, XName name) where T: XContainer {
-            foreach (XContainer root in source) {
-                if (root != null) {
+        static IEnumerable<XElement> GetElements<T>(IEnumerable<T> source, XName name) where T : XContainer
+        {
+            foreach (XContainer root in source)
+            {
+                if (root != null)
+                {
                     XNode n = root.content as XNode;
-                    if (n != null) {
-                        do {
+                    if (n != null)
+                    {
+                        do
+                        {
                             n = n.next;
                             XElement e = n as XElement;
                             if (e != null && (name == null || e.name == name)) yield return e;
@@ -7870,186 +8822,231 @@ namespace System.Xml.Linq
         string attrValue;
         XContainer root;
 
-        public XNodeBuilder(XContainer container) {
+        public XNodeBuilder(XContainer container)
+        {
             root = container;
         }
 
-        public override XmlWriterSettings Settings {
-            get {
+        public override XmlWriterSettings Settings
+        {
+            get
+            {
                 XmlWriterSettings settings = new XmlWriterSettings();
                 settings.ConformanceLevel = ConformanceLevel.Auto;
                 return settings;
             }
         }
 
-        public override WriteState WriteState {
+        public override WriteState WriteState
+        {
             get { throw new NotSupportedException(); } // nop
         }
 
-        public override void Close() {
+        public override void Close()
+        {
             root.Add(content);
         }
 
-        public override void Flush() {
+        public override void Flush()
+        {
         }
 
-        public override string LookupPrefix(string namespaceName) {
+        public override string LookupPrefix(string namespaceName)
+        {
             throw new NotSupportedException(); // nop
         }
 
-        public override void WriteBase64(byte[] buffer, int index, int count) {
+        public override void WriteBase64(byte[] buffer, int index, int count)
+        {
             throw new NotSupportedException(Res.GetString(Res.NotSupported_WriteBase64));
         }
 
-        public override void WriteCData(string text) {
+        public override void WriteCData(string text)
+        {
             AddNode(new XCData(text));
         }
 
-        public override void WriteCharEntity(char ch) {
+        public override void WriteCharEntity(char ch)
+        {
             AddString(new string(ch, 1));
         }
 
-        public override void WriteChars(char[] buffer, int index, int count) {
+        public override void WriteChars(char[] buffer, int index, int count)
+        {
             AddString(new string(buffer, index, count));
         }
 
-        public override void WriteComment(string text) {
+        public override void WriteComment(string text)
+        {
             AddNode(new XComment(text));
         }
 
-        public override void WriteDocType(string name, string pubid, string sysid, string subset) {
+        public override void WriteDocType(string name, string pubid, string sysid, string subset)
+        {
             AddNode(new XDocumentType(name, pubid, sysid, subset));
         }
 
-        public override void WriteEndAttribute() {
+        public override void WriteEndAttribute()
+        {
             XAttribute a = new XAttribute(attrName, attrValue);
             attrName = null;
             attrValue = null;
-            if (parent != null) {
+            if (parent != null)
+            {
                 parent.Add(a);
             }
-            else {
+            else
+            {
                 Add(a);
             }
         }
 
-        public override void WriteEndDocument() {
+        public override void WriteEndDocument()
+        {
         }
 
-        public override void WriteEndElement() {
+        public override void WriteEndElement()
+        {
             parent = ((XElement)parent).parent;
         }
 
-        public override void WriteEntityRef(string name) {
-            switch (name) {
-                case "amp":
-                    AddString("&");
-                    break;
-                case "apos":
-                    AddString("'");
-                    break;
-                case "gt":
-                    AddString(">");
-                    break;
-                case "lt":
-                    AddString("<");
-                    break;
-                case "quot":
-                    AddString("\"");
-                    break;
-                default:
-                    throw new NotSupportedException(Res.GetString(Res.NotSupported_WriteEntityRef));
+        public override void WriteEntityRef(string name)
+        {
+            switch (name)
+            {
+            case "amp":
+                AddString("&");
+                break;
+            case "apos":
+                AddString("'");
+                break;
+            case "gt":
+                AddString(">");
+                break;
+            case "lt":
+                AddString("<");
+                break;
+            case "quot":
+                AddString("\"");
+                break;
+            default:
+                throw new NotSupportedException(Res.GetString(Res.NotSupported_WriteEntityRef));
             }
         }
 
-        public override void WriteFullEndElement() {
+        public override void WriteFullEndElement()
+        {
             XElement e = (XElement)parent;
-            if (e.IsEmpty) {
+            if (e.IsEmpty)
+            {
                 e.Add(string.Empty);
             }
             parent = e.parent;
         }
 
-        public override void WriteProcessingInstruction(string name, string text) {
-            if (name == "xml") {
+        public override void WriteProcessingInstruction(string name, string text)
+        {
+            if (name == "xml")
+            {
                 return;
             }
             AddNode(new XProcessingInstruction(name, text));
         }
 
-        public override void WriteRaw(char[] buffer, int index, int count) {
+        public override void WriteRaw(char[] buffer, int index, int count)
+        {
             AddString(new string(buffer, index, count));
         }
 
-        public override void WriteRaw(string data) {
+        public override void WriteRaw(string data)
+        {
             AddString(data);
         }
 
-        public override void WriteStartAttribute(string prefix, string localName, string namespaceName) {
+        public override void WriteStartAttribute(string prefix, string localName, string namespaceName)
+        {
             if (prefix == null) throw new ArgumentNullException("prefix");
             attrName = XNamespace.Get(prefix.Length == 0 ? string.Empty : namespaceName).GetName(localName);
             attrValue = string.Empty;
         }
 
-        public override void WriteStartDocument() {
+        public override void WriteStartDocument()
+        {
         }
 
-        public override void WriteStartDocument(bool standalone) {
+        public override void WriteStartDocument(bool standalone)
+        {
         }
 
-        public override void WriteStartElement(string prefix, string localName, string namespaceName) {
+        public override void WriteStartElement(string prefix, string localName, string namespaceName)
+        {
             AddNode(new XElement(XNamespace.Get(namespaceName).GetName(localName)));
         }
 
-        public override void WriteString(string text) {
+        public override void WriteString(string text)
+        {
             AddString(text);
         }
 
-        public override void WriteSurrogateCharEntity(char lowCh, char highCh) {
-            AddString(new string(new char[] {highCh, lowCh}));
+        public override void WriteSurrogateCharEntity(char lowCh, char highCh)
+        {
+            AddString(new string(new char[] { highCh, lowCh }));
         }
 
-        public override void WriteValue(DateTimeOffset value) {
+        public override void WriteValue(DateTimeOffset value)
+        {
             // For compatibility with custom writers, XmlWriter writes DateTimeOffset as DateTime. 
             // Our internal writers should use the DateTimeOffset-String conversion from XmlConvert.
             WriteString(XmlConvert.ToString(value));
         }
 
-        public override void WriteWhitespace(string ws) {
+        public override void WriteWhitespace(string ws)
+        {
             AddString(ws);
         }
 
-        void Add(object o) {
-            if (content == null) {
+        void Add(object o)
+        {
+            if (content == null)
+            {
                 content = new List<object>();
             }
             content.Add(o);
         }
 
-        void AddNode(XNode n) {
-            if (parent != null) {
+        void AddNode(XNode n)
+        {
+            if (parent != null)
+            {
                 parent.Add(n);
             }
-            else {
+            else
+            {
                 Add(n);
             }
             XContainer c = n as XContainer;
-            if (c != null) {
+            if (c != null)
+            {
                 parent = c;
             }
         }
 
-        void AddString(string s) {
-            if (s == null) {
+        void AddString(string s)
+        {
+            if (s == null)
+            {
                 return;
             }
-            if (attrValue != null) {
+            if (attrValue != null)
+            {
                 attrValue += s;
             }
-            else if (parent != null) {
+            else if (parent != null)
+            {
                 parent.Add(s);
             }
-            else {
+            else
+            {
                 Add(s);
             }
         }
@@ -8072,7 +9069,8 @@ namespace System.Xml.Linq
         bool dtdInfoInitialized;
 #endif
 
-        internal XNodeReader(XNode node, XmlNameTable nameTable, ReaderOptions options) {
+        internal XNodeReader(XNode node, XmlNameTable nameTable, ReaderOptions options)
+        {
             this.source = node;
             this.root = node;
             this.nameTable = nameTable != null ? nameTable : CreateNameTable();
@@ -8080,24 +9078,32 @@ namespace System.Xml.Linq
         }
 
         internal XNodeReader(XNode node, XmlNameTable nameTable)
-            : this (node, nameTable, 
-                   (node.GetSaveOptionsFromAnnotations() & SaveOptions.OmitDuplicateNamespaces) != 0 ? 
-                        ReaderOptions.OmitDuplicateNamespaces : ReaderOptions.None) {
+            : this(node, nameTable,
+                   (node.GetSaveOptionsFromAnnotations() & SaveOptions.OmitDuplicateNamespaces) != 0 ?
+                        ReaderOptions.OmitDuplicateNamespaces : ReaderOptions.None)
+        {
         }
-        
-        public override int AttributeCount {
-            get {
-                if (!IsInteractive) {
+
+        public override int AttributeCount
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return 0;
                 }
                 int count = 0;
                 XElement e = GetElementInAttributeScope();
-                if (e != null) {
+                if (e != null)
+                {
                     XAttribute a = e.lastAttr;
-                    if (a != null) {
-                        do {
+                    if (a != null)
+                    {
+                        do
+                        {
                             a = a.next;
-                            if (!omitDuplicateNamespaces || !IsDuplicateNamespaceAttribute(a)) {
+                            if (!omitDuplicateNamespaces || !IsDuplicateNamespaceAttribute(a))
+                            {
                                 count++;
                             }
                         } while (a != e.lastAttr);
@@ -8107,159 +9113,203 @@ namespace System.Xml.Linq
             }
         }
 
-        public override string BaseURI {
-            get { 
+        public override string BaseURI
+        {
+            get
+            {
                 XObject o = source as XObject;
-                if (o != null) {
+                if (o != null)
+                {
                     return o.BaseUri;
                 }
                 o = parent as XObject;
-                if (o != null) {
+                if (o != null)
+                {
                     return o.BaseUri;
                 }
-                return string.Empty; 
+                return string.Empty;
             }
         }
 
-        public override int Depth {
-            get {
-                if (!IsInteractive) {
+        public override int Depth
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return 0;
                 }
                 XObject o = source as XObject;
-                if (o != null) {
+                if (o != null)
+                {
                     return GetDepth(o);
                 }
                 o = parent as XObject;
-                if (o != null) {
+                if (o != null)
+                {
                     return GetDepth(o) + 1;
                 }
                 return 0;
             }
         }
 
-        static int GetDepth(XObject o) {
+        static int GetDepth(XObject o)
+        {
             int depth = 0;
-            while (o.parent != null) {
+            while (o.parent != null)
+            {
                 depth++;
                 o = o.parent;
             }
-            if (o is XDocument) {
+            if (o is XDocument)
+            {
                 depth--;
             }
             return depth;
         }
 
-        public override bool EOF {
+        public override bool EOF
+        {
             get { return state == ReadState.EndOfFile; }
         }
 
-        public override bool HasAttributes {
-            get {
-                if (!IsInteractive) {
+        public override bool HasAttributes
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return false;
                 }
                 XElement e = GetElementInAttributeScope();
-                if (e != null && e.lastAttr != null) {
-                    if (omitDuplicateNamespaces) {
+                if (e != null && e.lastAttr != null)
+                {
+                    if (omitDuplicateNamespaces)
+                    {
                         return GetFirstNonDuplicateNamespaceAttribute(e.lastAttr.next) != null;
                     }
-                    else {
+                    else
+                    {
                         return true;
                     }
                 }
-                else {
+                else
+                {
                     return false;
                 }
             }
         }
 
-        public override bool HasValue {
-            get {
-                if (!IsInteractive) {
+        public override bool HasValue
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return false;
                 }
                 XObject o = source as XObject;
-                if (o != null) {
-                    switch (o.NodeType) {
-                        case XmlNodeType.Attribute:
-                        case XmlNodeType.Text:
-                        case XmlNodeType.CDATA:
-                        case XmlNodeType.Comment:
-                        case XmlNodeType.ProcessingInstruction:
-                        case XmlNodeType.DocumentType:
-                            return true;
-                        default:
-                            return false;
+                if (o != null)
+                {
+                    switch (o.NodeType)
+                    {
+                    case XmlNodeType.Attribute:
+                    case XmlNodeType.Text:
+                    case XmlNodeType.CDATA:
+                    case XmlNodeType.Comment:
+                    case XmlNodeType.ProcessingInstruction:
+                    case XmlNodeType.DocumentType:
+                        return true;
+                    default:
+                        return false;
                     }
                 }
                 return true;
             }
         }
 
-        public override bool IsEmptyElement {
-            get {
-                if (!IsInteractive) {
+        public override bool IsEmptyElement
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return false;
                 }
                 XElement e = source as XElement;
                 return e != null && e.IsEmpty;
             }
         }
-        
-        public override string LocalName {
+
+        public override string LocalName
+        {
             get { return nameTable.Add(GetLocalName()); }
         }
-        
-        string GetLocalName() {
-            if (!IsInteractive) {
+
+        string GetLocalName()
+        {
+            if (!IsInteractive)
+            {
                 return string.Empty;
             }
             XElement e = source as XElement;
-            if (e != null) {
+            if (e != null)
+            {
                 return e.Name.LocalName;
             }
             XAttribute a = source as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 return a.Name.LocalName;
             }
             XProcessingInstruction p = source as XProcessingInstruction;
-            if (p != null) {
+            if (p != null)
+            {
                 return p.Target;
             }
             XDocumentType n = source as XDocumentType;
-            if (n != null) {
+            if (n != null)
+            {
                 return n.Name;
             }
             return string.Empty;
         }
 
-        public override string Name {
-            get {
+        public override string Name
+        {
+            get
+            {
                 string prefix = GetPrefix();
-                if (prefix.Length == 0) {
+                if (prefix.Length == 0)
+                {
                     return nameTable.Add(GetLocalName());
                 }
                 return nameTable.Add(string.Concat(prefix, ":", GetLocalName()));
             }
         }
 
-        public override string NamespaceURI {
+        public override string NamespaceURI
+        {
             get { return nameTable.Add(GetNamespaceURI()); }
         }
-        
-        string GetNamespaceURI() {
-            if (!IsInteractive) {
+
+        string GetNamespaceURI()
+        {
+            if (!IsInteractive)
+            {
                 return string.Empty;
             }
             XElement e = source as XElement;
-            if (e != null) {
+            if (e != null)
+            {
                 return e.Name.NamespaceName;
             }
             XAttribute a = source as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 string namespaceName = a.Name.NamespaceName;
-                if (namespaceName.Length == 0 && a.Name.LocalName == "xmlns") {
+                if (namespaceName.Length == 0 && a.Name.LocalName == "xmlns")
+                {
                     return XNamespace.xmlnsPrefixNamespace;
                 }
                 return namespaceName;
@@ -8267,112 +9317,142 @@ namespace System.Xml.Linq
             return string.Empty;
         }
 
-        public override XmlNameTable NameTable {
+        public override XmlNameTable NameTable
+        {
             get { return nameTable; }
         }
 
-        public override XmlNodeType NodeType {
-            get {
-                if (!IsInteractive) {
+        public override XmlNodeType NodeType
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return XmlNodeType.None;
                 }
                 XObject o = source as XObject;
-                if (o != null) {
-                    if (IsEndElement) {
+                if (o != null)
+                {
+                    if (IsEndElement)
+                    {
                         return XmlNodeType.EndElement;
                     }
                     XmlNodeType nt = o.NodeType;
-                    if (nt != XmlNodeType.Text) {
+                    if (nt != XmlNodeType.Text)
+                    {
                         return nt;
                     }
-                    if (o.parent != null && o.parent.parent == null && o.parent is XDocument) {
+                    if (o.parent != null && o.parent.parent == null && o.parent is XDocument)
+                    {
                         return XmlNodeType.Whitespace;
                     }
                     return XmlNodeType.Text;
                 }
-                if (parent is XDocument) {
+                if (parent is XDocument)
+                {
                     return XmlNodeType.Whitespace;
                 }
                 return XmlNodeType.Text;
             }
         }
 
-        public override string Prefix {
+        public override string Prefix
+        {
             get { return nameTable.Add(GetPrefix()); }
         }
-        
-        string GetPrefix() {
-            if (!IsInteractive) {
+
+        string GetPrefix()
+        {
+            if (!IsInteractive)
+            {
                 return string.Empty;
             }
             XElement e = source as XElement;
-            if (e != null) {
+            if (e != null)
+            {
                 string prefix = e.GetPrefixOfNamespace(e.Name.Namespace);
-                if (prefix != null) {
+                if (prefix != null)
+                {
                     return prefix;
                 }
                 return string.Empty;
             }
             XAttribute a = source as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 string prefix = a.GetPrefixOfNamespace(a.Name.Namespace);
-                if (prefix != null) {
+                if (prefix != null)
+                {
                     return prefix;
                 }
             }
             return string.Empty;
         }
-        
-        public override ReadState ReadState {
+
+        public override ReadState ReadState
+        {
             get { return state; }
         }
 
-        public override XmlReaderSettings Settings {
-            get {
+        public override XmlReaderSettings Settings
+        {
+            get
+            {
                 XmlReaderSettings settings = new XmlReaderSettings();
                 settings.CheckCharacters = false;
                 return settings;
             }
         }
 
-        public override string Value {
-            get {
-                if (!IsInteractive) {
+        public override string Value
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return string.Empty;
                 }
                 XObject o = source as XObject;
-                if (o != null) {
-                    switch (o.NodeType) {
-                        case XmlNodeType.Attribute:
-                            return ((XAttribute)o).Value;
-                        case XmlNodeType.Text:
-                        case XmlNodeType.CDATA:
-                            return ((XText)o).Value;
-                        case XmlNodeType.Comment:
-                            return ((XComment)o).Value;
-                        case XmlNodeType.ProcessingInstruction:
-                            return ((XProcessingInstruction)o).Data;
-                        case XmlNodeType.DocumentType:
-                            return ((XDocumentType)o).InternalSubset;
-                        default:
-                            return string.Empty;
+                if (o != null)
+                {
+                    switch (o.NodeType)
+                    {
+                    case XmlNodeType.Attribute:
+                        return ((XAttribute)o).Value;
+                    case XmlNodeType.Text:
+                    case XmlNodeType.CDATA:
+                        return ((XText)o).Value;
+                    case XmlNodeType.Comment:
+                        return ((XComment)o).Value;
+                    case XmlNodeType.ProcessingInstruction:
+                        return ((XProcessingInstruction)o).Data;
+                    case XmlNodeType.DocumentType:
+                        return ((XDocumentType)o).InternalSubset;
+                    default:
+                        return string.Empty;
                     }
                 }
                 return (string)source;
             }
         }
 
-        public override string XmlLang {
-            get {
-                if (!IsInteractive) {
+        public override string XmlLang
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return string.Empty;
                 }
                 XElement e = GetElementInScope();
-                if (e != null) {
+                if (e != null)
+                {
                     XName name = XNamespace.Xml.GetName("lang");
-                    do {
+                    do
+                    {
                         XAttribute a = e.Attribute(name);
-                        if (a != null) {
+                        if (a != null)
+                        {
                             return a.Value;
                         }
                         e = e.parent as XElement;
@@ -8382,24 +9462,31 @@ namespace System.Xml.Linq
             }
         }
 
-        public override XmlSpace XmlSpace {
-            get {
-                if (!IsInteractive) {
+        public override XmlSpace XmlSpace
+        {
+            get
+            {
+                if (!IsInteractive)
+                {
                     return XmlSpace.None;
                 }
                 XElement e = GetElementInScope();
-                if (e != null) {
+                if (e != null)
+                {
                     XName name = XNamespace.Xml.GetName("space");
-                    do {
+                    do
+                    {
                         XAttribute a = e.Attribute(name);
-                        if (a != null) {
-                            switch (a.Value.Trim(new char[] {' ', '\t', '\n', '\r'})) {
-                                case "preserve":
-                                    return XmlSpace.Preserve;
-                                case "default":
-                                    return XmlSpace.Default;
-                                default:
-                                    break;
+                        if (a != null)
+                        {
+                            switch (a.Value.Trim(new char[] { ' ', '\t', '\n', '\r' }))
+                            {
+                            case "preserve":
+                                return XmlSpace.Preserve;
+                            case "default":
+                                return XmlSpace.Default;
+                            default:
+                                break;
                             }
                         }
                         e = e.parent as XElement;
@@ -8409,30 +9496,39 @@ namespace System.Xml.Linq
             }
         }
 
-        public override void Close() {
+        public override void Close()
+        {
             source = null;
             parent = null;
             root = null;
             state = ReadState.Closed;
         }
 
-        public override string GetAttribute(string name) {
-            if (!IsInteractive) {
+        public override string GetAttribute(string name)
+        {
+            if (!IsInteractive)
+            {
                 return null;
             }
             XElement e = GetElementInAttributeScope();
-            if (e != null) {
+            if (e != null)
+            {
                 string localName, namespaceName;
                 GetNameInAttributeScope(name, e, out localName, out namespaceName);
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
-                        if (a.Name.LocalName == localName && a.Name.NamespaceName == namespaceName) {
-                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a)) {
+                        if (a.Name.LocalName == localName && a.Name.NamespaceName == namespaceName)
+                        {
+                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a))
+                            {
                                 return null;
                             }
-                            else {
+                            else
+                            {
                                 return a.Value;
                             }
                         }
@@ -8441,40 +9537,53 @@ namespace System.Xml.Linq
                 return null;
             }
             XDocumentType n = source as XDocumentType;
-            if (n != null) {
-                switch (name) {
-                    case "PUBLIC": 
-                        return n.PublicId;
-                    case "SYSTEM": 
-                        return n.SystemId;
+            if (n != null)
+            {
+                switch (name)
+                {
+                case "PUBLIC":
+                    return n.PublicId;
+                case "SYSTEM":
+                    return n.SystemId;
                 }
             }
             return null;
         }
 
-        public override string GetAttribute(string localName, string namespaceName) {
-            if (!IsInteractive) {
+        public override string GetAttribute(string localName, string namespaceName)
+        {
+            if (!IsInteractive)
+            {
                 return null;
             }
             XElement e = GetElementInAttributeScope();
-            if (e != null) {
-                if (localName == "xmlns") {
-                    if (namespaceName != null && namespaceName.Length == 0) {
+            if (e != null)
+            {
+                if (localName == "xmlns")
+                {
+                    if (namespaceName != null && namespaceName.Length == 0)
+                    {
                         return null;
                     }
-                    if (namespaceName == XNamespace.xmlnsPrefixNamespace) {
+                    if (namespaceName == XNamespace.xmlnsPrefixNamespace)
+                    {
                         namespaceName = string.Empty;
                     }
                 }
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
-                        if (a.Name.LocalName == localName && a.Name.NamespaceName == namespaceName) {
-                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a)) {
+                        if (a.Name.LocalName == localName && a.Name.NamespaceName == namespaceName)
+                        {
+                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a))
+                            {
                                 return null;
                             }
-                            else {
+                            else
+                            {
                                 return a.Value;
                             }
                         }
@@ -8484,21 +9593,29 @@ namespace System.Xml.Linq
             return null;
         }
 
-        public override string GetAttribute(int index) {
-            if (!IsInteractive) {
+        public override string GetAttribute(int index)
+        {
+            if (!IsInteractive)
+            {
                 return null;
             }
-            if (index < 0) {
+            if (index < 0)
+            {
                 return null;
             }
             XElement e = GetElementInAttributeScope();
-            if (e != null) {
+            if (e != null)
+            {
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
-                        if (!omitDuplicateNamespaces || !IsDuplicateNamespaceAttribute(a)) {
-                            if (index-- == 0) {
+                        if (!omitDuplicateNamespaces || !IsDuplicateNamespaceAttribute(a))
+                        {
+                            if (index-- == 0)
+                            {
                                 return a.Value;
                             }
                         }
@@ -8508,42 +9625,55 @@ namespace System.Xml.Linq
             return null;
         }
 
-        public override string LookupNamespace(string prefix) {
-            if (!IsInteractive) {
+        public override string LookupNamespace(string prefix)
+        {
+            if (!IsInteractive)
+            {
                 return null;
             }
-            if (prefix == null) {
+            if (prefix == null)
+            {
                 return null;
             }
             XElement e = GetElementInScope();
-            if (e != null) {
+            if (e != null)
+            {
                 XNamespace ns = prefix.Length == 0 ? e.GetDefaultNamespace() : e.GetNamespaceOfPrefix(prefix);
-                if (ns != null) {
+                if (ns != null)
+                {
                     return nameTable.Add(ns.NamespaceName);
                 }
             }
             return null;
         }
 
-        public override bool MoveToAttribute(string name) {
-            if (!IsInteractive) {
+        public override bool MoveToAttribute(string name)
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             XElement e = GetElementInAttributeScope();
-            if (e != null) {
+            if (e != null)
+            {
                 string localName, namespaceName;
                 GetNameInAttributeScope(name, e, out localName, out namespaceName);
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
                         if (a.Name.LocalName == localName &&
-                            a.Name.NamespaceName == namespaceName) {
-                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a)) {
+                            a.Name.NamespaceName == namespaceName)
+                        {
+                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a))
+                            {
                                 // If it's a duplicate namespace attribute just act as if it doesn't exist
                                 return false;
                             }
-                            else {
+                            else
+                            {
                                 source = a;
                                 parent = null;
                                 return true;
@@ -8555,31 +9685,42 @@ namespace System.Xml.Linq
             return false;
         }
 
-        public override bool MoveToAttribute(string localName, string namespaceName) {
-            if (!IsInteractive) {
+        public override bool MoveToAttribute(string localName, string namespaceName)
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             XElement e = GetElementInAttributeScope();
-            if (e != null) {
-                if (localName == "xmlns") {
-                    if (namespaceName != null && namespaceName.Length == 0) {
+            if (e != null)
+            {
+                if (localName == "xmlns")
+                {
+                    if (namespaceName != null && namespaceName.Length == 0)
+                    {
                         return false;
                     }
-                    if (namespaceName == XNamespace.xmlnsPrefixNamespace) {
+                    if (namespaceName == XNamespace.xmlnsPrefixNamespace)
+                    {
                         namespaceName = string.Empty;
                     }
                 }
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
                         if (a.Name.LocalName == localName &&
-                            a.Name.NamespaceName == namespaceName) {
-                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a)) {
+                            a.Name.NamespaceName == namespaceName)
+                        {
+                            if (omitDuplicateNamespaces && IsDuplicateNamespaceAttribute(a))
+                            {
                                 // If it's a duplicate namespace attribute just act as if it doesn't exist
                                 return false;
                             }
-                            else {
+                            else
+                            {
                                 source = a;
                                 parent = null;
                                 return true;
@@ -8591,20 +9732,27 @@ namespace System.Xml.Linq
             return false;
         }
 
-        public override void MoveToAttribute(int index) {
-            if (!IsInteractive) {
+        public override void MoveToAttribute(int index)
+        {
+            if (!IsInteractive)
+            {
                 return;
             }
             if (index < 0) throw new ArgumentOutOfRangeException("index");
             XElement e = GetElementInAttributeScope();
-            if (e != null) {
+            if (e != null)
+            {
                 XAttribute a = e.lastAttr;
-                if (a != null) {
-                    do {
+                if (a != null)
+                {
+                    do
+                    {
                         a = a.next;
-                        if (!omitDuplicateNamespaces || !IsDuplicateNamespaceAttribute(a)) {
+                        if (!omitDuplicateNamespaces || !IsDuplicateNamespaceAttribute(a))
+                        {
                             // Only count those which are non-duplicates if we're asked to
-                            if (index-- == 0) {
+                            if (index-- == 0)
+                            {
                                 source = a;
                                 parent = null;
                                 return;
@@ -8616,16 +9764,21 @@ namespace System.Xml.Linq
             throw new ArgumentOutOfRangeException("index");
         }
 
-        public override bool MoveToElement() {
-            if (!IsInteractive) {
+        public override bool MoveToElement()
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             XAttribute a = source as XAttribute;
-            if (a == null) {
+            if (a == null)
+            {
                 a = parent as XAttribute;
             }
-            if (a != null) {
-                if (a.parent != null) {
+            if (a != null)
+            {
+                if (a.parent != null)
+                {
                     source = a.parent;
                     parent = null;
                     return true;
@@ -8634,21 +9787,28 @@ namespace System.Xml.Linq
             return false;
         }
 
-        public override bool MoveToFirstAttribute() {
-            if (!IsInteractive) {
+        public override bool MoveToFirstAttribute()
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             XElement e = GetElementInAttributeScope();
-            if (e != null) {
-                if (e.lastAttr != null) {
-                    if (omitDuplicateNamespaces) {
+            if (e != null)
+            {
+                if (e.lastAttr != null)
+                {
+                    if (omitDuplicateNamespaces)
+                    {
                         object na = GetFirstNonDuplicateNamespaceAttribute(e.lastAttr.next);
-                        if (na == null) {
+                        if (na == null)
+                        {
                             return false;
                         }
                         source = na;
                     }
-                    else {
+                    else
+                    {
                         source = e.lastAttr.next;
                     }
                     return true;
@@ -8657,27 +9817,35 @@ namespace System.Xml.Linq
             return false;
         }
 
-        public override bool MoveToNextAttribute() {
-            if (!IsInteractive) {
+        public override bool MoveToNextAttribute()
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             XElement e = source as XElement;
-            if (e != null) {
-                if (IsEndElement) {
+            if (e != null)
+            {
+                if (IsEndElement)
+                {
                     return false;
                 }
-                if (e.lastAttr != null) {
-                    if (omitDuplicateNamespaces) {
+                if (e.lastAttr != null)
+                {
+                    if (omitDuplicateNamespaces)
+                    {
                         // Skip duplicate namespace attributes
                         // We must NOT modify the this.source until we find the one we're looking for
                         //   because if we don't find anything, we need to stay positioned where we're now
                         object na = GetFirstNonDuplicateNamespaceAttribute(e.lastAttr.next);
-                        if (na == null) {
+                        if (na == null)
+                        {
                             return false;
                         }
                         source = na;
                     }
-                    else {
+                    else
+                    {
                         source = e.lastAttr.next;
                     }
                     return true;
@@ -8685,22 +9853,28 @@ namespace System.Xml.Linq
                 return false;
             }
             XAttribute a = source as XAttribute;
-            if (a == null) {
+            if (a == null)
+            {
                 a = parent as XAttribute;
             }
-            if (a != null) {
-                if (a.parent != null && ((XElement)a.parent).lastAttr != a) {
-                    if (omitDuplicateNamespaces) {
+            if (a != null)
+            {
+                if (a.parent != null && ((XElement)a.parent).lastAttr != a)
+                {
+                    if (omitDuplicateNamespaces)
+                    {
                         // Skip duplicate namespace attributes
                         // We must NOT modify the this.source until we find the one we're looking for
                         //   because if we don't find anything, we need to stay positioned where we're now
                         object na = GetFirstNonDuplicateNamespaceAttribute(a.next);
-                        if (na == null) {
+                        if (na == null)
+                        {
                             return false;
                         }
                         source = na;
                     }
-                    else {
+                    else
+                    {
                         source = a.next;
                     }
                     parent = null;
@@ -8710,46 +9884,58 @@ namespace System.Xml.Linq
             return false;
         }
 
-        public override bool Read() {
-            switch (state) {
-                case ReadState.Initial:
-                    state = ReadState.Interactive;
-                    XDocument d = source as XDocument;
-                    if (d != null) {
-                        return ReadIntoDocument(d);
-                    }
-                    return true;
-                case ReadState.Interactive:
-                    return Read(false);
-                default:
-                    return false;
+        public override bool Read()
+        {
+            switch (state)
+            {
+            case ReadState.Initial:
+                state = ReadState.Interactive;
+                XDocument d = source as XDocument;
+                if (d != null)
+                {
+                    return ReadIntoDocument(d);
+                }
+                return true;
+            case ReadState.Interactive:
+                return Read(false);
+            default:
+                return false;
             }
         }
 
-        public override bool ReadAttributeValue() {
-            if (!IsInteractive) {
+        public override bool ReadAttributeValue()
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             XAttribute a = source as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 return ReadIntoAttribute(a);
             }
             return false;
         }
 
-        public override bool ReadToDescendant(string localName, string namespaceName) {
-            if (!IsInteractive) {
+        public override bool ReadToDescendant(string localName, string namespaceName)
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             MoveToElement();
             XElement c = source as XElement;
-            if (c != null && !c.IsEmpty) {
-                if (IsEndElement) {
+            if (c != null && !c.IsEmpty)
+            {
+                if (IsEndElement)
+                {
                     return false;
                 }
-                foreach (XElement e in c.Descendants()) {
+                foreach (XElement e in c.Descendants())
+                {
                     if (e.Name.LocalName == localName &&
-                        e.Name.NamespaceName == namespaceName) {
+                        e.Name.NamespaceName == namespaceName)
+                    {
                         source = e;
                         return true;
                     }
@@ -8759,12 +9945,16 @@ namespace System.Xml.Linq
             return false;
         }
 
-        public override bool ReadToFollowing(string localName, string namespaceName) {
-            while (Read()) {
+        public override bool ReadToFollowing(string localName, string namespaceName)
+        {
+            while (Read())
+            {
                 XElement e = source as XElement;
-                if (e != null) {
+                if (e != null)
+                {
                     if (IsEndElement) continue;
-                    if (e.Name.LocalName == localName && e.Name.NamespaceName == namespaceName) {
+                    if (e.Name.LocalName == localName && e.Name.NamespaceName == namespaceName)
+                    {
                         return true;
                     }
                 }
@@ -8772,30 +9962,39 @@ namespace System.Xml.Linq
             return false;
         }
 
-        public override bool ReadToNextSibling(string localName, string namespaceName) {
-            if (!IsInteractive) {
+        public override bool ReadToNextSibling(string localName, string namespaceName)
+        {
+            if (!IsInteractive)
+            {
                 return false;
             }
             MoveToElement();
-            if (source != root) {
+            if (source != root)
+            {
                 XNode n = source as XNode;
-                if (n != null) {
-                    foreach (XElement e in n.ElementsAfterSelf()) {
+                if (n != null)
+                {
+                    foreach (XElement e in n.ElementsAfterSelf())
+                    {
                         if (e.Name.LocalName == localName &&
-                            e.Name.NamespaceName == namespaceName) {
+                            e.Name.NamespaceName == namespaceName)
+                        {
                             source = e;
                             IsEndElement = false;
                             return true;
                         }
                     }
-                    if (n.parent is XElement) {
+                    if (n.parent is XElement)
+                    {
                         source = n.parent;
                         IsEndElement = true;
                         return false;
                     }
                 }
-                else {
-                    if (parent is XElement) {
+                else
+                {
+                    if (parent is XElement)
+                    {
                         source = parent;
                         parent = null;
                         IsEndElement = true;
@@ -8803,45 +10002,56 @@ namespace System.Xml.Linq
                     }
                 }
             }
-            return ReadToEnd(); 
-        }        
-
-        public override void ResolveEntity() {
+            return ReadToEnd();
         }
 
-        public override void Skip() {
-            if (!IsInteractive) {
+        public override void ResolveEntity()
+        {
+        }
+
+        public override void Skip()
+        {
+            if (!IsInteractive)
+            {
                 return;
             }
             Read(true);
         }
 
 #if !SILVERLIGHT
-        internal override IDtdInfo DtdInfo {
-            get {
-                if (this.dtdInfoInitialized) {
+        internal override IDtdInfo DtdInfo
+        {
+            get
+            {
+                if (this.dtdInfoInitialized)
+                {
                     return this.dtdInfo;
                 }
-                else {
+                else
+                {
                     this.dtdInfoInitialized = true;
                     // If we're on the DocumentType use it directly
                     XDocumentType doctype = this.source as XDocumentType;
-                    if (doctype == null) {
+                    if (doctype == null)
+                    {
                         // otherwise start from the root 
                         // (no need to start from source as we need to walk up the whole tree
                         //     looking for the XDocument)
                         // and look for the XDocument
                         XNode n = this.root;
-                        while (n != null) {
+                        while (n != null)
+                        {
                             XDocument doc = n as XDocument;
-                            if (doc != null) {
+                            if (doc != null)
+                            {
                                 doctype = doc.DocumentType;
                                 break;
                             }
                             n = n.parent;
                         }
                     }
-                    if (doctype != null) {
+                    if (doctype != null)
+                    {
                         this.dtdInfo = doctype.DtdInfo;
                     }
                     return this.dtdInfo;
@@ -8850,40 +10060,52 @@ namespace System.Xml.Linq
         }
 #endif
 
-        bool IXmlLineInfo.HasLineInfo() {
-            if (IsEndElement) {
+        bool IXmlLineInfo.HasLineInfo()
+        {
+            if (IsEndElement)
+            {
                 // Special case for EndElement - we store the line info differently in this case
                 //   we also know that the current node (source) is XElement
                 XElement e = source as XElement;
-                if (e != null) {
+                if (e != null)
+                {
                     return e.Annotation<LineInfoEndElementAnnotation>() != null;
                 }
             }
-            else {
+            else
+            {
                 IXmlLineInfo li = source as IXmlLineInfo;
-                if (li != null) {
+                if (li != null)
+                {
                     return li.HasLineInfo();
                 }
             }
             return false;
         }
 
-        int IXmlLineInfo.LineNumber {
-            get {
-                if (IsEndElement) {
+        int IXmlLineInfo.LineNumber
+        {
+            get
+            {
+                if (IsEndElement)
+                {
                     // Special case for EndElement - we store the line info differently in this case
                     //   we also know that the current node (source) is XElement
                     XElement e = source as XElement;
-                    if (e != null) {
+                    if (e != null)
+                    {
                         LineInfoEndElementAnnotation a = e.Annotation<LineInfoEndElementAnnotation>();
-                        if (a != null) {
+                        if (a != null)
+                        {
                             return a.lineNumber;
                         }
                     }
                 }
-                else {
+                else
+                {
                     IXmlLineInfo li = source as IXmlLineInfo;
-                    if (li != null) {
+                    if (li != null)
+                    {
                         return li.LineNumber;
                     }
                 }
@@ -8891,22 +10113,29 @@ namespace System.Xml.Linq
             }
         }
 
-        int IXmlLineInfo.LinePosition {
-            get {
-                if (IsEndElement) {
+        int IXmlLineInfo.LinePosition
+        {
+            get
+            {
+                if (IsEndElement)
+                {
                     // Special case for EndElement - we store the line info differently in this case
                     //   we also know that the current node (source) is XElement
                     XElement e = source as XElement;
-                    if (e != null) {
+                    if (e != null)
+                    {
                         LineInfoEndElementAnnotation a = e.Annotation<LineInfoEndElementAnnotation>();
-                        if (a != null) {
+                        if (a != null)
+                        {
                             return a.linePosition;
                         }
                     }
                 }
-                else {
+                else
+                {
                     IXmlLineInfo li = source as IXmlLineInfo;
-                    if (li != null) {
+                    if (li != null)
+                    {
                         return li.LinePosition;
                     }
                 }
@@ -8914,16 +10143,19 @@ namespace System.Xml.Linq
             }
         }
 
-        bool IsEndElement {
+        bool IsEndElement
+        {
             get { return parent == source; }
             set { parent = value ? source : null; }
         }
 
-        bool IsInteractive {
+        bool IsInteractive
+        {
             get { return state == ReadState.Interactive; }
         }
 
-        static XmlNameTable CreateNameTable() {
+        static XmlNameTable CreateNameTable()
+        {
             XmlNameTable nameTable = new NameTable();
             nameTable.Add(string.Empty);
             nameTable.Add(XNamespace.xmlnsPrefixNamespace);
@@ -8931,60 +10163,76 @@ namespace System.Xml.Linq
             return nameTable;
         }
 
-        XElement GetElementInAttributeScope() {
+        XElement GetElementInAttributeScope()
+        {
             XElement e = source as XElement;
-            if (e != null) {
-                if (IsEndElement) {
+            if (e != null)
+            {
+                if (IsEndElement)
+                {
                     return null;
                 }
                 return e;
             }
             XAttribute a = source as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 return (XElement)a.parent;
             }
             a = parent as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 return (XElement)a.parent;
             }
             return null;
         }
 
-        XElement GetElementInScope() {
+        XElement GetElementInScope()
+        {
             XElement e = source as XElement;
-            if (e != null) {
+            if (e != null)
+            {
                 return e;
             }
             XNode n = source as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 return n.parent as XElement;
             }
             XAttribute a = source as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 return (XElement)a.parent;
             }
             e = parent as XElement;
-            if (e != null) {
+            if (e != null)
+            {
                 return e;
             }
             a = parent as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 return (XElement)a.parent;
             }
             return null;
         }
 
-        static void GetNameInAttributeScope(string qualifiedName, XElement e, out string localName, out string namespaceName) {
-            if (qualifiedName != null && qualifiedName.Length != 0) {
+        static void GetNameInAttributeScope(string qualifiedName, XElement e, out string localName, out string namespaceName)
+        {
+            if (qualifiedName != null && qualifiedName.Length != 0)
+            {
                 int i = qualifiedName.IndexOf(':');
-                if (i != 0 && i != qualifiedName.Length - 1) { 
-                    if (i == -1) {
+                if (i != 0 && i != qualifiedName.Length - 1)
+                {
+                    if (i == -1)
+                    {
                         localName = qualifiedName;
                         namespaceName = string.Empty;
                         return;
                     }
                     XNamespace ns = e.GetNamespaceOfPrefix(qualifiedName.Substring(0, i));
-                    if (ns != null) {
+                    if (ns != null)
+                    {
                         localName = qualifiedName.Substring(i + 1, qualifiedName.Length - i - 1);
                         namespaceName = ns.NamespaceName;
                         return;
@@ -8995,115 +10243,142 @@ namespace System.Xml.Linq
             namespaceName = null;
         }
 
-        bool Read(bool skipContent) {
+        bool Read(bool skipContent)
+        {
             XElement e = source as XElement;
-            if (e != null) {
-                if (e.IsEmpty || IsEndElement || skipContent) {
+            if (e != null)
+            {
+                if (e.IsEmpty || IsEndElement || skipContent)
+                {
                     return ReadOverNode(e);
                 }
                 return ReadIntoElement(e);
             }
             XNode n = source as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 return ReadOverNode(n);
             }
             XAttribute a = source as XAttribute;
-            if (a != null) {
+            if (a != null)
+            {
                 return ReadOverAttribute(a, skipContent);
             }
             return ReadOverText(skipContent);
         }
 
-        bool ReadIntoDocument(XDocument d) {
+        bool ReadIntoDocument(XDocument d)
+        {
             XNode n = d.content as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 source = n.next;
                 return true;
             }
             string s = d.content as string;
-            if (s != null) {
-                if (s.Length > 0) {
+            if (s != null)
+            {
+                if (s.Length > 0)
+                {
                     source = s;
                     parent = d;
                     return true;
                 }
             }
-            return ReadToEnd(); 
+            return ReadToEnd();
         }
-        
-        bool ReadIntoElement(XElement e) {
+
+        bool ReadIntoElement(XElement e)
+        {
             XNode n = e.content as XNode;
-            if (n != null) {
+            if (n != null)
+            {
                 source = n.next;
                 return true;
             }
             string s = e.content as string;
-            if (s != null) {
-                if (s.Length > 0) {
+            if (s != null)
+            {
+                if (s.Length > 0)
+                {
                     source = s;
                     parent = e;
                 }
-                else {
+                else
+                {
                     source = e;
                     IsEndElement = true;
                 }
                 return true;
             }
-            return ReadToEnd(); 
+            return ReadToEnd();
         }
 
-        bool ReadIntoAttribute(XAttribute a) {
+        bool ReadIntoAttribute(XAttribute a)
+        {
             source = a.value;
             parent = a;
             return true;
         }
 
-        bool ReadOverAttribute(XAttribute a, bool skipContent) {
+        bool ReadOverAttribute(XAttribute a, bool skipContent)
+        {
             XElement e = (XElement)a.parent;
-            if (e != null) {
-                if (e.IsEmpty || skipContent) {
+            if (e != null)
+            {
+                if (e.IsEmpty || skipContent)
+                {
                     return ReadOverNode(e);
                 }
                 return ReadIntoElement(e);
             }
-            return ReadToEnd(); 
+            return ReadToEnd();
         }
 
-        bool ReadOverNode(XNode n) {
-            if (n == root) {
-                return ReadToEnd(); 
-            }            
+        bool ReadOverNode(XNode n)
+        {
+            if (n == root)
+            {
+                return ReadToEnd();
+            }
             XNode next = n.next;
-            if (null == next || next == n || n == n.parent.content) {
-                if (n.parent == null || (n.parent.parent == null && n.parent is XDocument)) {
-                    return ReadToEnd(); 
-                }                
+            if (null == next || next == n || n == n.parent.content)
+            {
+                if (n.parent == null || (n.parent.parent == null && n.parent is XDocument))
+                {
+                    return ReadToEnd();
+                }
                 source = n.parent;
                 IsEndElement = true;
             }
-            else {
+            else
+            {
                 source = next;
                 IsEndElement = false;
             }
             return true;
         }
 
-        bool ReadOverText(bool skipContent) {
-            if (parent is XElement) {
+        bool ReadOverText(bool skipContent)
+        {
+            if (parent is XElement)
+            {
                 source = parent;
                 parent = null;
                 IsEndElement = true;
                 return true;
             }
-            if (parent is XAttribute) {
+            if (parent is XAttribute)
+            {
                 XAttribute a = (XAttribute)parent;
                 parent = null;
                 return ReadOverAttribute(a, skipContent);
             }
-            return ReadToEnd(); 
+            return ReadToEnd();
         }
 
-        bool ReadToEnd() {
+        bool ReadToEnd()
+        {
             state = ReadState.EndOfFile;
             return false;
         }
@@ -9114,20 +10389,25 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="a">The attribute to test</param>
         /// <returns>true if the attribute is a duplicate namespace declaration attribute</returns>
-        bool IsDuplicateNamespaceAttribute(XAttribute candidateAttribute) {
-            if (!candidateAttribute.IsNamespaceDeclaration) {
+        bool IsDuplicateNamespaceAttribute(XAttribute candidateAttribute)
+        {
+            if (!candidateAttribute.IsNamespaceDeclaration)
+            {
                 return false;
             }
-            else {
+            else
+            {
                 // Split the method in two to enable inlining of this piece (Which will work for 95% of cases)
                 return IsDuplicateNamespaceAttributeInner(candidateAttribute);
             }
         }
 
-        bool IsDuplicateNamespaceAttributeInner(XAttribute candidateAttribute) {
+        bool IsDuplicateNamespaceAttributeInner(XAttribute candidateAttribute)
+        {
             // First of all - if this is an xmlns:xml declaration then it's a duplicate
             //   since xml prefix can't be redeclared and it's declared by default always.
-            if (candidateAttribute.Name.LocalName == "xml") {
+            if (candidateAttribute.Name.LocalName == "xml")
+            {
                 return true;
             }
             // The algorithm we use is:
@@ -9136,27 +10416,34 @@ namespace System.Xml.Linq
             //    If it declares that prefix to the exact same URI as ours does then ours is a duplicate
             //    Note that if we find a namespace declaration for the same prefix but with a different URI, then we don't have a dupe!
             XElement element = candidateAttribute.parent as XElement;
-            if (element == root || element == null) {
+            if (element == root || element == null)
+            {
                 // If there's only the parent element of our attribute, there can be no duplicates
                 return false;
             }
             element = element.parent as XElement;
-            while (element != null) {
+            while (element != null)
+            {
                 // Search all attributes of this element for the same prefix declaration
                 // Trick - a declaration for the same prefix will have the exact same XName - so we can do a quick ref comparison of names
                 // (The default ns decl is represented by an XName "xmlns{}", even if you try to create
                 //  an attribute with XName "xmlns{http://www.w3.org/2000/xmlns/}" it will fail,
                 //  because it's treated as a declaration of prefix "xmlns" which is invalid)
                 XAttribute a = element.lastAttr;
-                if (a != null) {
-                    do {
-                        if (a.name == candidateAttribute.name) {
+                if (a != null)
+                {
+                    do
+                    {
+                        if (a.name == candidateAttribute.name)
+                        {
                             // Found the same prefix decl
-                            if (a.Value == candidateAttribute.Value) {
+                            if (a.Value == candidateAttribute.Value)
+                            {
                                 // And it's for the same namespace URI as well - so ours is a duplicate
                                 return true;
                             }
-                            else {
+                            else
+                            {
                                 // It's not for the same namespace URI - which means we have to keep ours
                                 //   (no need to continue the search as this one overrides anything above it)
                                 return false;
@@ -9165,7 +10452,8 @@ namespace System.Xml.Linq
                         a = a.next;
                     } while (a != element.lastAttr);
                 }
-                if (element == root) {
+                if (element == root)
+                {
                     return false;
                 }
                 element = element.parent as XElement;
@@ -9178,18 +10466,23 @@ namespace System.Xml.Linq
         /// </summary>
         /// <param name="candidate">The attribute to start with</param>
         /// <returns>The first attribute which is not a namespace attribute or null if the end of attributes has bean reached</returns>
-        XAttribute GetFirstNonDuplicateNamespaceAttribute(XAttribute candidate) {
+        XAttribute GetFirstNonDuplicateNamespaceAttribute(XAttribute candidate)
+        {
             Debug.Assert(omitDuplicateNamespaces, "This method should only be caled if we're omitting duplicate namespace attribute." +
                 "For perf reason it's better to test this flag in the caller method.");
-            if (!IsDuplicateNamespaceAttribute(candidate)) {
+            if (!IsDuplicateNamespaceAttribute(candidate))
+            {
                 return candidate;
             }
 
             XElement e = candidate.parent as XElement;
-            if (e != null && candidate != e.lastAttr) {
-                do {
+            if (e != null && candidate != e.lastAttr)
+            {
+                do
+                {
                     candidate = candidate.next;
-                    if (!IsDuplicateNamespaceAttribute(candidate)) {
+                    if (!IsDuplicateNamespaceAttribute(candidate))
+                    {
                         return candidate;
                     }
                 } while (candidate != e.lastAttr);
@@ -9199,7 +10492,7 @@ namespace System.Xml.Linq
     }
 
 #if !PRODUCTION_BUILD
-    static class Res 
+    static class Res
     {
         internal const string Argument_AddAttribute = "Argument_AddAttribute";
         internal const string Argument_AddNode = "Argument_AddNode";
@@ -9234,78 +10527,81 @@ namespace System.Xml.Linq
         internal const string NotSupported_WriteBase64 = "NotSupported_WriteBase64";
         internal const string NotSupported_WriteEntityRef = "NotSupported_WriteEntityRef";
 
-        public static string GetString(string name) {
-            switch (name) {
-                case Argument_AddAttribute:
-                    return "An attribute cannot be added to content.";
-                case Argument_AddNode:
-                    return "A node of type {0} cannot be added to content.";
-                case Argument_AddNonWhitespace:
-                    return "Non white space characters cannot be added to content.";
-                case Argument_ConvertToString:
-                    return "The argument cannot be converted to a string.";
-                case Argument_CreateNavigator:
-                    return "This XPathNavigator cannot be created on a node of type {0}.";
-                case Argument_InvalidExpandedName:
-                    return "'{0}' is an invalid expanded name.";
-                case Argument_InvalidPIName:
-                    return "'{0}' is an invalid name for a processing instruction.";
-                case Argument_InvalidPrefix:
-                    return "'{0}' is an invalid prefix.";
-                case Argument_MustBeDerivedFrom:
-                    return "The argument must be derived from {0}.";
-                case Argument_NamespaceDeclarationPrefixed:
-                     return "The prefix '{0}' cannot be bound to the empty namespace name.";
-                case Argument_NamespaceDeclarationXml:
-                     return "The prefix 'xml' is bound to the namespace name 'http://www.w3.org/XML/1998/namespace'. Other prefixes must not be bound to this namespace name, and it must not be declared as the default namespace.";
-                case Argument_NamespaceDeclarationXmlns:
-                     return "The prefix 'xmlns' is bound to the namespace name 'http://www.w3.org/2000/xmlns/'. It must not be declared. Other prefixes must not be bound to this namespace name, and it must not be declared as the default namespace.";
-                case Argument_XObjectValue:
-                    return "An XObject cannot be used as a value.";
-                case InvalidOperation_BadNodeType:
-                    return "This operation is not valid on a node of type {0}.";
-                case InvalidOperation_DocumentStructure:
-                    return "This operation would create an incorrectly structured document.";
-                case InvalidOperation_DuplicateAttribute:
-                    return "Duplicate attribute."; 
-                case InvalidOperation_ExpectedEndOfFile:
-                    return "The XmlReader state should be EndOfFile after this operation.";
-                case InvalidOperation_ExpectedInteractive:
-                    return "The XmlReader state should be Interactive."; 
-                case InvalidOperation_ExpectedNodeType:
-                    return "The XmlReader must be on a node of type {0} instead of a node of type {1}.";
-                case InvalidOperation_ExternalCode:
-                    return "This operation was corrupted by external code."; 
-                case InvalidOperation_DeserializeInstance:
-                    return "This instance cannot be deserialized.";
-                case InvalidOperation_MissingAncestor:
-                    return "A common ancestor is missing.";
-                case InvalidOperation_MissingParent:
-                    return "The parent is missing.";
-                case InvalidOperation_MissingRoot:
-                    return "The root element is missing.";
-                case InvalidOperation_UnexpectedEvaluation:
-                    return "The XPath expression evaluated to unexpected type {0}.";
-                case InvalidOperation_UnexpectedNodeType:
-                    return "The XmlReader should not be on a node of type {0}.";
-                case InvalidOperation_UnresolvedEntityReference:
-                    return "The XmlReader cannot resolve entity references."; 
-                case InvalidOperation_WriteAttribute:
-                    return "An attribute cannot be written after content.";
-                case NotSupported_CheckValidity:
-                    return "This XPathNavigator does not support XSD validation.";
-                case NotSupported_MoveToId:
-                    return "This XPathNavigator does not support IDs.";
-                case NotSupported_WriteBase64:
-                    return "This XmlWriter does not support base64 encoded data.";
-                case NotSupported_WriteEntityRef:
-                    return "This XmlWriter does not support entity references.";
+        public static string GetString(string name)
+        {
+            switch (name)
+            {
+            case Argument_AddAttribute:
+                return "An attribute cannot be added to content.";
+            case Argument_AddNode:
+                return "A node of type {0} cannot be added to content.";
+            case Argument_AddNonWhitespace:
+                return "Non white space characters cannot be added to content.";
+            case Argument_ConvertToString:
+                return "The argument cannot be converted to a string.";
+            case Argument_CreateNavigator:
+                return "This XPathNavigator cannot be created on a node of type {0}.";
+            case Argument_InvalidExpandedName:
+                return "'{0}' is an invalid expanded name.";
+            case Argument_InvalidPIName:
+                return "'{0}' is an invalid name for a processing instruction.";
+            case Argument_InvalidPrefix:
+                return "'{0}' is an invalid prefix.";
+            case Argument_MustBeDerivedFrom:
+                return "The argument must be derived from {0}.";
+            case Argument_NamespaceDeclarationPrefixed:
+                return "The prefix '{0}' cannot be bound to the empty namespace name.";
+            case Argument_NamespaceDeclarationXml:
+                return "The prefix 'xml' is bound to the namespace name 'http://www.w3.org/XML/1998/namespace'. Other prefixes must not be bound to this namespace name, and it must not be declared as the default namespace.";
+            case Argument_NamespaceDeclarationXmlns:
+                return "The prefix 'xmlns' is bound to the namespace name 'http://www.w3.org/2000/xmlns/'. It must not be declared. Other prefixes must not be bound to this namespace name, and it must not be declared as the default namespace.";
+            case Argument_XObjectValue:
+                return "An XObject cannot be used as a value.";
+            case InvalidOperation_BadNodeType:
+                return "This operation is not valid on a node of type {0}.";
+            case InvalidOperation_DocumentStructure:
+                return "This operation would create an incorrectly structured document.";
+            case InvalidOperation_DuplicateAttribute:
+                return "Duplicate attribute.";
+            case InvalidOperation_ExpectedEndOfFile:
+                return "The XmlReader state should be EndOfFile after this operation.";
+            case InvalidOperation_ExpectedInteractive:
+                return "The XmlReader state should be Interactive.";
+            case InvalidOperation_ExpectedNodeType:
+                return "The XmlReader must be on a node of type {0} instead of a node of type {1}.";
+            case InvalidOperation_ExternalCode:
+                return "This operation was corrupted by external code.";
+            case InvalidOperation_DeserializeInstance:
+                return "This instance cannot be deserialized.";
+            case InvalidOperation_MissingAncestor:
+                return "A common ancestor is missing.";
+            case InvalidOperation_MissingParent:
+                return "The parent is missing.";
+            case InvalidOperation_MissingRoot:
+                return "The root element is missing.";
+            case InvalidOperation_UnexpectedEvaluation:
+                return "The XPath expression evaluated to unexpected type {0}.";
+            case InvalidOperation_UnexpectedNodeType:
+                return "The XmlReader should not be on a node of type {0}.";
+            case InvalidOperation_UnresolvedEntityReference:
+                return "The XmlReader cannot resolve entity references.";
+            case InvalidOperation_WriteAttribute:
+                return "An attribute cannot be written after content.";
+            case NotSupported_CheckValidity:
+                return "This XPathNavigator does not support XSD validation.";
+            case NotSupported_MoveToId:
+                return "This XPathNavigator does not support IDs.";
+            case NotSupported_WriteBase64:
+                return "This XmlWriter does not support base64 encoded data.";
+            case NotSupported_WriteEntityRef:
+                return "This XmlWriter does not support entity references.";
             }
-            return null; 
+            return null;
         }
 
-        public static string GetString(string name, params object[] args) {
-            string res = GetString(name); 
+        public static string GetString(string name, params object[] args)
+        {
+            string res = GetString(name);
             if (args == null || args.Length == 0) return res;
             return string.Format(CultureInfo.CurrentCulture, res, args);
         }
