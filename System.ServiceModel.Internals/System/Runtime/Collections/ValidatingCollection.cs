@@ -7,7 +7,7 @@ namespace System.Runtime.Collections
     using System.Collections.ObjectModel;
  
     // simple helper class to allow passing in a func that performs validations of
-    // acceptible values
+    // acceptable values
     class ValidatingCollection<T> : Collection<T>
     {
         public ValidatingCollection()
