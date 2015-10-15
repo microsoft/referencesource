@@ -3,13 +3,14 @@
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
 // 
 // ==--==
-// <OWNER>[....]</OWNER>
+// <OWNER>Microsoft</OWNER>
 // 
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security;
+using System.Runtime.Serialization;
 
 namespace System.Collections.Generic
 {
@@ -25,9 +26,6 @@ namespace System.Collections.Generic
         static volatile EqualityComparer<T> defaultComparer;
 
         public static EqualityComparer<T> Default {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get {
                 Contract.Ensures(Contract.Result<EqualityComparer<T>>() != null);
 
@@ -64,11 +62,28 @@ namespace System.Collections.Generic
                     return (EqualityComparer<T>)RuntimeTypeHandle.CreateInstanceForAnotherGenericParameter((RuntimeType)typeof(NullableEqualityComparer<int>), u);
                 }
             }
-            // If T is an int-based Enum, return an EnumEqualityComparer<T>
+            
             // See the METHOD__JIT_HELPERS__UNSAFE_ENUM_CAST and METHOD__JIT_HELPERS__UNSAFE_ENUM_CAST_LONG cases in getILIntrinsicImplementation
-            if (t.IsEnum && Enum.GetUnderlyingType(t) == typeof(int))
-            {
-                return (EqualityComparer<T>)RuntimeTypeHandle.CreateInstanceForAnotherGenericParameter((RuntimeType)typeof(EnumEqualityComparer<int>), t);
+            if (t.IsEnum) {
+                TypeCode underlyingTypeCode = Type.GetTypeCode(Enum.GetUnderlyingType(t));
+
+                // Depending on the enum type, we need to special case the comparers so that we avoid boxing
+                // Note: We have different comparers for Short and SByte because for those types we need to make sure we call GetHashCode on the actual underlying type as the 
+                // implementation of GetHashCode is more complex than for the other types.
+                switch (underlyingTypeCode) {
+                    case TypeCode.Int16: // short
+                        return (EqualityComparer<T>)RuntimeTypeHandle.CreateInstanceForAnotherGenericParameter((RuntimeType)typeof(ShortEnumEqualityComparer<short>), t);
+                    case TypeCode.SByte:
+                        return (EqualityComparer<T>)RuntimeTypeHandle.CreateInstanceForAnotherGenericParameter((RuntimeType)typeof(SByteEnumEqualityComparer<sbyte>), t);
+                    case TypeCode.Int32:
+                    case TypeCode.UInt32:
+                    case TypeCode.Byte:
+                    case TypeCode.UInt16: //ushort
+                        return (EqualityComparer<T>)RuntimeTypeHandle.CreateInstanceForAnotherGenericParameter((RuntimeType)typeof(EnumEqualityComparer<int>), t);
+                    case TypeCode.Int64:
+                    case TypeCode.UInt64:
+                        return (EqualityComparer<T>)RuntimeTypeHandle.CreateInstanceForAnotherGenericParameter((RuntimeType)typeof(LongEnumEqualityComparer<long>), t);
+                }
             }
             // Otherwise return an ObjectEqualityComparer<T>
             return new ObjectEqualityComparer<T>();
@@ -127,9 +142,6 @@ namespace System.Collections.Generic
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public override int GetHashCode(T obj) {
             if (obj == null) return 0;
             return obj.GetHashCode();
@@ -249,9 +261,6 @@ namespace System.Collections.Generic
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public override int GetHashCode(T obj) {
             if (obj == null) return 0;
             return obj.GetHashCode();
@@ -297,6 +306,34 @@ namespace System.Collections.Generic
             return this.GetType().Name.GetHashCode();
         }                                
     }
+
+#if FEATURE_CORECLR
+    // NonRandomizedStringEqualityComparer is the comparer used by default with the Dictionary<string,...> 
+    // As the randomized string hashing is turned on by default on coreclr, we need to keep the performance not affected 
+    // as much as possible in the main stream scenarios like Dictionary<string,…>
+    // We use NonRandomizedStringEqualityComparer as default comparer as it doesn’t use the randomized string hashing which 
+    // keep the perofrmance not affected till we hit collision threshold and then we switch to the comparer which is using 
+    // randomized string hashing GenericEqualityComparer<string>
+
+    internal class NonRandomizedStringEqualityComparer : GenericEqualityComparer<string> {
+        static IEqualityComparer<string> s_nonRandomizedComparer;
+        
+        internal static IEqualityComparer<string> Default {
+            get  {
+                    if (s_nonRandomizedComparer == null) {
+                        s_nonRandomizedComparer = new NonRandomizedStringEqualityComparer();
+                    }
+                    return s_nonRandomizedComparer;
+            }
+        }
+
+        [Pure]
+        public override int GetHashCode(string obj)  {
+            if (obj == null) return 0;
+            return obj.GetLegacyNonRandomizedHashCode();
+        }
+    }
+#endif // FEATURE_CORECLR
 
     // Performance of IndexOf on byte array is very important for some scenarios.
     // We will call the C runtime function memchr, which is optimized.
@@ -347,11 +384,10 @@ namespace System.Collections.Generic
         public override int GetHashCode() {
             return this.GetType().Name.GetHashCode();
         }                                
-        
     }
 
     [Serializable]
-    internal sealed class EnumEqualityComparer<T>: EqualityComparer<T> where T : struct
+    internal class EnumEqualityComparer<T> : EqualityComparer<T>, ISerializable where T : struct
     {
         [Pure]
         public override bool Equals(T x, T y) {
@@ -366,6 +402,19 @@ namespace System.Collections.Generic
             return x_final.GetHashCode();
         }
 
+        public EnumEqualityComparer() { }
+
+        // This is used by the serialization engine.
+        protected EnumEqualityComparer(SerializationInfo information, StreamingContext context) { }
+
+        [SecurityCritical]
+        public void GetObjectData(SerializationInfo info, StreamingContext context) {
+            // For back-compat we need to serialize the comparers for enums with underlying types other than int as ObjectEqualityComparer 
+            if (Type.GetTypeCode(Enum.GetUnderlyingType(typeof(T))) != TypeCode.Int32) {
+                info.SetType(typeof(ObjectEqualityComparer<T>));
+            }
+        }
+
         // Equals method for the comparer itself. 
         public override bool Equals(Object obj){
             EnumEqualityComparer<T> comparer = obj as EnumEqualityComparer<T>;
@@ -378,7 +427,37 @@ namespace System.Collections.Generic
     }
 
     [Serializable]
-    internal sealed class LongEnumEqualityComparer<T>: EqualityComparer<T> where T : struct
+    internal sealed class SByteEnumEqualityComparer<T> : EnumEqualityComparer<T>, ISerializable where T : struct
+    {
+        public SByteEnumEqualityComparer() { }
+
+        // This is used by the serialization engine.
+        public SByteEnumEqualityComparer(SerializationInfo information, StreamingContext context) { }
+
+        [Pure]
+        public override int GetHashCode(T obj) {
+            int x_final = System.Runtime.CompilerServices.JitHelpers.UnsafeEnumCast(obj);
+            return ((sbyte)x_final).GetHashCode();
+        }
+    }
+
+    [Serializable]
+    internal sealed class ShortEnumEqualityComparer<T> : EnumEqualityComparer<T>, ISerializable where T : struct
+    {
+        public ShortEnumEqualityComparer() { }
+
+        // This is used by the serialization engine.
+        public ShortEnumEqualityComparer(SerializationInfo information, StreamingContext context) { }
+
+        [Pure]
+        public override int GetHashCode(T obj) {
+            int x_final = System.Runtime.CompilerServices.JitHelpers.UnsafeEnumCast(obj);
+            return ((short)x_final).GetHashCode();
+        }
+    }
+
+    [Serializable]
+    internal sealed class LongEnumEqualityComparer<T> : EqualityComparer<T>, ISerializable where T : struct
     {
         [Pure]
         public override bool Equals(T x, T y) {
@@ -401,6 +480,19 @@ namespace System.Collections.Generic
 
         public override int GetHashCode() {
             return this.GetType().Name.GetHashCode();
+        }
+
+        public LongEnumEqualityComparer() { }
+
+        // This is used by the serialization engine.
+        public LongEnumEqualityComparer(SerializationInfo information, StreamingContext context) { }
+
+        [SecurityCritical]
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            // The LongEnumEqualityComparer does not exist on 4.0 so we need to serialize this comparer as ObjectEqualityComparer
+            // to allow for roundtrip between 4.0 and 4.5.
+            info.SetType(typeof(ObjectEqualityComparer<T>));
         }
     }
 

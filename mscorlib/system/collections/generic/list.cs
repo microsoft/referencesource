@@ -7,7 +7,7 @@
 **
 ** Class:  List
 ** 
-** <OWNER>[....]</OWNER>
+** <OWNER>Microsoft</OWNER>
 **
 ** Purpose: Implements a generic, dynamically sized list as an 
 **          array.
@@ -49,9 +49,6 @@ namespace System.Collections.Generic {
         // Constructs a List. The list is initially empty and has a capacity
         // of zero. Upon adding the first element to the list the capacity is
         // increased to 16, and then increased in multiples of two as required.
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public List() {
             _items = _emptyArray;
         }
@@ -60,9 +57,6 @@ namespace System.Collections.Generic {
         // initially empty, but will have room for the given number of elements
         // before any reallocations are required.
         // 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public List(int capacity) {
             if (capacity < 0) ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.capacity, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
             Contract.EndContractBlock();
@@ -114,9 +108,6 @@ namespace System.Collections.Generic {
         // array of the list is reallocated to the given capacity.
         // 
         public int Capacity {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get {
                 Contract.Ensures(Contract.Result<int>() >= 0);
                 return _items.Length;
@@ -157,16 +148,10 @@ namespace System.Collections.Generic {
             
         // Is this List read-only?
         bool ICollection<T>.IsReadOnly {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get { return false; }
         }
 
         bool System.Collections.IList.IsReadOnly {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get { return false; }
         }
 
@@ -187,9 +172,6 @@ namespace System.Collections.Generic {
         // Sets or Gets the element at the given index.
         // 
         public T this[int index] {
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             get {
                 // Following trick can reduce the range check by one
                 if ((uint) index >= (uint)_size) {
@@ -199,9 +181,6 @@ namespace System.Collections.Generic {
                 return _items[index]; 
             }
 
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             set {
                 if ((uint) index >= (uint)_size) {
                     ThrowHelper.ThrowArgumentOutOfRangeException();
@@ -378,9 +357,6 @@ namespace System.Collections.Generic {
         // Copies this List into array, which must be of a 
         // compatible array type.  
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public void CopyTo(T[] array) {
             CopyTo(array, 0);
         }
@@ -388,9 +364,6 @@ namespace System.Collections.Generic {
         // Copies this List into array, which must be of a 
         // compatible array type.  
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         void System.Collections.ICollection.CopyTo(Array array, int arrayIndex) {
             if ((array != null) && (array.Rank != 1)) {
                 ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
@@ -440,7 +413,6 @@ namespace System.Collections.Generic {
             }
         }
    
-#if FEATURE_LIST_PREDICATES || FEATURE_NETCORE
         public bool Exists(Predicate<T> match) {
             return FindIndex(match) != -1;
         }
@@ -569,7 +541,6 @@ namespace System.Collections.Generic {
             }
             return -1;
         }
-#endif // FEATURE_LIST_PREDICATES || FEATURE_NETCORE
 
         public void ForEach(Action<T> action) {
             if( action == null) {
@@ -595,24 +566,15 @@ namespace System.Collections.Generic {
         // while an enumeration is in progress, the MoveNext and 
         // GetObject methods of the enumerator will throw an exception.
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public Enumerator GetEnumerator() {
             return new Enumerator(this);
         }
 
         /// <internalonly/>
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif        
         IEnumerator<T> IEnumerable<T>.GetEnumerator() {
             return new Enumerator(this);
         }
 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif    
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
             return new Enumerator(this);
         }
@@ -647,18 +609,12 @@ namespace System.Collections.Generic {
         // This method uses the Array.IndexOf method to perform the
         // search.
         // 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int IndexOf(T item) {
             Contract.Ensures(Contract.Result<int>() >= -1);
             Contract.Ensures(Contract.Result<int>() < Count);
             return Array.IndexOf(_items, item, 0, _size);
         }
 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         int System.Collections.IList.IndexOf(Object item)
         {
             if(IsCompatibleObject(item)) {            
@@ -864,9 +820,6 @@ namespace System.Collections.Generic {
         // Removes the element at the given index. The size of the list is
         // decreased by one.
         // 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public bool Remove(T item) {
             int index = IndexOf(item);
             if (index >= 0) {
@@ -1067,7 +1020,6 @@ namespace System.Collections.Generic {
             }
         }    
 
-#if FEATURE_LIST_PREDICATES || FEATURE_NETCORE
         public bool TrueForAll(Predicate<T> match) {
             if( match == null) {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match);
@@ -1081,7 +1033,6 @@ namespace System.Collections.Generic {
             }
             return true;
         } 
-#endif // FEATURE_LIST_PREDICATES || FEATURE_NETCORE
 
         internal static IList<T> Synchronized(List<T> list) {
             return new SynchronizedList(list);
@@ -1200,9 +1151,6 @@ namespace System.Collections.Generic {
                 current = default(T);
             }
 
-#if !FEATURE_CORECLR
-            [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
             public void Dispose() {
             }
 

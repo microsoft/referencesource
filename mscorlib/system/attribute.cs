@@ -44,12 +44,16 @@ namespace System {
             List<Attribute> attributeList = new List<Attribute>();
             CopyToArrayList(attributeList, attributes, types);
 
-            PropertyInfo baseProp = GetParentDefinition(element);
+            //if this is an index we need to get the parameter types to help disambiguate
+            Type[] indexParamTypes = GetIndexParameterTypes(element);
+            
+
+            PropertyInfo baseProp = GetParentDefinition(element, indexParamTypes);
             while (baseProp != null)
             {
                 attributes = GetCustomAttributes(baseProp, type, false);
                 AddAttributesToList(attributeList, attributes, types);
-                baseProp = GetParentDefinition(baseProp);
+                baseProp = GetParentDefinition(baseProp, indexParamTypes);
             }
             Array array = CreateAttributeArrayHelper(type, attributeList.Count);
             Array.Copy(attributeList.ToArray(), 0, array, 0, attributeList.Count);
@@ -69,21 +73,24 @@ namespace System {
                 if (!usage.Inherited) 
                     return false;
 
-                PropertyInfo baseProp = GetParentDefinition(element);
+                //if this is an index we need to get the parameter types to help disambiguate
+                Type[] indexParamTypes = GetIndexParameterTypes(element);
+
+                PropertyInfo baseProp = GetParentDefinition(element, indexParamTypes);
 
                 while (baseProp != null)
                 {
                     if (baseProp.IsDefined(attributeType, false))
                         return true;
 
-                    baseProp = GetParentDefinition(baseProp);
+                    baseProp = GetParentDefinition(baseProp, indexParamTypes);
                 }
             }
 
             return false;
         }
 
-        private static PropertyInfo GetParentDefinition(PropertyInfo property)
+        private static PropertyInfo GetParentDefinition(PropertyInfo property, Type[] propertyParameters)
         {
             Contract.Requires(property != null);
 
@@ -113,7 +120,10 @@ namespace System {
                     return rtPropAccessor.DeclaringType.GetProperty(
                         property.Name,
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly,
-                        property.PropertyType);
+                        null, //will use default binder
+                        property.PropertyType,
+                        propertyParameters, //used for index properties
+                        null);
 				}
             }
 
@@ -366,6 +376,23 @@ namespace System {
                 if (!types.ContainsKey(attrType)) 
                     types[attrType] = InternalGetAttributeUsage(attrType);
             }
+        }
+
+        private static Type[] GetIndexParameterTypes(PropertyInfo element)
+        {
+            ParameterInfo[] indexParams = element.GetIndexParameters();
+
+            if (indexParams.Length > 0)
+            {
+                Type[] indexParamTypes = new Type[indexParams.Length];
+                for (int i = 0; i < indexParams.Length; i++)
+                {
+                    indexParamTypes[i] = indexParams[i].ParameterType;
+                }
+                return indexParamTypes;
+            }
+
+            return Array.Empty<Type>();
         }
 
         private static void AddAttributesToList(List<Attribute> attributeList, Attribute[] attributes, Dictionary<Type, AttributeUsageAttribute> types) 
@@ -922,6 +949,7 @@ namespace System {
         public virtual bool IsDefaultAttribute() { return false; }
         #endregion
 
+#if !FEATURE_CORECLR
         void _Attribute.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -941,5 +969,6 @@ namespace System {
         {
             throw new NotImplementedException();
         }
+#endif
     }
 }

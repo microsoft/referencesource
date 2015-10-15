@@ -92,7 +92,7 @@ namespace System.Runtime.Serialization
             }
             else
             {
-                // Getting here means a bug in cloner
+                // Getting here means a 
                 throw new ArgumentException(Environment.GetResourceString("Arg_SerializationException"));
             }
 

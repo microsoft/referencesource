@@ -670,8 +670,10 @@ namespace System.Runtime.Serialization
                     XmlQualifiedName qname = new XmlQualifiedName(name, ns);
                     if (!nameToBuiltInContract.TryGetValue(qname, out dataContract))
                     {
-                        TryCreateBuiltInDataContract(name, ns, out dataContract);
-                        nameToBuiltInContract.Add(qname, dataContract);
+                        if (TryCreateBuiltInDataContract(name, ns, out dataContract))
+                        {
+                            nameToBuiltInContract.Add(qname, dataContract);
+                        }
                     }
                     return dataContract;
                 }
@@ -1404,7 +1406,7 @@ namespace System.Runtime.Serialization
         static XmlQualifiedName GetDCTypeStableName(Type type, DataContractAttribute dataContractAttribute)
         {
             string name = null, ns = null;
-            if (dataContractAttribute.IsNameSetExplicit)
+            if (dataContractAttribute.IsNameSetExplicitly)
             {
                 name = dataContractAttribute.Name;
                 if (name == null || name.Length == 0)
@@ -1416,7 +1418,7 @@ namespace System.Runtime.Serialization
             else
                 name = GetDefaultStableLocalName(type);
 
-            if (dataContractAttribute.IsNamespaceSetExplicit)
+            if (dataContractAttribute.IsNamespaceSetExplicitly)
             {
                 ns = dataContractAttribute.Namespace;
                 if (ns == null)
@@ -1517,7 +1519,7 @@ namespace System.Runtime.Serialization
                     throw System.Runtime.Serialization.DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidDataContractException(SR.GetString(SR.TooManyCollectionContracts, DataContract.GetClrTypeFullName(type))));
 #endif
                 collectionContractAttribute = (CollectionDataContractAttribute)collectionContractAttributes[0];
-                if (collectionContractAttribute.IsNameSetExplicit)
+                if (collectionContractAttribute.IsNameSetExplicitly)
                 {
                     name = collectionContractAttribute.Name;
                     if (name == null || name.Length == 0)
@@ -1529,7 +1531,7 @@ namespace System.Runtime.Serialization
                 else
                     name = GetDefaultStableLocalName(type);
 
-                if (collectionContractAttribute.IsNamespaceSetExplicit)
+                if (collectionContractAttribute.IsNamespaceSetExplicitly)
                 {
                     ns = collectionContractAttribute.Namespace;
                     if (ns == null)

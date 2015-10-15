@@ -7,7 +7,7 @@
 **
 ** Interface:  IAppDomain
 ** 
-** <OWNER>[....]</OWNER>
+** <OWNER>mray</OWNER>
 **
 **
 ** Purpose: Properties and methods exposed to COM
@@ -41,6 +41,7 @@ namespace System {
 [System.Runtime.InteropServices.ComVisible(true)]
     public interface _AppDomain
     {
+#if !FEATURE_CORECLR
         void GetTypeInfoCount(out uint pcTInfo);
 
         void GetTypeInfo(uint iTInfo, uint lcid, IntPtr ppTInfo);
@@ -264,6 +265,7 @@ namespace System {
 
         String DynamicDirectory
         { get; }
+#endif
     }
 }
 

@@ -57,14 +57,11 @@ namespace System {
         //
         [NonSerialized]private int  m_stringLength;
 
-        #if !FEATURE_CORECLR
-        [System.Runtime.ForceTokenStabilization]
-        #endif //!FEATURE_CORECLR
         [NonSerialized]private char m_firstChar;
 
         //private static readonly char FmtMsgMarkerChar='%';
         //private static readonly char FmtMsgFmtCodeChar='!';
-        //These are defined in Com99/src/vm/COMStringCommon.h and must be kept in [....].
+        //These are defined in Com99/src/vm/COMStringCommon.h and must be kept in sync.
         private const int TrimHead = 0;
         private const int TrimTail = 1;
         private const int TrimBoth = 2;
@@ -526,9 +523,6 @@ namespace System {
         // Determines whether two strings match.
         [Pure]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public bool Equals(String value) {
             if (this == null)                        //this is necessary to guard against reverse-pinvokes and
                 throw new NullReferenceException();  //other callers who do not use the callvirt instruction
@@ -597,9 +591,6 @@ namespace System {
 
         // Determines whether two Strings match.
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static bool Equals(String a, String b) {
             if ((Object)a==(Object)b) {
                 return true;
@@ -667,16 +658,10 @@ namespace System {
             }
         }
 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static bool operator == (String a, String b) {
            return String.Equals(a, b);
         }
 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static bool operator != (String a, String b) {
            return !String.Equals(a, b);
         }
@@ -724,7 +709,7 @@ namespace System {
         // Returns the entire string as an array of characters.
         [System.Security.SecuritySafeCritical]  // auto-generated
         unsafe public char[] ToCharArray() {
-            // <STRIP> huge performance improvement for short strings by doing this </STRIP>
+            // <
             int length = Length;
             char[] chars = new char[length];
             if (length > 0)
@@ -761,9 +746,6 @@ namespace System {
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static bool IsNullOrEmpty(String value) {
             return (value == null || value.Length == 0);
         }
@@ -780,11 +762,12 @@ namespace System {
         }
 
 #if FEATURE_RANDOMIZED_STRING_HASHING
+        // Do not remove!
+        // This method is called by reflection in System.Xml
         [System.Security.SecurityCritical]
-        [System.Security.SuppressUnmanagedCodeSecurity]
         [ResourceExposure(ResourceScope.None)]
-        [DllImport(JitHelpers.QCall, CharSet = CharSet.Unicode)]
-        internal static extern int InternalMarvin32HashString(string s, int sLen, long additionalEntropy);
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal static extern int InternalMarvin32HashString(string s, int strLen, long additionalEntropy);
 
         [System.Security.SecuritySafeCritical]
         [ResourceExposure(ResourceScope.None)]
@@ -1233,9 +1216,6 @@ namespace System {
        
         // Returns a substring of this string.
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String Substring (int startIndex) {
             return this.Substring (startIndex, Length-startIndex);
         }
@@ -1292,9 +1272,6 @@ namespace System {
     
         // Removes a string of characters from the ends of this string.
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String Trim(params char[] trimChars) {
             if (null==trimChars || trimChars.Length == 0) {
                 return TrimHelper(TrimBoth);
@@ -1303,9 +1280,6 @@ namespace System {
         }
     
         // Removes a string of characters from the beginning of this string.
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String TrimStart(params char[] trimChars) {
             if (null==trimChars || trimChars.Length == 0) {
                 return TrimHelper(TrimHead);
@@ -1315,9 +1289,6 @@ namespace System {
     
     
         // Removes a string of characters from the end of this string.
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String TrimEnd(params char[] trimChars) {
             if (null==trimChars || trimChars.Length == 0) {
                 return TrimHelper(TrimTail);
@@ -1600,29 +1571,32 @@ namespace System {
         {
             if (count > 0) {
                 String result = FastAllocateString(count);
-                unsafe {
-                    fixed (char *dest = result) {
-                        char *dmem = dest;
-                        while (((uint)dmem & 3) != 0 && count > 0) {
-                            *dmem++ = c;
-                            count--;
-                        }
-                        uint cc = (uint)((c << 16) | c);
-                        if (count >= 4) {
-                            count -= 4;
-                            do{
-                                ((uint *)dmem)[0] = cc;
-                                ((uint *)dmem)[1] = cc;
-                                dmem += 4;
+                if (c != 0)
+                {
+                    unsafe {
+                        fixed (char *dest = result) {
+                            char *dmem = dest;
+                            while (((uint)dmem & 3) != 0 && count > 0) {
+                                *dmem++ = c;
+                                count--;
+                            }
+                            uint cc = (uint)((c << 16) | c);
+                            if (count >= 4) {
                                 count -= 4;
-                            } while (count >= 0);
+                                do{
+                                    ((uint *)dmem)[0] = cc;
+                                    ((uint *)dmem)[1] = cc;
+                                    dmem += 4;
+                                    count -= 4;
+                                } while (count >= 0);
+                            }
+                            if ((count & 2) != 0) {
+                                ((uint *)dmem)[0] = cc;
+                                dmem += 2;
+                            }
+                            if ((count & 1) != 0)
+                                dmem[0] = c;
                         }
-                        if ((count & 2) != 0) {
-                            ((uint *)dmem)[0] = cc;
-                            dmem += 2;
-                        }
-                        if ((count & 1) != 0)
-                            dmem[0] = c;
                     }
                 }
                 return result;
@@ -1634,9 +1608,6 @@ namespace System {
         }
 
         [System.Security.SecurityCritical]  // auto-generated
-        #if !FEATURE_CORECLR
-        [System.Runtime.ForceTokenStabilization]
-        #endif //!FEATURE_CORECLR
         private static unsafe int wcslen(char *ptr)
         {
             char *end = ptr;
@@ -1698,9 +1669,6 @@ namespace System {
         }
 
         [System.Security.SecurityCritical]  // auto-generated
-        #if !FEATURE_CORECLR
-        [System.Runtime.ForceTokenStabilization]
-        #endif //!FEATURE_CORECLR
         private unsafe String CtorCharPtrStartLength(char *ptr, int startIndex, int length)
         {
             if (length < 0) {
@@ -1750,9 +1718,6 @@ namespace System {
         // either a negative integer, 0, or a positive integer; respectively.
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static int Compare(String strA, String strB) {
             return CultureInfo.CurrentCulture.CompareInfo.Compare(strA, strB, CompareOptions.None);
         }
@@ -1764,9 +1729,6 @@ namespace System {
         // The case-sensitive option is set by ignoreCase
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static int Compare(String strA, String strB, bool ignoreCase)
         {
             if (ignoreCase) {
@@ -1843,9 +1805,6 @@ namespace System {
         // negative integer, 0, or a positive integer is returned; respectively.
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static int Compare(String strA, String strB, CultureInfo culture, CompareOptions options) {
             if (culture==null) {
                 throw new ArgumentNullException("culture");
@@ -1864,9 +1823,6 @@ namespace System {
         // by culture
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static int Compare(String strA, String strB, bool ignoreCase, CultureInfo culture) {
             if (culture == null) {
                 throw new ArgumentNullException("culture");
@@ -2089,9 +2045,6 @@ namespace System {
         // greater than all non-String objects.  Note that this means sorted 
         // arrays would contain nulls, other objects, then Strings in that order.
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         [Pure]
         public int CompareTo(Object value) {
             if (value == null) {
@@ -2107,9 +2060,6 @@ namespace System {
     
         // Determines the sorting relation of StrB to the current instance.
         //
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         [Pure]
         public int CompareTo(String strB) {
             if (strB==null) {
@@ -2122,9 +2072,6 @@ namespace System {
         // Compares strA and strB using an ordinal (code-point) comparison.
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static int CompareOrdinal(String strA, String strB) {
             if ((Object)strA == (Object)strB) {
                 return 0;
@@ -2154,9 +2101,6 @@ namespace System {
         //
         [Pure]
         [System.Security.SecuritySafeCritical]  // auto-generated
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static int CompareOrdinal(String strA, int indexA, String strB, int indexB, int length) {
            if (strA == null || strB == null) {
                 if ((Object)strA==(Object)strB) { //they're both null;
@@ -2171,9 +2115,6 @@ namespace System {
 
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public bool Contains( string value ) {
             return ( IndexOf(value, StringComparison.Ordinal) >=0 );
         }
@@ -2185,7 +2126,7 @@ namespace System {
         //        
         [Pure]
         public Boolean EndsWith(String value) {
-            return EndsWith(value, (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return EndsWith(value, StringComparison.CurrentCulture);
         }
 
         [Pure]
@@ -2246,7 +2187,7 @@ namespace System {
 
             CultureInfo referenceCulture;
             if (culture == null)
-                referenceCulture = (LegacyMode ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture);
+                referenceCulture = CultureInfo.CurrentCulture;
             else
                 referenceCulture = culture;
 
@@ -2254,9 +2195,6 @@ namespace System {
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         internal bool EndsWith(char value) {
             int thisLen = this.Length;
             if (thisLen != 0) {
@@ -2271,17 +2209,11 @@ namespace System {
         // The search starts at startIndex and runs thorough the next count characters.
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int IndexOf(char value) {
             return IndexOf(value, 0, this.Length);
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int IndexOf(char value, int startIndex) {
             return IndexOf(value, startIndex, this.Length - startIndex);
         }
@@ -2296,17 +2228,11 @@ namespace System {
         // The search starts at startIndex and runs to endIndex-1. [startIndex,endIndex).
         //
         [Pure]        
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int IndexOfAny(char [] anyOf) {
             return IndexOfAny(anyOf,0, this.Length);
         }
     
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int IndexOfAny(char [] anyOf, int startIndex) {
             return IndexOfAny(anyOf, startIndex, this.Length - startIndex);
         }
@@ -2325,7 +2251,7 @@ namespace System {
         //
         [Pure]
         public int IndexOf(String value) {
-            return IndexOf(value, (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return IndexOf(value, StringComparison.CurrentCulture);
         }
 
         // Determines the position within this string of the first occurence of the specified
@@ -2334,7 +2260,7 @@ namespace System {
         //
         [Pure]
         public int IndexOf(String value, int startIndex) {
-            return IndexOf(value, startIndex, (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return IndexOf(value, startIndex, StringComparison.CurrentCulture);
         }
 
         // Determines the position within this string of the first occurence of the specified
@@ -2352,21 +2278,15 @@ namespace System {
             }
             Contract.EndContractBlock();
             
-            return IndexOf(value, startIndex, count, (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return IndexOf(value, startIndex, count, StringComparison.CurrentCulture);
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int IndexOf(String value, StringComparison comparisonType) {
             return IndexOf(value, 0, this.Length, comparisonType);
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int IndexOf(String value, int startIndex, StringComparison comparisonType) {
             return IndexOf(value, startIndex, this.Length - startIndex, comparisonType);
         }
@@ -2418,9 +2338,6 @@ namespace System {
         // index within the string.
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int LastIndexOf(char value) {
             return LastIndexOf(value, this.Length-1, this.Length);
         }
@@ -2468,14 +2385,12 @@ namespace System {
         //
         [Pure]
         public int LastIndexOf(String value) {
-            return LastIndexOf(value, this.Length-1,this.Length,
-                                  (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return LastIndexOf(value, this.Length-1,this.Length, StringComparison.CurrentCulture);
         }
 
         [Pure]
         public int LastIndexOf(String value, int startIndex) {
-            return LastIndexOf(value, startIndex, startIndex + 1,
-                                  (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return LastIndexOf(value, startIndex, startIndex + 1, StringComparison.CurrentCulture);
         }
 
         [Pure]
@@ -2485,14 +2400,10 @@ namespace System {
             }
             Contract.EndContractBlock();
 
-            return LastIndexOf(value, startIndex, count,
-                                  (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return LastIndexOf(value, startIndex, count, StringComparison.CurrentCulture);
         }
 
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public int LastIndexOf(String value, StringComparison comparisonType) {
             return LastIndexOf(value, this.Length-1, this.Length, comparisonType);
         }
@@ -2590,15 +2501,12 @@ namespace System {
         // Determines whether a specified string is a prefix of the current instance
         //
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public Boolean StartsWith(String value) {
             if ((Object)value == null) {
                 throw new ArgumentNullException("value");
             }
             Contract.EndContractBlock();
-            return StartsWith(value, (LegacyMode ? StringComparison.Ordinal : StringComparison.CurrentCulture));
+            return StartsWith(value, StringComparison.CurrentCulture);
         }
 
         [Pure]
@@ -2666,7 +2574,7 @@ namespace System {
 
             CultureInfo referenceCulture;
             if (culture == null)
-                referenceCulture = (LegacyMode ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture);
+                referenceCulture = CultureInfo.CurrentCulture;
             else
                 referenceCulture = culture;
 
@@ -2678,14 +2586,11 @@ namespace System {
         public String ToLower() {
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
-            return this.ToLower(LegacyMode ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture);
+            return this.ToLower(CultureInfo.CurrentCulture);
         }
     
         // Creates a copy of this string in lower case.  The culture is set by culture.
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String ToLower(CultureInfo culture) {
             if (culture==null) {
                 throw new ArgumentNullException("culture");
@@ -2697,9 +2602,6 @@ namespace System {
 
         // Creates a copy of this string in lower case based on invariant culture.
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String ToLowerInvariant() {
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
@@ -2711,15 +2613,12 @@ namespace System {
         public String ToUpper() {
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
-            return this.ToUpper(LegacyMode ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture);
+            return this.ToUpper(CultureInfo.CurrentCulture);
         }
    
 
         // Creates a copy of this string in upper case.  The culture is set by culture.
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String ToUpper(CultureInfo culture) {
             if (culture==null) {
                 throw new ArgumentNullException("culture");
@@ -2732,9 +2631,6 @@ namespace System {
 
         //Creates a copy of this string in upper case based on invariant culture.
         [Pure]
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String ToUpperInvariant() {
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
@@ -2743,18 +2639,12 @@ namespace System {
 
    
         // Returns this string.
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public override String ToString() {
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
             return this;
         }
 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public String ToString(IFormatProvider provider) {
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
@@ -2932,9 +2822,6 @@ namespace System {
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         private extern String ReplaceInternal(String oldValue, String newValue);
 
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif        
         public String Replace(String oldValue, String newValue)
         {
             if (oldValue == null)
@@ -2948,10 +2835,10 @@ namespace System {
             if (CompatibilitySwitches.IsAppEarlierThanWindowsPhoneMango)
             {
                 // Dev11 453753 quirk
-                // for pre-Mango this function had a bug that would cause it to
-                // drop all characters to the right of the first embedded NULL.
-                // this was quirked on Mango for pre-Mango apps however for apps
-                // targeting Mango the bug was fixed.
+                // for pre-Mango this function had a 
+
+
+
                 int i = s.IndexOf('\0');
                 if (i > 0)
                     return s.Substring(0, i);
@@ -3017,49 +2904,69 @@ namespace System {
         }   
     
         public static String Format(String format, Object arg0) {
-            if (format == null)
-                throw new ArgumentNullException("format");
             Contract.Ensures(Contract.Result<String>() != null);
-            Contract.EndContractBlock();
-            return Format(null, format, new Object[] {arg0});
+            return FormatHelper(null, format, new ParamsArray(arg0));
         }
     
         public static String Format(String format, Object arg0, Object arg1) {
-            if (format == null)
-                throw new ArgumentNullException("format");
             Contract.Ensures(Contract.Result<String>() != null);
-            Contract.EndContractBlock();
-            return Format(null, format, new Object[] {arg0, arg1});
+            return FormatHelper(null, format, new ParamsArray(arg0, arg1));
         }
     
         public static String Format(String format, Object arg0, Object arg1, Object arg2) {
-            if (format == null)
-                throw new ArgumentNullException("format");
             Contract.Ensures(Contract.Result<String>() != null);
-            Contract.EndContractBlock();
-
-            return Format(null, format, new Object[] {arg0, arg1, arg2});
+            return FormatHelper(null, format, new ParamsArray(arg0, arg1, arg2));
         }
-
 
         public static String Format(String format, params Object[] args) {
-            if (format == null || args == null)
+            if (args == null)
+            {
+                // To preserve the original exception behavior, throw an exception about format if both
+                // args and format are null. The actual null check for format is in FormatHelper.
                 throw new ArgumentNullException((format == null) ? "format" : "args");
+            }
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
-
-            return Format(null, format, args);
+            
+            return FormatHelper(null, format, new ParamsArray(args));
+        }
+        
+        public static String Format(IFormatProvider provider, String format, Object arg0) {
+            Contract.Ensures(Contract.Result<String>() != null);
+            return FormatHelper(provider, format, new ParamsArray(arg0));
+        }
+    
+        public static String Format(IFormatProvider provider, String format, Object arg0, Object arg1) {
+            Contract.Ensures(Contract.Result<String>() != null);
+            return FormatHelper(provider, format, new ParamsArray(arg0, arg1));
+        }
+    
+        public static String Format(IFormatProvider provider, String format, Object arg0, Object arg1, Object arg2) {
+            Contract.Ensures(Contract.Result<String>() != null);
+            return FormatHelper(provider, format, new ParamsArray(arg0, arg1, arg2));
         }
 
-        public static String Format( IFormatProvider provider, String format, params Object[] args) {
-            if (format == null || args == null)
+        public static String Format(IFormatProvider provider, String format, params Object[] args) {
+            if (args == null)
+            {
+                // To preserve the original exception behavior, throw an exception about format if both
+                // args and format are null. The actual null check for format is in FormatHelper.
                 throw new ArgumentNullException((format == null) ? "format" : "args");
+            }
             Contract.Ensures(Contract.Result<String>() != null);
             Contract.EndContractBlock();
-
-            StringBuilder sb = StringBuilderCache.Acquire(format.Length + args.Length * 8);
-            sb.AppendFormat(provider,format,args);
-            return StringBuilderCache.GetStringAndRelease(sb);
+            
+            return FormatHelper(provider, format, new ParamsArray(args));
+        }
+        
+        private static String FormatHelper(IFormatProvider provider, String format, ParamsArray args) {
+            if (format == null)
+                throw new ArgumentNullException("format");
+            
+            return StringBuilderCache.GetStringAndRelease(
+                StringBuilderCache
+                    .Acquire(format.Length + args.Length * 8)
+                    .AppendFormatHelper(provider, format, args));
         }
     
         [System.Security.SecuritySafeCritical]  // auto-generated
@@ -3368,9 +3275,6 @@ namespace System {
         }
         
         [System.Security.SecuritySafeCritical]  // auto-generated
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public static String Intern(String str) {
             if (str==null) {
                 throw new ArgumentNullException("str");
@@ -3399,9 +3303,6 @@ namespace System {
         // IConvertible implementation
         // 
       
-#if !FEATURE_CORECLR
-        [TargetedPatchingOptOut("Performance critical to inline across NGen image boundaries")]
-#endif
         public TypeCode GetTypeCode() {
             return TypeCode.String;
         }
@@ -3481,38 +3382,6 @@ namespace System {
             return Convert.DefaultToType((IConvertible)this, type, provider);
         }
 
-        //
-        // Silverlight v2 - v3 defaulted to using Ordinal for the following APIs
-        //    [System.String]
-        //        public Boolean EndsWith(String value)
-        //        public Boolean EndsWith(String value, Boolean ignoreCase, CultureInfo culture)
-        //        public int IndexOf(String value)
-        //        public int IndexOf(String value, int startIndex)
-        //        public int IndexOf(String value, int startIndex, int count)
-        //        public int LastIndexOf(String value)
-        //        public int LastIndexOf(String value, int startIndex)
-        //        public int LastIndexOf(String value, int startIndex, int count)
-        //        public Boolean StartsWith(String value)
-        //        public Boolean StartsWith(String value, Boolean ignoreCase, CultureInfo culture)
-        //        public String ToLower()
-        //        public String ToUpper()
-        //    [System.Char]
-        //        public static char ToUpper(char c)
-        //        public static char ToLower(char c)
-        //
-        // Starting with Silverlight 4 these APIs default to using CurrentCulture
-        // for alignment with Desktop CLR.  Applications can enable the legacy v2-v3
-        // System.String behavior by using the 'APP_EARLIER_THAN_SL4.0' configuration option.
-        //        
-        internal static bool LegacyMode 
-        {
-            get
-            {
-                return CompatibilitySwitches.IsAppEarlierThanSilverlight4;
-            }
-        }
-
-
         // Is this a string that can be compared quickly (that is it has only characters > 0x80 
         // and not a - or '
         [System.Security.SecurityCritical]  // auto-generated
@@ -3562,9 +3431,6 @@ namespace System {
 
          // Copies the source String (byte buffer) to the destination IntPtr memory allocated with len bytes.
         [System.Security.SecurityCritical]  // auto-generated
-        #if !FEATURE_CORECLR
-        [System.Runtime.ForceTokenStabilization]
-        #endif //!FEATURE_CORECLR
         internal unsafe static void InternalCopy(String src, IntPtr dest,int len)
         {
             if (len == 0)

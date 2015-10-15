@@ -3,7 +3,7 @@
 // <copyright file="XmlTextReaderImpl.cs" company="Microsoft">
 //     Copyright (c) Microsoft Corporation.  All rights reserved.
 // </copyright>
-// <owner current="true" primary="true">[....]</owner>
+// <owner current="true" primary="true">Microsoft</owner>
 //------------------------------------------------------------------------------
 
 using System;
@@ -855,6 +855,11 @@ namespace System.Xml {
                 settings.MaxCharactersInDocument = maxCharactersInDocument;
                 settings.MaxCharactersFromEntities = maxCharactersFromEntities;
 
+#if !SILVERLIGHT
+                if (!System.Xml.XmlReaderSettings.EnableLegacyXmlSettings()) {
+                    settings.XmlResolver = xmlResolver;
+                }
+#endif
                 settings.ReadOnly = true;
                 return settings;
             }
@@ -2538,7 +2543,6 @@ namespace System.Xml {
 //
         private bool InAttributeValueIterator {
 #if !SILVERLIGHT
-            [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
 #endif
             get {
                 return attrCount > 0 && parsingFunction >= ParsingFunction.InReadAttributeValue;
@@ -6873,7 +6877,6 @@ namespace System.Xml {
 #endif
 
 #if !SILVERLIGHT
-        [System.Runtime.TargetedPatchingOptOutAttribute("Performance critical to inline across NGen image boundaries")]
 #endif
         private NodeData AddNode( int nodeIndex, int nodeDepth ) {
             Debug.Assert( nodeIndex < nodes.Length );
@@ -8189,13 +8192,13 @@ namespace System.Xml {
             }
         }
 
+#endif
         internal ConformanceLevel V1ComformanceLevel {
             get {
                 return fragmentType == XmlNodeType.Element ? ConformanceLevel.Fragment : ConformanceLevel.Document;
             }
         }
 
-#endif
         private bool AddDefaultAttributeDtd(IDtdDefaultAttributeInfo defAttrInfo, bool definedInDtd, NodeData[] nameSortedNodeData) {
 
             if ( defAttrInfo.Prefix.Length > 0 ) {

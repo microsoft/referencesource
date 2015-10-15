@@ -76,10 +76,8 @@ namespace System.Runtime.InteropServices{
         InterfaceIsIUnknown = 1,
         InterfaceIsIDispatch = 2,
 
-#if FEATURE_COMINTEROP
         [System.Runtime.InteropServices.ComVisible(false)]
         InterfaceIsIInspectable = 3,
-#endif // FEATURE_COMINTEROP
     }
 
     [AttributeUsage(AttributeTargets.Interface, Inherited = false)]
@@ -162,7 +160,6 @@ namespace System.Runtime.InteropServices{
         public String Value { get { return _importClassName; } }
     }
 
-#if FEATURE_COMINTEROP
     [AttributeUsage(AttributeTargets.Method, Inherited = false)] 
     [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class LCIDConversionAttribute : Attribute
@@ -389,7 +386,6 @@ namespace System.Runtime.InteropServices{
         }
         public TypeLibVarFlags Value { get {return _val;} } 
     }   
-#endif //FEATURE_COMINTEROP
 
     [Serializable]
     [System.Runtime.InteropServices.ComVisible(true)]
@@ -404,9 +400,7 @@ namespace System.Runtime.InteropServices{
         VT_CY = 6,
         VT_DATE = 7,
         VT_BSTR = 8,
-#if FEATURE_COMINTEROP
         VT_DISPATCH         = 9,
-#endif // FEATURE_COMINTEROP
         VT_ERROR = 10,
         VT_BOOL = 11,
         VT_VARIANT = 12,
@@ -445,7 +439,7 @@ namespace System.Runtime.InteropServices{
 
     [Serializable]
     [System.Runtime.InteropServices.ComVisible(true)]
-    // Note that this enum should remain in-[....] with the CorNativeType enum in corhdr.h
+    // Note that this enum should remain in-sync with the CorNativeType enum in corhdr.h
     public enum UnmanagedType
     {
         Bool = 0x2,         // 4 byte boolean value (true != 0, false == 0)
@@ -472,9 +466,7 @@ namespace System.Runtime.InteropServices{
 
         Currency = 0xf,         // A currency
 
-#if FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
         BStr             = 0x13,        // OLE Unicode BSTR
-#endif //FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
 
         LPStr = 0x14,        // Ptr to SBCS string
 
@@ -486,17 +478,13 @@ namespace System.Runtime.InteropServices{
 
         IUnknown = 0x19,        // COM IUnknown pointer. 
 
-#if FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
         IDispatch        = 0x1a,        // COM IDispatch pointer
-#endif //FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
 
         Struct = 0x1b,        // Structure
 
-#if FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
         Interface        = 0x1c,        // COM interface
 
         SafeArray        = 0x1d,        // OLE SafeArray
-#endif //FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
 
         ByValArray = 0x1e,        // Array of fixed size (only valid in structs)
 
@@ -504,7 +492,6 @@ namespace System.Runtime.InteropServices{
 
         SysUInt = 0x20,
 
-#if FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
         VBByRefStr       = 0x22,         
 
         AnsiBStr         = 0x23,        // OLE BSTR containing SBCS characters
@@ -512,7 +499,6 @@ namespace System.Runtime.InteropServices{
         TBStr            = 0x24,        // Ptr to OS preferred (SBCS/Unicode) BSTR
 
         VariantBool      = 0x25,        // OLE defined BOOLEAN (2 bytes, true == -1, false == 0)
-#endif //FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
 
         FunctionPtr = 0x26,        // Function pointer
 
@@ -522,20 +508,15 @@ namespace System.Runtime.InteropServices{
 
         LPStruct = 0x2b,        // Pointer to a structure
 
-#if FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
         CustomMarshaler  = 0x2c,        
-#endif //FEATURE_COMINTEROP || FEATURE_LEGACYNETCF
 
         Error = 0x2d,
 
-#if FEATURE_COMINTEROP
         [System.Runtime.InteropServices.ComVisible(false)]
         IInspectable     = 0x2e,
         
         [System.Runtime.InteropServices.ComVisible(false)]
         HString          = 0x2f,        // Windows Runtime HSTRING
-
-#endif //FEATURE_COMINTEROP
     }
 
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.ReturnValue, Inherited = false)]
@@ -607,11 +588,9 @@ namespace System.Runtime.InteropServices{
             short sizeParamIndex, int sizeConst, string marshalType, RuntimeType marshalTypeRef, string marshalCookie, int iidParamIndex)
         {
             _val = val;
-#if FEATURE_COMINTEROP
             SafeArraySubType = safeArraySubType;
             SafeArrayUserDefinedSubType = safeArrayUserDefinedSubType;
             IidParameterIndex = iidParamIndex;
-#endif // FEATURE_COMINTEROP
             ArraySubType = arraySubType;
             SizeParamIndex = sizeParamIndex;
             SizeConst = sizeConst;
@@ -631,14 +610,12 @@ namespace System.Runtime.InteropServices{
         }
         public UnmanagedType Value { get { return _val; } }
 
-#if FEATURE_COMINTEROP
         // Fields used with SubType = SafeArray.
         public VarEnum            SafeArraySubType;
         public Type               SafeArrayUserDefinedSubType;
 
         // Field used with iid_is attribute (interface pointers).
         public int                IidParameterIndex;
-#endif // FEATURE_COMINTEROP
 
         // Fields used with SubType = ByValArray and LPArray.
         // Array size =  parameter(PI) * PM + C
@@ -987,7 +964,6 @@ namespace System.Runtime.InteropServices{
         public int Value { get { return _val; } }
     }
 
-#if FEATURE_COMINTEROP
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.ReturnValue, Inherited = false)] 
     [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class ComAliasNameAttribute : Attribute
@@ -1028,7 +1004,6 @@ namespace System.Runtime.InteropServices{
         public int MajorVersion { get {return _major;} }
         public int MinorVersion { get {return _minor;} }
     }
-#endif //FEATURE_COMINTEROP
 
     [AttributeUsage(AttributeTargets.Interface, Inherited = false)]
     [System.Runtime.InteropServices.ComVisible(true)]
@@ -1043,8 +1018,6 @@ namespace System.Runtime.InteropServices{
 
         public Type CoClass { get { return _CoClass; } }
     }
-
-#if FEATURE_COMINTEROP
 
     [AttributeUsage(AttributeTargets.Interface, Inherited = false)]
     [System.Runtime.InteropServices.ComVisible(true)]
@@ -1103,8 +1076,6 @@ namespace System.Runtime.InteropServices{
         public int RevisionNumber { get {return _revision;} }
     }
 
-#endif //FEATURE_COMINTEROP
-
     [AttributeUsage(AttributeTargets.Assembly | AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Struct, Inherited = false)]
     [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class BestFitMappingAttribute : Attribute
@@ -1144,7 +1115,6 @@ namespace System.Runtime.InteropServices{
         }
     }
 
-#if FEATURE_COMINTEROP
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     [System.Runtime.InteropServices.ComVisible(false)]
     public sealed class ManagedToNativeComInteropStubAttribute : Attribute
@@ -1161,7 +1131,6 @@ namespace System.Runtime.InteropServices{
         public Type ClassType { get { return _classType; } }
         public String MethodName { get { return _methodName; } }
     }    
-#endif // FEATURE_COMINTEROP
 
 }
 

@@ -6,7 +6,7 @@
 **
 ** Class:  SecurityContext
 ** 
-** <OWNER>[....]</OWNER>
+** <OWNER>Microsoft</OWNER>
 **
 **
 ** Purpose: Capture security  context for a thread
@@ -32,7 +32,7 @@ namespace System.Security
     using System.Runtime.Versioning;
     using System.Diagnostics.Contracts;
 
-    // This enum must be kept in [....] with the SecurityContextSource enum in the VM
+    // This enum must be kept in sync with the SecurityContextSource enum in the VM
     public enum SecurityContextSource
     {
         CurrentAppDomain = 0,
@@ -506,7 +506,7 @@ namespace System.Security
 
 #if !FEATURE_PAL && FEATURE_IMPERSONATION
             if (WindowsIdentity != null)
-                sc._windowsIdentity = new WindowsIdentity(WindowsIdentity.TokenHandle);
+                sc._windowsIdentity = new WindowsIdentity(WindowsIdentity.AccessToken);
 #endif //!FEATURE_PAL && FEATURE_IMPERSONATION
 
             if (_compressedStack != null)
@@ -526,7 +526,7 @@ namespace System.Security
 
 #if !FEATURE_PAL && FEATURE_IMPERSONATION
             if (this.WindowsIdentity != null)
-                sc._windowsIdentity = new WindowsIdentity(this.WindowsIdentity.TokenHandle);
+                sc._windowsIdentity = new WindowsIdentity(this.WindowsIdentity.AccessToken);
 #endif //!FEATURE_PAL && FEATURE_IMPERSONATION
 
             // 
@@ -579,7 +579,7 @@ namespace System.Security
             {
                 WindowsIdentity currentIdentity = GetCurrentWI(currThreadEC);
                 if (currentIdentity != null)
-                    sc._windowsIdentity = new WindowsIdentity(currentIdentity.TokenHandle);
+                    sc._windowsIdentity = new WindowsIdentity(currentIdentity.AccessToken);
             }
             else
             {
@@ -671,7 +671,7 @@ namespace System.Security
 
         if (targetWI != null)
         {   
-            SafeTokenHandle tokenHandle = targetWI.TokenHandle;
+            SafeAccessTokenHandle tokenHandle = targetWI.AccessToken;
             if (tokenHandle != null && !tokenHandle.IsInvalid)
             {
                 hr = Win32.ImpersonateLoggedOnUser(tokenHandle);

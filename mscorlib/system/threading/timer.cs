@@ -4,7 +4,7 @@
 // 
 // ==--==
 //
-// <OWNER>[....]</OWNER>
+// <OWNER>Microsoft</OWNER>
 
 namespace System.Threading 
 {
@@ -71,7 +71,7 @@ namespace System.Threading
         // We need to keep our notion of time synchronized with the calls to SleepEx that drive
         // the underlying native timer.  In Win8, SleepEx does not count the time the machine spends
         // sleeping/hibernating.  Environment.TickCount (GetTickCount) *does* count that time,
-        // so we will get out of [....] with SleepEx if we use that method.
+        // so we will get out of sync with SleepEx if we use that method.
         //
         // So, on Win8, we use QueryUnbiasedInterruptTime instead; this does not count time spent
         // in sleep/hibernate mode.
@@ -81,10 +81,6 @@ namespace System.Threading
             [SecuritySafeCritical]
             get
             {
-                // note: QueryUnbiasedInterruptTime is apparently not supported on CoreSystem currently.
-                // Presumably this will be a problem.  Will follow up with Windows team, but for now this is diabled
-                // for CoreSystem builds.
-#if !FEATURE_PAL && !FEATURE_CORESYSTEM
                 if (Environment.IsWindows8OrAbove)
                 {
                     ulong time100ns;
@@ -97,7 +93,6 @@ namespace System.Threading
                     return (int)(uint)(time100ns / 10000);
                 }
                 else
-#endif //!FEATURE_PAL && !FEATURE_CORESYSTEM
                 {
                     return Environment.TickCount;
                 }
@@ -577,10 +572,8 @@ namespace System.Threading
                     }
                     else
                     {
-#if !FEATURE_CORECLR
                         if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.ThreadTransfer))
                             FrameworkEventSource.Log.ThreadTransferSendObj(this, 1, string.Empty, true);
-#endif // !FEATURE_CORECLR
 
                         success = TimerQueue.Instance.UpdateTimer(this, dueTime, period);
                     }
@@ -692,10 +685,8 @@ namespace System.Threading
         [SecuritySafeCritical]
         internal void CallCallback()
         {
-#if !FEATURE_CORECLR
             if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.ThreadTransfer))
                 FrameworkEventSource.Log.ThreadTransferReceiveObj(this, 1, string.Empty);
-#endif // !FEATURE_CORECLR
 
             // call directly if EC flow is suppressed
             if (m_executionContext == null)

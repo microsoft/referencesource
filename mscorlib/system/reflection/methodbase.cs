@@ -3,14 +3,13 @@
 //   Copyright(c) Microsoft Corporation.  All rights reserved.
 // 
 // ==--==
-// <OWNER>[....]</OWNER>
+// <OWNER>Microsoft</OWNER>
 // 
 
 namespace System.Reflection
 {
     using System;
     using System.Diagnostics;
-    using System.Diagnostics.Tracing;
     using System.Globalization;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
@@ -65,24 +64,9 @@ namespace System.Reflection
             if (handle.IsNullHandle())
                 throw new ArgumentException(Environment.GetResourceString("Argument_InvalidHandle"));
 
-#if !FEATURE_CORECLR
-            if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.DynamicTypeUsage))
-            {
-                FrameworkEventSource.Log.BeginGetMethodFromHandle();
-            }
-#endif
-
             MethodBase m = RuntimeType.GetMethodBase(handle.GetMethodInfo());
 
             Type declaringType = m.DeclaringType;
-
-#if !FEATURE_CORECLR
-            if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.DynamicTypeUsage)  && declaringType != null)
-            {
-                FrameworkEventSource.Log.EndGetMethodFromHandle(declaringType.GetFullNameForEtw(), m.GetFullNameForEtw());
-            }
-#endif
-
             if (declaringType != null && declaringType.IsGenericType)
                 throw new ArgumentException(String.Format(
                     CultureInfo.CurrentCulture, Environment.GetResourceString("Argument_MethodDeclaringTypeGeneric"), 
@@ -97,23 +81,7 @@ namespace System.Reflection
             if (handle.IsNullHandle())
                 throw new ArgumentException(Environment.GetResourceString("Argument_InvalidHandle"));
 
-#if !FEATURE_CORECLR
-            if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.DynamicTypeUsage))
-            {
-                FrameworkEventSource.Log.BeginGetMethodFromHandle();
-            }
-#endif
-            
-            MethodBase m = RuntimeType.GetMethodBase(declaringType.GetRuntimeType(), handle.GetMethodInfo());
-
-#if !FEATURE_CORECLR
-            if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.DynamicTypeUsage) && declaringType != null && m != null)
-            {
-                FrameworkEventSource.Log.EndGetMethodFromHandle(declaringType.GetRuntimeType().GetFullNameForEtw(), m.GetFullNameForEtw());
-            }
-#endif
-
-            return m;
+            return RuntimeType.GetMethodBase(declaringType.GetRuntimeType(), handle.GetMethodInfo());
         }
 
         [System.Security.DynamicSecurityMethod] // Specify DynamicSecurityMethod attribute to prevent inlining of the caller.
@@ -154,7 +122,7 @@ namespace System.Reflection
             return !(left == right);
         }
 #endif // !FEATURE_CORECLR
-#if FEATURE_NETCORE || !FEATURE_CORECLR        
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);
@@ -164,7 +132,7 @@ namespace System.Reflection
         {
             return base.GetHashCode();
         }
-#endif //FEATURE_NETCORE || !FEATURE_CORECLR
+
         #region Internal Members
         // used by EE
         [System.Security.SecurityCritical]
@@ -227,23 +195,6 @@ namespace System.Reflection
 
         public virtual bool IsSecurityTransparent { get { throw new NotImplementedException(); } }
 
-        #endregion
-
-        #region _MethodBase Implementation
-        Type _MethodBase.GetType() { return base.GetType(); }
-        bool _MethodBase.IsPublic { get { return IsPublic; } }
-        bool _MethodBase.IsPrivate { get { return IsPrivate; } }
-        bool _MethodBase.IsFamily { get { return IsFamily; } }
-        bool _MethodBase.IsAssembly { get { return IsAssembly; } }
-        bool _MethodBase.IsFamilyAndAssembly { get { return IsFamilyAndAssembly; } }
-        bool _MethodBase.IsFamilyOrAssembly { get { return IsFamilyOrAssembly; } }
-        bool _MethodBase.IsStatic { get { return IsStatic; } }
-        bool _MethodBase.IsFinal { get { return IsFinal; } }
-        bool _MethodBase.IsVirtual { get { return IsVirtual; } }
-        bool _MethodBase.IsHideBySig { get { return IsHideBySig; } }
-        bool _MethodBase.IsAbstract { get { return IsAbstract; } }
-        bool _MethodBase.IsSpecialName { get { return IsSpecialName; } }
-        bool _MethodBase.IsConstructor { get { return IsConstructor; } }
         #endregion
 
         #region Public Members
@@ -411,6 +362,23 @@ namespace System.Reflection
         }
         #endregion
 
+        #region _MethodBase Implementation
+#if !FEATURE_CORECLR
+        Type _MethodBase.GetType() { return base.GetType(); }
+        bool _MethodBase.IsPublic { get { return IsPublic; } }
+        bool _MethodBase.IsPrivate { get { return IsPrivate; } }
+        bool _MethodBase.IsFamily { get { return IsFamily; } }
+        bool _MethodBase.IsAssembly { get { return IsAssembly; } }
+        bool _MethodBase.IsFamilyAndAssembly { get { return IsFamilyAndAssembly; } }
+        bool _MethodBase.IsFamilyOrAssembly { get { return IsFamilyOrAssembly; } }
+        bool _MethodBase.IsStatic { get { return IsStatic; } }
+        bool _MethodBase.IsFinal { get { return IsFinal; } }
+        bool _MethodBase.IsVirtual { get { return IsVirtual; } }
+        bool _MethodBase.IsHideBySig { get { return IsHideBySig; } }
+        bool _MethodBase.IsAbstract { get { return IsAbstract; } }
+        bool _MethodBase.IsSpecialName { get { return IsSpecialName; } }
+        bool _MethodBase.IsConstructor { get { return IsConstructor; } }
+
         void _MethodBase.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -432,6 +400,8 @@ namespace System.Reflection
         {
             throw new NotImplementedException();
         }
+#endif
+        #endregion
     }
 
 }

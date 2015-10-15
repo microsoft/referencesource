@@ -31,8 +31,7 @@ namespace System {
     using AssemblyHashAlgorithm = System.Configuration.Assemblies.AssemblyHashAlgorithm;
     using System.Runtime.Versioning;
     using System.Diagnostics.Contracts;
-    using System.Diagnostics.Tracing;
-    
+
     // Only statics, does not need to be marked with the serializable attribute
     [ClassInterface(ClassInterfaceType.None)]
     [ComDefaultInterface(typeof(_Activator))]
@@ -110,12 +109,6 @@ namespace System {
 
         static public Object CreateInstance(Type type, params Object[] args)
         {
-#if !FEATURE_CORECLR
-            if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.DynamicTypeUsage) && type != null)
-            {
-                FrameworkEventSource.Log.ActivatorCreateInstance(type.GetFullNameForEtw());
-            }
-#endif
             return CreateInstance(type,
                                   Activator.ConstructorDefault,
                                   null,
@@ -138,12 +131,6 @@ namespace System {
         
         static public Object CreateInstance(Type type)
         {
-#if !FEATURE_CORECLR
-            if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.DynamicTypeUsage) && type != null)
-            {
-                FrameworkEventSource.Log.ActivatorCreateInstance(type.GetFullNameForEtw());
-            }
-#endif            
             return Activator.CreateInstance(type, false);
         }
 
@@ -210,12 +197,7 @@ namespace System {
         static public T CreateInstance<T>()
         {
             RuntimeType rt = typeof(T) as RuntimeType;
-#if !FEATURE_CORECLR
-            if (FrameworkEventSource.IsInitialized && FrameworkEventSource.Log.IsEnabled(EventLevel.Informational, FrameworkEventSource.Keywords.DynamicTypeUsage) && rt != null)
-            {
-                FrameworkEventSource.Log.ActivatorCreateInstanceT(rt.GetFullNameForEtw());
-            }
-#endif
+
             // This is a hack to maintain compatibility with V2. Without this we would throw a NotSupportedException for void[].
             // Array, Ref, and Pointer types don't have default constructors.
             if (rt.HasElementType)
@@ -717,6 +699,7 @@ namespace System {
 #endif            
         }
 
+#if !FEATURE_CORECLR
         void _Activator.GetTypeInfoCount(out uint pcTInfo)
         {
             throw new NotImplementedException();
@@ -738,6 +721,7 @@ namespace System {
         {
             throw new NotImplementedException();
         }
+#endif
     }
 }
 
