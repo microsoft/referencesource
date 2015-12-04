@@ -133,7 +133,7 @@ namespace System.Net.Security {
 
             //
             // We don;t support SSL alerts right now, hence any exception is fatal and cannot be retried
-            // Consider: make use if SSL alerts to re-sync SslStream on both sides for retrying.
+            // Consider: make use if SSL alerts to re-[....] SslStream on both sides for retrying.
             //
             if (_Exception != null && !_CanRetryAuthentication) {
                 throw _Exception;
@@ -623,7 +623,7 @@ namespace System.Net.Security {
                 // Async handshake is enqueued and will resume later
                 return;
             }
-            // Either Sync handshake is ready to go or async handshake won the ---- over write.
+            // Either [....] handshake is ready to go or async handshake won the ---- over write.
 
             // This will tell that we don't know the framing yet (what SSL version is)
             _Framing = Framing.None;
@@ -1288,7 +1288,7 @@ namespace System.Net.Security {
                 _QueuedWriteStateRequest = null;
                 if (obj is LazyAsyncResult)
                 {
-                    // sync handshake is waiting on other thread.
+                    // [....] handshake is waiting on other thread.
                     ((LazyAsyncResult)obj).InvokeCallback();
                 }
                 else
@@ -1364,7 +1364,7 @@ namespace System.Net.Security {
 
                     if (obj is LazyAsyncResult)
                     {
-                        // sync write is waiting on other thread.
+                        // [....] write is waiting on other thread.
                         ((LazyAsyncResult)obj).InvokeCallback();
                     }
                     else

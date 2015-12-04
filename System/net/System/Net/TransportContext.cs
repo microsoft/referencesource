@@ -4,6 +4,7 @@
 // </copyright>
 //------------------------------------------------------------------------------
 
+using System.Collections.Generic;
 using System.Net.Security;
 using System.Security.Authentication.ExtendedProtection;
 
@@ -12,6 +13,10 @@ namespace System.Net
     public abstract class TransportContext
     {
         public abstract ChannelBinding GetChannelBinding(ChannelBindingKind kind);
+        public virtual IEnumerable<TokenBinding> GetTlsTokenBindings()
+        {
+            throw new NotSupportedException();
+        }
     }
 
     internal class ConnectStreamContext : TransportContext
@@ -62,6 +67,11 @@ namespace System.Net
                     SR.net_listener_invalid_cbt_type, kind.ToString()));
             }
             return request.GetChannelBinding();
+        }
+
+        public override IEnumerable<TokenBinding> GetTlsTokenBindings()
+        {
+            return request.GetTlsTokenBindings();
         }
 
         private HttpListenerRequest request;
