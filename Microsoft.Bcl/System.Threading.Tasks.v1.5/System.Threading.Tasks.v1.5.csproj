@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{816208A5-320B-4998-9B34-0895630A9A8F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>System.Threading.Tasks</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile88</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <BclVersion15>true</BclVersion15>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\System.Threading.Tasks.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>SecurityRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\System.Threading.Tasks.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <ExternallyShipping>true</ExternallyShipping>
+    <AssemblyOriginatorKeyFile>..\CodePlexKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\System.Runtime.v1.5\System.Runtime.v1.5.csproj">
+      <Project>{42db1993-8ebb-4827-bc05-f3906ea8cfbc}</Project>
+      <Name>System.Runtime.v1.5</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\AggregateException.cs" />
+    <Compile Include="Strings.Designer.cs">
+      <DependentUpon>Strings.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="System\Collections\Concurrent\ConcurrentDictionary.cs" />
+    <Compile Include="System\Diagnostics\Contracts\Contract.cs" />
+    <Compile Include="System\Lightup\OperatingSystemLightup.cs" />
+    <Compile Include="System\Lightup\ExecutionContextLightup.cs" />
+    <Compile Include="System\Lightup\EnvironmentLightup.cs" />
+    <Compile Include="System\Lightup\Lightup.cs" />
+    <Compile Include="System\Lightup\LightupType.cs" />
+    <Compile Include="System\Lightup\ThreadLightup.cs" />
+    <Compile Include="System\Runtime\CompilerServices\AsyncServices.cs" />
+    <Compile Include="System\Runtime\CompilerServices\AsyncTaskMethodBuilder.cs" />
+    <Compile Include="System\Runtime\CompilerServices\AsyncMethodBuilderCore.cs" />
+    <Compile Include="System\Runtime\CompilerServices\AsyncVoidMethodBuilder.cs" />
+    <Compile Include="System\Runtime\CompilerServices\AsyncTaskMethodBuilderOfTResult.cs" />
+    <Compile Include="System\Runtime\CompilerServices\AsyncMethodTaskCacheOfTResult.cs" />
+    <Compile Include="System\Runtime\CompilerServices\IAsyncStateMachine.cs" />
+    <Compile Include="System\Runtime\CompilerServices\ICriticalNotifyCompletion.cs" />
+    <Compile Include="System\Runtime\CompilerServices\INotifyCompletion.cs" />
+    <Compile Include="System\Runtime\CompilerServices\IAsyncMethodBuilder.cs" />
+    <Compile Include="System\Runtime\CompilerServices\VoidTaskResult.cs" />
+    <Compile Include="System\Threading\Tasks\IThreadPoolWorkItem.cs" />
+    <Compile Include="System\OperationCanceledException.cs" />
+    <Compile Include="System\StackCrawlMark.cs" />
+    <Compile Include="System\Threading\CancellationToken.cs" />
+    <Compile Include="System\Threading\CancellationTokenRegistration.cs" />
+    <Compile Include="System\Threading\CancellationTokenSource.cs" />
+    <Compile Include="System\Threading\LazyInitializer.cs" />
+    <Compile Include="System\Threading\ManualResetEventSlim.cs" />
+    <Compile Include="System\Threading\SpinWait.cs" />
+    <Compile Include="System\Threading\Tasks\TaskOfTResult.cs" />
+    <Compile Include="System\Threading\Tasks\TaskFactoryOfTResult.cs" />
+    <Compile Include="System\Threading\Tasks\Task.cs" />
+    <Compile Include="System\Threading\Tasks\TaskCanceledException.cs" />
+    <Compile Include="System\Threading\Tasks\TaskCompletionSource.cs" />
+    <Compile Include="System\Threading\Tasks\TaskExceptionHolder.cs" />
+    <Compile Include="System\Threading\Tasks\TaskExtensions.cs" />
+    <Compile Include="System\Threading\Tasks\TaskFactory.cs" />
+    <Compile Include="System\Threading\Tasks\TaskScheduler.cs" />
+    <Compile Include="System\Threading\Tasks\TaskSchedulerException.cs" />
+    <Compile Include="System\Threading\ThreadingServices.cs" />
+    <Compile Include="System\Threading\ThreadStatic.cs" />
+    <Compile Include="System\Threading\ThreadWrapper.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
