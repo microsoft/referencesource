@@ -20,8 +20,8 @@ namespace System.IO {
         ///     Private constants (directly from C header files)
         /// </devdoc>
         private const int MATCHES_ARRAY_SIZE = 16;
-        private const char ANSI_DOS_STAR = '>';
-        private const char ANSI_DOS_QM = '<';
+        private const char ANSI_DOS_STAR = '<';
+        private const char ANSI_DOS_QM = '>';
         private const char DOS_DOT = '"';
         
         /// <devdoc>
