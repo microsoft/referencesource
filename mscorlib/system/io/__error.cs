@@ -79,28 +79,21 @@ namespace System.IO {
         [System.Security.SecurityCritical]  // auto-generated
         internal static String GetDisplayablePath(String path, bool isInvalidPath)
         {
-            
             if (String.IsNullOrEmpty(path))
                 return String.Empty;
 
-            // Is it a fully qualified path?
-            bool isFullyQualified = false;
             if (path.Length < 2)
                 return path;
-            if (Path.IsDirectorySeparator(path[0]) && Path.IsDirectorySeparator(path[1]))
-                isFullyQualified = true;
-            else if (path[1] == Path.VolumeSeparatorChar) {
-                isFullyQualified = true;
-            }
 
-            if (!isFullyQualified && !isInvalidPath)
+            // Return the path as is if we're relative (not fully qualified) and not a bad path
+            if (PathInternal.IsPartiallyQualified(path) && !isInvalidPath)
                 return path;
 
             bool safeToReturn = false;
             try {
                 if (!isInvalidPath) {
 #if !FEATURE_CORECLR
-                    new FileIOPermission(FileIOPermissionAccess.PathDiscovery, new String[] { path }, false, false).Demand();
+                    FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, path, false, false);
 #endif
                     safeToReturn = true;
                 }
