@@ -101,7 +101,7 @@ namespace System.IO {
                 FileSecurityState sourceState = new FileSecurityState(FileSecurityStateAccess.PathDiscovery, String.Empty, demandDir);
                 sourceState.EnsureState();
 #else
-                new FileIOPermission(FileIOPermissionAccess.PathDiscovery, demandDir).Demand();
+                FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, demandDir);
 #endif
                 return FullPath;
             }
@@ -118,7 +118,7 @@ namespace System.IO {
                 else
                     demandDir = FullPath;
 #if !FEATURE_CORECLR
-                new FileIOPermission(FileIOPermissionAccess.PathDiscovery, demandDir).Demand();
+                FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, demandDir);
 #endif
                 return FullPath;
             }
@@ -324,7 +324,7 @@ namespace System.IO {
             #endif
             set {
 #if !FEATURE_CORECLR
-                new FileIOPermission(FileIOPermissionAccess.Write, FullPath).Demand();
+                FileIOPermission.QuickDemand(FileIOPermissionAccess.Write, FullPath);
 #endif
                 bool r = Win32Native.SetFileAttributes(FullPath, (int) value);
                 if (!r) {
@@ -349,7 +349,7 @@ namespace System.IO {
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
 #if !FEATURE_CORECLR
-            new FileIOPermission(FileIOPermissionAccess.PathDiscovery, FullPath).Demand();
+            FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, FullPath);
 #endif
 
             info.AddValue("OriginalPath", OriginalPath, typeof(String));

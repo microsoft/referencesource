@@ -3622,7 +3622,14 @@ namespace System.Threading.Tasks
                 ITaskCompletionAction singleTaskCompletionAction = continuationObject as ITaskCompletionAction;
                 if (singleTaskCompletionAction != null)
                 {
-                    singleTaskCompletionAction.Invoke(this);
+                    if (bCanInlineContinuations)
+                    {
+                        singleTaskCompletionAction.Invoke(this);
+                    }
+                    else
+                    {
+                        ThreadPool.UnsafeQueueCustomWorkItem(new CompletionActionInvoker(singleTaskCompletionAction, this), forceGlobal: false);
+                    }
                     LogFinishCompletionNotification();
                     return;
                 }
@@ -3699,7 +3706,15 @@ namespace System.Threading.Tasks
                         {
                             Contract.Assert(currentContinuation is ITaskCompletionAction, "Expected continuation element to be Action, TaskContinuation, or ITaskContinuationAction");
                             var action = (ITaskCompletionAction)currentContinuation;
-                            action.Invoke(this);
+
+                            if (bCanInlineContinuations)
+                            {
+                                action.Invoke(this);
+                            }
+                            else
+                            {
+                                ThreadPool.UnsafeQueueCustomWorkItem(new CompletionActionInvoker(action, this), forceGlobal: false);
+                            }
                         }
                     }
                 }
@@ -6661,6 +6676,30 @@ namespace System.Threading.Tasks
 
 
     }
+
+    internal sealed class CompletionActionInvoker : IThreadPoolWorkItem
+    {
+        private readonly ITaskCompletionAction m_action;
+        private readonly Task m_completingTask;
+
+        internal CompletionActionInvoker(ITaskCompletionAction action, Task completingTask)
+        {
+            m_action = action;
+            m_completingTask = completingTask;
+        }
+        
+        [SecurityCritical]
+        public void ExecuteWorkItem()
+        {
+            m_action.Invoke(m_completingTask);
+        }
+        
+        [SecurityCritical]
+        public void MarkAborted(ThreadAbortException tae)
+        {
+            /* NOP */
+        }
+    } 
 
     // Proxy class for better debugging experience
     internal class SystemThreadingTasks_TaskDebugView
