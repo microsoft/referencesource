@@ -20,7 +20,7 @@
                 return true;
             }
 
-            string ccValue = value as string;
+            string ccValue = Convert.ToString(value);
             if (ccValue == null) {
                 return false;
             }
