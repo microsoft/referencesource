@@ -114,7 +114,7 @@ namespace System.Dynamic {
             get {
                 if (_hasValue) {
                     Type ct = Expression.Type;
-                    // valuetype at compile tyme, type cannot change.
+                    // valuetype at compile time, type cannot change.
                     if (ct.IsValueType) {
                         return ct;
                     }
