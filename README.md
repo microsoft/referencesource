@@ -8,3 +8,7 @@ developed in [.NET Core](https://github.com/dotnet/corefx).  We intend to consul
 **Please note that the referencesource repository is read-only**. [See this blog post](http://blogs.msdn.com/b/dotnet/archive/2014/11/12/net-core-is-open-source.aspx) for the rationale.
 
 Questions, bugs, and pull requests should be done through [.NET Core](https://github.com/dotnet/corefx).
+
+## License
+
+The files in this repository are licensed with the [MIT](LICENSE.txt) license unless otherwise specified in the file header.
