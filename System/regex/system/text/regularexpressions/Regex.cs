@@ -131,7 +131,7 @@ namespace System.Text.RegularExpressions {
 #else
         // desktop build still uses non-generic collections for AppCompat with .NET Framework 3.5 pre-compiled assemblies
         protected internal Hashtable caps;
-        protected internal Hashtable capnames;        
+        protected internal Hashtable capnames;
 #endif
         protected internal String[]  capslist;               // if captures are sparse or named captures are used, this is the sorted list of names
         protected internal int       capsize;                // the size of the capture array
@@ -436,7 +436,7 @@ namespace System.Text.RegularExpressions {
         ///       Unescapes any escaped characters in the input string.
         ///    </para>
         /// </devdoc>
-        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="Unescape", Justification="[....]: already shipped since v1 - can't fix without causing a breaking change")]
+        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="Unescape", Justification="Microsoft: already shipped since v1 - can't fix without causing a breaking change")]
         public static String Unescape(String str) {
             if (str==null)
                 throw new ArgumentNullException("str");
@@ -1189,7 +1189,7 @@ namespace System.Text.RegularExpressions {
         [HostProtection(MayLeakOnAbort=true)]
         [ResourceExposure(ResourceScope.Machine)] // The AssemblyName is interesting.
         [ResourceConsumption(ResourceScope.Machine)]
-        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="assemblyname", Justification="[....]: already shipped since v1 - can't fix without causing a breaking change")]
+        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="assemblyname", Justification="Microsoft: already shipped since v1 - can't fix without causing a breaking change")]
         public static void CompileToAssembly(RegexCompilationInfo[] regexinfos, AssemblyName assemblyname) {
         
             CompileToAssemblyInternal(regexinfos, assemblyname, null, null);
@@ -1200,7 +1200,7 @@ namespace System.Text.RegularExpressions {
         [HostProtection(MayLeakOnAbort=true)]
         [ResourceExposure(ResourceScope.Machine)] // The AssemblyName is interesting.
         [ResourceConsumption(ResourceScope.Machine)]
-        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="assemblyname", Justification="[....]: already shipped since v1 - can't fix without causing a breaking change")]
+        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="assemblyname", Justification="Microsoft: already shipped since v1 - can't fix without causing a breaking change")]
         public static void CompileToAssembly(RegexCompilationInfo[] regexinfos, AssemblyName assemblyname, CustomAttributeBuilder[] attributes) {
             CompileToAssemblyInternal(regexinfos, assemblyname, attributes, null);
         }
@@ -1208,7 +1208,7 @@ namespace System.Text.RegularExpressions {
         [HostProtection(MayLeakOnAbort=true)]
         [ResourceExposure(ResourceScope.Machine)]
         [ResourceConsumption(ResourceScope.Machine)]
-        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="assemblyname", Justification="[....]: already shipped since v1 - can't fix without causing a breaking change")]
+        [SuppressMessage("Microsoft.Naming","CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId="assemblyname", Justification="Microsoft: already shipped since v1 - can't fix without causing a breaking change")]
         public static void CompileToAssembly(RegexCompilationInfo[] regexinfos, AssemblyName assemblyname, CustomAttributeBuilder[] attributes, String resourceFile) {
             CompileToAssemblyInternal(regexinfos, assemblyname, attributes, resourceFile);
         }

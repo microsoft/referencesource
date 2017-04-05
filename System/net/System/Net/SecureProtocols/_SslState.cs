@@ -16,7 +16,7 @@ Author:
 
 Revision History:
     22-Aug-2003     Adopted for new Ssl feature design.
-    15-Sept-2003    Implemented concurent rehanshake
+    15-Sept-2003    Implemented concurrent rehanshake
 
 --*/
 
@@ -58,6 +58,7 @@ namespace System.Net.Security {
 
         private bool            _HandshakeCompleted;
         private bool            _CertValidationFailed;
+        private bool            _Shutdown;
         private SecurityStatus  _SecurityStatus;
         private Exception       _Exception;
 
@@ -70,7 +71,7 @@ namespace System.Net.Security {
         }
         private CachedSessionStatus _CachedSession;
 
-        // This block is used by rehandshake code to buffer data decryptred with the old key
+        // This block is used by rehandshake code to buffer data decrypted with the old key
         private byte[]  _QueuedReadData;
         private int     _QueuedReadCount;
         private bool    _PendingReHandshake;
@@ -132,8 +133,8 @@ namespace System.Net.Security {
         {
 
             //
-            // We don;t support SSL alerts right now, hence any exception is fatal and cannot be retried
-            // Consider: make use if SSL alerts to re-[....] SslStream on both sides for retrying.
+            // We don't support SSL alerts right now, hence any exception is fatal and cannot be retried
+            // Consider: make use if SSL alerts to re-sync SslStream on both sides for retrying.
             //
             if (_Exception != null && !_CanRetryAuthentication) {
                 throw _Exception;
@@ -151,7 +152,6 @@ namespace System.Net.Security {
                 throw new ArgumentNullException("targetHost");
             }
 
-
             if (isServer ) {
                 enabledSslProtocols &= (SslProtocols)SchProtocols.ServerMask;
                 if (serverCertificate == null)
@@ -161,7 +161,7 @@ namespace System.Net.Security {
                 enabledSslProtocols &= (SslProtocols)SchProtocols.ClientMask;
             }
 
-            if ((int)enabledSslProtocols == 0) {
+            if (ServicePointManager.DisableSystemDefaultTlsVersions && ((int)enabledSslProtocols == 0)) {
                 throw new ArgumentException(SR.GetString(SR.net_invalid_enum, "SslProtocolType"), "sslProtocolType");
             }
 
@@ -261,6 +261,14 @@ namespace System.Net.Security {
         internal bool IsCertValidationFailed {
             get {
                 return _CertValidationFailed;
+            }
+        }
+        //
+        internal bool IsShutdown
+        {
+            get
+            {
+                return _Shutdown;
             }
         }
         //
@@ -438,13 +446,18 @@ namespace System.Net.Security {
         //
 
         //
-        //
-        internal void CheckThrow(bool authSucessCheck) {
+        // 
+        internal void CheckThrow(bool authSuccessCheck, bool shutdownCheck = false) {
             if (_Exception != null) {
                 throw _Exception;
             }
-            if (authSucessCheck && !IsAuthenticated) {
+
+            if (authSuccessCheck && !IsAuthenticated) {
                 throw new InvalidOperationException(SR.GetString(SR.net_auth_noauth));
+            }
+
+            if (shutdownCheck && _Shutdown && !LocalAppContextSwitches.DontEnableTlsAlerts) {
+                throw new InvalidOperationException(SR.net_ssl_io_already_shutdown);
             }
         }
         //
@@ -631,7 +644,7 @@ namespace System.Net.Security {
                 // Async handshake is enqueued and will resume later
                 return;
             }
-            // Either [....] handshake is ready to go or async handshake won the ---- over write.
+            // Either Sync handshake is ready to go or async handshake won the ---- over write.
 
             // This will tell that we don't know the framing yet (what SSL version is)
             _Framing = Framing.None;
@@ -790,11 +803,14 @@ namespace System.Net.Security {
             }
             else if (message.Done && !_PendingReHandshake)
             {
-                if (!CompleteHandshake())
+                ProtocolToken alertToken = null;
+
+                if (!CompleteHandshake(ref alertToken))
                 {
-                    StartSendAuthResetSignal(null, asyncRequest, new AuthenticationException(SR.GetString(SR.net_ssl_io_cert_validation), null));
+                    StartSendAuthResetSignal(alertToken, asyncRequest, new AuthenticationException(SR.GetString(SR.net_ssl_io_cert_validation), null));
                     return;
                 }
+
                 // Release waiting IO if any. Presumably it should not throw.
                 // Otheriwse application may get not expected type of the exception.
                 FinishHandshake(null, asyncRequest);
@@ -975,11 +991,11 @@ namespace System.Net.Security {
         //
         // - Returns false if failed to verify the Remote Cert
         //
-        private bool CompleteHandshake() {
+        private bool CompleteHandshake(ref ProtocolToken alertToken) {
             GlobalLog.Enter("CompleteHandshake");
             Context.ProcessHandshakeSuccess();
 
-            if (!Context.VerifyRemoteCertificate(_CertValidationDelegate))
+            if (!Context.VerifyRemoteCertificate(_CertValidationDelegate, ref alertToken))
             {
                 _HandshakeCompleted = false;
                 _CertValidationFailed = true;
@@ -1296,7 +1312,7 @@ namespace System.Net.Security {
                 _QueuedWriteStateRequest = null;
                 if (obj is LazyAsyncResult)
                 {
-                    // [....] handshake is waiting on other thread.
+                    // sync handshake is waiting on other thread.
                     ((LazyAsyncResult)obj).InvokeCallback();
                 }
                 else
@@ -1307,6 +1323,23 @@ namespace System.Net.Security {
                 }
             }
         }
+
+        internal IAsyncResult BeginShutdown(AsyncCallback asyncCallback, object asyncState)
+        {
+            CheckThrow(authSuccessCheck: true, shutdownCheck: true);
+
+            ProtocolToken message = Context.CreateShutdownToken();
+            return InnerStream.BeginWrite(message.Payload, 0, message.Payload.Length, asyncCallback, asyncState);
+        }
+
+        internal void EndShutdown(IAsyncResult result)
+        {
+            CheckThrow(authSuccessCheck: true, shutdownCheck: true);
+
+            InnerStream.EndWrite(result);
+            _Shutdown = true;
+        }
+
         // true  - operation queued
         // false - operation can proceed
         private bool CheckEnqueueHandshake(byte[] buffer, AsyncProtocolRequest asyncRequest)
@@ -1372,7 +1405,7 @@ namespace System.Net.Security {
 
                     if (obj is LazyAsyncResult)
                     {
-                        // [....] write is waiting on other thread.
+                        // sync write is waiting on other thread.
                         ((LazyAsyncResult)obj).InvokeCallback();
                     }
                     else
@@ -1724,7 +1757,7 @@ namespace System.Net.Security {
                 FinishHandshake(exception, null);
             }
         }
-
+        
 #if TRAVE
         [System.Diagnostics.Conditional("TRAVE")]
         internal void DebugMembers() {

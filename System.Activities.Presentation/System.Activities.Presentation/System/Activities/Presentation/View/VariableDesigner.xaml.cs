@@ -1232,7 +1232,7 @@ namespace System.Activities.Presentation.View
                                 {
                                     variable.Default = morphedExpression;
                                 }
-                                //[....] 
+                                //Microsoft 
 
                             }
                         }
