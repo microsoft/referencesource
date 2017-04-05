@@ -992,7 +992,7 @@ namespace System.Activities.Presentation.Internal.PropertyEditing.FromExpression
 
         private void ItemsSourceChanged()
         {
-            // The collection just changed, so we need to make sure that things are in [....]
+            // The collection just changed, so we need to make sure that things are in sync
 
             // ###################################################
             // CIDER-SPECIFIC CHANGE IN NEED OF PORTING - BEGIN
@@ -1131,7 +1131,7 @@ namespace System.Activities.Presentation.Internal.PropertyEditing.FromExpression
 
                             this.Value = newValue;
 
-                            // At this point it is possible that the value that we just set is out of [....] with the internal value
+                            // At this point it is possible that the value that we just set is out of sync with the internal value
                             if (newValue != this.InternalValue)
                             {
                                 this.UpdateInternalValuesFromValue();
