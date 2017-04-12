@@ -19,6 +19,12 @@ namespace System.Collections.Generic {
     using System;
     using System.Text;
 
+    public static class KeyValuePair {
+        public static KeyValuePair<TKey, TValue> Create<TKey, TValue>(TKey key, TValue value) {
+            return new KeyValuePair<TKey, TValue>(key, value);
+        }
+    }
+
     // A KeyValuePair holds a key and a value from a dictionary.
     // It is used by the IEnumerable<T> implementation for both IDictionary<TKey, TValue>
     // and IReadOnlyDictionary<TKey, TValue>.
