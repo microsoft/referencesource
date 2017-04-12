@@ -33,12 +33,12 @@ namespace System.Dynamic.Utils {
                 return first;
             }
             var set = new Set<T>(cmp);
-            for (T t = first; t != null; t = parent(t)) {
-                set.Add(t);
+            for (T x = first; x != null; x = parent(x)) {
+                set.Add(x);
             }
-            for (T t = second; t != null; t = parent(t)) {
-                if (set.Contains(t)) {
-                    return t;
+            for (T x = second; x != null; x = parent(x)) {
+                if (set.Contains(x)) {
+                    return x;
                 }
             }
             return null;
