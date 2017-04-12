@@ -475,7 +475,7 @@ namespace System.Data {
         Serialize constraints availabe on the table - note this function is marked internal because it is called by the DataSet deserializer.
         ***Schema for Serializing ArrayList of Constraints***
         Unique Constraint - ["U"]->[constraintName]->[columnIndexes]->[IsPrimaryKey]->[extendedProperties]
-        Foriegn Key Constraint - ["F"]->[constraintName]->[parentTableIndex, parentcolumnIndexes]->[childTableIndex, childColumnIndexes]->[AcceptRejectRule, UpdateRule, DeleteRule]->[extendedProperties]
+        Foreign Key Constraint - ["F"]->[constraintName]->[parentTableIndex, parentcolumnIndexes]->[childTableIndex, childColumnIndexes]->[AcceptRejectRule, UpdateRule, DeleteRule]->[extendedProperties]
 */
         internal void SerializeConstraints(SerializationInfo info, StreamingContext context, int serIndex, bool allConstraints) {
             if (allConstraints) {
@@ -539,7 +539,7 @@ namespace System.Data {
         Deserialize the constraints on the table.
         ***Schema for Serializing ArrayList of Constraints***
         Unique Constraint - ["U"]->[constraintName]->[columnIndexes]->[IsPrimaryKey]->[extendedProperties]
-        Foriegn Key Constraint - ["F"]->[constraintName]->[parentTableIndex, parentcolumnIndexes]->[childTableIndex, childColumnIndexes]->[AcceptRejectRule, UpdateRule, DeleteRule]->[extendedProperties]
+        Foreign Key Constraint - ["F"]->[constraintName]->[parentTableIndex, parentcolumnIndexes]->[childTableIndex, childColumnIndexes]->[AcceptRejectRule, UpdateRule, DeleteRule]->[extendedProperties]
 */
         internal void DeserializeConstraints(SerializationInfo info, StreamingContext context, int serIndex, bool allConstraints) {
             ArrayList constraintList = (ArrayList) info.GetValue(String.Format(CultureInfo.InvariantCulture, "DataTable_{0}.Constraints", serIndex), typeof(ArrayList));
