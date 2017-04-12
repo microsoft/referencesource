@@ -15,7 +15,7 @@ namespace System.ComponentModel {
     ///    <para>Specifies the display name for a property or event.  The default is the name of the property or event.</para>
     /// </devdoc>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1813:AvoidUnsealedAttributes")]    
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event | AttributeTargets.Class | AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Event | AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Field)]
     public class DisplayNameAttribute : Attribute {
         /// <devdoc>
         /// <para>Specifies the default value for the <see cref='System.ComponentModel.DisplayNameAttribute'/> , which is an
