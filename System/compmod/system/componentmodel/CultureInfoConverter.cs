@@ -370,7 +370,7 @@ namespace System.ComponentModel {
                     {"Chinese (People's Republic of China)", "zh-CN"},
                     {"Chinese (Simplified)", "zh-CHS"},
                     {"Chinese (Singapore)", "zh-SG"},
-                    {"Chinese (----)", "zh-TW"},
+                    {"Chinese (Taiwan)", "zh-TW"},
                     {"Chinese (Traditional)", "zh-CHT"},
                     {"Corsican (France)", "co-FR"},
                     {"Croatian", "hr"},

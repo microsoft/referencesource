@@ -292,7 +292,7 @@ namespace System.Globalization {
             0x1C01, /* 97 */  // TN          ar-TN      Arabic (Tunisia)
             0x041F, /* 98 */  // TR          tr-TR      Turkish (Turkey)
             0x2C09, /* 99 */  // TT          en-TT      English (Trinidad and Tobago)
-            0x0404, /*100 */  // TW          zh-TW      Chinese (----)
+            0x0404, /*100 */  // TW          zh-TW      Chinese (Taiwan)
             0x0422, /*101 */  // UA          uk-UA      Ukrainian (Ukraine)
             0x0409, /*102 */  // US          en-US      English (United States)
             0x380A, /*103 */  // UY          es-UY      Spanish (Uruguay)
