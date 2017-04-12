@@ -7,7 +7,7 @@
 **
 ** Class:  FileSystemInfo    
 ** 
-** <OWNER>[....]</OWNER>
+** <OWNER>Microsoft</OWNER>
 **
 **
 ** Purpose: 
@@ -26,18 +26,21 @@ using System.Runtime.Serialization;
 using System.Runtime.Versioning;
 using System.Diagnostics.Contracts;
 
-namespace System.IO {
+namespace System.IO
+{
     [Serializable]
 #if !FEATURE_CORECLR
     [FileIOPermissionAttribute(SecurityAction.InheritanceDemand,Unrestricted=true)]
 #endif
     [ComVisible(true)]
-#if FEATURE_REMOTING        
-    public abstract class FileSystemInfo : MarshalByRefObject, ISerializable {
+#if FEATURE_REMOTING
+    public abstract class FileSystemInfo : MarshalByRefObject, ISerializable
+    {
 #else // FEATURE_REMOTING
-    public abstract class FileSystemInfo : ISerializable {   
-#endif  //FEATURE_REMOTING      
-        
+    public abstract class FileSystemInfo : ISerializable
+    {
+#endif  //FEATURE_REMOTING
+
         [System.Security.SecurityCritical] // auto-generated
         internal Win32Native.WIN32_FILE_ATTRIBUTE_DATA _data; // Cache the file information
         internal int _dataInitialised = -1; // We use this field in conjunction with the Refresh methods, if we succeed
@@ -88,37 +91,28 @@ namespace System.IO {
         }
 
         // Full path of the direcory/file
-        public virtual String FullName {
-            [System.Security.SecuritySafeCritical]
-            get 
+        public virtual string FullName
+        {
+            [SecuritySafeCritical]
+            get
             {
-                String demandDir;
-                if (this is DirectoryInfo)
-                    demandDir = Directory.GetDemandDir(FullPath, true);
-                else
-                    demandDir = FullPath;
 #if FEATURE_CORECLR
-                FileSecurityState sourceState = new FileSecurityState(FileSecurityStateAccess.PathDiscovery, String.Empty, demandDir);
+                FileSecurityState sourceState = new FileSecurityState(FileSecurityStateAccess.PathDiscovery, String.Empty, FullPath);
                 sourceState.EnsureState();
 #else
-                FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, demandDir);
+                FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, FullPath);
 #endif
                 return FullPath;
             }
         }
 
-        internal virtual String UnsafeGetFullName
+        internal virtual string UnsafeGetFullName
         {
-            [System.Security.SecurityCritical]
+            [SecurityCritical]
             get
             {
-                String demandDir;
-                if (this is DirectoryInfo)
-                    demandDir = Directory.GetDemandDir(FullPath, true);
-                else
-                    demandDir = FullPath;
 #if !FEATURE_CORECLR
-                FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, demandDir);
+                FileIOPermission.QuickDemand(FileIOPermissionAccess.PathDiscovery, FullPath);
 #endif
                 return FullPath;
             }
