@@ -361,9 +361,8 @@ namespace System.ComponentModel.DataAnnotations {
                 return errors;
             }
 
-            // Step 3: Test for IValidatableObject implementation
-            IValidatableObject validatable = instance as IValidatableObject;
-            if (validatable != null) {
+            // Step 3: Test for IValidatableObject implementation            
+            if (instance is IValidatableObject validatable) {
                 IEnumerable<ValidationResult> results = validatable.Validate(validationContext);
 
                 foreach (ValidationResult result in results.Where(r => r != ValidationResult.Success)) {
