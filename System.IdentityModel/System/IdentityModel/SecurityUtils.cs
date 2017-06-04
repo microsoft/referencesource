@@ -448,6 +448,12 @@ namespace System.IdentityModel
                 length = hexString.Length - 2;
                 i = 2;
             }
+            
+            if ((length >= 2) && (hexString[0] == Convert.ToChar(8206)))
+            {
+                 length = hexString.Length - 1;
+                 i = 1;
+            }
 
             if (length < 2)
                 throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new FormatException(SR.GetString(SR.InvalidHexString)));
