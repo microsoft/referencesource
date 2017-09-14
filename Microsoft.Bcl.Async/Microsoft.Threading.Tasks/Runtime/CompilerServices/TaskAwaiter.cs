@@ -202,14 +202,11 @@ namespace Microsoft.Runtime.CompilerServices
         /// <param name="exc">The exception to prepare.</param>
         internal static Exception PrepareExceptionForRethrow(Exception exc)
         {
-#if EXCEPTION_STACK_PRESERVE
-            Contract.Assume(exc != null);
-            if (s_prepForRemoting != null)
+            var ctor = exc.GetType().GetConstructor(new[] { typeof(string), typeof(Exception) });
+            if (ctor != null)
             {
-                try { s_prepForRemoting.Invoke(exc, s_emptyParams); }
-                catch { }
+                return (Exception)ctor.Invoke(new object[] { exc.Message, exc });
             }
-#endif
             return exc;
         }
 
