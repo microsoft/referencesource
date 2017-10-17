@@ -4,6 +4,7 @@
 
 namespace System.Activities.Presentation.View
 {
+    using System.Activities.Presentation;
     using System.Windows.Data;
     using System.Activities.Presentation.Model;
 
@@ -21,10 +22,19 @@ namespace System.Activities.Presentation.View
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             int actualDisplayNameLength = MaxDisplayNameLength;
-            ModelItem boundModelItem = values[0] as ModelItem;
 
             // default to root item's typename
-            string breadCrumbText = (null != boundModelItem ? boundModelItem.ItemType.Name : "<null>");
+            string breadCrumbText = "<null>";
+            if (values[0] is ModelItem)
+            {
+                ModelItem boundModelItem = values[0] as ModelItem;
+                breadCrumbText = boundModelItem.ItemType.Name;
+            }
+            else if (LocalAppContextSwitches.UseLegacyAccessibilityFeatures && values[0] is DesignerView.BreadCrumbObjectSeparator)
+            {
+                breadCrumbText = SR.BreadCrumbObjectSeparator;
+            }
+
             // if there is a display name property on root use that as the file name.
             if (values[1] is ModelItem)
             {

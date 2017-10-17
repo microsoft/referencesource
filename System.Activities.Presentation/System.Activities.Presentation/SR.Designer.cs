@@ -1170,5 +1170,46 @@ namespace System.Activities.Presentation {
                 return ResourceManager.GetString("WrapInSequenceDescription", resourceCulture);
             }
         }
+		
+        /// <summary>
+        ///   Looks up a localized string similar to Arrow.
+        /// </summary>
+        internal static string BreadCrumbObjectSeparator {
+            get {
+                return ResourceManager.GetString("BreadCrumbObjectSeparator", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up the UI automation name of connector of Activities.
+        /// </summary>
+        internal static string ConnectorOfActivitiesAutomationName {
+            get {
+                return ResourceManager.GetString("ConnectorOfActivitiesAutomationName", resourceCulture);
+            }
+        }
+		
+        /// <summary>
+        ///   Looks up a localized string for the automation name of designer's context menu.
+        /// </summary>
+        internal static string DesignerContextMenuAutomationName
+        {
+            get
+            {
+                return ResourceManager.GetString("DesignerContextMenuAutomationName", resourceCulture);
+            }
+        }
+		
+        /// <summary>
+        ///   Looks up a localized string used for the automation name of zoomPicker's editor.
+        /// </summary>
+        internal static string ZoomPickerEditorAutomationName
+        {
+            get
+            {
+                return ResourceManager.GetString("ZoomPickerEditorAutomationName", resourceCulture);
+            }
+        }
     }
 }
+

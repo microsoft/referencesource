@@ -119,6 +119,11 @@ namespace System.Activities.Presentation
 
         protected internal override string GetAutomationItemStatus()
         {
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                return String.Empty;
+            }
+
             StringBuilder descriptiveText = new StringBuilder();
 
             EmitPropertyValuePair(descriptiveText, "IsPrimarySelection");

@@ -5,6 +5,7 @@
 namespace System.Activities.Presentation.View
 {
     using System.Activities.Debugger;
+    using System.Activities.Presentation;
     using System.Activities.Presentation.Annotations;
     using System.Activities.Presentation.Debug;
     using System.Activities.Presentation.Hosting;
@@ -20,6 +21,7 @@ namespace System.Activities.Presentation.View
     using System.Runtime;
     using System.Runtime.InteropServices;
     using System.Windows;
+    using System.Windows.Automation;
     using System.Windows.Controls;
     using System.Windows.Controls.Primitives;
     using System.Windows.Data;
@@ -442,6 +444,12 @@ namespace System.Activities.Presentation.View
             ContextMenu newMenu = new ContextMenu() { ItemContainerStyleSelector = new ContextMenuItemStyleSelector(this) };
             newMenu.Loaded += this.OnWorkflowViewContextMenuLoaded;
             newMenu.Unloaded += this.OnWorkflowViewContextMenuClosed;
+
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                newMenu.SetValue(AutomationProperties.NameProperty, SR.DesignerContextMenuAutomationName);
+            }
+
             foreach (var entry in this.ContextMenu.Items.OfType<Control>().Reverse())
             {
                 this.ContextMenu.Items.Remove(entry);

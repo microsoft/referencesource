@@ -915,6 +915,16 @@ namespace System.Activities.Presentation.View
                 }
             }
         }
+        
+        internal static void DataGridCellGotFocus(DataGrid dataGrid, RoutedEventArgs e)
+        {
+            // Lookup for the source to be DataGridCell
+            if (null != e && null != e.OriginalSource && e.OriginalSource.GetType() == typeof(DataGridCell))
+            {
+                // Starts the Edit on the row;
+                dataGrid.BeginEdit(e);
+            }
+        }
 
         public static DataTemplate DynamicCellContentTemplate
         {

@@ -240,6 +240,17 @@ namespace System.Activities.Presentation
                 return GetColor(WorkflowDesignerColors.WorkflowViewElementCaptionColorKey);
             }
         }
+        internal static Color WorkflowViewElementSelectedCaptionColor
+        {
+            get
+            {
+                if (LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+                {
+                    return WorkflowViewElementCaptionColor;
+                }
+                return GetColor(WorkflowDesignerColorsInternal.WorkflowViewElementSelectedCaptionColorKey);
+            }
+        }
         public static Color DesignerViewBackgroundColor
         {
             get
@@ -308,6 +319,21 @@ namespace System.Activities.Presentation
             get { return GetBrush(WorkflowDesignerColors.DesignerViewExpandAllCollapseAllPressedColorKey); }
         }
 
+        internal static Color PropertyToolBarHightlightedButtonForegroundColor
+        {
+            get
+            {
+                if (LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+                {
+                    return Colors.Black;
+                }
+                return GetColor(WorkflowDesignerColorsInternal.PropertyToolBarHightlightedButtonForegroundColorKey);
+            }
+        }
+        internal static Color ActivityDesignerSelectedTitleForegroundColor
+        {
+            get { return GetColor(WorkflowDesignerColorsInternal.ActivityDesignerSelectedTitleForegroundColorKey); }
+        }
         public static Color ContextMenuBackgroundGradientBeginColor
         {
             get { return GetColor(WorkflowDesignerColors.ContextMenuBackgroundGradientBeginColorKey); }
@@ -362,6 +388,18 @@ namespace System.Activities.Presentation
             get { return GetColor(WorkflowDesignerColors.ContextMenuItemTextHoverColorKey); }
         }
 
+        internal static Color ContextMenuItemTextHoverQuirkedColor
+        {
+            get
+            {
+                if (LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+                {
+                    return ContextMenuItemTextColor;
+                }
+                return ContextMenuItemTextHoverColor;
+            }
+        }
+
         public static Color ContextMenuItemTextSelectedColor
         {
             get { return GetColor(WorkflowDesignerColors.ContextMenuItemTextSelectedColorKey); }
@@ -375,6 +413,18 @@ namespace System.Activities.Presentation
         public static Color ContextMenuSeparatorColor
         {
             get { return GetColor(WorkflowDesignerColors.ContextMenuSeparatorColorKey); }
+        }
+
+        internal static Color FlowchartConnectorColor
+        {
+            get
+            {
+                if (LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+                {
+                    return WorkflowViewElementBorderColor;
+                }
+                return GetColor(WorkflowDesignerColorsInternal.FlowchartConnectorColorKey);
+            }
         }
 
         public static Brush FlowchartExpressionButtonBrush

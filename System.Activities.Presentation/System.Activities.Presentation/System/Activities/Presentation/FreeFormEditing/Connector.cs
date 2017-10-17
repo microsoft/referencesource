@@ -23,7 +23,7 @@ namespace System.Activities.Presentation.FreeFormEditing
     internal class Connector : UserControl
     {
         public const double ArrowShapeWidth = 5;
-        
+
         public static readonly DependencyProperty PointsProperty = DependencyProperty.Register(
             "Points", 
             typeof(PointCollection), 
@@ -58,7 +58,7 @@ namespace System.Activities.Presentation.FreeFormEditing
             "Identity", 
             typeof(Guid), 
             typeof(Connector));
-
+        
         // Label will be shown only if there is one segment in the connector whose length is greater than this.
         internal const int MinConnectorSegmentLengthForLabel = 30;
 
@@ -110,6 +110,11 @@ namespace System.Activities.Presentation.FreeFormEditing
         {
             get { return (Guid)GetValue(Connector.IdentityProperty); }
             set { SetValue(Connector.IdentityProperty, value); }
+        }
+
+        public string AutomationName
+        {
+            get { return SR.ConnectorOfActivitiesAutomationName; }
         }
 
         public UIElement SourceShape

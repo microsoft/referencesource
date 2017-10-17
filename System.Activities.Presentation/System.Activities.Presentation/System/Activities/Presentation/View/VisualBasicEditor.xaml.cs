@@ -467,6 +467,28 @@ namespace System.Activities.Presentation.View
                     e.Handled = true;
                 }
             }
+
+            // Adds or updates focused VisualBasicEditor to the session dictionary
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures && this.Context != null)
+            {
+                if (this.Context.Services.Contains<Dictionary<string, object>>())
+                {
+                    Dictionary<string, object> sessionObjects = this.Context.Services.GetService<Dictionary<string, object>>();
+
+                    if (null != sessionObjects)
+                    {
+                        string key = "FocusedVisualBasicEditor";
+                        if (!sessionObjects.ContainsKey(key))
+                        {
+                            sessionObjects.Add(key, this);
+                        }
+                        else
+                        {
+                            sessionObjects[key] = this;
+                        }
+                    }
+                }
+            }
         }
 
         void OnGotEditingFocus(object sender, RoutedEventArgs e)

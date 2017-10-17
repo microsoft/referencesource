@@ -10,6 +10,7 @@ namespace System.Activities.Presentation.View
     using System.Linq;
     using System.Reflection;
     using System.Windows;
+    using System.Windows.Automation;
     using System.Windows.Automation.Peers;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -198,7 +199,11 @@ namespace System.Activities.Presentation.View
 
         protected override System.Windows.Automation.Peers.AutomationPeer OnCreateAutomationPeer()
         {
-            return new UIElementAutomationPeer(this);
+            if (LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                return new UIElementAutomationPeer(this);
+            }
+            return new TypeBrowserAutomationPeer(this);
         }
 
         private void GenericTypeMappingCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -852,6 +857,25 @@ namespace System.Activities.Presentation.View
             {
                 return type.DisplayName.StartsWith(searchText, StringComparison.OrdinalIgnoreCase);
             }
+        }
+    }
+
+    class TypeBrowserAutomationPeer : UIElementAutomationPeer
+    {
+
+        public TypeBrowserAutomationPeer(TypeBrowser owner)
+            : base(owner)
+        {
+        }
+
+        protected override AutomationControlType GetAutomationControlTypeCore()
+        {
+            return AutomationControlType.Window;
+        }
+
+        protected override string GetNameCore()
+        {
+            return ((TypeBrowser)this.Owner).Resources["TypeBrowserAutomationName"] as string;
         }
     }
 }

@@ -70,6 +70,11 @@ namespace System.Activities.Presentation
             {
                 this.buttonPanel.Children.Remove(this.cancelButton);
             }
+
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                this.payload.TabIndex = 0;
+            }
         }
 
         void OK_Click(object sender, RoutedEventArgs e)

@@ -6,6 +6,7 @@ namespace System.Activities.Presentation.Internal.PropertyEditing.FromExpression
 {
     using System;
     using System.Windows;
+    using System.Windows.Automation;
     using System.Windows.Controls;
     using System.Windows.Data;
     using System.Windows.Documents;
@@ -19,12 +20,13 @@ namespace System.Activities.Presentation.Internal.PropertyEditing.FromExpression
     {
 
         public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(string), typeof(StringEditor), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(StringEditor.ValueChanged), null, false, UpdateSourceTrigger.PropertyChanged));
+        public static readonly DependencyProperty AutomationNameProperty = DependencyProperty.Register("AutomationName", typeof(string), typeof(StringEditor));
         public static readonly DependencyProperty IsNinchedProperty = DependencyProperty.Register("IsNinched", typeof(bool), typeof(StringEditor), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None, new PropertyChangedCallback(StringEditor.IsNinchedChanged)));
         public static readonly DependencyProperty IsEditingProperty = DependencyProperty.Register("IsEditing", typeof(bool), typeof(StringEditor), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None, new PropertyChangedCallback(StringEditor.IsEditingChanged)));
-
+        
         public static readonly DependencyProperty CornerRadiusProperty = DependencyProperty.Register("CornerRadius", typeof(double), typeof(StringEditor), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.None));
         public static readonly DependencyProperty BorderWidthProperty = DependencyProperty.Register("BorderWidth", typeof(double), typeof(StringEditor), new FrameworkPropertyMetadata(1.0, FrameworkPropertyMetadataOptions.None));
-
+        
         public static readonly DependencyProperty BeginCommandProperty = DependencyProperty.Register("BeginCommand", typeof(ICommand), typeof(StringEditor), new PropertyMetadata(null));
         public static readonly DependencyProperty CommitCommandProperty = DependencyProperty.Register("CommitCommand", typeof(ICommand), typeof(StringEditor), new PropertyMetadata(null));
         public static readonly DependencyProperty CancelCommandProperty = DependencyProperty.Register("CancelCommand", typeof(ICommand), typeof(StringEditor), new PropertyMetadata(null));
@@ -37,6 +39,7 @@ namespace System.Activities.Presentation.Internal.PropertyEditing.FromExpression
         public StringEditor()
         {
             this.CommandBindings.Add(new CommandBinding( DesignerView.CommitCommand, OnDesignerViewCommitExecute));
+            this.Loaded += new RoutedEventHandler(OnLoaded);
         }
 
         public string Value
@@ -49,6 +52,12 @@ namespace System.Activities.Presentation.Internal.PropertyEditing.FromExpression
         {
             get { return (bool)this.GetValue(StringEditor.IsNinchedProperty); }
             set { this.SetValue(StringEditor.IsNinchedProperty, value); }
+        }
+
+        public string AutomationName
+        {
+            get { return (string)this.GetValue(StringEditor.AutomationNameProperty); }
+            set { this.SetValue(StringEditor.AutomationNameProperty, value); }
         }
 
         public bool IsEditing
@@ -97,6 +106,14 @@ namespace System.Activities.Presentation.Internal.PropertyEditing.FromExpression
         {
             get { return (ICommand)this.GetValue(StringEditor.LostFocusCommandProperty); }
             set { this.SetValue(StringEditor.LostFocusCommandProperty, value); }
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures && !String.IsNullOrEmpty(AutomationName))
+            {
+                this.SetValue(AutomationProperties.NameProperty, AutomationName);
+            }
         }
 
         private static void ValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
