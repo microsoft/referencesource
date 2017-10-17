@@ -767,10 +767,12 @@ namespace System.Activities.Presentation
 
             protected override string GetNameCore()
             {
-                // Return an empty string if an activity is dropped on the presenter
-                if (owner.Item != null)
+                // Return the item type name if an activity is dropped on the presenter
+                if (owner.Item != null &&
+                    owner.Item.ItemType != null &&
+                    !string.IsNullOrEmpty(owner.Item.ItemType.Name))
                 {
-                    return string.Empty;
+                    return owner.Item.ItemType.Name;
                 }
                 string name = base.GetNameCore();
                 if (string.IsNullOrEmpty(name))

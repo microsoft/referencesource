@@ -5,6 +5,7 @@ namespace System.Activities.Presentation
 {
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Input;
     using System.Activities.Presentation.Model;
     using System.Activities.Presentation.Hosting;
     using System.Runtime;
@@ -152,6 +153,12 @@ namespace System.Activities.Presentation
             // this ContentControl doesn't define its own 
             // Template.VisualTree (maybe it should).
             this.DataContext = this;
+
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                SetValue(KeyboardNavigation.TabNavigationProperty, KeyboardNavigationMode.Local);
+                SetValue(KeyboardNavigation.IsTabStopProperty, false);
+            }
         }
 
         protected void EnableOk(bool enabled)

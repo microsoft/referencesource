@@ -106,7 +106,7 @@ namespace Microsoft.Activities.Presentation.Xaml
             }
 
             // do not filter out new types and new properties if targeting to current framework and it's a full SKU
-            if (config.TargetFrameworkName.Version == CurrentFramework.Version && config.TargetFrameworkName.IsFullProfile())
+            if (config.TargetFrameworkName.Version >= CurrentFramework.Version && config.TargetFrameworkName.IsFullProfile())
             {
                 return xamlType;
             }

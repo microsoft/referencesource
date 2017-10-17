@@ -136,6 +136,13 @@ namespace System.Activities.Presentation
             this.context.Services.Publish<FeatureManager>(new FeatureManager(this.context));
             this.context.Services.Publish<DesignerConfigurationService>(new DesignerConfigurationService());
 
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                // Keeps track of a dictionary of session objects on current Workflow Designer. 
+                // The initial purpose is to pass the focused VisualBasicEditor from NetFx to VS.
+                this.context.Services.Publish<Dictionary<string, object>>(new Dictionary<string, object>());
+            }
+
             this.context.Services.Subscribe<ICommandService>((s) =>
             {
                 const string addinTypeName = "Microsoft.VisualStudio.Activities.AddIn.WorkflowDesignerAddIn";

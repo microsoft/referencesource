@@ -606,6 +606,14 @@ namespace System.Activities.Presentation.View
             this.ContextMenu.IsOpen = true;
         }
 
+        protected void OnDataGridCellGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                DataGridHelper.DataGridCellGotFocus((DataGrid)sender, e);
+            }
+        }
+
         private void OnDeleteCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             ContextMenuUtilities.OnDeleteCommandCanExecute(e, this.variableDataGrid);

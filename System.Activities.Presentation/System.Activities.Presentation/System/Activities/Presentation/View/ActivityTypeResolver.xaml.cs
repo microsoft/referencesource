@@ -8,6 +8,7 @@ namespace System.Activities.Presentation.View
     using System.Diagnostics.CodeAnalysis;
     using System.Runtime;
     using System.Windows;
+    using System.Windows.Automation;
     using System.Windows.Automation.Peers;
     using System.Windows.Controls;
     using System.Windows.Input;
@@ -132,7 +133,11 @@ namespace System.Activities.Presentation.View
 
         protected override System.Windows.Automation.Peers.AutomationPeer OnCreateAutomationPeer()
         {
-            return new UIElementAutomationPeer(this);
+            if (LocalAppContextSwitches.UseLegacyAccessibilityFeatures)
+            {
+                return new UIElementAutomationPeer(this);
+            }
+            return new ActivityTypeResolverAutomationPeer(this);
         }
 
         static void OnEditedTypeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -287,4 +292,22 @@ namespace System.Activities.Presentation.View
         }
     }
 
+    class ActivityTypeResolverAutomationPeer : UIElementAutomationPeer
+    {
+
+        public ActivityTypeResolverAutomationPeer(ActivityTypeResolver owner)
+            : base(owner)
+        {
+        }
+
+        protected override AutomationControlType GetAutomationControlTypeCore()
+        {
+            return AutomationControlType.Window;
+        }
+
+        protected override string GetNameCore()
+        {
+            return ((ActivityTypeResolver)this.Owner).Resources["ActivityTypeResolverAutomationName"] as string;
+        }
+    }
 }

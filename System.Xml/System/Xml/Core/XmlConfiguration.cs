@@ -12,6 +12,7 @@ namespace System.Xml.XmlConfiguration {
         internal const string ProhibitDefaultResolverName = "prohibitDefaultResolver";
         internal const string LimitXPathComplexityName = "limitXPathComplexity";
         internal const string EnableMemberAccessForXslCompiledTransformName = "enableMemberAccessForXslCompiledTransform";
+        internal const string CollapseWhiteSpaceIntoEmptyStringName = "CollapseWhiteSpaceIntoEmptyString";
 
         internal const string XmlConfigurationSectionName = "system.xml";
 
@@ -50,6 +51,30 @@ namespace System.Xml.XmlConfiguration {
                     return null;
                 else
                     return new XmlUrlResolver();
+        }
+
+        [ConfigurationProperty(XmlConfigurationString.CollapseWhiteSpaceIntoEmptyStringName, DefaultValue = "false")]
+        public string CollapseWhiteSpaceIntoEmptyStringString {
+            get { return (string)this[XmlConfigurationString.CollapseWhiteSpaceIntoEmptyStringName]; }
+            set { this[XmlConfigurationString.CollapseWhiteSpaceIntoEmptyStringName] = value; }
+        }
+
+        private bool _CollapseWhiteSpaceIntoEmptyString {
+            get {
+                string value = CollapseWhiteSpaceIntoEmptyStringString;
+                bool result;
+                XmlConvert.TryToBoolean(value, out result);
+                return result;
+            }
+        }
+
+        //check the config every time, otherwise will have problem in different asp.net pages which have different settings.
+        //ConfigurationManager will cache the section result, so expect no perf issue.
+        internal static bool CollapseWhiteSpaceIntoEmptyString {
+            get {
+                XmlReaderSection section = System.Configuration.ConfigurationManager.GetSection(XmlConfigurationString.XmlReaderSectionPath) as XmlReaderSection;
+                return (section != null) ? section._CollapseWhiteSpaceIntoEmptyString : false;
+            }
         }
     }
 
