@@ -26,7 +26,7 @@ namespace System.ComponentModel.DataAnnotations {
         /// </summary>
         /// <param name="value">The value to test</param>
         /// <returns><c>false</c> if the <paramref name="value"/> is null or an empty string. If <see cref="RequiredAttribute.AllowEmptyStrings"/>
-        /// then <c>false</c> is returned only if <paramref name="vale"/> is null.</returns>
+        /// then <c>false</c> is returned only if <paramref name="value"/> is null.</returns>
 #if !SILVERLIGHT
         public
 #else
