@@ -141,8 +141,37 @@ namespace System.Diagnostics {
             }
        }
 
+        /// <summary>Gets the ProcessInfo for the specified process ID on the specified machine.</summary>
+        /// <param name="processId">The process ID.</param>
+        /// <param name="machineName">The machine name.</param>
+        /// <returns>The ProcessInfo for the process if it could be found; otherwise, null.</returns>
+        public static ProcessInfo GetProcessInfo(int processId, string machineName) {
+            bool isRemoteMachine = IsRemoteMachine(machineName);
+
+            if (!isRemoteMachine && IsNt && (Environment.OSVersion.Version.Major >= 5)) {
+                ProcessInfo[] processInfos = NtProcessInfoHelper.GetProcessInfos(pid => pid == processId);
+                if (processInfos.Length == 1) {
+                	return processInfos[0];
+                }
+            }
+            else {
+                ProcessInfo[] processInfos = ProcessManager.GetProcessInfosCore(machineName, isRemoteMachine);
+                foreach (ProcessInfo processInfo in processInfos) {
+                    if (processInfo.processId == processId) {
+                        return processInfo;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         public static ProcessInfo[] GetProcessInfos(string machineName) {
             bool isRemoteMachine = IsRemoteMachine(machineName);
+            return GetProcessInfosCore(machineName, isRemoteMachine);
+        }
+
+        private static ProcessInfo[] GetProcessInfosCore(string machineName, bool isRemoteMachine) {
             if (IsNt) {
                 // Do not use performance counter for local machine with Win2000 and above
                 if( !isRemoteMachine && 
@@ -1031,7 +1060,7 @@ namespace System.Diagnostics {
         }
         
         #pragma warning disable 169        
-        public static ProcessInfo[] GetProcessInfos() {
+        public static ProcessInfo[] GetProcessInfos(Predicate<int> processIdFilter = null) {
 
             int requiredSize = 0;
             int status; 
@@ -1079,7 +1108,7 @@ namespace System.Diagnostics {
                 }
 
                 // Parse the data block to get process information
-                processInfos = GetProcessInfos(bufferHandle.AddrOfPinnedObject());
+                processInfos = GetProcessInfos(bufferHandle.AddrOfPinnedObject(), processIdFilter);
             }
             finally {
                 // Cache the final buffer for use on the next call.
@@ -1101,7 +1130,7 @@ namespace System.Diagnostics {
         // Cache a single buffer for use in GetProcessInfos().
         private static long[] CachedBuffer;
 
-       static ProcessInfo[] GetProcessInfos(IntPtr dataPtr) {
+       static ProcessInfo[] GetProcessInfos(IntPtr dataPtr, Predicate<int> processIdFilter) {
             // 60 is a reasonable number for processes on a normal machine.
             Hashtable processInfos = new Hashtable(60);
 
@@ -1113,80 +1142,84 @@ namespace System.Diagnostics {
 
                 Marshal.PtrToStructure(currentPtr, pi);
 
-                // get information for a process
-                ProcessInfo processInfo = new ProcessInfo();
                 // Process ID shouldn't overflow. OS API GetCurrentProcessID returns DWORD.
-                processInfo.processId = pi.UniqueProcessId.ToInt32();
-                processInfo.handleCount = (int)pi.HandleCount;
-                processInfo.sessionId = (int)pi.SessionId;                
-                processInfo.poolPagedBytes = (long)pi.QuotaPagedPoolUsage;;
-                processInfo.poolNonpagedBytes = (long)pi.QuotaNonPagedPoolUsage;
-                processInfo.virtualBytes = (long)pi.VirtualSize;
-                processInfo.virtualBytesPeak = (long)pi.PeakVirtualSize;
-                processInfo.workingSetPeak = (long)pi.PeakWorkingSetSize;
-                processInfo.workingSet = (long)pi.WorkingSetSize;
-                processInfo.pageFileBytesPeak = (long)pi.PeakPagefileUsage;
-                processInfo.pageFileBytes = (long)pi.PagefileUsage;
-                processInfo.privateBytes = (long)pi.PrivatePageCount;
-                processInfo.basePriority = pi.BasePriority;
+                int processInfoProcessId = pi.UniqueProcessId.ToInt32();
+
+                if (processIdFilter == null || processIdFilter(processInfoProcessId)) {
+                    // get information for a process
+                    ProcessInfo processInfo = new ProcessInfo();
+                    processInfo.processId = processInfoProcessId;
+                    processInfo.handleCount = (int)pi.HandleCount;
+                    processInfo.sessionId = (int)pi.SessionId;                
+                    processInfo.poolPagedBytes = (long)pi.QuotaPagedPoolUsage;;
+                    processInfo.poolNonpagedBytes = (long)pi.QuotaNonPagedPoolUsage;
+                    processInfo.virtualBytes = (long)pi.VirtualSize;
+                    processInfo.virtualBytesPeak = (long)pi.PeakVirtualSize;
+                    processInfo.workingSetPeak = (long)pi.PeakWorkingSetSize;
+                    processInfo.workingSet = (long)pi.WorkingSetSize;
+                    processInfo.pageFileBytesPeak = (long)pi.PeakPagefileUsage;
+                    processInfo.pageFileBytes = (long)pi.PagefileUsage;
+                    processInfo.privateBytes = (long)pi.PrivatePageCount;
+                    processInfo.basePriority = pi.BasePriority;
 
 
-                if( pi.NamePtr == IntPtr.Zero) {                    
-                    if( processInfo.processId == NtProcessManager.SystemProcessID) {
-                        processInfo.processName = "System";
-                    }
-                    else if( processInfo.processId == NtProcessManager.IdleProcessID) {
-                        processInfo.processName = "Idle";
-                    }
-                    else { 
-                        // for normal process without name, using the process ID. 
-                        processInfo.processName = processInfo.processId.ToString(CultureInfo.InvariantCulture);
-                    }
-                }
-                else {                     
-                    string processName = GetProcessShortName(Marshal.PtrToStringUni(pi.NamePtr, pi.NameLength/sizeof(char)));  
-                    //
-                    // On old operating system (NT4 and windows 2000), the process name might be truncated to 15 
-                    // characters. For example, aspnet_admin.exe will show up in performance counter as aspnet_admin.ex.
-                    // Process class try to return a nicer name. We used to get the main module name for a process and 
-                    // use that as the process name. However normal user doesn't have access to module information, 
-                    // so normal user will see an exception when we try to get a truncated process name.
-                    //                    
-                    if (ProcessManager.IsOSOlderThanXP && (processName.Length == 15)) {
-                        if (processName.EndsWith(".", StringComparison.OrdinalIgnoreCase)) {
-                            processName = processName.Substring(0, 14);
+                    if( pi.NamePtr == IntPtr.Zero) {                    
+                        if( processInfo.processId == NtProcessManager.SystemProcessID) {
+                            processInfo.processName = "System";
                         }
-                        else if (processName.EndsWith(".e", StringComparison.OrdinalIgnoreCase)) {
-                            processName = processName.Substring(0, 13);
+                        else if( processInfo.processId == NtProcessManager.IdleProcessID) {
+                            processInfo.processName = "Idle";
                         }
-                        else if (processName.EndsWith(".ex", StringComparison.OrdinalIgnoreCase)) {
-                            processName = processName.Substring(0, 12);
+                        else { 
+                            // for normal process without name, using the process ID. 
+                            processInfo.processName = processInfo.processId.ToString(CultureInfo.InvariantCulture);
                         }
                     }
-                    processInfo.processName = processName;                                          
-                }
+                    else {                     
+                        string processName = GetProcessShortName(Marshal.PtrToStringUni(pi.NamePtr, pi.NameLength/sizeof(char)));  
+                        //
+                        // On old operating system (NT4 and windows 2000), the process name might be truncated to 15 
+                        // characters. For example, aspnet_admin.exe will show up in performance counter as aspnet_admin.ex.
+                        // Process class try to return a nicer name. We used to get the main module name for a process and 
+                        // use that as the process name. However normal user doesn't have access to module information, 
+                        // so normal user will see an exception when we try to get a truncated process name.
+                        //                    
+                        if (ProcessManager.IsOSOlderThanXP && (processName.Length == 15)) {
+                            if (processName.EndsWith(".", StringComparison.OrdinalIgnoreCase)) {
+                                processName = processName.Substring(0, 14);
+                            }
+                            else if (processName.EndsWith(".e", StringComparison.OrdinalIgnoreCase)) {
+                                processName = processName.Substring(0, 13);
+                            }
+                            else if (processName.EndsWith(".ex", StringComparison.OrdinalIgnoreCase)) {
+                                processName = processName.Substring(0, 12);
+                            }
+                        }
+                        processInfo.processName = processName;                                          
+                    }
 
-                // get the threads for current process
-                processInfos[processInfo.processId] =  processInfo;
+                    // get the threads for current process
+                    processInfos[processInfo.processId] =  processInfo;
 
-                currentPtr = (IntPtr)((long)currentPtr + Marshal.SizeOf(pi));
-                int i = 0;
-                while( i < pi.NumberOfThreads) {
-                    SystemThreadInformation ti = new SystemThreadInformation();
-                    Marshal.PtrToStructure(currentPtr, ti);                    
-                    ThreadInfo threadInfo = new ThreadInfo();                    
+                    currentPtr = (IntPtr)((long)currentPtr + Marshal.SizeOf(pi));
+                    int i = 0;
+                    while( i < pi.NumberOfThreads) {
+                        SystemThreadInformation ti = new SystemThreadInformation();
+                        Marshal.PtrToStructure(currentPtr, ti);                    
+                        ThreadInfo threadInfo = new ThreadInfo();                    
 
-                    threadInfo.processId = (int)ti.UniqueProcess;
-                    threadInfo.threadId = (int)ti.UniqueThread;
-                    threadInfo.basePriority = ti.BasePriority;
-                    threadInfo.currentPriority = ti.Priority;
-                    threadInfo.startAddress = ti.StartAddress;
-                    threadInfo.threadState = (ThreadState)ti.ThreadState;
-                    threadInfo.threadWaitReason = NtProcessManager.GetThreadWaitReason((int)ti.WaitReason);
+                        threadInfo.processId = (int)ti.UniqueProcess;
+                        threadInfo.threadId = (int)ti.UniqueThread;
+                        threadInfo.basePriority = ti.BasePriority;
+                        threadInfo.currentPriority = ti.Priority;
+                        threadInfo.startAddress = ti.StartAddress;
+                        threadInfo.threadState = (ThreadState)ti.ThreadState;
+                        threadInfo.threadWaitReason = NtProcessManager.GetThreadWaitReason((int)ti.WaitReason);
 
-                    processInfo.threadInfoList.Add(threadInfo);
-                    currentPtr = (IntPtr)((long)currentPtr + Marshal.SizeOf(ti));
-                    i++;
+                        processInfo.threadInfoList.Add(threadInfo);
+                        currentPtr = (IntPtr)((long)currentPtr + Marshal.SizeOf(ti));
+                        i++;
+                    }
                 }
 
                 if (pi.NextEntryOffset == 0) {

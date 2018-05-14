@@ -127,6 +127,11 @@ namespace System.Data.SqlClient {
         // cached metadata
         private _SqlMetaDataSet _cachedMetaData;
         
+        private Dictionary<int, SqlTceCipherInfoEntry> keysToBeSentToEnclave = new Dictionary<int, SqlTceCipherInfoEntry>();
+        private bool requiresEnclaveComputations = false;
+        internal EnclaveDelegate.EnclavePackage enclavePackage = null;
+        private SqlEnclaveAttestationParameters enclaveAttestationParameters = null;
+
         // Last TaskCompletionSource for reconnect task - use for cancellation only
         TaskCompletionSource<object> _reconnectionCompletionSource = null;
 
@@ -152,6 +157,10 @@ namespace System.Data.SqlClient {
                                  && _activeConnection.Parser != null
                                  && _activeConnection.Parser.IsColumnEncryptionSupported;
             }
+        }
+
+        internal bool ShouldUseEnclaveBasedWorkflow {
+            get { return !string.IsNullOrWhiteSpace(_activeConnection.EnclaveAttestationUrl) && IsColumnEncryptionEnabled; }
         }
 
         // Cached info for async executions
@@ -1625,7 +1634,9 @@ namespace System.Data.SqlClient {
 
                         RunExecuteNonQuerySmi( sendToPipe );
                     }
-                    else if (!BatchRPCMode && (System.Data.CommandType.Text == this.CommandType) && (0 == GetParameterCount(_parameters))) {
+                    //Always Encrypted generally operates only on parameterized queries. However enclave based Always encrypted also supports unparameterized queries
+                    //We skip this block for enclave based always encrypted so that we can make a call to SQL Server to get the encryption information
+                    else if (!ShouldUseEnclaveBasedWorkflow && !BatchRPCMode && (System.Data.CommandType.Text == this.CommandType) && (0 == GetParameterCount(_parameters))) {
                         Debug.Assert( !sendToPipe, "trying to send non-context command to pipe" );
                         if (null != statistics) {
                             if (!this.IsDirty && this.IsPrepared) {
@@ -2190,7 +2201,7 @@ namespace System.Data.SqlClient {
 
             // If column ecnryption is enabled and we used the cache, we want to catch any potential exceptions that were caused by the query cache and retry if the error indicates that we should.
             // So, try to read the result of the query before completing the overall task and trigger a retry if appropriate.
-            if ((IsColumnEncryptionEnabled && !inRetry && usedCache) 
+            if ((IsColumnEncryptionEnabled && !inRetry && (usedCache || ShouldUseEnclaveBasedWorkflow) ) 
 #if DEBUG
                 || _forceInternalEndQuery
 #endif
@@ -2223,14 +2234,15 @@ namespace System.Data.SqlClient {
                                 ReliablePutStateObject();
                             }
 
-                            bool shouldRetry = false;
+                            bool shouldRetry = e is EnclaveDelegate.RetriableEnclaveQueryExecutionException;
 
                             // Check if we have an error indicating that we can retry.
                             if (e is SqlException) {
                                 SqlException sqlEx = e as SqlException;
 
                                 for (int i = 0; i < sqlEx.Errors.Count; i++) {
-                                    if (sqlEx.Errors[i].Number == TdsEnums.TCE_CONVERSION_ERROR_CLIENT_RETRY) {
+                                    if ( (usedCache && (sqlEx.Errors[i].Number == TdsEnums.TCE_CONVERSION_ERROR_CLIENT_RETRY) ) || 
+                                         (ShouldUseEnclaveBasedWorkflow && (sqlEx.Errors[i].Number == TdsEnums.TCE_ENCLAVE_INVALID_SESSION_HANDLE) ) ){
                                         shouldRetry = true;
                                         break;
                                     }
@@ -2249,6 +2261,10 @@ namespace System.Data.SqlClient {
                             else {
                                 // Remove the enrty from the cache since it was inconsistent.
                                 SqlQueryMetadataCache.GetInstance().InvalidateCacheEntry(this);
+
+                                if (ShouldUseEnclaveBasedWorkflow && this.enclavePackage != null) {
+                                    EnclaveDelegate.Instance.InvalidateEnclaveSession(this._activeConnection.Parser.EnclaveType, this._activeConnection.DataSource, this._activeConnection.EnclaveAttestationUrl, this.enclavePackage.EnclaveSession);
+                                }
 
                                 try {
                                     // Kick off the retry.
@@ -3210,6 +3226,11 @@ namespace System.Data.SqlClient {
                     _parameters[i].HasReceivedMetadata = false;
                 }
             }
+
+            keysToBeSentToEnclave.Clear();
+            enclavePackage = null;
+            requiresEnclaveComputations = false;
+            enclaveAttestationParameters = null;
         }
 
         /// <summary>
@@ -3276,7 +3297,7 @@ namespace System.Data.SqlClient {
 
             // If we are not in Batch RPC and not already retrying, attempt to fetch the cipher MD for each parameter from the cache.
             // If this succeeds then return immediately, otherwise just fall back to the full crypto MD discovery.
-            if (!BatchRPCMode && !inRetry && SqlQueryMetadataCache.GetInstance().GetQueryMetadataIfExists(this)) {
+            if (!BatchRPCMode && !inRetry && (this._parameters!= null && this._parameters.Count > 0) && SqlQueryMetadataCache.GetInstance().GetQueryMetadataIfExists(this)) {
                 usedCache = true;
                 return;
             }
@@ -3555,6 +3576,19 @@ namespace System.Data.SqlClient {
             inputParameterEncryptionNeeded = false;
             task = null;
             describeParameterEncryptionRpcOriginalRpcMap = null;
+            byte[] serializedAttestatationParameters = null;
+
+            if(ShouldUseEnclaveBasedWorkflow) {
+                string enclaveType = this._activeConnection.Parser.EnclaveType;
+                string dataSource = this._activeConnection.DataSource;
+                string enclaveAttestationUrl = this._activeConnection.EnclaveAttestationUrl;
+                SqlEnclaveSession sqlEnclaveSession = null;
+                EnclaveDelegate.Instance.GetEnclaveSession(enclaveType, dataSource, enclaveAttestationUrl, out sqlEnclaveSession);
+                if (sqlEnclaveSession == null) {
+                    this.enclaveAttestationParameters = EnclaveDelegate.Instance.GetAttestationParameters(enclaveType, dataSource, enclaveAttestationUrl);
+                    serializedAttestatationParameters = EnclaveDelegate.Instance.GetSerializedAttestationParameters(this.enclaveAttestationParameters, enclaveType);
+                }
+            }
 
             if (BatchRPCMode) {
                 // Count the rpc requests that need to be transparently encrypted
@@ -3571,7 +3605,7 @@ namespace System.Data.SqlClient {
                         _SqlRPC rpcDescribeParameterEncryptionRequest = new _SqlRPC();
 
                         // Prepare the describe parameter encryption request.
-                        PrepareDescribeParameterEncryptionRequest(_SqlRPCBatchArray[i], ref rpcDescribeParameterEncryptionRequest);
+                        PrepareDescribeParameterEncryptionRequest(_SqlRPCBatchArray[i], ref rpcDescribeParameterEncryptionRequest, i==0?serializedAttestatationParameters:null);
                         Debug.Assert(rpcDescribeParameterEncryptionRequest != null, "rpcDescribeParameterEncryptionRequest should not be null, after call to PrepareDescribeParameterEncryptionRequest.");
 
                         Debug.Assert(!describeParameterEncryptionRpcOriginalRpcDictionary.ContainsKey(rpcDescribeParameterEncryptionRequest),
@@ -3598,24 +3632,29 @@ namespace System.Data.SqlClient {
                 Debug.Assert(_sqlRPCParameterEncryptionReqArray.Length <= _SqlRPCBatchArray.Length,
                                 "The number of decribe parameter encryption RPC requests is more than the number of original RPC requests.");
             }
-            else if (0 != GetParameterCount(_parameters)) {
+            //Always Encrypted generally operates only on parameterized queries. However enclave based Always encrypted also supports unparameterized queries
+            else if (ShouldUseEnclaveBasedWorkflow || (0 != GetParameterCount(_parameters))) {
                 // Fetch params for a single batch
                 inputParameterEncryptionNeeded = true;
                 _sqlRPCParameterEncryptionReqArray = new _SqlRPC[1];
 
                 _SqlRPC rpc = null;
-                GetRPCObject(_parameters.Count, ref rpc);
+                GetRPCObject(GetParameterCount(_parameters), ref rpc);
                 Debug.Assert(rpc != null, "GetRPCObject should not return rpc as null.");
 
                 rpc.rpcName = CommandText;
 
                 int i = 0;
-                foreach (SqlParameter sqlParam in _parameters) {
-                    rpc.parameters[i++] = sqlParam;
+
+                if (_parameters != null)
+                {
+                    foreach (SqlParameter sqlParam in _parameters) {
+                        rpc.parameters[i++] = sqlParam;
+                    }
                 }
 
                 // Prepare the RPC request for describe parameter encryption procedure.
-                PrepareDescribeParameterEncryptionRequest(rpc, ref _sqlRPCParameterEncryptionReqArray[0]);
+                PrepareDescribeParameterEncryptionRequest(rpc, ref _sqlRPCParameterEncryptionReqArray[0], serializedAttestatationParameters);
                 Debug.Assert(_sqlRPCParameterEncryptionReqArray[0] != null, "_sqlRPCParameterEncryptionReqArray[0] should not be null, after call to PrepareDescribeParameterEncryptionRequest.");
             }
 
@@ -3667,12 +3706,13 @@ namespace System.Data.SqlClient {
         /// </summary>
         /// <param name="originalRpcRequest">Original RPC request</param>
         /// <param name="describeParameterEncryptionRequest">sp_describe_parameter_encryption request being built</param>
-        private void PrepareDescribeParameterEncryptionRequest(_SqlRPC originalRpcRequest, ref _SqlRPC describeParameterEncryptionRequest) {
+        private void PrepareDescribeParameterEncryptionRequest(_SqlRPC originalRpcRequest, ref _SqlRPC describeParameterEncryptionRequest, byte[] attestationParameters = null) {
             Debug.Assert(originalRpcRequest != null);
 
             // Construct the RPC request for sp_describe_parameter_encryption
             // sp_describe_parameter_encryption always has 2 parameters (stmt, paramlist).
-            GetRPCObject(2, ref describeParameterEncryptionRequest, forSpDescribeParameterEncryption:true);
+            //sp_describe_parameter_encryption can have an optional 3rd parameter (attestationParametes), used to identify and execute attestation protocol
+            GetRPCObject(attestationParameters == null ? 2:3, ref describeParameterEncryptionRequest, forSpDescribeParameterEncryption:true);
             describeParameterEncryptionRequest.rpcName = "sp_describe_parameter_encryption";
 
             // Prepare @tsql parameter
@@ -3716,18 +3756,20 @@ namespace System.Data.SqlClient {
                 SqlParameter paramCopy;
                 SqlParameterCollection tempCollection = new SqlParameterCollection();
 
-                for (int i = 0; i < _parameters.Count; i++) {
-                    SqlParameter param = originalRpcRequest.parameters[i];
-                    paramCopy = new SqlParameter(param.ParameterName, param.SqlDbType, param.Size, param.Direction, param.Precision, param.Scale, param.SourceColumn, param.SourceVersion,
+                if (_parameters != null) {
+                    for (int i = 0; i < _parameters.Count; i++) {
+                        SqlParameter param = originalRpcRequest.parameters[i];
+                        paramCopy = new SqlParameter(param.ParameterName, param.SqlDbType, param.Size, param.Direction, param.Precision, param.Scale, param.SourceColumn, param.SourceVersion,
                         param.SourceColumnNullMapping, param.Value, param.XmlSchemaCollectionDatabase, param.XmlSchemaCollectionOwningSchema, param.XmlSchemaCollectionName);
-                    paramCopy.CompareInfo = param.CompareInfo;
-                    paramCopy.TypeName = param.TypeName;
-                    paramCopy.UdtTypeName = param.UdtTypeName;
-                    paramCopy.IsNullable = param.IsNullable;
-                    paramCopy.LocaleId = param.LocaleId;
-                    paramCopy.Offset = param.Offset;
+                        paramCopy.CompareInfo = param.CompareInfo;
+                        paramCopy.TypeName = param.TypeName;
+                        paramCopy.UdtTypeName = param.UdtTypeName;
+                        paramCopy.IsNullable = param.IsNullable;
+                        paramCopy.LocaleId = param.LocaleId;
+                        paramCopy.Offset = param.Offset;
 
-                    tempCollection.Add(paramCopy);
+                        tempCollection.Add(paramCopy);
+                    }
                 }
 
                 Debug.Assert(_stateObj == null, "_stateObj should be null at this time, in PrepareDescribeParameterEncryptionRequest.");
@@ -3745,11 +3787,19 @@ namespace System.Data.SqlClient {
                 parameterList = BuildParamList(tdsParser, tempCollection, includeReturnValue:true);
             }
 
-            Debug.Assert(!string.IsNullOrWhiteSpace(parameterList), "parameterList should not be null or empty or whitespace.");
-
             sqlParam = new SqlParameter(null, ((parameterList.Length << 1) <= TdsEnums.TYPE_SIZE_LIMIT) ? SqlDbType.NVarChar : SqlDbType.NText, parameterList.Length);
             sqlParam.Value = parameterList;
             describeParameterEncryptionRequest.parameters[1] = sqlParam;
+            
+            if(attestationParameters != null) {
+                var attestationParametersParam = new SqlParameter(null, SqlDbType.VarBinary) {
+                    Direction = ParameterDirection.Input,
+                    Size = attestationParameters.Length,
+                    Value = attestationParameters
+                };  
+
+                describeParameterEncryptionRequest.parameters[2] = attestationParametersParam;
+            }
         }
 
         /// <summary>
@@ -3787,6 +3837,8 @@ namespace System.Data.SqlClient {
                         break;
                     }
                 }
+
+                bool enclaveMetadataExists = true;
 
                 // First read the column encryption key list
                 while (ds.Read()) {
@@ -3828,19 +3880,70 @@ namespace System.Data.SqlClient {
                     //    continue;
                     //}
 
+                    string keyPath = ds.GetString((int)DescribeParameterEncryptionResultSet1.KeyPath);
                     cipherInfoEntry.Add(encryptedKey: encryptedKey,
                                         databaseId: ds.GetInt32((int)DescribeParameterEncryptionResultSet1.DbId),
                                         cekId: ds.GetInt32((int)DescribeParameterEncryptionResultSet1.KeyId),
                                         cekVersion: ds.GetInt32((int)DescribeParameterEncryptionResultSet1.KeyVersion),
                                         cekMdVersion: keyMdVersion,
-                                        keyPath: ds.GetString((int)DescribeParameterEncryptionResultSet1.KeyPath),
+                                        keyPath: keyPath,
                                         keyStoreName: providerName,
                                         algorithmName: ds.GetString((int)DescribeParameterEncryptionResultSet1.KeyEncryptionAlgorithm));
+
+                    bool isRequestedByEnclave = false;
+
+                    //Servers supporting enclave computations should always
+                    //return a boolean indicating whether the key is required by enclave or not.
+                    if (this._activeConnection.Parser.TceVersionSupported >= TdsEnums.MIN_TCE_VERSION_WITH_ENCLAVE_SUPPORT) {
+                        isRequestedByEnclave =
+                            ds.GetBoolean((int) DescribeParameterEncryptionResultSet1.IsRequestedByEnclave);
+                    }
+                    else {
+                        enclaveMetadataExists = false;
+                    }
+
+                    
+                    if (isRequestedByEnclave)
+                    {
+                        
+                        if (string.IsNullOrWhiteSpace(this.Connection.EnclaveAttestationUrl)) {
+                            throw SQL.NoAttestationUrlSpecifiedForEnclaveBasedQuerySpDescribe(this._activeConnection.Parser.EnclaveType);
+                        }
+
+                        byte[] keySignature = null;
+
+                        if (!ds.IsDBNull((int) DescribeParameterEncryptionResultSet1.KeySignature)) 
+                        {
+                            int keySignatureLength = (int) ds.GetBytes((int) DescribeParameterEncryptionResultSet1.KeySignature, 0, keySignature, 0, 0);
+                            keySignature = new byte[keySignatureLength];
+                            ds.GetBytes((int) DescribeParameterEncryptionResultSet1.KeySignature, 0, keySignature, 0, keySignatureLength);
+                        }
+                        
+                        string servername = this._activeConnection.DataSource;
+                        SqlSecurityUtility.VerifyColumnMasterKeySignature(providerName, keyPath, servername, isRequestedByEnclave, keySignature);
+                        
+                        int requestedKey = currentOrdinal;
+                        SqlTceCipherInfoEntry cipherInfo;
+
+                        // Lookup the key, failing which throw an exception
+                        if (!columnEncryptionKeyTable.TryGetValue(requestedKey, out cipherInfo)) {
+                            throw SQL.InvalidEncryptionKeyOrdinalEnclaveMetadata(requestedKey, columnEncryptionKeyTable.Count);
+                        }
+
+                        if (!keysToBeSentToEnclave.ContainsKey(currentOrdinal)) {
+                            this.keysToBeSentToEnclave.Add(currentOrdinal, cipherInfo);
+                        }
+
+                        requiresEnclaveComputations = true;
+                    }
                 }
 
-                if (!ds.NextResult()) {
-                    throw SQL.UnexpectedDescribeParamFormat ();
+                if (!enclaveMetadataExists && !ds.NextResult()) {
+                    throw SQL.UnexpectedDescribeParamFormatParameterMetadata ();
                 }
+
+                int paramIdx = 0;
+                int parameterStartIndex = 0;
 
                 // Find the RPC command that generated this tce request
                 if (BatchRPCMode) {
@@ -3865,56 +3968,58 @@ namespace System.Data.SqlClient {
                 // This is the index in the parameters array where the actual parameters start.
                 // In BatchRPCMode, parameters[0] has the t-sql, parameters[1] has the param list
                 // and actual parameters of the query start at parameters[2].
-                int parameterStartIndex = (BatchRPCMode ? 2 : 0);
+                parameterStartIndex = (BatchRPCMode ? 2 : 0);
 
-                // Iterate over the parameter names to read the encryption type info
-                int paramIdx;
-                while (ds.Read()) {
-#if DEBUG
-                    rowsAffected++;
-#endif
-                    Debug.Assert(rpc != null, "Describe Parameter Encryption requested for non-tce spec proc");
-                    string parameterName = ds.GetString((int)DescribeParameterEncryptionResultSet2.ParameterName);
+                if (!enclaveMetadataExists || ds.NextResult())
+                {
+                    // Iterate over the parameter names to read the encryption type info
+                    while (ds.Read()) {
+    #if DEBUG
+                        rowsAffected++;
+    #endif
+                        Debug.Assert(rpc != null, "Describe Parameter Encryption requested for non-tce spec proc");
+                        string parameterName = ds.GetString((int)DescribeParameterEncryptionResultSet2.ParameterName);
 
-                    // When the RPC object gets reused, the parameter array has more parameters that the valid params for the command.
-                    // Null is used to indicate the end of the valid part of the array. Refer to GetRPCObject().
-                    for (paramIdx = parameterStartIndex; paramIdx < rpc.parameters.Length && rpc.parameters[paramIdx] != null; paramIdx++) {
-                        SqlParameter sqlParameter = rpc.parameters[paramIdx];
-                        Debug.Assert(sqlParameter != null, "sqlParameter should not be null.");
+                        // When the RPC object gets reused, the parameter array has more parameters that the valid params for the command.
+                        // Null is used to indicate the end of the valid part of the array. Refer to GetRPCObject().
+                        for (paramIdx = parameterStartIndex; paramIdx < rpc.parameters.Length && rpc.parameters[paramIdx] != null; paramIdx++) {
+                            SqlParameter sqlParameter = rpc.parameters[paramIdx];
+                            Debug.Assert(sqlParameter != null, "sqlParameter should not be null.");
 
-                        if (sqlParameter.ParameterNameFixed.Equals(parameterName, StringComparison.Ordinal)) {
-                            Debug.Assert(sqlParameter.CipherMetadata == null, "param.CipherMetadata should be null.");
-                            sqlParameter.HasReceivedMetadata = true;
+                            if (sqlParameter.ParameterNameFixed.Equals(parameterName, StringComparison.Ordinal)) {
+                                Debug.Assert(sqlParameter.CipherMetadata == null, "param.CipherMetadata should be null.");
+                                sqlParameter.HasReceivedMetadata = true;
 
-                            // Found the param, setup the encryption info.
-                            byte columnEncryptionType = ds.GetByte((int)DescribeParameterEncryptionResultSet2.ColumnEncrytionType);
-                            if ((byte)SqlClientEncryptionType.PlainText != columnEncryptionType) {
-                                byte cipherAlgorithmId = ds.GetByte((int)DescribeParameterEncryptionResultSet2.ColumnEncryptionAlgorithm);
-                                int columnEncryptionKeyOrdinal = ds.GetInt32((int)DescribeParameterEncryptionResultSet2.ColumnEncryptionKeyOrdinal);
-                                byte columnNormalizationRuleVersion = ds.GetByte((int)DescribeParameterEncryptionResultSet2.NormalizationRuleVersion);
+                                // Found the param, setup the encryption info.
+                                byte columnEncryptionType = ds.GetByte((int)DescribeParameterEncryptionResultSet2.ColumnEncrytionType);
+                                if ((byte)SqlClientEncryptionType.PlainText != columnEncryptionType) {
+                                    byte cipherAlgorithmId = ds.GetByte((int)DescribeParameterEncryptionResultSet2.ColumnEncryptionAlgorithm);
+                                    int columnEncryptionKeyOrdinal = ds.GetInt32((int)DescribeParameterEncryptionResultSet2.ColumnEncryptionKeyOrdinal);
+                                    byte columnNormalizationRuleVersion = ds.GetByte((int)DescribeParameterEncryptionResultSet2.NormalizationRuleVersion);
 
-                                // Lookup the key, failing which throw an exception
-                                if (!columnEncryptionKeyTable.TryGetValue(columnEncryptionKeyOrdinal, out cipherInfoEntry)) {
-                                    throw SQL.InvalidEncryptionKeyOrdinal(columnEncryptionKeyOrdinal, columnEncryptionKeyTable.Count);
+                                    // Lookup the key, failing which throw an exception
+                                    if (!columnEncryptionKeyTable.TryGetValue(columnEncryptionKeyOrdinal, out cipherInfoEntry)) {
+                                        throw SQL.InvalidEncryptionKeyOrdinalParameterMetadata(columnEncryptionKeyOrdinal, columnEncryptionKeyTable.Count);
+                                    }
+                                    
+                                    sqlParameter.CipherMetadata = new SqlCipherMetadata(sqlTceCipherInfoEntry: cipherInfoEntry,
+                                                                                        ordinal: unchecked((ushort)-1),
+                                                                                        cipherAlgorithmId: cipherAlgorithmId,
+                                                                                        cipherAlgorithmName: null,
+                                                                                        encryptionType: columnEncryptionType,
+                                                                                        normalizationRuleVersion: columnNormalizationRuleVersion);
+
+                                    // Decrypt the symmetric key.(This will also validate and throw if needed).
+                                    Debug.Assert(_activeConnection != null, @"_activeConnection should not be null");
+                                    SqlSecurityUtility.DecryptSymmetricKey(sqlParameter.CipherMetadata, this._activeConnection.DataSource);
+
+                                    // This is effective only for BatchRPCMode even though we set it for non-BatchRPCMode also,
+                                    // since for non-BatchRPCMode mode, paramoptions gets thrown away and reconstructed in BuildExecuteSql.
+                                    rpc.paramoptions[paramIdx] |= TdsEnums.RPC_PARAM_ENCRYPTED;
                                 }
 
-                                sqlParameter.CipherMetadata = new SqlCipherMetadata(sqlTceCipherInfoEntry: cipherInfoEntry,
-                                                                                    ordinal: unchecked((ushort)-1),
-                                                                                    cipherAlgorithmId: cipherAlgorithmId,
-                                                                                    cipherAlgorithmName: null,
-                                                                                    encryptionType: columnEncryptionType,
-                                                                                    normalizationRuleVersion: columnNormalizationRuleVersion);
-
-                                // Decrypt the symmetric key.(This will also validate and throw if needed).
-                                Debug.Assert(_activeConnection != null, @"_activeConnection should not be null");
-                                SqlSecurityUtility.DecryptSymmetricKey(sqlParameter.CipherMetadata, this._activeConnection.DataSource);
-
-                                // This is effective only for BatchRPCMode even though we set it for non-BatchRPCMode also,
-                                // since for non-BatchRPCMode mode, paramoptions gets thrown away and reconstructed in BuildExecuteSql.
-                                rpc.paramoptions[paramIdx] |= TdsEnums.RPC_PARAM_ENCRYPTED;
+                                break;
                             }
-
-                            break;
                         }
                     }
                 }
@@ -3932,10 +4037,42 @@ namespace System.Data.SqlClient {
                 }
 
 #if DEBUG
-                Debug.Assert(rowsAffected == RowsAffectedByDescribeParameterEncryption,
-                            "number of rows received for describe parameter encryption should be equal to rows affected by describe parameter encryption.");
+                Debug.Assert( (rowsAffected== 0) || (rowsAffected == RowsAffectedByDescribeParameterEncryption),
+                            "number of rows received (if received) for describe parameter encryption should be equal to rows affected by describe parameter encryption.");
 #endif
 
+
+                if (ShouldUseEnclaveBasedWorkflow && (enclaveAttestationParameters != null) && requiresEnclaveComputations) {
+                    if (!ds.NextResult()) {
+                        throw SQL.UnexpectedDescribeParamFormatAttestationInfo (this._activeConnection.Parser.EnclaveType);
+                    }
+
+                    bool attestationInfoRead = false;
+
+                    while (ds.Read()) {
+
+                        if (attestationInfoRead) {
+                            throw SQL.MultipleRowsReturnedForAttestationInfo();
+                        }
+
+                        int attestationInfoLength = (int)ds.GetBytes((int)DescribeParameterEncryptionResultSet3.AttestationInfo, 0, null, 0, 0);
+                        byte[] attestationInfo = new byte[attestationInfoLength];
+                        ds.GetBytes((int)DescribeParameterEncryptionResultSet3.AttestationInfo, 0, attestationInfo, 0, attestationInfoLength);
+
+                        string enclaveType = this._activeConnection.Parser.EnclaveType;
+                        string dataSource = this._activeConnection.DataSource;
+                        string enclaveAttestationUrl = this._activeConnection.EnclaveAttestationUrl;
+
+                        EnclaveDelegate.Instance.CreateEnclaveSession(enclaveType, dataSource, enclaveAttestationUrl, attestationInfo, enclaveAttestationParameters);
+                        enclaveAttestationParameters=null;
+                        attestationInfoRead = true;
+                    }
+
+                    if (!attestationInfoRead) {
+                        throw SQL.AttestationInfoNotReturnedFromSqlServer(this._activeConnection.Parser.EnclaveType, this._activeConnection.EnclaveAttestationUrl);
+                    }
+                }
+ 
                  // The server has responded with encryption related information for this rpc request. So clear the needsFetchParameterEncryptionMetadata flag.
                 rpc.needsFetchParameterEncryptionMetadata = false;
             } while (ds.NextResult());
@@ -3950,7 +4087,8 @@ namespace System.Data.SqlClient {
             }
 
             // If we are not in Batch RPC mode, update the query cache with the encryption MD.
-            if (!BatchRPCMode) {
+            // Enclave based Always Encrypted implementation on server side does not support cache at this point. So we should not cache if the query requires keys to be sent to enclave
+            if (!BatchRPCMode && !requiresEnclaveComputations && (this._parameters!= null && this._parameters.Count > 0) ) {
                 SqlQueryMetadataCache.GetInstance().AddQueryMetadata(this, ignoreQueriesWithReturnValueParams: true);
             }
         }
@@ -4029,11 +4167,28 @@ namespace System.Data.SqlClient {
                             return RunExecuteReaderTdsWithTransparentParameterEncryption(cmdBehavior, runBehavior, returnStream, async, timeout, out task, asyncWrite && async, inRetry: inRetry, ds: null,
                                 describeParameterEncryptionRequest: false, describeParameterEncryptionTask: returnTask);
                         }
+
+                        catch (EnclaveDelegate.RetriableEnclaveQueryExecutionException) {
+                            if (inRetry || async) {
+                                throw;
+                            }
+
+                            // Retry if the command failed with appropriate error.
+                            // First invalidate the entry from the cache, so that we refresh our encryption MD.
+                            SqlQueryMetadataCache.GetInstance().InvalidateCacheEntry(this);
+                            
+                            if (ShouldUseEnclaveBasedWorkflow && this.enclavePackage != null) {
+                                EnclaveDelegate.Instance.InvalidateEnclaveSession(this._activeConnection.Parser.EnclaveType, this._activeConnection.DataSource, this._activeConnection.EnclaveAttestationUrl, this.enclavePackage.EnclaveSession);
+                            }
+
+                            return RunExecuteReader(cmdBehavior, runBehavior, returnStream, method, null, TdsParserStaticMethods.GetRemainingTimeout(timeout, firstAttemptStart), out task, out usedCache, async, inRetry: true);
+                        }
+
                         catch (SqlException ex) {
                             // We only want to retry once, so don't retry if we are already in retry.
                             // If we didn't use the cache, we don't want to retry.
                             // The async retried are handled separately, handle only sync calls here.
-                            if (inRetry || async || !usedCache) {
+                            if (inRetry || async || (!usedCache && !ShouldUseEnclaveBasedWorkflow)) {
                                 throw;
                             }
 
@@ -4041,7 +4196,9 @@ namespace System.Data.SqlClient {
 
                             // Check if we have an error indicating that we can retry.
                             for (int i = 0; i < ex.Errors.Count; i++) {
-                                if (ex.Errors[i].Number == TdsEnums.TCE_CONVERSION_ERROR_CLIENT_RETRY) {
+
+                                if ( (usedCache && (ex.Errors[i].Number == TdsEnums.TCE_CONVERSION_ERROR_CLIENT_RETRY) ) || 
+                                        (ShouldUseEnclaveBasedWorkflow && (ex.Errors[i].Number == TdsEnums.TCE_ENCLAVE_INVALID_SESSION_HANDLE) ) ) {
                                     shouldRetry = true;
                                     break;
                                 }
@@ -4054,6 +4211,11 @@ namespace System.Data.SqlClient {
                                 // Retry if the command failed with appropriate error.
                                 // First invalidate the entry from the cache, so that we refresh our encryption MD.
                                 SqlQueryMetadataCache.GetInstance().InvalidateCacheEntry(this);
+                                
+                                if (ShouldUseEnclaveBasedWorkflow && this.enclavePackage != null) {
+                                    EnclaveDelegate.Instance.InvalidateEnclaveSession(this._activeConnection.Parser.EnclaveType, this._activeConnection.DataSource, this._activeConnection.EnclaveAttestationUrl, this.enclavePackage.EnclaveSession);
+                                }
+
                                 return RunExecuteReader(cmdBehavior, runBehavior, returnStream, method, null, TdsParserStaticMethods.GetRemainingTimeout(timeout, firstAttemptStart), out task, out usedCache, async, inRetry: true);
                             }
                         }
@@ -4121,6 +4283,7 @@ namespace System.Data.SqlClient {
                 AsyncHelper.ContinueTask(describeParameterEncryptionTask, completion,
                     () => {
                         Task subTask = null;
+                        GenerateEnclavePackage();
                         RunExecuteReaderTds(cmdBehavior, runBehavior, returnStream, async, TdsParserStaticMethods.GetRemainingTimeout(timeout, parameterEncryptionStart), out subTask, asyncWrite, inRetry, ds);
                         if (subTask == null) {
                             completion.SetResult(null);
@@ -4148,7 +4311,31 @@ namespace System.Data.SqlClient {
             }
             else {
                 // Synchronous execution.
+                GenerateEnclavePackage();
                 return RunExecuteReaderTds(cmdBehavior, runBehavior, returnStream, async, timeout, out task, asyncWrite, inRetry, ds);
+            }
+        }
+
+        private void GenerateEnclavePackage() {
+            if (keysToBeSentToEnclave == null || keysToBeSentToEnclave.Count <= 0) {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(this._activeConnection.EnclaveAttestationUrl)) throw SQL.NoAttestationUrlSpecifiedForEnclaveBasedQueryGeneratingEnclavePackage(this._activeConnection.Parser.EnclaveType);
+
+            string enclaveType = this._activeConnection.Parser.EnclaveType;
+            if (string.IsNullOrWhiteSpace(enclaveType)) throw SQL.EnclaveTypeNullForEnclaveBasedQuery();
+
+            try {
+                this.enclavePackage = EnclaveDelegate.Instance.GenerateEnclavePackage(keysToBeSentToEnclave,
+                    this.CommandText, enclaveType, this._activeConnection.DataSource,
+                    this._activeConnection.EnclaveAttestationUrl);
+            }
+            catch (EnclaveDelegate.RetriableEnclaveQueryExecutionException) {
+                throw;
+            }
+            catch (Exception e) {
+                throw SQL.ExceptionWhenGeneratingEnclavePackage(e);
             }
         }
 
@@ -4254,7 +4441,19 @@ namespace System.Data.SqlClient {
                         Bid.Trace("<sc.SqlCommand.ExecuteReader|INFO> %d#, Command executed as SQLBATCH.\n", ObjectID);
                     }
                     string text = GetCommandText(cmdBehavior) + GetResetOptionsString(cmdBehavior);
-                    writeTask = _stateObj.Parser.TdsExecuteSQLBatch(text, timeout, this.Notification, _stateObj, sync: !asyncWrite);
+                    //If the query requires enclave computations, pass the enclavepackage in the SQLBatch TDS stream
+                    if (requiresEnclaveComputations) {
+
+                        if (this.enclavePackage == null) {
+                            throw SQL.NullEnclavePackageForEnclaveBasedQuery(this._activeConnection.Parser.EnclaveType, this._activeConnection.EnclaveAttestationUrl);
+                        }
+
+                        writeTask = _stateObj.Parser.TdsExecuteSQLBatch(text, timeout, this.Notification, _stateObj,
+                            sync: !asyncWrite, enclavePackage: this.enclavePackage.EnclavePackageBytes);
+                    }
+                    else {
+                        writeTask = _stateObj.Parser.TdsExecuteSQLBatch(text, timeout, this.Notification, _stateObj, sync: !asyncWrite);
+                    }
                 }
                 else if (System.Data.CommandType.Text == this.CommandType) {
                     if (this.IsDirty) {
@@ -4355,7 +4554,7 @@ namespace System.Data.SqlClient {
                 }
                 else {
                     // Always execute - even if no reader!
-                    FinishExecuteReader(ds, runBehavior, optionSettings, isInternal: false, forDescribeParameterEncryption: false);
+                    FinishExecuteReader(ds, runBehavior, optionSettings, isInternal: false, forDescribeParameterEncryption: false, shouldCacheForAlwaysEncrypted:!describeParameterEncryptionRequest);
                 }
             }
             catch (Exception e) {                
@@ -4459,7 +4658,7 @@ namespace System.Data.SqlClient {
             SqlDataReader ds = cachedAsyncState.CachedAsyncReader; // should not be null
             bool processFinallyBlock = true;
             try {
-                FinishExecuteReader(ds, cachedAsyncState.CachedRunBehavior, cachedAsyncState.CachedSetOptions, isInternal, forDescribeParameterEncryption);
+                FinishExecuteReader(ds, cachedAsyncState.CachedRunBehavior, cachedAsyncState.CachedSetOptions, isInternal, forDescribeParameterEncryption, shouldCacheForAlwaysEncrypted:!forDescribeParameterEncryption);
             }
             catch (Exception e) {
                 processFinallyBlock = ADP.IsCatchableExceptionType(e);
@@ -4480,7 +4679,7 @@ namespace System.Data.SqlClient {
             return ds;
         }
 
-        private void FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, string resetOptionsString, bool isInternal, bool forDescribeParameterEncryption) {
+        private void FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, string resetOptionsString, bool isInternal, bool forDescribeParameterEncryption, bool shouldCacheForAlwaysEncrypted=true) {
             // always wrap with a try { FinishExecuteReader(...) } finally { PutStateObject(); }
 
             // If this is not for internal usage, notify the dependency. If we have already initiated the end internally, the reader should be ready, so just return.
@@ -4537,7 +4736,19 @@ namespace System.Data.SqlClient {
                 // this will cause an error to be reported at Execute() time instead of Read() time
                 // if the command is not set.
                 try {
-                    _cachedMetaData = ds.MetaData;
+                    //This flag indicates if the datareader's metadata should be cached in this SqlCommand.
+                    //Metadata associated with sp_describe_parameter_metadats's datareader should not be cached.
+                    //Ideally, we should be using "forDescribeParameterEncryption" flag for this, but this flag's 
+                    //semantics are overloaded with async workflow and this flag is always false for sync workflow.
+                    //Since we are very close to a release and changing the semantics for "forDescribeParameterEncryption"
+                    //is risky, we introduced a new parameter to determine whether we should cache a datareader's metadata or not.
+                    if (shouldCacheForAlwaysEncrypted) {
+                        _cachedMetaData = ds.MetaData;
+                    }
+                    else {
+                        //we need this call to ensure that the datareader is properly intialized, the getter is initializing state in SqlDataReader
+                        _SqlMetaDataSet temp = ds.MetaData;
+                    }
                     ds.IsInitialized = true; // Webdata 104560
                 }
                 catch (Exception e) {
@@ -4913,7 +5124,8 @@ namespace System.Data.SqlClient {
                 // If we are not in Batch RPC mode, update the query cache with the encryption MD.
                 // We can do this now that we have distinguished between ReturnValue and ReturnStatus.
                 // Read comment in AddQueryMetadata() for more details.
-                if (!BatchRPCMode && CachingQueryMetadataPostponed) {
+                // Enclave based Always Encrypted implementation on server side does not support cache at this point. So we should not cache if the query requires keys to be sent to enclave
+                if (!BatchRPCMode && CachingQueryMetadataPostponed && !requiresEnclaveComputations && (this._parameters!= null && this._parameters.Count > 0) ) {
                     SqlQueryMetadataCache.GetInstance().AddQueryMetadata(this, ignoreQueriesWithReturnValueParams: false);
                 }
 

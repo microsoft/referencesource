@@ -82,7 +82,9 @@ namespace System.Net.Security {
 
         private bool                m_RefreshCredentialNeeded;
 
-
+        private readonly Oid m_ServerAuthOid = new Oid("1.3.6.1.5.5.7.3.1", "1.3.6.1.5.5.7.3.1");
+        private readonly Oid m_ClientAuthOid = new Oid("1.3.6.1.5.5.7.3.2", "1.3.6.1.5.5.7.3.2");
+        
         internal SecureChannel(string hostname, bool serverMode, SchProtocols protocolFlags, X509Certificate serverCertificate, X509CertificateCollection clientCertificates, bool remoteCertRequired, bool checkCertName, 
                                                   bool checkCertRevocationStatus, EncryptionPolicy encryptionPolicy, LocalCertSelectionCallback certSelectionDelegate)
         {
@@ -747,13 +749,22 @@ namespace System.Net.Security {
                         flags |= SecureCredential.Flags.SendAuxRecord;
                     }
 
-                    if (!ServicePointManager.DisableStrongCrypto 
-                        && ((m_ProtocolFlags & (SchProtocols.Tls10 | SchProtocols.Tls11 | SchProtocols.Tls12)) != 0)
+                    // Turn on strong crypto support in SCHANNEL when 1, (2a or 2b) and 3 are true:
+                    // 
+                    // 1.  Not disabled globally.
+                    // 2a. Protocol is set to SchProtocols.Zero which is equivalent to SslProtocols.None
+                    //     which is equivalent to SecurityProtocolType.SystemDefault.
+                    // 2b. Tls1.0 or above is selected as one of the possible choices.
+                    // 3.  EncryptionPolicy doesn't allow any "No encryption" selection.
+                    if (!ServicePointManager.DisableStrongCrypto
+                        && ((m_ProtocolFlags == SchProtocols.Zero) ||
+                            ((m_ProtocolFlags & (SchProtocols.Tls10 | SchProtocols.Tls11 | SchProtocols.Tls12)) != 0))
                         && (m_EncryptionPolicy != EncryptionPolicy.AllowNoEncryption) && (m_EncryptionPolicy != EncryptionPolicy.NoEncryption))
                     {
                         flags |= SecureCredential.Flags.UseStrongCrypto;
                     }
 
+                    if (Logging.On) Logging.PrintInfo(Logging.Web, this, ".AcquireClientCredentials, new SecureCredential() ", "flags=(" + flags + "), m_ProtocolFlags=(" + m_ProtocolFlags + "), m_EncryptionPolicy=" + m_EncryptionPolicy);
                     SecureCredential secureCredential = new SecureCredential(SecureCredential.CurrentVersion, selectedCert, flags, m_ProtocolFlags, m_EncryptionPolicy);
                     m_CredentialsHandle = AcquireCredentialsHandle(CredentialUse.Outbound, ref secureCredential);
                     thumbPrint = guessedThumbPrint; //delay it until here in case something above threw
@@ -1239,6 +1250,13 @@ namespace System.Net.Security {
                     chain = new X509Chain();
                     chain.ChainPolicy.RevocationMode = m_CheckCertRevocation? X509RevocationMode.Online : X509RevocationMode.NoCheck;
                     chain.ChainPolicy.RevocationFlag = X509RevocationFlag.ExcludeRoot;
+
+                    if (!ServicePointManager.DisableCertificateEKUs)
+                    {
+                        // Authenticate the remote party: (e.g. when operating in server mode, authenticate the client)
+                        chain.ChainPolicy.ApplicationPolicy.Add(m_ServerMode ? m_ClientAuthOid : m_ServerAuthOid);
+                    }
+
                     if (remoteCertificateStore != null)
                         chain.ChainPolicy.ExtraStore.AddRange(remoteCertificateStore);
 

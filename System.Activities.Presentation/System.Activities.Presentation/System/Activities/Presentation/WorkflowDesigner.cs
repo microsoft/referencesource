@@ -359,12 +359,17 @@ namespace System.Activities.Presentation
 
         [SuppressMessage(FxCop.Category.Design, "CA1044:PropertiesShouldNotBeWriteOnly",
             Justification = "The host just sets this property for the designer to know which colors to display.")]
+        [SuppressMessage("Microsoft.Security.Xml", "CA3053:UseXmlSecureResolver", 
+            Justification = @"For the call to XmlReader.Create() below, CA3053 recommends setting the 
+XmlReaderSettings.XmlResolver property to either null or an instance of XmlSecureResolver. 
+But after setting this property to null, a warning of CA3053 still shows up in FxCop. 
+So we suppress this error until the reporting for CA3053 has been updated to fix this issue.")]
         public string PropertyInspectorFontAndColorData
         {
             set
             {
                 StringReader stringReader = new StringReader(value);
-                XmlReader xmlReader = XmlReader.Create(stringReader);
+                XmlReader xmlReader = XmlReader.Create(stringReader, new XmlReaderSettings { XmlResolver = null });
                 Hashtable fontAndColorDictionary = (Hashtable)System.Windows.Markup.XamlReader.Load(xmlReader);
                 foreach (string key in fontAndColorDictionary.Keys)
                 {

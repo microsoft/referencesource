@@ -379,7 +379,7 @@ namespace System.Net {
                 return;
             }
             // Trace.CorrelationManager.StartLogicalOperation();
-            PrintLine(traceSource, TraceEventType.Verbose, 0, msg);
+            PrintLine(traceSource, TraceEventType.Verbose, 0, "Entering " + msg);
         }
 
         /// <devdoc>

@@ -21,6 +21,8 @@ namespace System.Security.Cryptography.X509Certificates
         internal const uint CRYPT_USER_PROTECTED = 0x00000002;
         internal const uint CRYPT_MACHINE_KEYSET = 0x00000020;
         internal const uint CRYPT_USER_KEYSET    = 0x00001000;
+        internal const uint PKCS12_ALWAYS_CNG_KSP = 0x00000200;
+        internal const uint PKCS12_NO_PERSIST_KEY = 0x00008000;
 
         internal const uint CERT_QUERY_CONTENT_CERT               = 1;
         internal const uint CERT_QUERY_CONTENT_CTL                = 2;
@@ -258,8 +260,22 @@ namespace System.Security.Cryptography.X509Certificates
                                                     new ArgumentException(Environment.GetResourceString("Argument_InvalidFlag"), "keyStorageFlags"));
             }            
 #endif
-            if ((keyStorageFlags & (X509KeyStorageFlags) ~0x1F) != 0)
+            if ((keyStorageFlags & X509Certificate.KeyStorageFlagsAll) != keyStorageFlags)
                 throw new ArgumentException(Environment.GetResourceString("Argument_InvalidFlag"), "keyStorageFlags");
+
+            const X509KeyStorageFlags EphemeralPersist =
+                X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.PersistKeySet;
+
+            X509KeyStorageFlags persistenceFlags = keyStorageFlags & EphemeralPersist;
+
+            if (persistenceFlags == EphemeralPersist)
+            {
+                throw new ArgumentException(
+                    Environment.GetResourceString(
+                        "Cryptography_X509_InvalidFlagCombination",
+                        persistenceFlags),
+                    "keyStorageFlags");
+            }
 
 #if !FEATURE_LEGACYNETCF  // CompatibilitySwitches causes problems with CCRewrite
             Contract.EndContractBlock();
@@ -281,6 +297,10 @@ namespace System.Security.Cryptography.X509Certificates
                 dwFlags |= X509Constants.CRYPT_EXPORTABLE;
             if ((keyStorageFlags & X509KeyStorageFlags.UserProtected) == X509KeyStorageFlags.UserProtected)
                 dwFlags |= X509Constants.CRYPT_USER_PROTECTED;
+
+            if ((keyStorageFlags & X509KeyStorageFlags.EphemeralKeySet) == X509KeyStorageFlags.EphemeralKeySet)
+                dwFlags |= X509Constants.PKCS12_NO_PERSIST_KEY | X509Constants.PKCS12_ALWAYS_CNG_KSP;
+
 #endif // FEATURE_CORECLR else
 
             return dwFlags;

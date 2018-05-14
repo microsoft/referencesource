@@ -141,7 +141,10 @@ namespace System {
                         e = null;
                     // will return from here
 
-                    if (m_iriParsing && hasUnicode){
+                    // Parse unicode and reserved characters only if we're sure that we have an absolute Uri, either because it was
+                    // specified via uriKind, or because the parsing error does not indicate that we have a relative URI.
+                    if (m_iriParsing && hasUnicode && (uriKind == UriKind.Absolute || err == ParsingError.None))
+                    {
                         // In this scenario we need to parse the whole string 
                         EnsureParseRemaining();
                     }

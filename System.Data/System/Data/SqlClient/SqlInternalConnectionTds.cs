@@ -26,7 +26,8 @@ namespace System.Data.SqlClient
     using SysTx = System.Transactions;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-    
+    using Configuration;
+
 
     internal class SessionStateRecord  {
         internal bool _recoverable;
@@ -99,6 +100,10 @@ namespace System.Data.SqlClient
     }
 
     sealed internal class SqlInternalConnectionTds : SqlInternalConnection, IDisposable {
+
+        // Connection re-route limit
+        internal const int _maxNumberOfRedirectRoute = 10;
+
         // CONNECTION AND STATE VARIABLES
         private readonly SqlConnectionPoolGroupProviderInfo _poolGroupProviderInfo; // will only be null when called for ChangePassword, or creating SSE User Instance
         private TdsParser                _parser;
@@ -120,6 +125,9 @@ namespace System.Data.SqlClient
         internal bool _federatedAuthenticationAcknowledged;
         internal bool _federatedAuthenticationInfoRequested; // Keep this distinct from _federatedAuthenticationRequested, since some fedauth library types may not need more info
         internal bool _federatedAuthenticationInfoReceived;
+
+        private readonly ActiveDirectoryAuthenticationTimeoutRetryHelper _activeDirectoryAuthTimeoutRetryHelper;
+        private readonly SqlAuthenticationProviderManager _sqlAuthenticationProviderManager;
 
         // TCE flags
         internal byte _tceVersionSupported;
@@ -321,7 +329,8 @@ namespace System.Data.SqlClient
                 SessionData                 reconnectSessionData = null,
                 DbConnectionPool            pool = null,
                 string                      accessToken = null,
-                bool applyTransientFaultHandling = false
+                bool applyTransientFaultHandling = false,
+                SqlAuthenticationProviderManager sqlAuthProviderManager = null
                 ) : base(connectionOptions) {
 
 #if DEBUG
@@ -365,6 +374,9 @@ namespace System.Data.SqlClient
             if (accessToken != null) {
                 _accessTokenInBytes = System.Text.Encoding.Unicode.GetBytes(accessToken);
             }
+
+            _activeDirectoryAuthTimeoutRetryHelper = new ActiveDirectoryAuthenticationTimeoutRetryHelper();
+            _sqlAuthenticationProviderManager = sqlAuthProviderManager ?? SqlAuthenticationProviderManager.Instance;
 
             _identity = identity;
             Debug.Assert(newSecurePassword != null || newPassword != null, "cannot have both new secure change password and string based change password to be null");
@@ -410,11 +422,11 @@ namespace System.Data.SqlClient
                         }
                         catch (SqlException sqlex)
                         {
-                            if (i + 1 == connectionEstablishCount 
-                                || !applyTransientFaultHandling
-                                || _timeout.IsExpired
-                                || _timeout.MillisecondsRemaining < transientRetryIntervalInMilliSeconds
-                                || !IsTransientError(sqlex))
+                            if (i + 1 == connectionEstablishCount
+                              || !applyTransientFaultHandling
+                              || _timeout.IsExpired
+                              || _timeout.MillisecondsRemaining < transientRetryIntervalInMilliSeconds
+                              || !IsTransientError(sqlex))
                             {
                                 throw sqlex;
                             }
@@ -521,6 +533,12 @@ namespace System.Data.SqlClient
         internal string RoutingDestination {
             get {
                 return _routingDestination;
+            }
+        }
+
+        internal RoutingInfo RoutingInfo {
+            get {
+                return _routingInfo;
             }
         }
 
@@ -1298,11 +1316,12 @@ namespace System.Data.SqlClient
             // for FEDAUTHREQUIRED option indicates Federated Authentication is required, we have to insert FedAuth Feature Extension
             // in Login7, indicating the intent to use Active Directory Authentication Library for SQL Server.
             if (ConnectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryPassword
+                || ConnectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryInteractive
                 || (ConnectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryIntegrated && _fedAuthRequired)) {
                 requestedFeatures |= TdsEnums.FeatureExtension.FedAuth;
                 _federatedAuthenticationInfoRequested = true;
                 _fedAuthFeatureExtensionData = 
-                    new FederatedAuthenticationFeatureExtensionData { 
+                    new FederatedAuthenticationFeatureExtensionData {
                         libraryType = TdsEnums.FedAuthLibrary.ADAL,
                         authentication = ConnectionOptions.Authentication,
                         fedAuthRequiredPreLoginResponse = _fedAuthRequired
@@ -1321,6 +1340,12 @@ namespace System.Data.SqlClient
 
             // The TCE and GLOBALTRANSACTIONS feature are implicitly requested
             requestedFeatures |= TdsEnums.FeatureExtension.Tce | TdsEnums.FeatureExtension.GlobalTransactions;
+
+            // The AzureSQLSupport feature is implicitly set for ReadOnly login
+            if (ConnectionOptions.ApplicationIntent == ApplicationIntent.ReadOnly) {
+                requestedFeatures |= TdsEnums.FeatureExtension.AzureSQLSupport;
+            }
+
             _parser.TdsLogin(login, requestedFeatures, _recoverySessionData, _fedAuthFeatureExtensionData);
         }
 
@@ -1379,6 +1404,21 @@ namespace System.Data.SqlClient
                     LoginNoFailover(dataSource, newPassword, newSecurePassword, redirectedUserInstance, 
                             connectionOptions, credential, timeout);
                 }
+
+                if (!IsAzureSQLConnection) {
+                    // If not a connection to Azure SQL, Readonly with FailoverPartner is not supported
+                    if (ConnectionOptions.ApplicationIntent == ApplicationIntent.ReadOnly) {
+                        if (!String.IsNullOrEmpty(ConnectionOptions.FailoverPartner)) {
+                            throw SQL.ROR_FailoverNotSupportedConnString();
+                        }
+
+                        if (null != ServerProvidedFailOverPartner) {
+                            throw SQL.ROR_FailoverNotSupportedServer(this);
+                        }
+
+                    }
+                }
+
                 timeoutErrorInternal.EndPhase(SqlConnectionTimeoutErrorPhase.PostLogin);
             }
             catch (Exception e) {
@@ -1520,7 +1560,7 @@ namespace System.Data.SqlClient
                 if (_routingInfo != null) {
                     Bid.Trace("<sc.SqlInternalConnectionTds.LoginNoFailover> Routed to %ls", serverInfo.ExtendedServerName);
 
-                    if (routingAttempts > 0) {
+                    if (routingAttempts > _maxNumberOfRedirectRoute) {
                         throw SQL.ROR_RecursiveRoutingNotSupported(this);
                     }
 
@@ -1549,6 +1589,10 @@ namespace System.Data.SqlClient
                 }
             }
             catch (SqlException sqlex) {
+                if (AttemptRetryADAuthWithTimeoutError(sqlex, connectionOptions, timeout)) {
+                    continue;
+                }
+
                 if (null == _parser
                     || TdsParserState.Closed != _parser.State
                     || IsDoNotRetryConnectError(sqlex)
@@ -1600,6 +1644,7 @@ namespace System.Data.SqlClient
             Thread.Sleep(sleepInterval);
             sleepInterval = (sleepInterval < 500) ? sleepInterval * 2 : 1000;
         }
+        _activeDirectoryAuthTimeoutRetryHelper.State = ActiveDirectoryAuthenticationTimeoutRetryState.HasLoggedIn;
 
         if (null != PoolGroupProviderInfo) {
             // We must wait for CompleteLogin to finish for to have the
@@ -1616,13 +1661,31 @@ namespace System.Data.SqlClient
 
         Boolean isFedAuthEnabled = this._accessTokenInBytes != null ||
                                    connectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryPassword ||
-                                   connectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryIntegrated;
+                                   connectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryIntegrated ||
+                                   connectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryInteractive;
         
         // Check if the user had explicitly specified the TNIR option in the connection string or the connection string builder. 
         // If the user has specified the option in the connection string explicitly, then we shouldn't disable TNIR.
         bool isTnirExplicitlySpecifiedInConnectionOptions = connectionOptions.Parsetable[SqlConnectionString.KEY.TransparentNetworkIPResolution] != null;
         
         return isTnirExplicitlySpecifiedInConnectionOptions ? false : (isAzureEndPoint || isFedAuthEnabled);
+    }
+
+    // With possible MFA support in all AD auth providers, the duration for acquiring a token can be unpredictable.
+    // If a timeout error (client or server) happened, we silently retry if a cached token exists from a previous auth attempt (see GetFedAuthToken)
+    private bool AttemptRetryADAuthWithTimeoutError(SqlException sqlex, SqlConnectionString connectionOptions, TimeoutTimer timeout) {
+        if (!_activeDirectoryAuthTimeoutRetryHelper.CanRetryWithSqlException(sqlex)) {
+            return false;
+        }
+        // Reset client-side timeout.
+        timeout.Reset();
+        // When server timeout, the auth context key was already created. Clean it up here.
+        _dbConnectionPoolAuthenticationContextKey = null;
+        // When server timeout, connection is doomed. Reset here to allow reconnect.
+        UnDoomThisConnection();
+        // Change retry state so it only retries once for timeout error.
+        _activeDirectoryAuthTimeoutRetryHelper.State = ActiveDirectoryAuthenticationTimeoutRetryState.Retrying;
+        return true;
     }
 
     // Attempt to login to a host that has a failover partner
@@ -1676,10 +1739,10 @@ namespace System.Data.SqlClient
 
         // Determine unit interval
         if (timeout.IsInfinite) {
-            timeoutUnitInterval = checked((long) ADP.FailoverTimeoutStep * ADP.TimerFromSeconds(ADP.DefaultConnectionTimeout));
+            timeoutUnitInterval = checked((long)(ADP.FailoverTimeoutStep * ADP.TimerFromSeconds(ADP.DefaultConnectionTimeout)));
         }
         else {
-            timeoutUnitInterval = checked((long) (ADP.FailoverTimeoutStep * timeout.MillisecondsRemaining));
+            timeoutUnitInterval = checked((long)(ADP.FailoverTimeoutStep * timeout.MillisecondsRemaining));
         }
 
         // Initialize loop variables
@@ -1744,25 +1807,58 @@ namespace System.Data.SqlClient
                         withFailover:true
                         );
 
-                if (_routingInfo != null) {
-                    // We are in login with failover scenation and server sent routing information
-                    // If it is read-only routing - we did not supply AppIntent=RO (it should be checked before)
-                    // If it is something else, not known yet (future server) - this client is not designed to support this.                    
-                    // In any case, server should not have sent the routing info.
+                int routingAttempts = 0;
+                while (_routingInfo != null) {
+                    if (routingAttempts > _maxNumberOfRedirectRoute)
+                    {
+                        throw SQL.ROR_RecursiveRoutingNotSupported(this);
+                    }
+                    routingAttempts++;
+
                     Bid.Trace("<sc.SqlInternalConnectionTds.LoginWithFailover> Routed to %ls", _routingInfo.ServerName);
-                    throw SQL.ROR_UnexpectedRoutingInfo(this);
+
+                    if (_parser != null)
+                        _parser.Disconnect();
+
+                    _parser = new TdsParser(ConnectionOptions.MARS, ConnectionOptions.Asynchronous);
+                    Debug.Assert(SniContext.Undefined == Parser._physicalStateObj.SniContext, String.Format((IFormatProvider)null, "SniContext should be Undefined; actual Value: {0}", Parser._physicalStateObj.SniContext));
+
+                    currentServerInfo = new ServerInfo(ConnectionOptions, _routingInfo, currentServerInfo.ResolvedServerName);
+                    timeoutErrorInternal.SetInternalSourceType(SqlConnectionInternalSourceType.RoutingDestination);
+                    _originalClientConnectionId = _clientConnectionId;
+                    _routingDestination = currentServerInfo.UserServerName;
+
+                    // restore properties that could be changed by the environment tokens
+                    _currentPacketSize = ConnectionOptions.PacketSize;
+                    _currentLanguage = _originalLanguage = ConnectionOptions.CurrentLanguage;
+                    CurrentDatabase = _originalDatabase = ConnectionOptions.InitialCatalog;
+                    _currentFailoverPartner = null;
+                    _instanceName = String.Empty;
+
+                    AttemptOneLogin(
+                            currentServerInfo,
+                            newPassword,
+                            newSecurePassword,
+                            false,          // Use timeout in SniOpen
+                            intervalTimer,
+                            withFailover: true
+                            );
                 }
 
                 break; // leave the while loop -- we've successfully connected
             }
             catch (SqlException sqlex) {
+                if (AttemptRetryADAuthWithTimeoutError(sqlex, connectionOptions, timeout)) {
+                    continue;
+                }
+
                 if (IsDoNotRetryConnectError(sqlex)
-                        || timeout.IsExpired) 
+                    || timeout.IsExpired) 
                 {       // no more time to try again
                     throw;  // Caller will call LoginFailure()
                 }
 
-                if (IsConnectionDoomed) {
+                if (!ADP.IsAzureSqlServerEndpoint(connectionOptions.DataSource) && IsConnectionDoomed) {
                     throw;
                 }
 
@@ -1795,6 +1891,7 @@ namespace System.Data.SqlClient
         }
 
         // If we get here, connection/login succeeded!  Just a few more checks & record-keeping
+        _activeDirectoryAuthTimeoutRetryHelper.State = ActiveDirectoryAuthenticationTimeoutRetryState.HasLoggedIn;
 
         // if connected to failover host, but said host doesn't have DbMirroring set up, throw an error
         if (useFailoverHost && null == ServerProvidedFailOverPartner) {
@@ -1868,7 +1965,8 @@ namespace System.Data.SqlClient
                         withFailover,
                         isFirstTransparentAttempt,
                         ConnectionOptions.Authentication,
-                        disableTnir);
+                        disableTnir,
+                        _sqlAuthenticationProviderManager);
 
         timeoutErrorInternal.EndPhase(SqlConnectionTimeoutErrorPhase.ConsumePreLoginHandshake);
         timeoutErrorInternal.SetAndBeginPhase(SqlConnectionTimeoutErrorPhase.LoginBegin);
@@ -2035,9 +2133,6 @@ namespace System.Data.SqlClient
                     break;
 
                 case TdsEnums.ENV_LOGSHIPNODE:
-                    if (ConnectionOptions.ApplicationIntent == ApplicationIntent.ReadOnly) {
-                        throw SQL.ROR_FailoverNotSupportedServer(this);
-                    }
                     _currentFailoverPartner = rec.newValue;
                     break;
 
@@ -2099,6 +2194,7 @@ namespace System.Data.SqlClient
         internal void OnFedAuthInfo(SqlFedAuthInfo fedAuthInfo) {
             Debug.Assert((ConnectionOptions.HasUserIdKeyword && ConnectionOptions.HasPasswordKeyword)
                          || _credential != null
+                         || ConnectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryInteractive
                          || (ConnectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryIntegrated && _fedAuthRequired),
                          "Credentials aren't provided for calling ADAL");
             Debug.Assert(fedAuthInfo != null, "info should not be null.");
@@ -2271,35 +2367,56 @@ namespace System.Data.SqlClient
             // Username to use in error messages.
             string username = null;
 
+            var authProvider = _sqlAuthenticationProviderManager.GetProvider(ConnectionOptions.Authentication);
+            if (authProvider == null) throw SQL.CannotFindAuthProvider(ConnectionOptions.Authentication.ToString());
+
             while (true) {
                 numberOfAttempts++;
                 try {
-                    if (ConnectionOptions.Authentication == SqlAuthenticationMethod.ActiveDirectoryIntegrated) {
-                        username = TdsEnums.NTAUTHORITYANONYMOUSLOGON;
-                        fedAuthToken.accessToken = ADALNativeWrapper.ADALGetAccessTokenForWindowsIntegrated(fedAuthInfo.stsurl,
-                                                                                                                fedAuthInfo.spn,
-                                                                                                                _clientConnectionId, ActiveDirectoryAuthentication.AdoClientId,
-                                                                                                                ref fedAuthToken.expirationFileTime);
-                    }
-                    else if (_credential != null) {
-                        username = _credential.UserId;
-                        fedAuthToken.accessToken = ADALNativeWrapper.ADALGetAccessToken(_credential.UserId,
-                                                                                            _credential.Password,
-                                                                                            fedAuthInfo.stsurl,
-                                                                                            fedAuthInfo.spn,
-                                                                                            _clientConnectionId,
-                                                                                            ActiveDirectoryAuthentication.AdoClientId,
-                                                                                            ref fedAuthToken.expirationFileTime);
-                    }
-                    else {
-                        username = ConnectionOptions.UserID;
-                        fedAuthToken.accessToken = ADALNativeWrapper.ADALGetAccessToken(ConnectionOptions.UserID,
-                                                                                            ConnectionOptions.Password,
-                                                                                            fedAuthInfo.stsurl,
-                                                                                            fedAuthInfo.spn,
-                                                                                            _clientConnectionId,
-                                                                                            ActiveDirectoryAuthentication.AdoClientId,
-                                                                                            ref fedAuthToken.expirationFileTime);
+                    var authParamsBuilder = new SqlAuthenticationParameters.Builder(
+                        authenticationMethod: ConnectionOptions.Authentication,
+                        resource: fedAuthInfo.spn,
+                        authority: fedAuthInfo.stsurl,
+                        serverName: ConnectionOptions.DataSource,
+                        databaseName: ConnectionOptions.InitialCatalog)
+                        .WithConnectionId(_clientConnectionId);
+                    switch (ConnectionOptions.Authentication) {
+                        case SqlAuthenticationMethod.ActiveDirectoryIntegrated:
+                            username = TdsEnums.NTAUTHORITYANONYMOUSLOGON;
+                            if (_activeDirectoryAuthTimeoutRetryHelper.State == ActiveDirectoryAuthenticationTimeoutRetryState.Retrying) {
+                                fedAuthToken = _activeDirectoryAuthTimeoutRetryHelper.CachedToken;
+                            } else {
+                                Task.Run(() => fedAuthToken = authProvider.AcquireTokenAsync(authParamsBuilder).Result.ToSqlFedAuthToken()).Wait();
+                                _activeDirectoryAuthTimeoutRetryHelper.CachedToken = fedAuthToken;
+                            }
+                            break;
+                        case SqlAuthenticationMethod.ActiveDirectoryInteractive:
+                            if (_activeDirectoryAuthTimeoutRetryHelper.State == ActiveDirectoryAuthenticationTimeoutRetryState.Retrying) {
+                                fedAuthToken = _activeDirectoryAuthTimeoutRetryHelper.CachedToken;
+                            } else {
+                                authParamsBuilder.WithUserId(ConnectionOptions.UserID);
+                                Task.Run(() => fedAuthToken = authProvider.AcquireTokenAsync(authParamsBuilder).Result.ToSqlFedAuthToken()).Wait();
+                                _activeDirectoryAuthTimeoutRetryHelper.CachedToken = fedAuthToken;
+                            }
+                            break;
+                        case SqlAuthenticationMethod.ActiveDirectoryPassword:
+                            if (_activeDirectoryAuthTimeoutRetryHelper.State == ActiveDirectoryAuthenticationTimeoutRetryState.Retrying) {
+                                fedAuthToken = _activeDirectoryAuthTimeoutRetryHelper.CachedToken;
+                            } else {
+                                if (_credential != null) {
+                                    username = _credential.UserId;
+                                    authParamsBuilder.WithUserId(username).WithPassword(_credential.Password);
+                                    Task.Run(() => fedAuthToken = authProvider.AcquireTokenAsync(authParamsBuilder).Result.ToSqlFedAuthToken()).Wait();
+                                } else {
+                                    username = ConnectionOptions.UserID;
+                                    authParamsBuilder.WithUserId(username).WithPassword(ConnectionOptions.Password);
+                                    Task.Run(() => fedAuthToken = authProvider.AcquireTokenAsync(authParamsBuilder).Result.ToSqlFedAuthToken()).Wait();
+                                }
+                                _activeDirectoryAuthTimeoutRetryHelper.CachedToken = fedAuthToken;
+                            }
+                            break;
+                        default:
+                            throw new InvalidOperationException($"Failed to get a token with unsupported auth method {ConnectionOptions.Authentication}.");
                     }
 
                     Debug.Assert(fedAuthToken.accessToken != null, "AccessToken should not be null.");
@@ -2472,8 +2589,14 @@ namespace System.Data.SqlClient
                         }
 
                         _tceVersionSupported = supportedTceVersion;
-                        Debug.Assert (_tceVersionSupported == TdsEnums.MAX_SUPPORTED_TCE_VERSION, "Client support TCE version 1");
+                        Debug.Assert (_tceVersionSupported <= TdsEnums.MAX_SUPPORTED_TCE_VERSION, "Client support TCE version 2");
                         _parser.IsColumnEncryptionSupported = true;
+                        _parser.TceVersionSupported = _tceVersionSupported;
+                    
+                        if (data.Length > 1) {
+                            _parser.EnclaveType = Encoding.Unicode.GetString(data, 2, (data.Length - 2));
+                        }
+
                         break;
                     }
 
@@ -2490,6 +2613,28 @@ namespace System.Data.SqlClient
                         IsGlobalTransaction = true;    
                         if (1 == data[0]) {
                             IsGlobalTransactionsEnabledForServer = true;
+                        }
+                        break;
+                    }
+
+                case TdsEnums.FEATUREEXT_AZURESQLSUPPORT: {
+                        if (Bid.AdvancedOn) {
+                            Bid.Trace("<sc.SqlInternalConnectionTds.OnFeatureExtAck> %d#, Received feature extension acknowledgement for AzureSQLSupport\n", ObjectID);
+                        }
+
+                        if (data.Length < 1) {
+                            Bid.Trace("<sc.SqlInternalConnectionTds.OnFeatureExtAck|ERR> %d#, Unknown token for AzureSQLSupport\n", ObjectID);
+                            throw SQL.ParsingError(ParsingErrorState.CorruptedTdsStream);
+                        }
+
+                        IsAzureSQLConnection = true;
+
+                        //  Bit 0 for RO/FP support
+                        if ((data[0] & 1) == 1) {
+                            if (Bid.AdvancedOn)
+                            {
+                                Bid.Trace("<sc.SqlInternalConnectionTds.OnFeatureExtAck> %d#, FailoverPartner enabled with Readonly intent for AzureSQL DB\n", ObjectID);
+                            }
                         }
                         break;
                     }

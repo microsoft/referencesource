@@ -201,6 +201,9 @@ namespace System.Data.SqlClient {
         public const byte FEATUREEXT_FEDAUTH    = 0x02;
         public const byte FEATUREEXT_TCE        = 0x04;
         public const byte FEATUREEXT_GLOBALTRANSACTIONS = 0x05;
+        // 0x06 is for x_eFeatureExtensionId_LoginToken 
+        // 0x07 is for x_eFeatureExtensionId_ClientSideTelemetry 
+        public const byte FEATUREEXT_AZURESQLSUPPORT = 0x08;
 
         [Flags]
         public enum FeatureExtension:uint {
@@ -209,6 +212,7 @@ namespace System.Data.SqlClient {
             FedAuth=2,
             Tce=4,
             GlobalTransactions = 8,
+            AzureSQLSupport = 16,
         }
 
         public const byte FEDAUTHLIB_LIVEID        = 0X00;
@@ -225,10 +229,12 @@ namespace System.Data.SqlClient {
 
         public const byte ADALWORKFLOW_ACTIVEDIRECTORYPASSWORD = 0x01;
         public const byte ADALWORKFLOW_ACTIVEDIRECTORYINTEGRATED = 0x02;
+        public const byte ADALWORKFLOW_ACTIVEDIRECTORYINTERACTIVE = 0x03;
 
         public enum ActiveDirectoryWorkflow : byte {
             Password=ADALWORKFLOW_ACTIVEDIRECTORYPASSWORD,
             Integrated=ADALWORKFLOW_ACTIVEDIRECTORYINTEGRATED,
+            Interactive=ADALWORKFLOW_ACTIVEDIRECTORYINTERACTIVE,
         }
 
         // The string used for username in the error message when Authentication = Active Directory Integrated with FedAuth is used, if authentication fails.
@@ -546,6 +552,7 @@ namespace System.Data.SqlClient {
 
         // SQL error that indicates retry for Always Encrypted
         public const int TCE_CONVERSION_ERROR_CLIENT_RETRY = 33514;
+        public const int TCE_ENCLAVE_INVALID_SESSION_HANDLE = 33195;
 
         // SNI\Win32 error values
         // NOTE: these are simply windows system error codes, not SNI specific
@@ -910,7 +917,8 @@ namespace System.Data.SqlClient {
         }
 
         // TCE Related constants
-        internal const byte MAX_SUPPORTED_TCE_VERSION = 0x01; // max version
+        internal const byte MAX_SUPPORTED_TCE_VERSION = 0x02; // max version
+        internal const byte MIN_TCE_VERSION_WITH_ENCLAVE_SUPPORT = 0x02; // min version with enclave support
         internal const ushort MAX_TCE_CIPHERINFO_SIZE = 2048; // max size of cipherinfo blob
         internal const long MAX_TCE_CIPHERTEXT_SIZE = 2147483648; // max size of encrypted blob- currently 2GB.
         internal const byte CustomCipherAlgorithmId = 0; // Id used for custom encryption algorithm.
@@ -1021,6 +1029,10 @@ namespace System.Data.SqlClient {
         SqlPassword,
         ActiveDirectoryPassword,
         ActiveDirectoryIntegrated,
+        ActiveDirectoryInteractive,
+#if ADONET_CERT_AUTH
+        SqlCertificate
+#endif        
     }
     // This enum indicates the state of TransparentNetworkIPResolution
     // The first attempt when TNIR is on should be sequential. If the first attempt failes next attempts should be parallel.
@@ -1053,6 +1065,8 @@ namespace System.Data.SqlClient {
         ProviderName,
         KeyPath,
         KeyEncryptionAlgorithm,
+        IsRequestedByEnclave,
+        KeySignature,
     }
 
     // Fields in the second resultset of "sp_describe_parameter_encryption"
@@ -1065,5 +1079,12 @@ namespace System.Data.SqlClient {
         ColumnEncrytionType,
         ColumnEncryptionKeyOrdinal,
         NormalizationRuleVersion,
+    }
+
+    // Fields in the third resultset of "sp_describe_parameter_encryption".
+    // We expect the server to return the fields in the resultset in the same order as mentioned below.
+    // If the server changes the below order, then transparent parameter encryption will break.
+    internal enum DescribeParameterEncryptionResultSet3 {
+        AttestationInfo = 0,
     }
 }

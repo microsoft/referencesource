@@ -433,9 +433,10 @@ namespace Microsoft.Win32 {
             internal byte Reserved = 0; 
         }
 
-            [StructLayout(LayoutKind.Sequential)]
-            internal struct SYSTEM_INFO {  
-            internal int dwOemId;    // This is a union of a DWORD and a struct containing 2 WORDs.
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct SYSTEM_INFO {  
+            internal ushort wProcessorArchitecture;
+            internal ushort wReserved;
             internal int dwPageSize;  
             internal IntPtr lpMinimumApplicationAddress;  
             internal IntPtr lpMaximumApplicationAddress;  
@@ -457,29 +458,25 @@ namespace Microsoft.Win32 {
 
         [Serializable]
         [StructLayout(LayoutKind.Sequential)]
-        internal struct WIN32_FILE_ATTRIBUTE_DATA {
+        internal struct WIN32_FILE_ATTRIBUTE_DATA
+        {
             internal int fileAttributes;
-            internal uint ftCreationTimeLow;
-            internal uint ftCreationTimeHigh;
-            internal uint ftLastAccessTimeLow;
-            internal uint ftLastAccessTimeHigh;
-            internal uint ftLastWriteTimeLow;
-            internal uint ftLastWriteTimeHigh;
+            internal FILE_TIME ftCreationTime;
+            internal FILE_TIME ftLastAccessTime;
+            internal FILE_TIME ftLastWriteTime;
             internal int fileSizeHigh;
             internal int fileSizeLow;
 
             [System.Security.SecurityCritical]
-            internal void PopulateFrom(WIN32_FIND_DATA findData) {
+            internal void PopulateFrom(ref WIN32_FIND_DATA findData)
+            {
                 // Copy the information to data
-                fileAttributes = findData.dwFileAttributes; 
-                ftCreationTimeLow = findData.ftCreationTime_dwLowDateTime; 
-                ftCreationTimeHigh = findData.ftCreationTime_dwHighDateTime; 
-                ftLastAccessTimeLow = findData.ftLastAccessTime_dwLowDateTime; 
-                ftLastAccessTimeHigh = findData.ftLastAccessTime_dwHighDateTime; 
-                ftLastWriteTimeLow = findData.ftLastWriteTime_dwLowDateTime; 
-                ftLastWriteTimeHigh = findData.ftLastWriteTime_dwHighDateTime; 
-                fileSizeHigh = findData.nFileSizeHigh; 
-                fileSizeLow = findData.nFileSizeLow; 
+                fileAttributes = findData.dwFileAttributes;
+                ftCreationTime = findData.ftCreationTime;
+                ftLastAccessTime = findData.ftLastAccessTime;
+                ftLastWriteTime = findData.ftLastWriteTime;
+                fileSizeHigh = findData.nFileSizeHigh;
+                fileSizeLow = findData.nFileSizeLow;
             }
         }
 
@@ -1317,31 +1314,59 @@ namespace Microsoft.Win32 {
 
         // Win32 Structs in N/Direct style
         [Serializable]
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto)]
+        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
         [BestFitMapping(false)]
-        internal class WIN32_FIND_DATA {
-            internal int  dwFileAttributes = 0;
-            // ftCreationTime was a by-value FILETIME structure
-            internal uint ftCreationTime_dwLowDateTime = 0 ;
-            internal uint ftCreationTime_dwHighDateTime = 0;
-            // ftLastAccessTime was a by-value FILETIME structure
-            internal uint ftLastAccessTime_dwLowDateTime = 0;
-            internal uint ftLastAccessTime_dwHighDateTime = 0;
-            // ftLastWriteTime was a by-value FILETIME structure
-            internal uint ftLastWriteTime_dwLowDateTime = 0;
-            internal uint ftLastWriteTime_dwHighDateTime = 0;
-            internal int  nFileSizeHigh = 0;
-            internal int  nFileSizeLow = 0;
+        internal unsafe struct WIN32_FIND_DATA
+        {
+            internal int dwFileAttributes;
+            internal FILE_TIME ftCreationTime;
+            internal FILE_TIME ftLastAccessTime;
+            internal FILE_TIME ftLastWriteTime;
+            internal int  nFileSizeHigh;
+            internal int  nFileSizeLow;
+
             // If the file attributes' reparse point flag is set, then
             // dwReserved0 is the file tag (aka reparse tag) for the 
             // reparse point.  Use this to figure out whether something is
             // a volume mount point or a symbolic link.
-            internal int  dwReserved0 = 0;
-            internal int  dwReserved1 = 0;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst=260)]
-            internal String   cFileName = null;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst=14)]
-            internal String   cAlternateFileName = null;
+            internal int  dwReserved0;
+            internal int  dwReserved1;
+
+            private fixed char _cFileName[260];
+
+            // We never use this, don't expose it to avoid accidentally allocating strings
+            private fixed char _cAlternateFileName[14];
+
+            internal string cFileName { get { fixed (char* c = _cFileName) return new string(c); } }
+
+            /// <summary>
+            /// Every directory enumeration returns "." and ".." and we don't want them.
+            /// Use this to avoid allocating for this simple check.
+            /// </summary>
+            internal bool IsRelativeDirectory
+            {
+                get
+                {
+                    fixed (char* c = _cFileName)
+                    {
+                        char first = c[0];
+                        if (first != '.')
+                            return false;
+                        char second = c[1];
+                        return (second == '\0' || (second == '.' && c[2] == '\0'));
+                    }
+                }
+            }
+
+            /// <summary>
+            /// True if this represents a file.
+            /// </summary>
+            internal bool IsFile => (dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0;
+
+            /// <summary>
+            /// True if this is a directory and NOT one of the special "." and ".." directories.
+            /// </summary>
+            internal bool IsNormalDirectory => ((dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) && !IsRelativeDirectory;
         }
 
 #if FEATURE_CORESYSTEM
@@ -1387,16 +1412,15 @@ namespace Microsoft.Win32 {
         [ResourceExposure(ResourceScope.Machine)]
         internal static extern bool EncryptFile(String path);
 
-        [DllImport(KERNEL32, SetLastError=true, CharSet=CharSet.Auto, BestFitMapping=false)]
+        [DllImport(KERNEL32, SetLastError=true, CharSet=CharSet.Unicode, BestFitMapping=false)]
         [ResourceExposure(ResourceScope.None)]
-        internal static extern SafeFindHandle FindFirstFile(String fileName, [In, Out] Win32Native.WIN32_FIND_DATA data);
+        internal static extern SafeFindHandle FindFirstFile(string fileName, ref WIN32_FIND_DATA data);
 
-        [DllImport(KERNEL32, SetLastError=true, CharSet=CharSet.Auto, BestFitMapping=false)]
+        [DllImport(KERNEL32, SetLastError=true, CharSet=CharSet.Unicode, BestFitMapping=false)]
         [ResourceExposure(ResourceScope.None)]
         internal static extern bool FindNextFile(
                     SafeFindHandle hndFindFile,
-                    [In, Out, MarshalAs(UnmanagedType.LPStruct)]
-                    WIN32_FIND_DATA lpFindFileData);
+                    ref WIN32_FIND_DATA lpFindFileData);
 
         [DllImport(KERNEL32)]
         [ResourceExposure(ResourceScope.None)]
@@ -1877,30 +1901,30 @@ namespace Microsoft.Win32 {
 //////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!////////
 /*<
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-*/
+        internal const Guid FOLDERID_Contacts               = new Guid("{56784854-C6CB-462b-8169-88E350ACB882}");
+        internal const Guid FOLDERID_Downloads              = new Guid("{374DE290-123F-4565-9164-39C4925E467B}");
+        internal const Guid FOLDERID_GameTasks              = new Guid("{054FAE61-4DD8-4787-80B6-090220C4B700}");
+        internal const Guid FOLDERID_Links                  = new Guid("{bfb9d5e0-c6a9-404c-b2b2-ae6db6af4968}");
+        internal const Guid FOLDERID_LocalAppDataLow        = new Guid("{A520A1A4-1780-4FF6-BD18-167343C5AF16}");
+        internal const Guid FOLDERID_OriginalImages         = new Guid("{2C36C0AA-5812-4b87-BFD0-4CD0DFB19B39}");
+        internal const Guid FOLDERID_PhotoAlbums            = new Guid("{69D2CF90-FC33-4FB7-9A0C-EBB0F0FCB43C}");
+        internal const Guid FOLDERID_Playlists              = new Guid("{DE92C1C7-837F-4F69-A3BB-86E631204A23}");
+        internal const Guid FOLDERID_QuickLaunch            = new Guid("{52a4f021-7b75-48a9-9f6b-4b87a210bc8f}");
+        internal const Guid FOLDERID_SavedGames             = new Guid("{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}");
+        internal const Guid FOLDERID_SavedSearches          = new Guid("{7d1d3a04-debb-4115-95cf-2f29da2920da}");
+        internal const Guid FOLDERID_SidebarParts           = new Guid("{A75D362E-50FC-4fb7-AC2C-A8BEAA314493}");
+        internal const Guid FOLDERID_PublicDownloads        = new Guid("{3D644C9B-1FB8-4f30-9B45-F670235F79C0}");
+        internal const Guid FOLDERID_PublicGameTasks        = new Guid("{DEBF2536-E1A8-4c59-B6A2-414586476AEA}");
+        internal const Guid FOLDERID_SampleMusic            = new Guid("{B250C668-F57D-4EE1-A63C-290EE7D1AA1F}");
+        internal const Guid FOLDERID_SamplePictures         = new Guid("{C4900540-2379-4C75-844B-64E6FAF8716B}");
+        internal const Guid FOLDERID_SamplePlaylists        = new Guid("{15CA69B3-30EE-49C1-ACE1-6B5EC372AFB5}");
+        internal const Guid FOLDERID_SampleVideos           = new Guid("{859EAD94-2E85-48AD-A71A-0969CB56A6CD}");
+        internal const Guid FOLDERID_SidebarDefaultParts    = new Guid("{7B396E54-9EC5-4300-BE0A-2482EBAE1A26}");
+        internal const Guid FOLDERID_ProgramFilesCommonX64  = new Guid("{6365D5A7-0F0D-45e5-87F6-0DA56B6A4F7D}");
+        internal const Guid FOLDERID_ProgramFilesX64        = new Guid("{6D809377-6AF0-444b-8957-A3773F02200E}");
+        internal const Guid FOLDERID_Public                 = new Guid("{DFDF76A2-C82A-4D63-906A-5644AC457385}");
+        internal const Guid FOLDERID_UserProfiles           = new Guid("{0762D272-C50A-4BB0-A382-697DCD729B80}");
+</STRIP>*/
         // .NET Framework 4.0 and newer - all versions of windows ||| \public\sdk\inc\shlobj.h
         internal const int CSIDL_FLAG_CREATE                = 0x8000; // force folder creation in SHGetFolderPath
         internal const int CSIDL_FLAG_DONT_VERIFY           = 0x4000; // return an unverified folder path

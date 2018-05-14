@@ -291,6 +291,9 @@ namespace System.Data {
             }
 
             table.SetDataSet(dataSet);
+            foreach (Constraint constr in table.Constraints) {
+                constr.SetDataSet(dataSet);
+            }
 
             //must run thru the document incorporating the addition of this data table
             //must make sure there is no other schema component which have the same
@@ -344,6 +347,10 @@ namespace System.Data {
             if (CanRemove(table, true)) {
                 UnregisterName(table.TableName);
                 table.SetDataSet(null);
+                //Remove dataSet from constriants
+                foreach (Constraint constr in table.Constraints) {
+                    constr.SetDataSet(null);
+                }
 
             }
             _list.Remove(table);

@@ -359,9 +359,7 @@ namespace System.Globalization {
             }
 
             dt = dt.AddDays(nDays);
-            yg = dt.Year;
-            mg = dt.Month;
-            dg = dt.Day;
+            dt.GetDatePart(out yg, out mg, out dg);
         }
 
         /*=================================GetAbsoluteDateUmAlQura==========================

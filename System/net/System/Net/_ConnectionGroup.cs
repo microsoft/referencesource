@@ -446,7 +446,7 @@ namespace System.Net {
         ///    <para>
         ///       Used by the ServicePoint to find a free or new Connection
         ///       for use in making Requests.  Under NTLM and Negotiate requests,
-        ///       this function depricates itself and switches the object over to
+        ///       this function deprecates itself and switches the object over to
         ///       using a new code path (see FindConnectionAuthenticationGroup).
         ///    </para>
         /// </devdoc>
@@ -454,6 +454,7 @@ namespace System.Net {
             Connection leastbusyConnection = null;
             Connection newConnection = null;            
             bool freeConnectionsAvail = false;
+            ArrayList closedConnections = new ArrayList();
 
             forcedsubmit = false;
 
@@ -482,10 +483,17 @@ namespace System.Net {
 
                     bool useThisConnection = false;
 
-                    if (foundLiveConnection) {
-                        useThisConnection = (!currentConnection.NonKeepAliveRequestPipelined && minBusyCount > currentConnection.BusyCount);
-                    } else {
-                        useThisConnection = (!currentConnection.NonKeepAliveRequestPipelined || minBusyCount > currentConnection.BusyCount);                        
+                    if (!currentConnection.IsInitalizing && !currentConnection.NetworkStream.Connected) {
+                        // This is a closed connection probably due to a previous Abort(). Remove it
+                        // from the list of eligible connections.
+                        closedConnections.Add(currentConnection);
+                    }
+                    else {
+                        if (foundLiveConnection) {
+                            useThisConnection = (!currentConnection.NonKeepAliveRequestPipelined && minBusyCount > currentConnection.BusyCount);
+                        } else {
+                            useThisConnection = (!currentConnection.NonKeepAliveRequestPipelined || minBusyCount > currentConnection.BusyCount);                        
+                        }
                     }
 
                     if (useThisConnection) {
@@ -506,6 +514,14 @@ namespace System.Net {
                 }
 
                 //
+                // Remove closed connections.
+                //
+                GlobalLog.Print("ConnectionGroup::FindConnection, closed connections to remove: " + closedConnections.Count.ToString());
+                foreach (Connection closedConnection in closedConnections) {
+                    closedConnection.RemoveFromConnectionList();
+                }
+
+                //
                 // If there is NOT a Connection free, then we allocate a new Connection
                 //
                 if (!freeConnectionsAvail && CurrentConnections < ConnectionLimit) {
@@ -515,7 +531,7 @@ namespace System.Net {
                     // we may wish to optimize this case by actually
                     // using existing connections, rather than creating new ones
                     //
-                    // Note: this implicately results in a this.Associate being called.
+                    // Note: this implicitly results in a this.Associate() being called.
                     //
 
                     GlobalLog.Print("ConnectionGroup::FindConnection [returning new Connection] freeConnectionsAvail:" + freeConnectionsAvail.ToString() + " CurrentConnections:" + CurrentConnections.ToString() + " ConnectionLimit:" + ConnectionLimit.ToString());

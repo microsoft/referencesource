@@ -61,6 +61,7 @@ namespace System.Data.SqlClient {
             internal const  int    Connect_Retry_Interval         = 10;
             internal static readonly SqlAuthenticationMethod Authentication = SqlAuthenticationMethod.NotSpecified;
             internal static readonly SqlConnectionColumnEncryptionSetting ColumnEncryptionSetting = SqlConnectionColumnEncryptionSetting.Disabled;
+            internal const string EnclaveAttestationUrl           = "";
         }
 
         // SqlConnection ConnectionString Options
@@ -72,6 +73,7 @@ namespace System.Data.SqlClient {
             internal const string AttachDBFilename					= "attachdbfilename";
             internal const string PoolBlockingPeriod                = "poolblockingperiod";
             internal const string ColumnEncryptionSetting			= "column encryption setting";
+            internal const string EnclaveAttestationUrl             = "enclave attestation url";
             internal const string Connect_Timeout					= "connect timeout";
             internal const string Connection_Reset					= "connection reset";
             internal const string Context_Connection				= "context connection";
@@ -207,6 +209,7 @@ namespace System.Data.SqlClient {
         private readonly bool _transparentNetworkIPResolution;
         private readonly SqlAuthenticationMethod _authType;
         private readonly SqlConnectionColumnEncryptionSetting _columnEncryptionSetting;
+        private readonly string _enclaveAttestationUrl;
 
         private readonly int _connectTimeout;
         private readonly int _loadBalanceTimeout;
@@ -284,6 +287,7 @@ namespace System.Data.SqlClient {
             _trustServerCertificate  = ConvertValueToBoolean(KEY.TrustServerCertificate,  DEFAULT.TrustServerCertificate);
             _authType = ConvertValueToAuthenticationType();
             _columnEncryptionSetting = ConvertValueToColumnEncryptionSetting();
+            _enclaveAttestationUrl = ConvertValueToString(KEY.EnclaveAttestationUrl, DEFAULT.EnclaveAttestationUrl);
 
             // Temporary string - this value is stored internally as an enum.
             string typeSystemVersionString = ConvertValueToString(KEY.Type_System_Version, null);
@@ -452,9 +456,6 @@ namespace System.Data.SqlClient {
                 throw ADP.InvalidConnectionOptionValue(KEY.TransactionBinding);
             }
 
-            if (_applicationIntent == ApplicationIntent.ReadOnly && !String.IsNullOrEmpty(_failoverPartner))
-                throw SQL.ROR_FailoverNotSupportedConnString();
-
             if ((_connectRetryCount<0) || (_connectRetryCount>255)) {
                 throw ADP.InvalidConnectRetryCountValue();
             }
@@ -469,6 +470,14 @@ namespace System.Data.SqlClient {
 
             if (Authentication == SqlClient.SqlAuthenticationMethod.ActiveDirectoryIntegrated && (HasUserIdKeyword || HasPasswordKeyword)) {
                 throw SQL.IntegratedWithUserIDAndPassword();
+            }
+
+            if (Authentication == SqlAuthenticationMethod.ActiveDirectoryInteractive && !HasUserIdKeyword) {
+                throw SQL.InteractiveWithoutUserID();
+            }
+
+            if (Authentication == SqlAuthenticationMethod.ActiveDirectoryInteractive && HasPasswordKeyword) {
+                throw SQL.InteractiveWithPassword();
             }
         }
 
@@ -520,6 +529,7 @@ namespace System.Data.SqlClient {
             _connectRetryInterval           = connectionOptions._connectRetryInterval;
             _authType                       = connectionOptions._authType;
             _columnEncryptionSetting        = connectionOptions._columnEncryptionSetting;
+            _enclaveAttestationUrl          = connectionOptions._enclaveAttestationUrl;
 
             ValidateValueLength(_dataSource, TdsEnums.MAXLEN_SERVERNAME, KEY.Data_Source);
         }
@@ -544,6 +554,7 @@ namespace System.Data.SqlClient {
         internal bool TransparentNetworkIPResolution { get { return _transparentNetworkIPResolution; } }
         internal SqlAuthenticationMethod Authentication { get { return _authType; } }
         internal SqlConnectionColumnEncryptionSetting ColumnEncryptionSetting { get { return _columnEncryptionSetting; } }
+        internal string EnclaveAttestationUrl { get { return _enclaveAttestationUrl; } }
         internal bool PersistSecurityInfo { get { return _persistSecurityInfo; } }
         internal bool Pooling { get { return _pooling; } }
         internal bool Replication { get { return _replication; } }
@@ -654,6 +665,7 @@ namespace System.Data.SqlClient {
                 hash.Add(KEY.TransactionBinding,             KEY.TransactionBinding);
                 hash.Add(KEY.Type_System_Version,            KEY.Type_System_Version);
                 hash.Add(KEY.ColumnEncryptionSetting,        KEY.ColumnEncryptionSetting);
+                hash.Add(KEY.EnclaveAttestationUrl,          KEY.EnclaveAttestationUrl);
                 hash.Add(KEY.User_ID,                        KEY.User_ID);
                 hash.Add(KEY.User_Instance,                  KEY.User_Instance);
                 hash.Add(KEY.Workstation_Id,                 KEY.Workstation_Id);

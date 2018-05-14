@@ -44,13 +44,19 @@ namespace System.Security.Cryptography {
         private bool _canRead = false;
         private bool _canWrite = false;
         private bool _finalBlockTransformed = false;
+        private bool _leaveOpen;
 
         // Constructors
 
-        public CryptoStream(Stream stream, ICryptoTransform transform, CryptoStreamMode mode) {
+        public CryptoStream(Stream stream, ICryptoTransform transform, CryptoStreamMode mode)
+            : this(stream, transform, mode, false) {
+        }
+
+        public CryptoStream(Stream stream, ICryptoTransform transform, CryptoStreamMode mode, bool leaveOpen) {
             _stream = stream;
             _transformMode = mode;
             _Transform = transform;
+            _leaveOpen = leaveOpen;
             switch (_transformMode) {
             case CryptoStreamMode.Read:
                 if (!(_stream.CanRead)) throw new ArgumentException(Environment.GetResourceString("Argument_StreamNotReadable"),"stream");
@@ -698,8 +704,10 @@ slow:
                     if (!_finalBlockTransformed) {
                         FlushFinalBlock();
                     }
-                    _stream.Close();
-                }                
+                    if (!_leaveOpen) {
+                        _stream.Close();
+                    }
+                }
             }
             finally {
                 try {

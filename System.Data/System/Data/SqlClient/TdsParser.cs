@@ -235,6 +235,10 @@ namespace System.Data.SqlClient {
         // useful when talking to downlevel/uplevel server.
         private bool _serverSupportsColumnEncryption = false;
 
+        // now data length is 1 byte
+        // First bit is 1 indicating client support failover partner with readonly intent
+        private static readonly byte[]  s_FeatureExtDataAzureSQLSupportFeatureRequest = { 0x01 };
+
         /// <summary>
         /// Get or set if column encryption is supported by the server.
         /// </summary>
@@ -246,6 +250,16 @@ namespace System.Data.SqlClient {
                 _serverSupportsColumnEncryption = value;
             }
         }
+
+        /// <summary>
+        /// TCE version supported by the server
+        /// </summary>
+        internal byte TceVersionSupported { get; set; }
+
+        /// <summary>
+        /// Type of enclave being used by the server
+        /// </summary>
+        internal string EnclaveType { get; set; }
 
         internal TdsParser(bool MARS, bool fAsynchronous) {
             _fMARS = MARS; // may change during Connect to pre Yukon servers
@@ -387,7 +401,9 @@ namespace System.Data.SqlClient {
                               bool withFailover,
                               bool isFirstTransparentAttempt,
                               SqlAuthenticationMethod authType,
-                              bool disableTnir) {
+                              bool disableTnir,
+                              SqlAuthenticationProviderManager sqlAuthProviderManager
+                              ) {
             if (_state != TdsParserState.Closed) {
                 Debug.Assert(false, "TdsParser.Connect called on non-closed connection!");
                 return;
@@ -421,6 +437,9 @@ namespace System.Data.SqlClient {
                 }
                 else if (authType == SqlAuthenticationMethod.SqlPassword) {
                     Bid.Trace("<sc.TdsParser.Connect|SEC> SQL Password authentication\n");
+                }
+                else if (authType == SqlAuthenticationMethod.ActiveDirectoryInteractive) {
+                    Bid.Trace("<sc.TdsParser.Connect|SEC> Active Directory Interactive authentication\n");
                 }
                 else{
                     Bid.Trace("<sc.TdsParser.Connect|SEC> SQL authentication\n");
@@ -541,10 +560,12 @@ namespace System.Data.SqlClient {
 
             if (authType == SqlAuthenticationMethod.ActiveDirectoryPassword || (authType == SqlAuthenticationMethod.ActiveDirectoryIntegrated && _connHandler._fedAuthRequired)) {
                 Debug.Assert(!integratedSecurity, "The legacy Integrated Security connection string option cannot be true when using Active Directory Authentication Library for SQL Server Based workflows.");
-
-                LoadADALLibrary();
-                if (Bid.AdvancedOn) {
-                    Bid.Trace("<sc.TdsParser.Connect|SEC> Active directory authentication.Loaded Active Directory Authentication Library for SQL Server\n");
+                var authProvider = sqlAuthProviderManager.GetProvider(authType);
+                if (authProvider != null && authProvider.GetType() == typeof(ActiveDirectoryNativeAuthenticationProvider)) {
+                    LoadADALLibrary();
+                    if (Bid.AdvancedOn) {
+                        Bid.Trace("<sc.TdsParser.Connect|SEC> Active directory authentication.Loaded Active Directory Authentication Library for SQL Server\n");
+                    }
                 }
             }
 
@@ -2872,9 +2893,25 @@ namespace System.Data.SqlClient {
                 }
             } while (featureId != TdsEnums.FEATUREEXT_TERMINATOR);
 
-            // Check if column encryption was on and feature wasn't acknowledged.
-            if (_connHandler.ConnectionOptions.ColumnEncryptionSetting == SqlConnectionColumnEncryptionSetting.Enabled && !IsColumnEncryptionSupported) {
+            // Check if column encryption was on and feature wasn't acknowledged and we aren't going to be routed to another server.
+            if (this.Connection.RoutingInfo == null
+                && _connHandler.ConnectionOptions.ColumnEncryptionSetting == SqlConnectionColumnEncryptionSetting.Enabled
+                && !IsColumnEncryptionSupported) {
                 throw SQL.TceNotSupported ();
+            }
+
+            // Check if enclave attestation url was specified and server does not support enclave computations and we aren't going to be routed to another server.
+            if (this.Connection.RoutingInfo == null
+                && (!string.IsNullOrWhiteSpace(_connHandler.ConnectionOptions.EnclaveAttestationUrl))
+                && (TceVersionSupported < TdsEnums.MIN_TCE_VERSION_WITH_ENCLAVE_SUPPORT))  {
+                throw SQL.EnclaveComputationsNotSupported ();
+            }
+
+            // Check if enclave attestation url was specified and server does not return an enclave type and we aren't going to be routed to another server.
+            if (this.Connection.RoutingInfo == null
+                && (!string.IsNullOrWhiteSpace(_connHandler.ConnectionOptions.EnclaveAttestationUrl))
+                && string.IsNullOrWhiteSpace(EnclaveType) )  {
+                throw SQL.EnclaveTypeNotReturned ();
             }
 
             return true;
@@ -6996,6 +7033,9 @@ namespace System.Data.SqlClient {
                             case SqlAuthenticationMethod.ActiveDirectoryIntegrated:
                                 workflow = TdsEnums.ADALWORKFLOW_ACTIVEDIRECTORYINTEGRATED;
                                 break;
+                            case SqlAuthenticationMethod.ActiveDirectoryInteractive:
+                                workflow = TdsEnums.ADALWORKFLOW_ACTIVEDIRECTORYINTERACTIVE;
+                                break;
                             default:
                                 Debug.Assert(false, "Unrecognized Authentication type for fedauth ADAL request");
                                 break;
@@ -7039,6 +7079,24 @@ namespace System.Data.SqlClient {
 
             return len;
         }
+
+        internal int WriteAzureSQLSupportFeatureRequest(bool write /* if false just calculates the length */) {
+            int len = 6; // 1byte = featureID, 4bytes = featureData length, 1 bytes = featureData
+
+            if (write)
+            {
+                // Write Feature ID
+                _physicalStateObj.WriteByte(TdsEnums.FEATUREEXT_AZURESQLSUPPORT);
+
+                // Feature Data length
+                WriteInt(s_FeatureExtDataAzureSQLSupportFeatureRequest.Length, _physicalStateObj);
+
+                _physicalStateObj.WriteByteArray(s_FeatureExtDataAzureSQLSupportFeatureRequest, s_FeatureExtDataAzureSQLSupportFeatureRequest.Length, 0);
+            }
+
+            return len;
+        }
+
 
         internal void TdsLogin(SqlLogin rec,
                                TdsEnums.FeatureExtension requestedFeatures,
@@ -7171,6 +7229,9 @@ namespace System.Data.SqlClient {
                     }
                     if ((requestedFeatures & TdsEnums.FeatureExtension.GlobalTransactions) != 0) {
                         length += WriteGlobalTransactionsFeatureRequest(false);
+                    }
+                    if ((requestedFeatures & TdsEnums.FeatureExtension.AzureSQLSupport) != 0) {
+                        length += WriteAzureSQLSupportFeatureRequest(false);
                     }
                     length++; // for terminator
                 }
@@ -7406,6 +7467,9 @@ namespace System.Data.SqlClient {
                     if ((requestedFeatures & TdsEnums.FeatureExtension.GlobalTransactions) != 0) {
                         WriteGlobalTransactionsFeatureRequest(true);
                     };
+                    if ((requestedFeatures & TdsEnums.FeatureExtension.AzureSQLSupport) != 0) {
+                        WriteAzureSQLSupportFeatureRequest(true);
+                    }
                     _physicalStateObj.WriteByte(0xFF); // terminator
                 }
             } // try
@@ -7862,7 +7926,7 @@ namespace System.Data.SqlClient {
             Bid.Trace("<sc.TdsParser.FailureCleanup|ERR> Exception rethrown. \n");
         }
 
-        internal Task TdsExecuteSQLBatch(string text, int timeout, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, bool sync, bool callerHasConnectionLock = false) {
+        internal Task TdsExecuteSQLBatch(string text, int timeout, SqlNotificationRequest notificationRequest, TdsParserStateObject stateObj, bool sync, bool callerHasConnectionLock = false, byte[] enclavePackage = null) {
             if (TdsParserState.Broken == State || TdsParserState.Closed == State) {
                 return null;
             }
@@ -7919,6 +7983,8 @@ namespace System.Data.SqlClient {
                 }
 
                 stateObj._outputMessageType = TdsEnums.MT_SQL;
+
+                WriteEnclaveInfo(stateObj, enclavePackage);
 
                 WriteString(text, text.Length, 0, stateObj);
 
@@ -8049,6 +8115,9 @@ namespace System.Data.SqlClient {
                           // Options
                           WriteShort((short)rpcext.options, stateObj);
                       }
+
+                      byte[] enclavePackage = cmd.enclavePackage != null ? cmd.enclavePackage.EnclavePackageBytes : null;
+                      WriteEnclaveInfo(stateObj, enclavePackage);
 
                       // Stream out parameters
                       SqlParameter[] parameters = rpcext.parameters;
@@ -8557,8 +8626,23 @@ namespace System.Data.SqlClient {
               }
           }
       }
-        
-      private void FinalizeExecuteRPC(TdsParserStateObject stateObj) {
+
+        private void WriteEnclaveInfo(TdsParserStateObject stateObj, byte[] enclavePackage) {
+            //If the server supports enclave computations, write enclave info.
+            if (TceVersionSupported >= TdsEnums.MIN_TCE_VERSION_WITH_ENCLAVE_SUPPORT) {
+                if (enclavePackage != null) {
+                    //EnclavePackage Length
+                    WriteShort((short) enclavePackage.Length, stateObj);
+                    stateObj.WriteByteArray(enclavePackage, enclavePackage.Length, 0);
+                }
+                else {
+                    //EnclavePackage Length
+                    WriteShort((short) 0, stateObj);
+                }
+            }
+        }
+
+        private void FinalizeExecuteRPC(TdsParserStateObject stateObj) {
           stateObj.SniContext = SniContext.Snix_Read;
           _asyncWrite = false;
       }

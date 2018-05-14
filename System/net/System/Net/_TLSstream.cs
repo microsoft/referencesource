@@ -14,6 +14,7 @@ namespace System.Net {
     using System.Collections;
     using System.Net.Security;
     using System.Globalization;
+    using System.Security.Authentication;
     using System.Security.Authentication.ExtendedProtection;
     using System.Net.Configuration;
 
@@ -26,39 +27,62 @@ namespace System.Net {
 
         private ExecutionContext _ExecutionContext;
         private ChannelBinding m_CachedChannelBinding;
+        private bool m_CheckCertificateRevocationList;
+        private SslProtocols m_SslProtocols;
 
         //
         // This version of an Ssl Stream is for internal HttpWebrequest use.
         // This Ssl client owns the underlined socket
         // The TlsStream will own secured read/write and disposal of the passed "networkStream" stream.
         //
-        public TlsStream(string destinationHost, NetworkStream networkStream, X509CertificateCollection clientCertificates, ServicePoint servicePoint, object initiatingRequest, ExecutionContext executionContext)
-               :base(networkStream, true) {
+        public TlsStream(
+            string destinationHost,
+            NetworkStream networkStream,
+            bool checkCertificateRevocationList,
+            SslProtocols sslProtocols,
+            X509CertificateCollection clientCertificates,
+            ServicePoint servicePoint,
+            object initiatingRequest,
+            ExecutionContext executionContext) : base(networkStream, true) {
 
-        // WebRequest manages the execution context manually so we have to ensure we get one for SSL client certificate demand
-        _ExecutionContext = executionContext;
-        if (_ExecutionContext == null)
-        {
-            _ExecutionContext = ExecutionContext.Capture();
-        }
+            m_CheckCertificateRevocationList = checkCertificateRevocationList;
+            m_SslProtocols = sslProtocols;
 
-        // 
+            // WebRequest manages the execution context manually so we have to ensure we get one for SSL client certificate demand
+            _ExecutionContext = executionContext;
+            if (_ExecutionContext == null)
+            {
+                _ExecutionContext = ExecutionContext.Capture();
+            }
+
+            // 
 
 
-         GlobalLog.Enter("TlsStream::TlsStream", "host="+destinationHost+", #certs="+((clientCertificates == null) ? "none" : clientCertificates.Count.ToString(NumberFormatInfo.InvariantInfo)));
-         if (Logging.On) Logging.PrintInfo(Logging.Web, this, ".ctor", "host="+destinationHost+", #certs="+((clientCertificates == null) ? "null" : clientCertificates.Count.ToString(NumberFormatInfo.InvariantInfo)));
+            GlobalLog.Enter("TlsStream::TlsStream", "host="+destinationHost+", #certs="+((clientCertificates == null) ? "none" : clientCertificates.Count.ToString(NumberFormatInfo.InvariantInfo)));
+            if (Logging.On) {
+                Logging.PrintInfo(
+                    Logging.Web,
+                    this,
+                    ".ctor",
+                    string.Format(
+                        "host={0}, #certs={1}, checkCertificateRevocationList={2}, sslProtocols={3}",
+                        destinationHost,
+                        (clientCertificates == null) ? "null" : clientCertificates.Count.ToString(NumberFormatInfo.InvariantInfo),
+                        checkCertificateRevocationList,
+                        sslProtocols));
+            }
 
-         m_ExceptionStatus = WebExceptionStatus.SecureChannelFailure;
-         m_Worker = new SslState(networkStream, initiatingRequest is HttpWebRequest, SettingsSectionInternal.Section.EncryptionPolicy);
+            m_ExceptionStatus = WebExceptionStatus.SecureChannelFailure;
+            m_Worker = new SslState(networkStream, initiatingRequest is HttpWebRequest, SettingsSectionInternal.Section.EncryptionPolicy);
 
-         m_DestinationHost = destinationHost;
-         m_ClientCertificates = clientCertificates;
+            m_DestinationHost = destinationHost;
+            m_ClientCertificates = clientCertificates;
 
-         RemoteCertValidationCallback certValidationCallback = servicePoint.SetupHandshakeDoneProcedure(this, initiatingRequest);
-         m_Worker.SetCertValidationDelegate(certValidationCallback);
+            RemoteCertValidationCallback certValidationCallback = servicePoint.SetupHandshakeDoneProcedure(this, initiatingRequest);
+            m_Worker.SetCertValidationDelegate(certValidationCallback);
 
-         // The Handshake is NOT done at this point
-         GlobalLog.Leave("TlsStream::TlsStream (Handshake is not done)");
+            // The Handshake is NOT done at this point
+            GlobalLog.Leave("TlsStream::TlsStream (Handshake is not done)");
         }
 
         //
@@ -442,10 +466,11 @@ namespace System.Net {
                     {
                         m_Worker.ValidateCreateContext(false,
                                                        m_DestinationHost,
-                                                       (System.Security.Authentication.SslProtocols)ServicePointManager.SecurityProtocol,
-                                                       null, m_ClientCertificates,
+                                                       m_SslProtocols,
+                                                       null,
+                                                       m_ClientCertificates,
                                                        true,
-                                                       ServicePointManager.CheckCertificateRevocationList,
+                                                       m_CheckCertificateRevocationList,
                                                        ServicePointManager.CheckCertificateName);
 
 

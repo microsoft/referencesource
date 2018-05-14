@@ -147,11 +147,21 @@ namespace System.IO {
             DisplayPath = _name;
         }
 
+#if FEATURE_CORESYSTEM
+        [System.Security.SecuritySafeCritical]
+#endif //FEATURE_CORESYSTEM
+        internal FileInfo(string fullPath, string fileName)
+        {
+            _name = fileName;
+            OriginalPath = _name;
+            FullPath = fullPath;
+            DisplayPath = _name;
+        }
+
         public override String Name {
             get { return _name; }
         }
-    
-   
+
         public long Length {
             [System.Security.SecuritySafeCritical]  // auto-generated
             get {

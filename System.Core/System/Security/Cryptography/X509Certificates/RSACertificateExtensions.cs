@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation.  All rights reserved.
 
+using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
@@ -66,8 +68,10 @@ namespace System.Security.Cryptography.X509Certificates
                 return null;
             }
 
+            CngKeyHandleOpenOptions openOptions;
+
             using (SafeCertContextHandle certificateContext = X509Native.GetCertificateContext(certificate))
-            using (SafeNCryptKeyHandle privateKeyHandle = X509Native.TryAcquireCngPrivateKey(certificateContext))
+            using (SafeNCryptKeyHandle privateKeyHandle = X509Native.TryAcquireCngPrivateKey(certificateContext, out openOptions))
             {
                 if (privateKeyHandle == null)
                 {
@@ -81,9 +85,78 @@ namespace System.Security.Cryptography.X509Certificates
                     return clone;
                 }
 
-                CngKey key = CngKey.Open(privateKeyHandle, CngKeyHandleOpenOptions.None);
+                CngKey key = CngKey.Open(privateKeyHandle, openOptions);
                 return new RSACng(key);
             }
+        }
+
+        [SecuritySafeCritical]
+        public static X509Certificate2 CopyWithPrivateKey(this X509Certificate2 certificate, RSA privateKey)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+            if (privateKey == null)
+                throw new ArgumentNullException(nameof(privateKey));
+
+            if (certificate.HasPrivateKey)
+                throw new InvalidOperationException(SR.GetString(SR.Cryptography_Cert_AlreadyHasPrivateKey));
+
+            using (RSA publicKey = GetRSAPublicKey(certificate))
+            {
+                if (publicKey == null)
+                    throw new ArgumentException(SR.GetString(SR.Cryptography_PrivateKey_WrongAlgorithm));
+
+                RSAParameters currentParameters = publicKey.ExportParameters(false);
+                RSAParameters newParameters = privateKey.ExportParameters(false);
+
+                if (!currentParameters.Modulus.SequenceEqual(newParameters.Modulus) ||
+                    !currentParameters.Exponent.SequenceEqual(newParameters.Exponent))
+                {
+                    throw new ArgumentException(SR.GetString(SR.Cryptography_PrivateKey_DoesNotMatch), nameof(privateKey));
+                }
+            }
+
+            RSACng rsaCng = privateKey as RSACng;
+            X509Certificate2 newCert = null;
+
+            if (rsaCng != null)
+            {
+                newCert = CertificateExtensionsCommon.CopyWithPersistedCngKey(certificate, rsaCng.Key);
+            }
+
+            if (newCert == null)
+            {
+                RSACryptoServiceProvider rsaCsp = privateKey as RSACryptoServiceProvider;
+
+                if (rsaCsp != null)
+                {
+                    newCert = CertificateExtensionsCommon.CopyWithPersistedCapiKey(certificate, rsaCsp.CspKeyContainerInfo);
+                }
+            }
+
+            if (newCert == null)
+            {
+                RSAParameters parameters = privateKey.ExportParameters(true);
+
+                using (PinAndClear.Track(parameters.D))
+                using (PinAndClear.Track(parameters.P))
+                using (PinAndClear.Track(parameters.Q))
+                using (PinAndClear.Track(parameters.DP))
+                using (PinAndClear.Track(parameters.DQ))
+                using (PinAndClear.Track(parameters.InverseQ))
+                using (rsaCng = new RSACng())
+                {
+                    rsaCng.ImportParameters(parameters);
+
+                    newCert = CertificateExtensionsCommon.CopyWithEphemeralCngKey(certificate, rsaCng.Key);
+                }
+            }
+
+            Debug.Assert(newCert != null);
+            Debug.Assert(!ReferenceEquals(certificate, newCert));
+            Debug.Assert(!certificate.HasPrivateKey);
+            Debug.Assert(newCert.HasPrivateKey);
+            return newCert;
         }
 
         private static bool IsRSA(X509Certificate2 certificate)

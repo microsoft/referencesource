@@ -28,8 +28,8 @@ namespace System.Runtime.Serialization {
     [System.Runtime.InteropServices.ComVisible(true)]
     public class ObjectManager {
         private const int DefaultInitialSize=16;
-        private const int MaxArraySize=0x1000; //MUST BE A POWER OF 2!
-        private const int ArrayMask = MaxArraySize-1;
+        private const int DefaultMaxArraySize=0x1000; //MUST BE A POWER OF 2!
+        private const int NewMaxArraySize = 0x1000000;
         private const int MaxReferenceDepth = 100;
         
         private DeserializationEventHandler m_onDeserializationHandler;
@@ -37,7 +37,8 @@ namespace System.Runtime.Serialization {
 
 #if !FEATURE_PAL
         private static RuntimeType TypeOfWindowsIdentity;
-#endif    
+#endif
+
         internal ObjectHolder []    m_objects;
         internal Object m_topObject = null;
         internal ObjectHolderList   m_specialFixupObjects; //This is IObjectReference, ISerializable, or has a Surrogate.
@@ -45,7 +46,10 @@ namespace System.Runtime.Serialization {
         internal ISurrogateSelector m_selector;
         internal StreamingContext   m_context;
         bool m_isCrossAppDomain;
-    
+
+        private readonly int MaxArraySize;
+        private readonly int ArrayMask;
+
         [System.Security.SecuritySafeCritical]  // auto-generated
         public ObjectManager(ISurrogateSelector selector, StreamingContext context) : this(selector, context, true, false) {
         }
@@ -59,9 +63,23 @@ namespace System.Runtime.Serialization {
             m_selector = selector;
             m_context = context;
             m_isCrossAppDomain = isCrossAppDomain;
+
+            //Devdiv#443438
+            //Binary Serializer is used in AppDomain creation in ASP.NET. At that time, the AppContext setting is still not loaded, so UseNewMaxArraySize will return false (the default value).
+            //However, the default value will be cached and will not be reloaded again that cause the customized value UseNewMaxArraySize never be used in ASP.NET.
+            //Add 'isCrossAppDomain' check is to avoid reading and caching UseNewMaxArraySize value during AppDomain creation.
+            if (!isCrossAppDomain && AppContextSwitches.UseNewMaxArraySize)
+            {
+                MaxArraySize = NewMaxArraySize;
+            }
+            else
+            {
+                MaxArraySize = DefaultMaxArraySize;
+            }
+
+            ArrayMask = MaxArraySize - 1;
         }
 
-    
         [System.Security.SecurityCritical]  // auto-generated
         private bool CanCallGetType(Object obj) {
 #if FEATURE_REMOTING                        

@@ -72,17 +72,25 @@ namespace System.Net
         }
         */
 
-        internal static bool RemoveConnectionPool(ServicePoint servicePoint, string groupName) {
+        internal static bool RemoveConnectionPool(ServicePoint servicePoint, string groupName)
+        {
+            if (Logging.On) Logging.PrintInfo(Logging.Web, "ConnectionPoolManager::RemoveConnectionPool, groupName=" + groupName);
+
             string key = GenerateKey(servicePoint.Host, servicePoint.Port, groupName);
-            lock(InternalSyncObject) {
+            lock(InternalSyncObject)
+            {
                 ConnectionPool connectionPool = (ConnectionPool)(m_ConnectionPools[key]);
-                if(connectionPool != null)
+                if (connectionPool != null)
                 {
                     m_ConnectionPools[key] = null;
                     m_ConnectionPools.Remove(key);
+
+                    if (Logging.On) Logging.PrintInfo(Logging.Web, "ConnectionPoolManager::RemoveConnectionPool, removed connection pool: " + key);
                     return true;
                 }
             }
+
+            if (Logging.On) Logging.PrintInfo(Logging.Web, "ConnectionPoolManager::RemoveConnectionPool, no connection pool found: " + key);
             return false;
         }
 

@@ -55,6 +55,12 @@ namespace System.Text
 
         private const int UTF8_CODEPAGE=65001;
 
+        // Allow for de-virtualization
+        internal sealed class UTF8EncodingSealed : UTF8Encoding
+        {
+            public UTF8EncodingSealed(bool encoderShouldEmitUTF8Identifier) : base(encoderShouldEmitUTF8Identifier) { }
+        }
+
         // Yes, the idea of emitting U+FEFF as a UTF-8 identifier has made it into
         // the standard.
         private bool emitUTF8Identifier = false;

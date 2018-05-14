@@ -3634,3 +3634,7 @@ Argument_NativeOverlappedWrongBoundHandle='overlapped' was not allocated by this
 
 ; RuntimeInformation
 Argument_EmptyValue=Value cannot be empty.
+
+#if FEATURE_CRYPTO
+Cryptography_X509_InvalidFlagCombination=The flags '{0}' may not be specified together.
+#endif

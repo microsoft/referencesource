@@ -37,7 +37,13 @@ namespace System.Xml {
         Entry[] entries;
         int     count;
         int     mask;
-        int     hashCodeRandomizer;
+#pragma warning disable 169
+        int hashCodeRandomizer; // Used only on Silverlight but still defined for compatibility
+#pragma warning restore 169
+
+#if !SILVERLIGHT
+        ulong   marvinHashSeed;
+#endif
 
 //
 // Constructor
@@ -49,7 +55,11 @@ namespace System.Xml {
         public NameTable() {
             mask = 31;
             entries = new Entry[mask+1];
+#if SILVERLIGHT
             hashCodeRandomizer = Environment.TickCount;
+#else
+            marvinHashSeed = MarvinHash.DefaultSeed;
+#endif
         }
 
 //
@@ -68,16 +78,9 @@ namespace System.Xml {
             if ( len == 0 ) {
                 return string.Empty;
             }
-            int hashCode = len + hashCodeRandomizer;
-            // use key.Length to eliminate the rangecheck
-            for ( int i = 0; i < key.Length; i++ ) {
-                hashCode += ( hashCode << 7 ) ^ key[i];
-            }
-            // mix it a bit more
-            hashCode -= hashCode >> 17; 
-            hashCode -= hashCode >> 11; 
-            hashCode -= hashCode >> 5;
-            
+
+            int hashCode = ComputeHash32(key);
+
             for ( Entry e = entries[hashCode & mask]; e != null; e = e.next ) {
                 if ( e.hashCode == hashCode && e.str.Equals( key ) ) {
                     return e.str;
@@ -96,16 +99,19 @@ namespace System.Xml {
                 return string.Empty;
             }
 
-            int hashCode = len + hashCodeRandomizer;
-            hashCode += ( hashCode << 7 ) ^ key[start];   // this will throw IndexOutOfRangeException in case the start index is invalid
-            int end = start+len;
-            for ( int i = start + 1; i < end; i++) {
-                hashCode += ( hashCode << 7 ) ^ key[i];
+            // Compatibility check to ensure same exception as previous versions
+            // independently of any exceptions throw by the hashing function.
+            // note that NullReferenceException is the first one if key is null.
+            if (start >= key.Length || start < 0 || (long)start + len > (long)key.Length) {
+                throw new IndexOutOfRangeException();
             }
-            // mix it a bit more
-            hashCode -= hashCode >> 17; 
-            hashCode -= hashCode >> 11; 
-            hashCode -= hashCode >> 5;
+
+            // Compatibility check for len < 0, just throw the same exception as new string(key, start, len)
+            if (len < 0) {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            int hashCode = ComputeHash32(key, start, len);
 
             for ( Entry e = entries[hashCode & mask]; e != null; e = e.next ) {
                 if ( e.hashCode == hashCode && TextEquals( e.str, key, start, len ) ) {
@@ -127,17 +133,8 @@ namespace System.Xml {
                 return string.Empty;
             }
 
-            int len = value.Length + hashCodeRandomizer;
-            int hashCode = len;
-            // use value.Length to eliminate the rangecheck
-            for ( int i = 0; i < value.Length; i++ ) {
-                hashCode += ( hashCode << 7 ) ^ value[i];
-            }
-            // mix it a bit more
-            hashCode -= hashCode >> 17; 
-            hashCode -= hashCode >> 11; 
-            hashCode -= hashCode >> 5;
-            
+            int hashCode = ComputeHash32(value);
+
             for ( Entry e = entries[hashCode & mask]; e != null; e = e.next ) {
                 if ( e.hashCode == hashCode && e.str.Equals( value ) ) {
                     return e.str;
@@ -156,17 +153,20 @@ namespace System.Xml {
                 return string.Empty;
             }
 
-            int hashCode = len + hashCodeRandomizer;
-            hashCode += ( hashCode << 7 ) ^ key[start];   // this will throw IndexOutOfRangeException in case the start index is invalid
-            int end = start+len;
-            for ( int i = start + 1; i < end; i++) {
-                hashCode += ( hashCode << 7 ) ^ key[i];
+            // Compatibility check to ensure same exception as previous versions
+            // independently of any exceptions throw by the hashing function.
+            // note that NullReferenceException is the first one if key is null.
+            if (start >= key.Length || start < 0 || (long)start + len > (long)key.Length) {
+                throw new IndexOutOfRangeException();
             }
-            // mix it a bit more
-            hashCode -= hashCode >> 17; 
-            hashCode -= hashCode >> 11; 
-            hashCode -= hashCode >> 5;
-            
+
+            // Compatibility check for len < 0, just return null
+            if (len < 0) {
+                return null;
+            }
+
+            int hashCode = ComputeHash32(key, start, len);
+
             for ( Entry e = entries[hashCode & mask]; e != null; e = e.next ) {
                 if ( e.hashCode == hashCode && TextEquals( e.str, key, start, len ) ) {
                     return e.str;
@@ -222,5 +222,50 @@ namespace System.Xml {
             }
             return true;
         }
+
+#if SILVERLIGHT
+        // Marvin hash is not being added to Silverlight keep on legacy hashing
+        private int ComputeHash32(string key)
+        {
+            int hashCode = key.Length + hashCodeRandomizer;
+            // use key.Length to eliminate the rangecheck
+            for ( int i = 0; i < key.Length; i++ ) {
+                hashCode += ( hashCode << 7 ) ^ key[i];
+            }
+            // mix it a bit more
+            hashCode -= hashCode >> 17; 
+            hashCode -= hashCode >> 11; 
+            hashCode -= hashCode >> 5;
+
+            return hashCode;
+        }
+
+        private int ComputeHash32(char[] key, int start, int len)
+        {
+            int hashCode = len + hashCodeRandomizer;
+            hashCode += (hashCode << 7) ^ key[start];   // this will throw IndexOutOfRangeException in case the start index is invalid
+            int end = start + len;
+            for (int i = start + 1; i < end; i++)
+            {
+                hashCode += (hashCode << 7) ^ key[i];
+            }
+            // mix it a bit more
+            hashCode -= hashCode >> 17;
+            hashCode -= hashCode >> 11;
+            hashCode -= hashCode >> 5;
+
+            return hashCode;
+        }
+#else
+        private int ComputeHash32(string key)
+        {
+            return MarvinHash.ComputeHash32(key, marvinHashSeed);
+        }
+
+        private int ComputeHash32(char[] key, int start, int len)
+        {
+            return MarvinHash.ComputeHash32(key, start, len, marvinHashSeed);
+        }
+#endif
     }
 }

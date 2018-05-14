@@ -123,6 +123,20 @@ namespace System {
             }
         }
 
+        internal static bool DontEnableStrictRFC3986ReservedCharacterSets
+        {
+            get {
+                return LocalAppContextSwitches.DontEnableStrictRFC3986ReservedCharacterSets;
+            }
+        }
+
+        internal static bool DontKeepUnicodeBidiFormattingCharacters
+        {
+            get
+            {
+                return LocalAppContextSwitches.DontKeepUnicodeBidiFormattingCharacters;
+            }
+        }
 
         static UriParser() {
 

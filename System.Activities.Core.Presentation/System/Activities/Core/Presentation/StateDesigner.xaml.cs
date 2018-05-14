@@ -118,6 +118,10 @@ namespace System.Activities.Core.Presentation
 
         protected internal override string GetAutomationItemStatus()
         {
+            if (!LocalAppContextSwitches.UseLegacyAccessibilityFeatures2)
+            {
+                return String.Empty;
+            }
             string status = base.GetAutomationItemStatus();
             status = status + "Guid=" + this.guid.ToString() + " ";
             status = status + "IsFinal=" + (this.IsFinalState() ? "True " : "False ");

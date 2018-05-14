@@ -6,6 +6,7 @@ namespace Microsoft.Build.Tasks.Xaml
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Xaml;
     using System.Xaml.Schema;
@@ -288,12 +289,17 @@ namespace Microsoft.Build.Tasks.Xaml
             }
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3053:UseXmlSecureResolver", 
+            Justification = @"For the call to XmlReader.Create() below, CA3053 recommends setting the 
+XmlReaderSettings.XmlResolver property to either null or an instance of XmlSecureResolver. 
+But after setting this property to null, a warning of CA3053 still shows up in FxCop. 
+So we suppress this error until the reporting for CA3053 has been updated to fix this issue.")]
         bool ProcessMarkupItem(string markupItem, XamlNsReplacingContext wxsc, Assembly localAssembly)
         {
             XamlXmlReaderSettings settings = new XamlXmlReaderSettings() { LocalAssembly = localAssembly, ProvideLineInfo = true, AllowProtectedMembersOnRoot = true };
             using (StreamReader streamReader = new StreamReader(markupItem))
             {
-                var xamlReader = new XamlXmlReader(XmlReader.Create(streamReader), wxsc, settings);
+                var xamlReader = new XamlXmlReader(XmlReader.Create(streamReader, new XmlReaderSettings { XmlResolver = null }), wxsc, settings);
                 ClassValidator validator = new ClassValidator(markupItem, localAssembly, this.RootNamespace);
                 IList<LogData> validationErrors = null;
                 if (validator.ValidateXaml(xamlReader, false, this.AssemblyName, out validationErrors))

@@ -6,6 +6,7 @@ namespace System.Net.Mail
     using System.IO;
     using System.Threading;
     using System.Globalization;
+    using System.Security.Authentication;
     using System.Security.Principal;
     using System.Security.Permissions;
     using System.Security.Authentication.ExtendedProtection;
@@ -394,7 +395,15 @@ namespace System.Net.Mail
                     }
                 }
                 StartTlsCommand.Send(this);
-                TlsStream TlsStream = new TlsStream(servicePoint.Host, pooledStream.NetworkStream, clientCertificates, servicePoint, client, null);
+                TlsStream TlsStream = new TlsStream(
+                    servicePoint.Host,
+                    pooledStream.NetworkStream,
+                    ServicePointManager.CheckCertificateRevocationList,
+                    (SslProtocols)ServicePointManager.SecurityProtocol,
+                    clientCertificates,
+                    servicePoint,
+                    client,
+                    null);
 
                 pooledStream.NetworkStream = TlsStream;
 
@@ -910,7 +919,15 @@ namespace System.Net.Mail
                 if (result.CompletedSynchronously)
                 {
                     StartTlsCommand.EndSend(result);
-                    TlsStream TlsStream = new TlsStream(connection.pooledStream.ServicePoint.Host, connection.pooledStream.NetworkStream, connection.ClientCertificates, connection.pooledStream.ServicePoint, connection.client, m_OuterResult.ContextCopy);
+                    TlsStream TlsStream = new TlsStream(
+                        connection.pooledStream.ServicePoint.Host,
+                        connection.pooledStream.NetworkStream,
+                        ServicePointManager.CheckCertificateRevocationList,
+                        (SslProtocols)ServicePointManager.SecurityProtocol,
+                        connection.ClientCertificates,
+                        connection.pooledStream.ServicePoint,
+                        connection.client,
+                        m_OuterResult.ContextCopy);
                     connection.pooledStream.NetworkStream = TlsStream;
                     connection.responseReader = new SmtpReplyReaderFactory(connection.pooledStream.NetworkStream);
                     SendEHello();
@@ -927,7 +944,14 @@ namespace System.Net.Mail
                     try
                     {
                         StartTlsCommand.EndSend(result);
-                        TlsStream TlsStream = new TlsStream(thisPtr.connection.pooledStream.ServicePoint.Host, thisPtr.connection.pooledStream.NetworkStream, thisPtr.connection.ClientCertificates, thisPtr.connection.pooledStream.ServicePoint, thisPtr.connection.client, thisPtr.m_OuterResult.ContextCopy);
+                        TlsStream TlsStream = new TlsStream(
+                            thisPtr.connection.pooledStream.ServicePoint.Host,
+                            thisPtr.connection.pooledStream.NetworkStream,
+                            ServicePointManager.CheckCertificateRevocationList,
+                            (SslProtocols)ServicePointManager.SecurityProtocol,
+                            thisPtr.connection.ClientCertificates,
+                            thisPtr.connection.pooledStream.ServicePoint,
+                            thisPtr.connection.client, thisPtr.m_OuterResult.ContextCopy);
                         thisPtr.connection.pooledStream.NetworkStream = TlsStream;
                         thisPtr.connection.responseReader = new SmtpReplyReaderFactory(thisPtr.connection.pooledStream.NetworkStream);
                         thisPtr.SendEHello();

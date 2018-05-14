@@ -104,7 +104,6 @@ namespace Microsoft.Win32 {
         public const int ERROR_EXE_MACHINE_TYPE_MISMATCH= 216;
         public const int MAX_PATH                       = 260;
 
-
         [StructLayout(LayoutKind.Sequential)]
         internal class STARTUPINFO {
             public int cb;
@@ -213,6 +212,41 @@ namespace Microsoft.Win32 {
         [DllImport(ExternDll.Kernel32, CharSet=System.Runtime.InteropServices.CharSet.Ansi, SetLastError=true)]
         [ResourceExposure(ResourceScope.Process)]
         public static extern IntPtr GetCurrentProcess();
+
+        [DllImport(ExternDll.Advapi32, SetLastError = true)]
+        private static extern uint SetNamedSecurityInfo(
+           string pObjectName,
+           uint ObjectType,
+           uint SecurityInfo,
+           IntPtr psidOwner,
+           IntPtr psidGroup,
+           SafeLocalMemHandle pDacl,
+           IntPtr pSacl
+        );
+
+        internal static uint SetNamedSecurityInfo(
+            string directory,
+            SafeLocalMemHandle pDacl)
+        {
+            // 1 - se_file_object
+            // 0x04 | 0x10 - dacl_security_information | label_security_information
+            return SetNamedSecurityInfo(directory, 1, 0x04 | 0x10, IntPtr.Zero, IntPtr.Zero, pDacl, IntPtr.Zero);
+        }
+
+        [DllImport(ExternDll.Kernel32, SetLastError = true)]
+        private static extern bool CreateDirectory(string path, SECURITY_ATTRIBUTES lpSecurityAttributes);
+
+        internal static void CreateDirectory(string path, SafeLocalMemHandle acl)
+        {
+            SECURITY_ATTRIBUTES secAttrs = new SECURITY_ATTRIBUTES();
+            secAttrs.lpSecurityDescriptor = acl;
+            secAttrs.nLength = Marshal.SizeOf(secAttrs);
+
+            if (!CreateDirectory(path, secAttrs))
+            {
+                throw new Win32Exception();
+            }
+        }
 
 #if !FEATURE_PAL
         [ResourceExposure(ResourceScope.Machine)]
