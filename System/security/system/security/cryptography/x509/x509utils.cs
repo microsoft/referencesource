@@ -52,6 +52,38 @@ namespace System.Security.Cryptography.X509Certificates {
 
         // this method maps a X509KeyStorageFlags enum to a combination of crypto API flags
         internal static uint MapKeyStorageFlags (X509KeyStorageFlags keyStorageFlags) {
+
+#if !FEATURE_CORESYSTEM
+            if (LocalAppContextSwitches.DoNotValidateX509KeyStorageFlags)
+#endif
+            {
+                // On older versions of the framework there were no conflicting flags,
+                // this method ignored unmapped values, and EphemeralKeySet did not exist.
+                //
+                // Now there are conflicting flags, and someone who was passing in a flag from
+                // the future may be surprised that their private key works differently.
+                // So, on older versions (or explicit "do not validate", just change the input to have
+                // used only those flags that existed in .NET 4.7.
+                keyStorageFlags &= X509Certificate2.KeyStorageFlags47;
+            }
+
+            if ((keyStorageFlags & X509Certificate2.KeyStorageFlagsAll) != keyStorageFlags)
+                throw new ArgumentException(SR.GetString("Arg_EnumIllegalVal", (int)keyStorageFlags), "keyStorageFlags");
+
+            const X509KeyStorageFlags EphemeralPersist =
+                X509KeyStorageFlags.EphemeralKeySet | X509KeyStorageFlags.PersistKeySet;
+
+            X509KeyStorageFlags persistenceFlags = keyStorageFlags & EphemeralPersist;
+
+            if (persistenceFlags == EphemeralPersist)
+            {
+                throw new ArgumentException(
+                    SR.GetString(
+                        "Cryptography_X509_InvalidFlagCombination",
+                        persistenceFlags),
+                    "keyStorageFlags");
+            }
+
             uint dwFlags = 0;
             if ((keyStorageFlags & X509KeyStorageFlags.UserKeySet) == X509KeyStorageFlags.UserKeySet)
                 dwFlags |= CAPI.CRYPT_USER_KEYSET;
@@ -62,6 +94,9 @@ namespace System.Security.Cryptography.X509Certificates {
                 dwFlags |= CAPI.CRYPT_EXPORTABLE;
             if ((keyStorageFlags & X509KeyStorageFlags.UserProtected) == X509KeyStorageFlags.UserProtected)
                 dwFlags |= CAPI.CRYPT_USER_PROTECTED;
+
+            if ((keyStorageFlags & X509KeyStorageFlags.EphemeralKeySet) == X509KeyStorageFlags.EphemeralKeySet)
+                dwFlags |= CAPI.PKCS12_NO_PERSIST_KEY | CAPI.PKCS12_ALWAYS_CNG_KSP;
 
             return dwFlags;
         }

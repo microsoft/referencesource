@@ -65,10 +65,6 @@ namespace System.Net.Mail
                                                     decodedChallenge, 
                                                     false,
                                                     out statusCode);
-                        // Note sure why this is here...keeping it.
-                        if (clientContext.IsCompleted && byteResp == null) {
-                            resp = "\r\n";
-                        }
                         if (byteResp != null) {
                             resp = Convert.ToBase64String(byteResp);
                         }                        
@@ -160,16 +156,13 @@ namespace System.Net.Mail
             //     4 Privacy protection
             //       Sender calls GSS_Wrap with conf_flag set to TRUE
             //
-            // Exchange 2007 and our client only support 
-            // "No security layer". Therefore verify first byte is value 1
-            // and the 2nd-4th bytes are value zero since token size is not
-            // applicable when there is no security layer.
-
-            if (len < 4 ||          // expect 4 bytes
-                input[0] != 1 ||    // first value 1
-                input[1] != 0 ||    // rest value 0
-                input[2] != 0 || 
-                input[3] != 0) {
+            // Our SmtpClient only supports "No security layer". So, make
+            // sure that the server also supports this. We don't care if the
+            // server also supports other features (Integrity or Privacy).
+            // Therefore verify first bit in first byte is value 1.
+            // We ignore the 2nd-4th bytes since token size is not
+            // applicable when we select no security layer.
+            if (len < 4 || (input[0] & 0x1) != 1) {
                 return null;                
             }
 
@@ -181,9 +174,8 @@ namespace System.Net.Mail
             //   is able to receive, and the remaining octets containing the
             //   authorization identity.  
             // 
-            // So now this contructs the "wrapped" response.  The response is
-            // payload is identical to the received server payload and the 
-            // "authorization identity" is not supplied as it is unnecessary.
+            // Our response back to server is very simple. We select "No security layer".
+            input[0] = 1;
 
             // let MakeSignature figure out length of output
             byte[] output = null; 

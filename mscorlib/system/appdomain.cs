@@ -1863,7 +1863,8 @@ namespace System {
                                        null, // symbol store
                                        null, // evidence
                                        ref stackMark,
-                                       false,
+                                       false, // fIntrospection
+                                       false, // fSkipIntegrityCheck
                                        SecurityContextSource.CurrentAssembly);
 
         }
@@ -1879,6 +1880,7 @@ namespace System {
                                        null, // evidence
                                        ref stackMark,
                                        false, // fIntrospection
+                                       false, // fSkipIntegrityCheck
                                        SecurityContextSource.CurrentAssembly);
         }
 
@@ -1905,6 +1907,7 @@ namespace System {
                                        securityEvidence,
                                        ref stackMark,
                                        false, // fIntrospection
+                                       false, // fSkipIntegrityCheck
                                        SecurityContextSource.CurrentAssembly);
         }
 

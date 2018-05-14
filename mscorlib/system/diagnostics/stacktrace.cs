@@ -53,7 +53,6 @@ namespace System.Diagnostics {
         [OptionalField]
         private bool[] rgiLastFrameFromForeignExceptionStackTrace;
 #endif // FEATURE_EXCEPTIONDISPATCHINFO
-        private GetSourceLineInfoDelegate getSourceLineInfo;
         private int iFrameCount;
 #pragma warning restore 414
 
@@ -61,8 +60,7 @@ namespace System.Diagnostics {
             IntPtr inMemoryPdbAddress, int inMemoryPdbSize, int methodToken, int ilOffset, 
             out string sourceFile, out int sourceLine, out int sourceColumn);
 
-        private static Type s_symbolsType = null;
-        private static MethodInfo s_symbolsMethodInfo = null;
+        private static GetSourceLineInfoDelegate s_getSourceLineInfo;
 
         [ThreadStatic]
         private static int t_reentrancy = 0;
@@ -84,7 +82,6 @@ namespace System.Diagnostics {
             rgFilename = null;
             rgiLineNumber = null;
             rgiColumnNumber = null;
-            getSourceLineInfo = null;
 
 #if FEATURE_EXCEPTIONDISPATCHINFO
             rgiLastFrameFromForeignExceptionStackTrace = null;
@@ -112,6 +109,14 @@ namespace System.Diagnostics {
             if (!fNeedFileInfo)
                 return;
 
+            // For back compat we opt-out of using Portable PDBs before 4.7.2. This will prevent searching for them
+            // on disk, loading them, and adding their source information to diagnostic stack traces. When we first
+            // implemented this in 4.7.1 RTM we regressed microbenchmark performance significantly and did not include
+            // this opt-out. A later fix added this opt-out and brought the performance back much closer to the original
+            // pre 4.7.1 performance.
+            if (AppContextSwitches.IgnorePortablePDBsInStackTraces)
+                return;
+
             // Check if this function is being reentered because of an exception in the code below
             if (t_reentrancy > 0)
                 return;
@@ -119,21 +124,28 @@ namespace System.Diagnostics {
             t_reentrancy++;
             try
             {
-                // need private reflection below
-                new ReflectionPermission(ReflectionPermissionFlag.MemberAccess).Assert();
-
-                if (s_symbolsMethodInfo == null)
+                // need private reflection below + unmanaged code for the portable PDB access itself
+                // PERF: these demands are somewhat expensive so do the quick check first. We are aiming for
+                // ~50k traces/s at 5 frames/trace on decent 2017 era hardware to maintain rough performance
+                // parity with 4.7 implementation that didn't have Portable PDB support
+                if (!CodeAccessSecurityEngine.QuickCheckForAllDemands())
                 {
-                    s_symbolsType = Type.GetType(
+                    new ReflectionPermission(ReflectionPermissionFlag.MemberAccess).Assert();
+                    new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Assert();
+                }
+
+                if (s_getSourceLineInfo == null)
+                {
+                    Type symbolsType = Type.GetType(
                         "System.Diagnostics.StackTraceSymbols, System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                         throwOnError: false);
 
-                    if (s_symbolsType == null)
+                    if (symbolsType == null)
                     {
                         return;
                     }
 
-                    s_symbolsMethodInfo = s_symbolsType.GetMethod("GetSourceLineInfo",
+                    MethodInfo symbolsMethodInfo = symbolsType.GetMethod("GetSourceLineInfoWithoutCasAssert",
                                                                   new Type[] { typeof(string),
                                                                                typeof(IntPtr),
                                                                                typeof(int),
@@ -144,17 +156,37 @@ namespace System.Diagnostics {
                                                                                typeof(string).MakeByRefType(),
                                                                                typeof(int).MakeByRefType(),
                                                                                typeof(int).MakeByRefType() });
-                    if (s_symbolsMethodInfo == null)
-                        return;
-                }
 
-                if (getSourceLineInfo == null)
-                {
+                    // We can't take a servicing dependency that System.Core.dll has been upgraded. If for whatever
+                    // wacky reason we still have the old version of System.Core.dll fallback to the original less
+                    // performant implementation of the method.
+                    if(symbolsMethodInfo == null)
+                    {
+                        symbolsMethodInfo = symbolsType.GetMethod("GetSourceLineInfo",
+                                                                  new Type[] { typeof(string),
+                                                                               typeof(IntPtr),
+                                                                               typeof(int),
+                                                                               typeof(IntPtr),
+                                                                               typeof(int),
+                                                                               typeof(int),
+                                                                               typeof(int),
+                                                                               typeof(string).MakeByRefType(),
+                                                                               typeof(int).MakeByRefType(),
+                                                                               typeof(int).MakeByRefType() });
+                    }
+
+                    if (symbolsMethodInfo == null)
+                        return;
+
                     // Create an instance of System.Diagnostics.Stacktrace.Symbols
-                    object target = Activator.CreateInstance(s_symbolsType);
+                    object target = Activator.CreateInstance(symbolsType);
 
                     // Create an instance delegate for the GetSourceLineInfo method
-                    getSourceLineInfo = (GetSourceLineInfoDelegate)s_symbolsMethodInfo.CreateDelegate(typeof(GetSourceLineInfoDelegate), target);
+                    GetSourceLineInfoDelegate getSourceLineInfo = (GetSourceLineInfoDelegate)symbolsMethodInfo.CreateDelegate(typeof(GetSourceLineInfoDelegate), target);
+
+                    // We could ---- with another thread. It doesn't matter if we win or lose, the losing instance will be GC'ed and all threads including this one will
+                    // use the winning instance
+                    Interlocked.CompareExchange(ref s_getSourceLineInfo, getSourceLineInfo, null);
                 }
 
                 for (int index = 0; index < iFrameCount; index++)
@@ -163,7 +195,7 @@ namespace System.Diagnostics {
                     // ENC or the source/line info was already retrieved, the method token is 0.
                     if (rgiMethodToken[index] != 0)
                     {
-                        getSourceLineInfo(rgAssemblyPath[index], rgLoadedPeAddress[index], rgiLoadedPeSize[index],
+                        s_getSourceLineInfo(rgAssemblyPath[index], rgLoadedPeAddress[index], rgiLoadedPeSize[index],
                             rgInMemoryPdbAddress[index], rgiInMemoryPdbSize[index], rgiMethodToken[index],
                             rgiILOffset[index], out rgFilename[index], out rgiLineNumber[index], out rgiColumnNumber[index]);
                     }
@@ -181,14 +213,6 @@ namespace System.Diagnostics {
 
         void IDisposable.Dispose()
         {
-            if (getSourceLineInfo != null)
-            {
-                IDisposable disposable = getSourceLineInfo.Target as IDisposable;
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
-            }
         }
 
         [System.Security.SecuritySafeCritical]

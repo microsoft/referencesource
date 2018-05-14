@@ -87,6 +87,8 @@ namespace System.Text
     [Serializable]
     public abstract class Encoding : ICloneable
     {
+        private static readonly UTF8Encoding.UTF8EncodingSealed s_defaultUtf8EncodingNoBom  = new UTF8Encoding.UTF8EncodingSealed(encoderShouldEmitUTF8Identifier: false);
+        
         private static volatile Encoding defaultEncoding;
         private static volatile Encoding unicodeEncoding;
         private static volatile Encoding bigEndianUnicode;
@@ -218,7 +220,7 @@ namespace System.Text
         }
 
         // This constructor is needed to allow any sub-classing implementation to provide encoder/decoder fallback objects 
-        // because the encoding object is always created as read-only object and don’t allow setting encoder/decoder fallback 
+        // because the encoding object is always created as read-only object and don't allow setting encoder/decoder fallback 
         // after the creation is done. 
         protected Encoding(int codePage, EncoderFallback encoderFallback, DecoderFallback decoderFallback)
         {
@@ -1405,13 +1407,13 @@ namespace System.Text
 
             if (codePage == 1252)
                 enc = new SBCSCodePageEncoding(codePage);
+            else if (codePage == CodePageUTF8) // 65001, UTF8
+                enc = s_defaultUtf8EncodingNoBom;
             else
                 enc = GetEncoding(codePage);
 #else // FEATURE_CODEPAGES_FILE            
-
             // For silverlight we use UTF8 since ANSI isn't available
-            enc = UTF8;
-
+            enc = s_defaultUtf8EncodingNoBom;
 #endif //FEATURE_CODEPAGES_FILE            
 
             return (enc);

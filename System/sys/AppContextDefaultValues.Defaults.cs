@@ -32,13 +32,25 @@ namespace System
                         {
                             LocalAppContext.DefineSwitchDefault(LocalAppContextSwitches.MemberDescriptorEqualsReturnsFalseIfEquivalentName, true);
                         }
-                        
+
                         if (version <= 40602)
                         {
                             LocalAppContext.DefineSwitchDefault(LocalAppContextSwitches.DontEnableSystemDefaultTlsVersionsName, true);
                             LocalAppContext.DefineSwitchDefault(LocalAppContextSwitches.DontEnableTlsAlertsName, true);
                         }
-                        
+
+                        if (version <= 40700)
+                        {
+                            LocalAppContext.DefineSwitchDefault(LocalAppContextSwitches.DoNotCatchSerialStreamThreadExceptionsName, true);
+                        }
+
+                        if (version <= 40701)
+                        {
+                            LocalAppContext.DefineSwitchDefault(LocalAppContextSwitches.DontEnableStrictRFC3986ReservedCharacterSetsName, true);
+                            LocalAppContext.DefineSwitchDefault(LocalAppContextSwitches.DontKeepUnicodeBidiFormattingCharactersName, true);
+                            LocalAppContext.DefineSwitchDefault(LocalAppContextSwitches.DoNotUseNativeZipLibraryForDecompressionName, true);
+                        }
+
                         break;
                     }
                 case "WindowsPhone":

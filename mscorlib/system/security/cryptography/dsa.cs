@@ -60,6 +60,23 @@ namespace System.Security.Cryptography {
             return (DSA) CryptoConfig.CreateFromName(algName);
         }
 
+        static public DSA Create(int keySizeInBits) {
+            DSA dsa = (DSA)CryptoConfig.CreateFromName("DSA-FIPS186-3");
+            dsa.KeySize = keySizeInBits;
+
+            if (dsa.KeySize != keySizeInBits) {
+                throw new CryptographicException();
+            }
+
+            return dsa;
+        }
+
+        static public DSA Create(DSAParameters parameters) {
+            DSA dsa = (DSA)CryptoConfig.CreateFromName("DSA-FIPS186-3");
+            dsa.ImportParameters(parameters);
+            return dsa;
+        }
+
         // DSA does not encode the algorithm identifier into the signature blob, therefore CreateSignature and
         // VerifySignature do not need the HashAlgorithmName value, only SignData and VerifyData do.
         abstract public byte[] CreateSignature(byte[] rgbHash);

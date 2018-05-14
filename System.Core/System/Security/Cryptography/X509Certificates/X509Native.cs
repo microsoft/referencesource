@@ -43,10 +43,33 @@ namespace System.Security.Cryptography.X509Certificates {
         ///     or null if the private key cannot be acquired by NCrypt.
         /// </summary>
         [SecuritySafeCritical]
-        internal static SafeNCryptKeyHandle TryAcquireCngPrivateKey(SafeCertContextHandle certificateContext) {
+        internal static SafeNCryptKeyHandle TryAcquireCngPrivateKey(
+            SafeCertContextHandle certificateContext,
+            out CngKeyHandleOpenOptions openOptions)
+        {
             Debug.Assert(certificateContext != null, "certificateContext != null");
             Debug.Assert(!certificateContext.IsClosed && !certificateContext.IsInvalid, 
                          "!certificateContext.IsClosed && !certificateContext.IsInvalid");
+
+            IntPtr privateKeyPtr;
+
+            // If the certificate has a key handle instead of a key prov info, return the
+            // ephemeral key
+            {
+                int cbData = IntPtr.Size;
+
+                if (UnsafeNativeMethods.CertGetCertificateContextProperty(
+                    certificateContext,
+                    CertificateProperty.NCryptKeyHandle,
+                    out privateKeyPtr,
+                    ref cbData))
+                {
+                    openOptions = CngKeyHandleOpenOptions.EphemeralKey;
+                    return new SafeNCryptKeyHandle(privateKeyPtr, certificateContext);
+                }
+            }
+
+            openOptions = CngKeyHandleOpenOptions.None;
 
             bool freeKey = true;
             SafeNCryptKeyHandle privateKey = null;
@@ -59,25 +82,31 @@ namespace System.Security.Cryptography.X509Certificates {
                                                                            out privateKey,
                                                                            out keySpec,
                                                                            out freeKey)) {
+
+                    // The documentation for CryptAcquireCertificatePrivateKey says that freeKey
+                    // should already be false if "key acquisition fails", and it can be presumed
+                    // that privateKey was set to 0.  But, just in case:
+                    freeKey = false;
+                    privateKey?.SetHandleAsInvalid();
                     return null;
                 }
-
-                return privateKey;
             }
             finally {
-                // If we're not supposed to release they key handle, then we need to bump the reference count
-                // on the safe handle to correspond to the reference that Windows is holding on to.  This will
-                // prevent the CLR from freeing the object handle.
-                // 
-                // This is certainly not the ideal way to solve this problem - it would be better for
-                // SafeNCryptKeyHandle to maintain an internal bool field that we could toggle here and
-                // have that suppress the release when the CLR calls the ReleaseHandle override.  However, that
-                // field does not currently exist, so we'll use this hack instead.
-                if (privateKey != null && !freeKey) {
-                    bool addedRef = false;
-                    privateKey.DangerousAddRef(ref addedRef);
+                // It is very unlikely that Windows will tell us !freeKey other than when reporting failure,
+                // because we set neither CRYPT_ACQUIRE_CACHE_FLAG nor CRYPT_ACQUIRE_USE_PROV_INFO_FLAG, which are
+                // currently the only two success situations documented. However, any !freeKey response means the
+                // key's lifetime is tied to that of the certificate, so re-register the handle as a child handle
+                // of the certificate.
+                if (!freeKey && privateKey != null && !privateKey.IsInvalid)
+                {
+                    var newKeyHandle = new SafeNCryptKeyHandle(privateKey.DangerousGetHandle(), certificateContext);
+                    privateKey.SetHandleAsInvalid();
+                    privateKey = newKeyHandle;
+                    freeKey = true;
                 }
             }
+
+            return privateKey;
         }
 
         /// <summary>
@@ -133,6 +162,42 @@ namespace System.Security.Cryptography.X509Certificates {
             }
         }
 
+        [SecurityCritical]
+        internal static bool SetCertificateKeyProvInfo(
+            SafeCertContextHandle certificateContext,
+            ref CRYPT_KEY_PROV_INFO provInfo)
+        {
+            Debug.Assert(certificateContext != null, "certificateContext != null");
+            Debug.Assert(!certificateContext.IsClosed && !certificateContext.IsInvalid,
+                        "!certificateContext.IsClosed && !certificateContext.IsInvalid");
+
+            return UnsafeNativeMethods.CertSetCertificateContextProperty(
+                certificateContext,
+                CertificateProperty.KeyProviderInfo,
+                CertSetPropertyFlags.None,
+                ref provInfo);
+        }
+
+        [SecurityCritical]
+        internal static bool SetCertificateNCryptKeyHandle(
+           SafeCertContextHandle certificateContext,
+           SafeNCryptKeyHandle keyHandle)
+        {
+            Debug.Assert(certificateContext != null, "certificateContext != null");
+            Debug.Assert(!certificateContext.IsClosed && !certificateContext.IsInvalid,
+                        "!certificateContext.IsClosed && !certificateContext.IsInvalid");
+
+            Debug.Assert(keyHandle != null, "keyHandle != null");
+            Debug.Assert(!keyHandle.IsClosed && !keyHandle.IsInvalid,
+                        "!keyHandle.IsClosed && !keyHandle.IsInvalid");
+
+            return UnsafeNativeMethods.CertSetCertificateContextProperty(
+                certificateContext,
+                CertificateProperty.NCryptKeyHandle,
+                CertSetPropertyFlags.CERT_SET_PROPERTY_INHIBIT_PERSIST_FLAG,
+                keyHandle);
+        }
+
         /// <summary>
         ///     Duplicate the certificate context into a safe handle
         /// </summary>
@@ -166,9 +231,9 @@ namespace System.Security.Cryptography.X509Certificates {
         [Flags]
         public enum AxlVerificationFlags {
             None                        = 0x00000000,
-            NoRevocationCheck           = 0x00000001,   // AXL_REVOCATION_NO_
-            RevocationCheckEndCertOnly  = 0x00000002,   // AXL_REVOCATION_
-            RevocationCheckEntireChain  = 0x00000004,   // AXL_REVOCATION_
+            NoRevocationCheck           = 0x00000001,   // AXL_REVOCATION_NO_CHECK
+            RevocationCheckEndCertOnly  = 0x00000002,   // AXL_REVOCATION_CHECK_END_CERT_ONLY
+            RevocationCheckEntireChain  = 0x00000004,   // AXL_REVOCATION_CHECK_ENTIRE_CHAIN
             UrlOnlyCacheRetrieval       = 0x00000008,   // AXL_URL_ONLY_CACHE_RETRIEVAL
             LifetimeSigning             = 0x00000010,   // AXL_LIFETIME_SIGNING
             TrustMicrosoftRootOnly      = 0x00000020    // AXL_TRUST_MICROSOFT_ROOT_ONLY
@@ -176,6 +241,7 @@ namespace System.Security.Cryptography.X509Certificates {
 
         internal const uint X509_ASN_ENCODING = 0x00000001;
         internal const string szOID_ECC_PUBLIC_KEY = "1.2.840.10045.2.1";   //Copied from Windows header file
+        internal const int CRYPT_MACHINE_KEYSET = 0x00000020;
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         internal struct CERT_CONTEXT {
@@ -242,6 +308,13 @@ namespace System.Security.Cryptography.X509Certificates {
         internal enum CertificateProperty {
             KeyProviderInfo = 2,    // CERT_KEY_PROV_INFO_PROP_ID 
             KeyContext = 5,    // CERT_KEY_CONTEXT_PROP_ID
+            NCryptKeyHandle = 78, // CERT_NCRYPT_KEY_HANDLE_PROP_ID
+        }
+
+        [Flags]
+        internal enum CertSetPropertyFlags : int {
+            CERT_SET_PROPERTY_INHIBIT_PERSIST_FLAG = 0x40000000,
+            None = 0x00000000,
         }
 
         /// <summary>
@@ -343,6 +416,28 @@ namespace System.Security.Cryptography.X509Certificates {
                                                                           CertificateProperty dwPropId,
                                                                           [Out, MarshalAs(UnmanagedType.LPArray)] byte[] pvData,
                                                                           [In, Out] ref int pcbData);
+
+            [DllImport("crypt32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool CertGetCertificateContextProperty(SafeCertContextHandle pCertContext,
+                                                                          CertificateProperty dwPropId,
+                                                                          [Out] out IntPtr pvData,
+                                                                          [In, Out] ref int pcbData);
+
+            [DllImport("crypt32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool CertSetCertificateContextProperty(SafeCertContextHandle pCertContext,
+                                                                          CertificateProperty dwPropId,
+                                                                          CertSetPropertyFlags dwFlags,
+                                                                          [In] ref CRYPT_KEY_PROV_INFO pvData);
+
+            [DllImport("crypt32.dll", SetLastError = true)]
+            [return: MarshalAs(UnmanagedType.Bool)]
+            internal static extern bool CertSetCertificateContextProperty(SafeCertContextHandle pCertContext,
+                                                                          CertificateProperty dwPropId,
+                                                                          CertSetPropertyFlags dwFlags,
+                                                                          [In] SafeNCryptKeyHandle pvData);
+
             [DllImport("crypt32.dll")]
             internal static extern SafeCertContextHandle CertDuplicateCertificateContext(IntPtr certContext);       // CERT_CONTEXT *
 
@@ -354,6 +449,32 @@ namespace System.Security.Cryptography.X509Certificates {
                                                                           [Out] out SafeNCryptKeyHandle phCryptProvOrNCryptKey,
                                                                           [Out] out int dwKeySpec,
                                                                           [Out, MarshalAs(UnmanagedType.Bool)] out bool pfCallerFreeProvOrNCryptKey);
+        }
+    }
+
+    [SecurityCritical]
+    internal struct PinAndClear : IDisposable
+    {
+        private byte[] _data;
+        private System.Runtime.InteropServices.GCHandle _gcHandle;
+
+        [SecurityCritical]
+        internal static PinAndClear Track(byte[] data)
+        {
+            return new PinAndClear
+            {
+                _gcHandle = System.Runtime.InteropServices.GCHandle.Alloc(
+                    data,
+                    System.Runtime.InteropServices.GCHandleType.Pinned),
+                _data = data,
+            };
+        }
+
+        [SecurityCritical]
+        public void Dispose()
+        {
+            Array.Clear(_data, 0, _data.Length);
+            _gcHandle.Free();
         }
     }
 

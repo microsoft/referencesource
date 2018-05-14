@@ -58,6 +58,17 @@ namespace Microsoft.Win32 {
         [DllImport(ExternDll.Kernel32, CharSet=System.Runtime.InteropServices.CharSet.Auto, BestFitMapping=false)]
         [ResourceExposure(ResourceScope.Machine)]
         public static extern IntPtr GetModuleHandle(string modName);
+
+        // Copied from Win32Native.cs
+        // Note - do NOT use this to call methods.  Use P/Invoke, which will
+        // do much better things w.r.t. marshaling, pinning memory, security 
+        // stuff, better interactions with thread aborts, etc.  This is used
+        // by methods like DoesWin32MethodExist for avoiding try/catch EntryPointNotFoundException
+        // in scenarios where an OS Version check is insufficient
+        [DllImport(ExternDll.Kernel32, CharSet=CharSet.Ansi, BestFitMapping=false, SetLastError=true, ExactSpelling=true)]
+        [ResourceExposure(ResourceScope.None)]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, String methodName);
+
         [DllImport(ExternDll.User32, CharSet=System.Runtime.InteropServices.CharSet.Auto, BestFitMapping=false)]
         [ResourceExposure(ResourceScope.None)]
         public static extern bool GetClassInfo(HandleRef hInst, string lpszClass, [In, Out] NativeMethods.WNDCLASS_I wc);
@@ -65,6 +76,18 @@ namespace Microsoft.Win32 {
         [DllImport(ExternDll.User32, ExactSpelling = true, CharSet = CharSet.Auto)]
         [ResourceExposure(ResourceScope.None)]
         public static extern bool IsWindow(HandleRef hWnd);
+
+        [DllImport(ExternDll.Wldp, ExactSpelling = true)]
+        [ResourceExposure(ResourceScope.None)]
+        public static extern int WldpIsDynamicCodePolicyEnabled([Out] out int enabled);
+
+        [DllImport(ExternDll.Wldp, ExactSpelling = true)]
+        [ResourceExposure(ResourceScope.None)]
+        public static extern int WldpSetDynamicCodeTrust([In] SafeFileHandle fileHandle);
+
+        [DllImport(ExternDll.Wldp, ExactSpelling = true)]
+        [ResourceExposure(ResourceScope.None)]
+        public static extern int WldpQueryDynamicCodeTrust([In] SafeFileHandle fileHandle, [In] IntPtr image, [In] uint imageSize);
 
         //SetClassLong won't work correctly for 64-bit: we should use SetClassLongPtr instead.  On
         //32-bit, SetClassLongPtr is just #defined as SetClassLong.  SetClassLong really should 
@@ -194,16 +217,6 @@ namespace Microsoft.Win32 {
         [System.Security.SecuritySafeCritical]
         [return: MarshalAs(UnmanagedType.I4)]
         private static extern Int32 _GetCurrentPackageId(ref Int32 pBufferLength, Byte[] pBuffer);
-
-        // Copied from Win32Native.cs
-        // Note - do NOT use this to call methods.  Use P/Invoke, which will
-        // do much better things w.r.t. marshaling, pinning memory, security 
-        // stuff, better interactions with thread aborts, etc.  This is used
-        // solely by DoesWin32MethodExist for avoiding try/catch EntryPointNotFoundException
-        // in scenarios where an OS Version check is insufficient
-        [DllImport(ExternDll.Kernel32, CharSet=CharSet.Ansi, BestFitMapping=false, SetLastError=true, ExactSpelling=true)]
-        [ResourceExposure(ResourceScope.None)]
-        private static extern IntPtr GetProcAddress(IntPtr hModule, String methodName);
 
         [System.Security.SecurityCritical]  // auto-generated
         private static bool DoesWin32MethodExist(String moduleName, String methodName)

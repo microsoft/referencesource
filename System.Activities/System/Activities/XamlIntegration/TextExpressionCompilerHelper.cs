@@ -7,12 +7,18 @@ namespace System.Activities.XamlIntegration
     using System;
     using System.Activities.Expressions;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Xaml;
     using System.Xml;
 
     internal static class TextExpressionCompilerHelper
     {
+        [SuppressMessage("Microsoft.Security.Xml", "CA3053:UseXmlSecureResolver", 
+            Justification = @"For the call to XmlReader.Create() below, CA3053 recommends setting the 
+XmlReaderSettings.XmlResolver property to either null or an instance of XmlSecureResolver. 
+But after setting this property to null, a warning of CA3053 still shows up in FxCop. 
+So we suppress this error until the reporting for CA3053 has been updated to fix this issue.")]
         public static void GetNamespacesLineInfo(string sourceXamlFileName, Dictionary<string, int> lineNumbersForNSes, Dictionary<string, int> lineNumbersForNSesForImpl)
         {
             // read until StartMember: TextExpression.NamespacesForImplementation OR TextExpression.Namespaces
@@ -24,7 +30,7 @@ namespace System.Activities.XamlIntegration
                 return;
             }
 
-            using (XmlReader xmlReader = XmlReader.Create(sourceXamlFileName))
+            using (XmlReader xmlReader = XmlReader.Create(sourceXamlFileName, new XmlReaderSettings { XmlResolver = null }))
             {
                 using (XamlXmlReader xreader = new XamlXmlReader(xmlReader, new XamlXmlReaderSettings() { ProvideLineInfo = true }))
                 {

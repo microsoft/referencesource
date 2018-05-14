@@ -58,6 +58,23 @@ namespace System.Security.Cryptography {
             return (RSA) CryptoConfig.CreateFromName(algName);
         }
 
+        static public RSA Create(int keySizeInBits) {
+            RSA rsa = (RSA)CryptoConfig.CreateFromName("RSAPSS");
+            rsa.KeySize = keySizeInBits;
+
+            if (rsa.KeySize != keySizeInBits) {
+                throw new CryptographicException();
+            }
+
+            return rsa;
+        }
+
+        static public RSA Create(RSAParameters parameters) {
+            RSA rsa = (RSA)CryptoConfig.CreateFromName("RSAPSS");
+            rsa.ImportParameters(parameters);
+            return rsa;
+        }
+
         //
         // New RSA encrypt/decrypt/sign/verify RSA abstractions in .NET 4.6+ and .NET Core
         //

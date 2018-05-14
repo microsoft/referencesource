@@ -2157,9 +2157,14 @@ namespace System {
                         m_Flags |= Flags.AuthorityFound;
                         idx+=2;
                     }
+                    // 
                     else if (m_Syntax.NotAny(UriSyntaxFlags.MailToLikeUri)) {
-                        // There is no Authority component, save the Path index
-                        // 
+                        // By now we know the URI has no Authority, so if the URI must be normalized, initialize it without one.
+                        if (m_iriParsing && (m_Flags & Flags.HasUnicode) != 0 && (m_Flags & Flags.HostUnicodeNormalized) == 0)
+                        {
+                            m_String = m_String.Substring(0, idx);
+                        }
+                        // Since there is no Authority, the path index is just the end of the scheme.
                         m_Flags |= ((Flags)idx | Flags.UnknownHostType);
                         return ParsingError.None;
                     }
@@ -2167,9 +2172,14 @@ namespace System {
                 else if (m_Syntax.InFact(UriSyntaxFlags.MustHaveAuthority)) {
                     return ParsingError.BadAuthority;
                 }
+                // 
                 else if (m_Syntax.NotAny(UriSyntaxFlags.MailToLikeUri)) {
-                    // There is no Authority component, save the Path index
-                    // 
+                    // By now we know the URI has no Authority, so if the URI must be normalized, initialize it without one.
+                    if (m_iriParsing && (m_Flags & Flags.HasUnicode) != 0 && (m_Flags & Flags.HostUnicodeNormalized) == 0)
+                    {
+                        m_String = m_String.Substring(0, idx);
+                    }
+                    // Since there is no Authority, the path index is just the end of the scheme.
                     m_Flags |= ((Flags)idx | Flags.UnknownHostType);
                     return ParsingError.None;
                 }
@@ -4060,7 +4070,15 @@ namespace System {
                 if (UncNameHelper.IsValid(pString, start, ref end, StaticNotAny(flags, Flags.ImplicitFile)))
                 {
                     if (end - start <= UncNameHelper.MaximumInternetNameLength)
+                    {
                         flags |= Flags.UncHostType;
+                        if (hasUnicode && iriParsing && hostNotUnicodeNormalized)
+                        {
+                            newHost += new string(pString, start, end - start);
+                            flags |= Flags.HostUnicodeNormalized;
+                            justNormalized = true;
+                        }
+                    }
                 }
             }
 #endif // !PLATFORM_UNIX

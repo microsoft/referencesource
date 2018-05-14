@@ -13,6 +13,8 @@ namespace System.Data.SqlClient
     /// Abstract base class for all column encryption Key Store providers. It exposes two functions
     ///		1. DecryptColumnEncryptionKey - This is the function used by SqlClient under the covers to decrypt encrypted column encryption key blob.
     ///		2. EncryptColumnEncryptionKey - This will be used by client tools that generate DDL for customers
+    ///     3. SignColumnMasterKeyMetadata - This will be used by client tools that generate Column Master Keys (CMK) for customers
+    ///     4. VerifyColumnMasterKeyMetadata - This will be used by SqlClient under the covers to verify the CMKs received from SQL Server
     /// </summary>
     public abstract class SqlColumnEncryptionKeyStoreProvider
     {
@@ -35,5 +37,34 @@ namespace System.Data.SqlClient
         /// <param name="columnEncryptionKey">Plain text column encryption key to be encrypted</param>
         /// <returns>Encrypted column encryption key</returns>
         public abstract byte[] EncryptColumnEncryptionKey(string masterKeyPath, string encryptionAlgorithm, byte[] columnEncryptionKey);
+
+        /// <summary>
+        /// This function must be implemented by the corresponding Key Store providers that wish to use enclaves with Always Encrypted.
+        /// This function has a default implementation in the base class that throws NotImplementedException to ensure that 
+        /// it does not break applications that rely on an old API
+        /// Digitally sign the specified column master key metadata: the key path and the property indicating whether column master key supports enclave computations.
+        /// </summary>
+        /// <param name="masterKeyPath">Complete path of an asymmetric key. Path format is specific to a key store provider.</param>
+        /// <param name="allowEnclaveComputations">Boolean indicating whether this key can be sent to trusted enclave</param>
+        /// <returns>Encrypted column encryption key</returns>
+        public virtual byte[] SignColumnMasterKeyMetadata(string masterKeyPath, bool allowEnclaveComputations)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// This function must be implemented by the corresponding Key Store providers that wish to use enclaves with Always Encrypted.
+        /// This function has a default implementation in the base class that throws NotImplementedException to ensure that 
+        /// it does not break applications that rely on an old API
+        /// Verifies whether the specified signature is valid for the column master key with the specified metadata properties: the key path and the property indicating whether column master key supports enclave computations.
+        /// </summary>
+        /// <param name="masterKeyPath">Complete path of an asymmetric key. Path format is specific to a key store provider.</param>
+        /// <param name="allowEnclaveComputations">Boolean indicating whether this key can be sent to trusted enclave</param>
+        /// <param name="signature">Signature for the master key metadata</param>
+        /// <returns>Boolean indicating whether the master key metadata can be verified based on the provided signature</returns>
+        public virtual bool VerifyColumnMasterKeyMetadata(string masterKeyPath, bool allowEnclaveComputations, byte[] signature)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

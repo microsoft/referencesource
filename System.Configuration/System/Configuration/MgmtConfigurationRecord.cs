@@ -1752,16 +1752,18 @@ namespace System.Configuration {
                                     // Note: we won't use RawXml if saveMode == Full because Full means we want to
                                     // write all properties, and RawXml may not have all properties.
 
+                                    ConfigurationSection parentConfigSection = FindImmediateParentSection(configSection);
+                                    updatedXml = configSection.SerializeSection(parentConfigSection, configSection.SectionInformation.Name, saveMode);
+
                                     // 'System.Windows.Forms.ApplicationConfiguration' is declared as an implicit section. Saving this section definition without declaration in machine .config file is causing IIS 
-                                    // and "wcfservice' project creation failed. See bug #297811 for more details. Following fix exclude this section empty definition in the machine.config while saving it.
-                                    if (String.Equals(configSection.SectionInformation.Name, ConfigurationStringConstants.WinformsApplicationConfigurationSectionName, StringComparison.Ordinal) &&
-                                        String.Equals(configSection._configRecord.ConfigPath, ClientConfigurationHost.MachineConfigName, StringComparison.Ordinal)) {
+                                    // and "wcfservice' project creation failed. See bug #297811 & #461647 for more details. 
+                                    // Following fix exclude this section empty definition in all places while saving itincluding machine.config ( explicit check may not be necessary but removing it as it was added in the earlier release)
+                                    if (String.Equals(configSection.SectionInformation.Name, ConfigurationStringConstants.WinformsApplicationConfigurationSectionName, StringComparison.Ordinal) 
+                                        && (String.Equals(configSection._configRecord.ConfigPath, ClientConfigurationHost.MachineConfigName, StringComparison.Ordinal) 
+                                        || String.Equals(updatedXml, WriteEmptyElement(Microsoft_CONFIGURATION_SECTION), StringComparison.Ordinal))) {
                                         updatedXml = null;
                                     }
-                                    else {
-                                        ConfigurationSection parentConfigSection = FindImmediateParentSection(configSection);
-                                        updatedXml = configSection.SerializeSection(parentConfigSection, configSection.SectionInformation.Name, saveMode);
-                                    }
+
                                     ValidateSectionXml(updatedXml, configKey);
                                 }
                                 else {

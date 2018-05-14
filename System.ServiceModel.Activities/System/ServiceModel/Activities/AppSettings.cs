@@ -26,6 +26,13 @@ namespace System.ServiceModel.Activities
         // <add key="microsoft:WorkflowServices:FilterResumeTimeoutInSeconds" value="60"/>
         private static int filterResumeTimeoutInSeconds;
 
+        // false [default] uses the transaction that is provided by an IWorkflowInstanceMangement.TransactedCancel and TransactedTerminate invocation.
+        // true - we ignore the transaction provided.
+        //
+        // Specify true to avoid a possible stack overflow performing WaitForCanPersist without actually waiting when the instance is in a
+        // no-persist zone at transaction commit time. DevDiv 258978
+        private static bool ignoreTransactionsForTransactedCancelAndTransactedTerminate;
+
         internal static bool DefaultAutomaticInstanceKeyDisassociation
         {
             get
@@ -41,6 +48,15 @@ namespace System.ServiceModel.Activities
             {
                 EnsureSettingsLoaded();
                 return filterResumeTimeoutInSeconds;
+            }
+        }
+
+        internal static bool IgnoreTransactionsForTransactedCancelAndTransactedTerminate
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+                return ignoreTransactionsForTransactedCancelAndTransactedTerminate;
             }
         }
 
@@ -69,6 +85,11 @@ namespace System.ServiceModel.Activities
                                 (filterResumeTimeoutInSeconds < 0))
                             {
                                 filterResumeTimeoutInSeconds = 60;
+                            }
+
+                            if (settings == null || !bool.TryParse(settings["microsoft:WorkflowServices:IgnoreTransactionsForTransactedCancelAndTransactedTerminate"], out ignoreTransactionsForTransactedCancelAndTransactedTerminate))
+                            {
+                                ignoreTransactionsForTransactedCancelAndTransactedTerminate = false;
                             }
 
                             settingsInitialized = true;

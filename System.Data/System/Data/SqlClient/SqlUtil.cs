@@ -267,6 +267,12 @@ namespace System.Data.SqlClient {
         static internal Exception IntegratedWithUserIDAndPassword() {
             return ADP.Argument(Res.GetString(Res.SQL_IntegratedWithUserIDAndPassword));
         }
+        static internal Exception InteractiveWithoutUserID() {
+            return ADP.Argument(Res.GetString(Res.SQL_InteractiveWithoutUserID));
+        }
+        static internal Exception InteractiveWithPassword() {
+            return ADP.Argument(Res.GetString(Res.SQL_InteractiveWithPassword));
+        }
         static internal Exception SettingIntegratedWithCredential() {
             return ADP.InvalidOperation(Res.GetString(Res.SQL_SettingIntegratedWithCredential));
         }
@@ -325,6 +331,45 @@ namespace System.Data.SqlClient {
         static internal Exception NonLocalSSEInstance() {
             return ADP.NotSupported(Res.GetString(Res.SQL_NonLocalSSEInstance));
         }
+
+        // SQL.ActiveDirectoryAuth
+        //
+        static internal Exception UnsupportedAuthentication(string authentication) {
+            return ADP.NotSupported(Res.GetString(Res.SQL_UnsupportedAuthentication, authentication));
+        }
+
+        static internal Exception UnsupportedSqlAuthenticationMethod(SqlAuthenticationMethod authentication) {
+            return ADP.NotSupported(Res.GetString(Res.SQL_UnsupportedSqlAuthenticationMethod, authentication));
+        }
+
+        static internal Exception CannotCreateAuthProvider(string authentication, string type, Exception e) {
+            return ADP.Argument(Res.GetString(Res.SQL_CannotCreateAuthProvider, authentication, type), e);
+        }
+
+        static internal Exception CannotCreateSqlAuthInitializer(string type, Exception e) {
+            return ADP.Argument(Res.GetString(Res.SQL_CannotCreateAuthInitializer, type), e);
+        }
+
+        static internal Exception CannotInitializeAuthProvider(string type, Exception e) {
+            return ADP.InvalidOperation(Res.GetString(Res.SQL_CannotInitializeAuthProvider, type), e);
+        }
+
+        static internal Exception UnsupportedAuthenticationByProvider(string authentication, string type) {
+            return ADP.NotSupported(Res.GetString(Res.SQL_UnsupportedAuthenticationByProvider, type, authentication));
+        }
+
+        static internal Exception CannotFindAuthProvider(string authentication) {
+            return ADP.Argument(Res.GetString(Res.SQL_CannotFindAuthProvider, authentication));
+        }
+
+        static internal Exception CannotGetAuthProviderConfig(Exception e) {
+            return ADP.InvalidOperation(Res.GetString(Res.SQL_CannotGetAuthProviderConfig), e);
+        }
+
+        static internal Exception ParameterCannotBeEmpty(string paramName) {
+            return ADP.ArgumentNull(Res.GetString(Res.SQL_ParameterCannotBeEmpty, paramName));
+        }
+
         //
         // SQL.DataCommand
         //
@@ -1081,12 +1126,23 @@ namespace System.Data.SqlClient {
         //
         // TCE - Errors from sp_describe_parameter_encryption
         //
-        static internal Exception UnexpectedDescribeParamFormat () {
-            return ADP.Argument (Res.GetString(Res.TCE_UnexpectedDescribeParamFormat, "sp_describe_parameter_encryption"));
+        static internal Exception UnexpectedDescribeParamFormatParameterMetadata () {
+            return ADP.Argument (Res.GetString(Res.TCE_UnexpectedDescribeParamFormatParameterMetadata, "sp_describe_parameter_encryption"));
         }
 
-        static internal Exception InvalidEncryptionKeyOrdinal (int ordinal, int maxOrdinal) {
-            return ADP.InvalidOperation(Res.GetString(Res.TCE_InvalidEncryptionKeyOrdinal, "sp_describe_parameter_encryption",  ordinal, maxOrdinal));
+        static internal Exception UnexpectedDescribeParamFormatAttestationInfo (string enclaveType) {
+            return ADP.Argument (Res.GetString(Res.TCE_UnexpectedDescribeParamFormatAttestationInfo, "sp_describe_parameter_encryption", enclaveType));
+        }
+
+        static internal Exception InvalidEncryptionKeyOrdinalEnclaveMetadata (int ordinal, int maxOrdinal) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_InvalidEncryptionKeyOrdinalEnclaveMetadata,  ordinal, maxOrdinal));
+        }
+        static internal Exception InvalidEncryptionKeyOrdinalParameterMetadata (int ordinal, int maxOrdinal) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_InvalidEncryptionKeyOrdinalParameterMetadata, ordinal, maxOrdinal));
+        }
+        
+        public static Exception MultipleRowsReturnedForAttestationInfo() {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_MultipleRowsReturnedForAttestationInfo, "sp_describe_parameter_encryption"));
         }
 
         static internal Exception ParamEncryptionMetadataMissing (string paramName, string procedureName) {
@@ -1103,6 +1159,127 @@ namespace System.Data.SqlClient {
 
         static internal Exception ProcEncryptionMetadataMissing (string procedureName) {
             return ADP.Argument (Res.GetString(Res.TCE_ProcEncryptionMetaDataMissing, "sp_describe_parameter_encryption", procedureName));
+        }
+
+        static internal Exception InvalidKeyStoreProviderName(string providerName, List<string> systemProviders, List<string> customProviders) {
+            const string valueSeparator = @", ";
+            string systemProviderStr = string.Join (valueSeparator, systemProviders.Select(provider => $"'{provider}'"));
+            string customProviderStr = string.Join (valueSeparator, customProviders.Select(provider => $"'{provider}'"));
+            return ADP.Argument(Res.GetString(Res.TCE_InvalidKeyStoreProviderName, providerName, systemProviderStr, customProviderStr));
+        }
+
+        static internal Exception UnableToVerifyColumnMasterKeySignature(Exception innerExeption)
+        {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_UnableToVerifyColumnMasterKeySignature, innerExeption.Message), innerExeption);
+        }
+
+        static internal Exception ColumnMasterKeySignatureVerificationFailed (string cmkPath) {
+            return  ADP.InvalidOperation(Res.GetString(Res.TCE_ColumnMasterKeySignatureVerificationFailed, cmkPath));
+        }
+
+        static internal Exception ColumnMasterKeySignatureNotFound (string cmkPath) {
+            return  ADP.Argument(Res.GetString(Res.TCE_ColumnMasterKeySignatureNotFound, cmkPath));
+        }
+
+        //
+        // TCE - Errors from secure channel Communication
+        //
+        internal static Exception ExceptionWhenGeneratingEnclavePackage(Exception innerExeption) {
+             return ADP.InvalidOperation(Res.GetString(Res.TCE_ExceptionWhenGeneratingEnclavePackage, innerExeption.Message), innerExeption);
+        }
+
+        static internal Exception FailedToEncryptRegisterRulesBytePackage(Exception innerExeption) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_FailedToEncryptRegisterRulesBytePackage, innerExeption.Message), innerExeption);
+        }
+
+        static internal Exception InvalidKeyIdUnableToCastToUnsignedShort(int keyId, Exception innerException) {
+            return ADP.Argument(Res.GetString(Res.TCE_InvalidKeyIdUnableToCastToUnsignedShort, keyId, innerException.Message), innerException);
+        }
+
+        static internal Exception InvalidDatabaseIdUnableToCastToUnsignedInt(int databaseId, Exception innerException) {
+            return ADP.Argument(Res.GetString(Res.TCE_InvalidDatabaseIdUnableToCastToUnsignedInt, databaseId, innerException.Message), innerException);
+        }
+
+        static internal Exception InvalidAttestationParameterUnableToConvertToUnsignedInt(string variableName, int intValue, string enclaveType, Exception innerException) {
+            return ADP.Argument(Res.GetString(Res.TCE_InvalidAttestationParameterUnableToConvertToUnsignedInt, enclaveType, intValue, variableName, innerException.Message), innerException);
+        }
+
+        static internal Exception OffsetOutOfBounds(string argument, string type, string method) {
+            return ADP.Argument(Res.GetString(Res.TCE_OffsetOutOfBounds, type, method));
+        }
+
+        static internal Exception InsufficientBuffer(string argument, string type, string method) {
+            return ADP.Argument(Res.GetString(Res.TCE_InsufficientBuffer, argument, type, method));
+        }
+        
+        static internal Exception ColumnEncryptionKeysNotFound() {
+            return ADP.Argument(Res.GetString(Res.TCE_ColumnEncryptionKeysNotFound));
+        }
+        
+        //
+        // TCE - Errors when performing attestation
+        //
+
+        static internal Exception AttestationInfoNotReturnedFromSqlServer(string enclaveType, string enclaveAttestationUrl) {
+            return ADP.Argument(Res.GetString(Res.TCE_AttestationInfoNotReturnedFromSQLServer, enclaveType, enclaveAttestationUrl));            
+        }
+
+        //
+        // TCE - Errors when establishing secure channel
+        //
+        static internal Exception NullArgumentInConstructorInternal(string argumentName, string objectUnderConstruction) {
+            return ADP.ArgumentNull(argumentName, Res.GetString(Res.TCE_NullArgumentInConstructorInternal, argumentName, objectUnderConstruction));
+        }
+
+        static internal Exception EmptyArgumentInConstructorInternal(string argumentName, string objectUnderConstruction) {
+            return ADP.Argument(Res.GetString(Res.TCE_EmptyArgumentInConstructorInternal, argumentName, objectUnderConstruction));
+        }
+
+        static internal Exception NullArgumentInternal(string argumentName, string type, string method) {
+            return ADP.ArgumentNull(argumentName, Res.GetString(Res.TCE_NullArgumentInternal, argumentName, type, method));
+        }
+
+        static internal Exception EmptyArgumentInternal(string argumentName, string type, string method) {
+            return ADP.Argument(Res.GetString(Res.TCE_EmptyArgumentInternal, argumentName, type, method));
+        }
+        
+        //
+        // TCE - enclave provider/configuration errors
+        //
+        static internal Exception CannotGetSqlColumnEncryptionEnclaveProviderConfig(Exception innerException) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_CannotGetSqlColumnEncryptionEnclaveProviderConfig, innerException.Message), innerException);
+        }
+        
+        static internal Exception CannotCreateSqlColumnEncryptionEnclaveProvider(string providerName, string type, Exception innerException) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_CannotCreateSqlColumnEncryptionEnclaveProvider, providerName, type, innerException.Message), innerException);
+        }
+        
+        static internal Exception SqlColumnEncryptionEnclaveProviderNameCannotBeEmpty() {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_SqlColumnEncryptionEnclaveProviderNameCannotBeEmpty));
+        }
+
+        static internal Exception NoAttestationUrlSpecifiedForEnclaveBasedQuerySpDescribe(string enclaveType) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_NoAttestationUrlSpecifiedForEnclaveBasedQuerySpDescribe, "sp_describe_parameter_encryption", enclaveType));
+        }
+
+        static internal Exception NoAttestationUrlSpecifiedForEnclaveBasedQueryGeneratingEnclavePackage(string enclaveType) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_NoAttestationUrlSpecifiedForEnclaveBasedQueryGeneratingEnclavePackage, enclaveType));
+        }
+
+        static internal Exception EnclaveTypeNullForEnclaveBasedQuery() {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_EnclaveTypeNullForEnclaveBasedQuery));
+        }
+
+        static internal Exception EnclaveProvidersNotConfiguredForEnclaveBasedQuery() {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_EnclaveProvidersNotConfiguredForEnclaveBasedQuery));
+        }
+
+        static internal Exception EnclaveProviderNotFound(string enclaveType) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_EnclaveProviderNotFound, enclaveType));
+        }
+
+        static internal Exception NullEnclaveSessionReturnedFromProvider(string enclaveType, string attestationUrl) {
+            return ADP.InvalidOperation(Res.GetString(Res.TCE_NullEnclaveSessionReturnedFromProvider, enclaveType, attestationUrl));
         }
 
         //
@@ -1187,11 +1364,27 @@ namespace System.Data.SqlClient {
             return GetExceptionArray (null, Res.GetString(Res.TCE_DecryptionFailed, keyStr, valStr), e);
         }
 
+        static internal Exception NullEnclaveSessionDuringQueryExecution (string enclaveType, string enclaveAttestationUrl) {
+            return ADP.Argument(Res.GetString(Res.TCE_NullEnclaveSessionDuringQueryExecution, enclaveType, enclaveAttestationUrl));
+        }
+
+        static internal Exception NullEnclavePackageForEnclaveBasedQuery (string enclaveType, string enclaveAttestationUrl) {
+            return ADP.Argument(Res.GetString(Res.TCE_NullEnclavePackageForEnclaveBasedQuery, enclaveType, enclaveAttestationUrl));
+        }
+        
         //
         // TCE- SQL connection related error messages
         //
         static internal Exception TceNotSupported() {
             return ADP.InvalidOperation (Res.GetString (Res.TCE_NotSupportedByServer, "SQL Server"));
+        }
+
+        static internal Exception EnclaveComputationsNotSupported() {
+            return ADP.InvalidOperation (Res.GetString (Res.TCE_EnclaveComputationsNotSupported));
+        }
+
+        static internal Exception EnclaveTypeNotReturned() {
+            return ADP.InvalidOperation (Res.GetString (Res.TCE_EnclaveTypeNotReturned));
         }
 
         //

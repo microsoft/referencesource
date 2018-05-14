@@ -34,7 +34,9 @@ namespace System.Data.SqlClient
         private bool                         _isGlobalTransaction = false; // Whether this is a Global Transaction (Non-MSDTC, Azure SQL DB Transaction)
         private bool                         _isGlobalTransactionEnabledForServer = false; // Whether Global Transactions are enabled for this Azure SQL DB Server
         private static readonly Guid         _globalTransactionTMID = new Guid("1c742caf-6680-40ea-9c26-6b6846079764"); // ID of the Non-MSDTC, Azure SQL DB Transaction Manager
-        
+
+        private bool _isAzureSQLConnection = false; // If connected to Azure SQL
+
         // if connection is not open: null
         // if connection is open: currently active database
         internal string CurrentDatabase { get; set; }
@@ -167,6 +169,18 @@ namespace System.Data.SqlClient
             }
             set {
                 _isGlobalTransactionEnabledForServer = value;
+            }
+        }
+
+        internal bool IsAzureSQLConnection
+        {
+            get
+            {
+                return _isAzureSQLConnection;
+            }
+            set
+            {
+                _isAzureSQLConnection = value;
             }
         }
 

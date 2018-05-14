@@ -41,8 +41,16 @@ namespace System.Net
         internal static extern unsafe bool FreeLibrary(IntPtr hModule);
 
         [System.Security.SecurityCritical]
+        [DllImport(KERNEL32, ExactSpelling=true, CharSet=CharSet.Unicode, SetLastError=true)]
+        internal static extern IntPtr GetModuleHandleW(string modName);
+
+        [System.Security.SecurityCritical]
         [DllImport(KERNEL32, EntryPoint = "GetProcAddress", SetLastError = true, BestFitMapping = false)]
         internal extern static IntPtr GetProcAddress(SafeLoadLibrary hModule, string entryPoint);
+
+        [System.Security.SecurityCritical]
+        [DllImport(KERNEL32, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+        internal extern static IntPtr GetProcAddress(IntPtr hModule, string entryPoint);
 
         [DllImport(KERNEL32, CharSet = CharSet.Unicode)]
         internal extern static uint FormatMessage(
@@ -66,16 +74,38 @@ namespace System.Net
 #pragma warning disable 618    // Have not migrated to v4 transparency yet
     [System.Security.SecurityCritical(System.Security.SecurityCriticalScope.Everything)]
 #pragma warning restore 618
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Design", 
+        "CA1031:DoNotCatchGeneralExceptionTypes", 
+        Justification = "We need to ensure that this class initializes in any condition.")]
     [System.Security.SuppressUnmanagedCodeSecurityAttribute()]
     internal sealed class SafeLoadLibrary : SafeHandleZeroOrMinusOneIsInvalid
     {
         private const string KERNEL32 = "kernel32.dll";
-        private SafeLoadLibrary() : base(true) { }
-        //private SafeLoadLibrary(bool ownsHandle) : base(ownsHandle) { }
+        private const string AddDllDirectory = "AddDllDirectory";
+        private const uint LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
 
-        //internal static readonly SafeLoadLibrary Zero = new SafeLoadLibrary(false);
+        // KB2533623 introduced the LOAD_LIBRARY_SEARCH_SYSTEM32 flag. It also introduced
+        // the AddDllDirectory function. We test for presence of AddDllDirectory as  
+        // indirect evidence of support for the LOAD_LIBRARY_SEARCH_SYSTEM32 flag. 
+        private static uint _flags = 0;
+
+        static SafeLoadLibrary() {
+            try {
+                IntPtr hKernel32 = UnsafeSystemNativeMethods.GetModuleHandleW(KERNEL32);
+
+                if (hKernel32 != IntPtr.Zero &&
+                    UnsafeSystemNativeMethods.GetProcAddress(hKernel32, AddDllDirectory) != IntPtr.Zero) {
+                    _flags = LOAD_LIBRARY_SEARCH_SYSTEM32;
+                }
+            }
+            catch { /* noop to ensure this class can initialize */ }
+        }
+
+        private SafeLoadLibrary() : base(true) { }
+
         internal unsafe static SafeLoadLibrary LoadLibraryEx(string library) {
-            SafeLoadLibrary result = UnsafeSystemNativeMethods.LoadLibraryExW(library, null, 0);
+            SafeLoadLibrary result = UnsafeSystemNativeMethods.LoadLibraryExW(library, null, _flags);
             if (result.IsInvalid) {
                 //NOTE:
                 //IsInvalid tests the numeric value of the handle. 

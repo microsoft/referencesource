@@ -17,6 +17,7 @@ namespace System.CodeDom.Compiler {
     using System.Collections;
     using System.Security;
     using System.Security.Permissions;
+    using System.Security.Policy;
     using System.Security.Principal;
     using System.Reflection;
     using System.CodeDom;
@@ -354,7 +355,6 @@ namespace System.CodeDom.Compiler {
             results.TempFiles.AddExtension("pdb");
 #endif
 
-
             string args = CmdArgsFromParameters(options) + " " + JoinStringArray(fileNames, " ");
 
             // Use a response file if the compiler supports it
@@ -407,9 +407,17 @@ namespace System.CodeDom.Compiler {
                     SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.ControlEvidence);
                     perm.Assert();
                     try {
+                        if (!FileIntegrity.IsEnabled) {
 #pragma warning disable 618 // Load with evidence is obsolete - this warning is passed on via the options parameter
-                       results.CompiledAssembly = Assembly.Load(b,null,options.Evidence);
+                            results.CompiledAssembly = Assembly.Load(b, null, options.Evidence);
 #pragma warning restore 618
+                        }
+                        else {
+                            if (!FileIntegrity.IsTrusted(fs.SafeFileHandle))
+                                throw new IOException(SR.GetString(SR.FileIntegrityCheckFailed, options.OutputAssembly));
+
+                            results.CompiledAssembly = LoadImageSkipIntegrityCheck(b, null, options.Evidence); 
+                        }
                     }
                     finally {
                        SecurityPermission.RevertAssert();
@@ -420,7 +428,6 @@ namespace System.CodeDom.Compiler {
                 }
             }
             else {
-
                 results.PathToAssembly = options.OutputAssembly;
             }
 
@@ -480,6 +487,7 @@ namespace System.CodeDom.Compiler {
             new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 
             string[] filenames = new string[sources.Length];
+            FileStream[] fileStreams = new FileStream[sources.Length];
 
             CompilerResults results = null;
 #if !FEATURE_PAL
@@ -488,21 +496,27 @@ namespace System.CodeDom.Compiler {
                 WindowsImpersonationContext impersonation = Executor.RevertImpersonation();
                 try {      
 #endif // !FEATURE_PAL
-                    for (int i = 0; i < sources.Length; i++) {
-                        string name = options.TempFiles.AddExtension(i + FileExtension);
-                        Stream temp = new FileStream(name, FileMode.Create, FileAccess.Write, FileShare.Read);
-                        try {
-                            using (StreamWriter sw = new StreamWriter(temp, Encoding.UTF8)) {
+                    try {
+                        bool isFileIntegrityEnabled = FileIntegrity.IsEnabled;
+                        for (int i = 0; i < sources.Length; i++) {
+                            string name = options.TempFiles.AddExtension(i + FileExtension);
+                            FileStream fileStream = new FileStream(name, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+                            fileStreams[i] = fileStream;
+                            using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
                                 sw.Write(sources[i]);
                                 sw.Flush();
+                                if (isFileIntegrityEnabled)
+                                    FileIntegrity.MarkAsTrusted(fileStream.SafeFileHandle);
                             }
+                            filenames[i] = name;
                         }
-                        finally {
-                            temp.Close();
-                        }
-                        filenames[i] = name;
-                   }
-                   results = FromFileBatch(options, filenames);
+
+                        results = FromFileBatch(options, filenames);
+                    }
+                    finally {
+                        for (int i = 0; i < fileStreams.Length && fileStreams[i] != null; i++)
+                            fileStreams[i].Close();
+                    }
 #if !FEATURE_PAL
                 }
                 finally {
@@ -540,6 +554,21 @@ namespace System.CodeDom.Compiler {
             sb.Append("\"");
 
             return sb.ToString();
+        }
+
+        internal static Assembly LoadImageSkipIntegrityCheck(byte[] rawAssembly, byte[] rawSymbolStore, Evidence securityEvidence) {
+            // Using reflection to avoid the need for a new public API.
+            MethodInfo methodInfo = typeof(Assembly).GetMethod("LoadImageSkipIntegrityCheck", BindingFlags.NonPublic | BindingFlags.Static);
+
+            // If running against old versions without the internal method, fallback to an older version that does not perform
+            // the integrity check.
+            Assembly result = methodInfo != null ?
+                (Assembly)methodInfo.Invoke(null, new object[] { rawAssembly, rawSymbolStore, securityEvidence }) :
+#pragma warning disable 618 // Load with evidence is obsolete - this warning is passed on via the options parameter
+                Assembly.Load(rawAssembly, rawSymbolStore, securityEvidence);
+#pragma warning restore 618
+
+            return result;
         }
     }
 }

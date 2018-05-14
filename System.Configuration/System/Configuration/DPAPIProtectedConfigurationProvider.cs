@@ -11,7 +11,8 @@ namespace System.Configuration
     using System.Configuration.Provider;
     using System.Xml;
     using System.Text;
-    using  System.Runtime.InteropServices;
+    using System.IO;
+    using System.Runtime.InteropServices;
     using Microsoft.Win32;
     using System.Security.Permissions;
     using Microsoft.Win32.SafeHandles;
@@ -42,7 +43,7 @@ namespace System.Configuration
             string decText = DecryptText(encText);
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.PreserveWhitespace = true;
-            xmlDocument.LoadXml(decText);
+            ProtectedConfigurationProvider.LoadXml(xmlDocument, decText);
             return xmlDocument.DocumentElement;
         }
 
@@ -56,7 +57,7 @@ namespace System.Configuration
 
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.PreserveWhitespace = true;
-            xmlDocument.LoadXml(xmlText);
+            ProtectedConfigurationProvider.LoadXml(xmlDocument, xmlText);
             return xmlDocument.DocumentElement;
         }
 

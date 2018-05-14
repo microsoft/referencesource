@@ -136,6 +136,9 @@ namespace System.Web.Util {
                             if (settings == null || !Boolean.TryParse(settings["aspnet:LogMembershipPasswordFormatWarning"], out _logMembershipPasswordFormatWarning))
                                 _logMembershipPasswordFormatWarning = true;
 
+                            if (settings == null || !Boolean.TryParse(settings["aspnet:AvoidDuplicatedSetCookie"], out _avoidDuplicatedSetCookie))
+                                _avoidDuplicatedSetCookie = false;
+
                             _settingsInitialized = true;
                         }
                     }
@@ -517,6 +520,16 @@ namespace System.Web.Util {
             get {
                 EnsureSettingsLoaded();
                 return _logMembershipPasswordFormatWarning;
+            }
+        }
+
+        // false [default] 
+        // true - adopt new behavior to fix duplicated cookie issue.
+        private static bool _avoidDuplicatedSetCookie;
+        internal static bool AvoidDuplicatedSetCookie {
+            get {
+                EnsureSettingsLoaded();
+                return _avoidDuplicatedSetCookie;
             }
         }
     }

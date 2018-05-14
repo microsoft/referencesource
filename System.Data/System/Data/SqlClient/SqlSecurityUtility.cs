@@ -8,13 +8,17 @@
 namespace System.Data.SqlClient
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Reflection;
     using System.Security;
     using System.Security.Cryptography;
     using System.Text;
 
     internal static class SqlSecurityUtility {
+
+        static readonly ColumnMasterKeyMetadataSignatureVerificationCache ColumnMasterKeyMetadataSignatureVerificationCache = ColumnMasterKeyMetadataSignatureVerificationCache.Instance;
 
         /// <summary>
         /// Computes a keyed hash of a given text and returns. It fills the buffer "hash" with computed hash value.
@@ -210,32 +214,12 @@ namespace System.Data.SqlClient
         /// the SqlClientEncryptionAlgorithm for rapid decryption.</para>
         /// </summary>
         internal static void DecryptSymmetricKey(SqlCipherMetadata md, string serverName) {
-            Debug.Assert(serverName != null, @"serverName should not be null in DecryptSymmetricKey.");
             Debug.Assert(md != null, "md should not be null in DecryptSymmetricKey.");
-            Debug.Assert(md.EncryptionInfo.HasValue, "md.EncryptionInfo should not be null in DecryptSymmetricKey.");
-            Debug.Assert(md.EncryptionInfo.Value.ColumnEncryptionKeyValues != null, "md.EncryptionInfo.ColumnEncryptionKeyValues should not be null in DecryptSymmetricKey.");
 
             SqlClientSymmetricKey symKey = null;
             SqlEncryptionKeyInfo? encryptionkeyInfoChosen = null;
-            SqlSymmetricKeyCache cache = SqlSymmetricKeyCache.GetInstance();
-            Exception lastException = null;
-            foreach (SqlEncryptionKeyInfo keyInfo in md.EncryptionInfo.Value.ColumnEncryptionKeyValues) {
-                try {
-                    if (cache.GetKey(keyInfo, serverName, out symKey)) {
-                        encryptionkeyInfoChosen = keyInfo;
-                        break;
-                    }
-                } catch (Exception e) {
-                    lastException = e;
-                }
-            }
 
-            if (null == symKey) {
-                Debug.Assert (null != lastException, "CEK decryption failed without raising exceptions");
-                throw lastException;
-            }
-
-            Debug.Assert(encryptionkeyInfoChosen.HasValue, "encryptionkeyInfoChosen must have a value.");
+            DecryptSymmetricKey(md.EncryptionInfo, serverName, out symKey, out encryptionkeyInfoChosen);
 
             // Given the symmetric key instantiate a SqlClientEncryptionAlgorithm object and cache it in metadata 
             md.CipherAlgorithm = null;
@@ -249,6 +233,39 @@ namespace System.Data.SqlClient
         }
 
         /// <summary>
+        /// <para> Decrypts the symmetric key and saves it in metadata.
+        /// </summary>
+        internal static void DecryptSymmetricKey(SqlTceCipherInfoEntry? sqlTceCipherInfoEntry, string serverName, out SqlClientSymmetricKey sqlClientSymmetricKey, out SqlEncryptionKeyInfo? encryptionkeyInfoChosen) {
+            Debug.Assert(serverName != null, @"serverName should not be null in DecryptSymmetricKey.");
+            Debug.Assert(sqlTceCipherInfoEntry.HasValue, "sqlTceCipherInfoEntry should not be null in DecryptSymmetricKey.");
+            Debug.Assert(sqlTceCipherInfoEntry.Value.ColumnEncryptionKeyValues != null,
+                "sqlTceCipherInfoEntry.ColumnEncryptionKeyValues should not be null in DecryptSymmetricKey.");
+
+            sqlClientSymmetricKey = null;
+            encryptionkeyInfoChosen = null;
+            Exception lastException = null;
+            SqlSymmetricKeyCache cache = SqlSymmetricKeyCache.GetInstance();
+
+            foreach (SqlEncryptionKeyInfo keyInfo in sqlTceCipherInfoEntry.Value.ColumnEncryptionKeyValues) {
+                try {
+                    if (cache.GetKey(keyInfo, serverName, out sqlClientSymmetricKey)) {
+                        encryptionkeyInfoChosen = keyInfo;
+                        break;
+                    }
+                } catch (Exception e) {
+                    lastException = e;
+                }
+            }
+
+            if (null == sqlClientSymmetricKey) {
+                Debug.Assert(null != lastException, "CEK decryption failed without raising exceptions");
+                throw lastException;
+            }
+
+            Debug.Assert(encryptionkeyInfoChosen.HasValue, "encryptionkeyInfoChosen must have a value.");
+        }
+
+        /// <summary>
         /// Calculates the length of the Base64 string used to represent a byte[] with the specified length.
         /// </summary>
         /// <param name="byteLength"></param>
@@ -258,6 +275,65 @@ namespace System.Data.SqlClient
 
             // Base64 encoding uses 1 character to encode 6 bits which means 4 characters for 3 bytes and pads to 4 byte multiples.
             return (int)((double)byteLength * 4 / 3) + 4;
+        }
+
+        /// <summary>
+        /// <para> Verifies Column Master Key Signature.
+        /// </summary>
+        internal static void VerifyColumnMasterKeySignature(string keyStoreName, string keyPath, string serverName, bool isEnclaveEnabled, byte[] CMKSignature) {
+            bool isValidSignature = false;
+            
+            try {
+                Debug.Assert(SqlConnection.ColumnEncryptionTrustedMasterKeyPaths != null,
+                    @"SqlConnection.ColumnEncryptionTrustedMasterKeyPaths should not be null");
+
+                if (CMKSignature == null || CMKSignature.Length == 0) {
+                    throw SQL.ColumnMasterKeySignatureNotFound(keyPath);
+                }
+
+                // Check against the trusted key paths
+                //
+                // Get the List corresponding to the connected server
+                IList<string> trustedKeyPaths;
+                if (SqlConnection.ColumnEncryptionTrustedMasterKeyPaths.TryGetValue(serverName, out trustedKeyPaths)) {
+                    // If the list is null or is empty or if the keyPath doesn't exist in the trusted key paths, then throw an exception.
+                    if ((trustedKeyPaths == null) || (trustedKeyPaths.Count() == 0) ||
+                        // (trustedKeyPaths.Where(s => s.Equals(keyInfo.keyPath, StringComparison.InvariantCultureIgnoreCase)).Count() == 0)) {
+                        (trustedKeyPaths.Any(
+                            s => s.Equals(keyPath, StringComparison.InvariantCultureIgnoreCase)) == false)) {
+                        // throw an exception since the key path is not in the trusted key paths list for this server
+                        throw SQL.UntrustedKeyPath(keyPath, serverName);
+                    }
+                }
+
+                // Key Not found, attempt to look up the provider and verify CMK Signature
+                SqlColumnEncryptionKeyStoreProvider provider;
+                if (!SqlConnection.TryGetColumnEncryptionKeyStoreProvider(keyStoreName, out provider)) {
+                    throw SQL.InvalidKeyStoreProviderName(keyStoreName,
+                        SqlConnection.GetColumnEncryptionSystemKeyStoreProviders(),
+                        SqlConnection.GetColumnEncryptionCustomKeyStoreProviders());
+                }
+
+                bool? signatureVerificationResult = ColumnMasterKeyMetadataSignatureVerificationCache.GetSignatureVerificationResult(keyStoreName, keyPath, isEnclaveEnabled, CMKSignature);
+
+                if (signatureVerificationResult == null) {
+                // We will simply bubble up the exception from VerifyColumnMasterKeyMetadata function.
+                    isValidSignature = provider.VerifyColumnMasterKeyMetadata(keyPath, isEnclaveEnabled,
+                        CMKSignature);
+
+                    ColumnMasterKeyMetadataSignatureVerificationCache.AddSignatureVerificationResult(keyStoreName, keyPath, isEnclaveEnabled, CMKSignature, isValidSignature);
+                }
+                else {
+                    isValidSignature = signatureVerificationResult.Value;
+                }
+
+            } catch (Exception e) {
+                throw SQL.UnableToVerifyColumnMasterKeySignature(e);
+            }
+
+            if (!isValidSignature) {
+                throw SQL.ColumnMasterKeySignatureVerificationFailed(keyPath);
+            }
         }
     }
 }

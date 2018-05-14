@@ -808,7 +808,7 @@ namespace System.Net.WebSockets
                             {
                                 m_CloseReceivedTaskCompletionSource = new TaskCompletionSource<object>();
                             }
-
+                            ReleaseLock(m_ThisLock, ref lockTaken);
                             closeOutputTask = CloseOutputAsync(closeStatus,
                                 statusDescription,
                                 linkedCancellationToken);

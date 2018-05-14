@@ -1284,13 +1284,14 @@ namespace System.IO {
             return StringBuilderCache.GetStringAndRelease(finalPath);
         }
 
-        private static String CombineNoChecks(String path1, String path2) {
+        internal static string CombineNoChecks(string path1, string path2)
+        {
             if (path2.Length == 0)
                 return path1;
 
             if (path1.Length == 0)
                 return path2;
-                
+
             if (IsPathRooted(path2))
                 return path2;
 
