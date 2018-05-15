@@ -986,6 +986,15 @@ namespace System.Linq
             return Lookup<TKey, TElement>.Create(source, keySelector, elementSelector, comparer);
         }
 
+        public static HashSet<TSource> ToHashSet<TSource>(this IEnumerable<TSource> source) {
+            return source.ToHashSet(null);
+        }
+
+        public static HashSet<TSource> ToHashSet<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) {
+            if (source == null) throw Error.ArgumentNull("source");
+            return new HashSet<TSource>(source, comparer);
+        }
+
         public static IEnumerable<TSource> DefaultIfEmpty<TSource>(this IEnumerable<TSource> source) {
             return DefaultIfEmpty(source, default(TSource));
         }

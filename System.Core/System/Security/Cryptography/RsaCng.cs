@@ -388,7 +388,9 @@ namespace System.Security.Cryptography
                     }
                 }
             }
-            Key = CngKey.Import(rsaBlob, publicOnly ? s_rsaPublicBlob : s_rsaPrivateBlob);
+            CngKey newKey = CngKey.Import(rsaBlob, publicOnly ? s_rsaPublicBlob : s_rsaPrivateBlob);
+            newKey.ExportPolicy |= CngExportPolicies.AllowPlaintextExport;
+            Key = newKey;
         }
 
         //

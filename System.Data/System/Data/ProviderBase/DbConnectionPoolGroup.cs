@@ -181,16 +181,17 @@ namespace System.Data.ProviderBase {
                         currentIdentity = null;
                     }
                 }
+
                 if (null != currentIdentity) {
                     if (!_poolCollection.TryGetValue(currentIdentity, out pool)) { // find the pool
-                        DbConnectionPoolProviderInfo connectionPoolProviderInfo = connectionFactory.CreateConnectionPoolProviderInfo(this.ConnectionOptions);
-
-                        // optimistically create pool, but its callbacks are delayed until after actual add
-                        DbConnectionPool newPool = new DbConnectionPool(connectionFactory, this, currentIdentity, connectionPoolProviderInfo);
+                        
 
                         lock (this) {
                             // Did someone already add it to the list?
                             if (!_poolCollection.TryGetValue(currentIdentity, out pool)) {
+                                DbConnectionPoolProviderInfo connectionPoolProviderInfo = connectionFactory.CreateConnectionPoolProviderInfo(this.ConnectionOptions);
+                                DbConnectionPool newPool = new DbConnectionPool(connectionFactory, this, currentIdentity, connectionPoolProviderInfo);
+
                                 if (MarkPoolGroupAsActive()) {
                                     // If we get here, we know for certain that we there isn't
                                     // a pool that matches the current identity, so we have to
@@ -200,23 +201,20 @@ namespace System.Data.ProviderBase {
                                     Debug.Assert(addResult, "No other pool with current identity should exist at this point");
                                     connectionFactory.PerformanceCounters.NumberOfActiveConnectionPools.Increment();
                                     pool = newPool;
-                                    newPool = null;
                                 }
                                 else {
                                     // else pool entry has been disabled so don't create new pools
                                     Debug.Assert(PoolGroupStateDisabled == _state, "state should be disabled");
+
+                                    // don't need to call connectionFactory.QueuePoolForRelease(newPool) because
+                                    // pool callbacks were delayed and no risk of connections being created
+                                    newPool.Shutdown();
                                 }
                             }
                             else {
                                 // else found an existing pool to use instead
                                 Debug.Assert(PoolGroupStateActive == _state, "state should be active since a pool exists and lock holds");
                             }
-                        }
-
-                        if (null != newPool) {
-                            // don't need to call connectionFactory.QueuePoolForRelease(newPool) because
-                            // pool callbacks were delayed and no risk of connections being created
-                            newPool.Shutdown();
                         }
                     }
                     // the found pool could be in any state

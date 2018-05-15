@@ -245,6 +245,29 @@ namespace System.Data.SqlClient
         }
 
         /// <summary>
+        /// Throws NotSupportedException. In this version of .NET Framework this provider does not support signing column master key metadata.
+        /// </summary>
+        /// <param name="masterKeyPath">Complete path of an asymmetric key. Path format is specific to a key store provider.</param>
+        /// <param name="allowEnclaveComputations">Boolean indicating whether this key can be sent to trusted enclave</param>
+        /// <returns>Encrypted column encryption key</returns>
+        public override byte[] SignColumnMasterKeyMetadata(string masterKeyPath, bool allowEnclaveComputations)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// Throws NotSupportedException. In this version of .NET Framework this provider does not support verifying signatures of column master key metadata.
+        /// </summary>
+        /// <param name="masterKeyPath">Complete path of an asymmetric key. Path format is specific to a key store provider.</param>
+        /// <param name="allowEnclaveComputations">Boolean indicating whether this key can be sent to trusted enclave</param>
+        /// <param name="signature">Signature for the master key metadata</param>
+        /// <returns>Boolean indicating whether the master key metadata can be verified based on the provided signature</returns>
+        public override bool VerifyColumnMasterKeyMetadata(string masterKeyPath, bool allowEnclaveComputations, byte[] signature)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
         /// This function validates that the encryption algorithm is RSA_OAEP and if it is not,
         /// then throws an exception
         /// </summary>

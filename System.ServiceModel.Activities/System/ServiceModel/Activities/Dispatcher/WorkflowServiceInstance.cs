@@ -4258,8 +4258,12 @@ namespace System.ServiceModel.Activities.Dispatcher
         {
             Exception reason;
 
+            // Using the transaction for Terminate is meaningless because all we do is schedule the terminate. In fact, the Terminate will take effect
+            // regardless of the outcome of the transaciton - commit or rollback. And the transaction could actually cause problems
+            // if the service is "busy" when the transacted terminate is received. Ignore the transaction if the
+            // AppSettings.IgnoreTransactionsForTransactedCancelAndTransactedTerminate is true.- DevDiv 258978.
             TerminateAsyncResult(WorkflowServiceInstance instance, Exception reason, Transaction transaction, AsyncCallback callback, object state)
-                : base(instance, transaction, callback, state)
+                : base(instance, (AppSettings.IgnoreTransactionsForTransactedCancelAndTransactedTerminate ? null : transaction), callback, state)
             {
                 this.reason = reason;
             }
@@ -4507,8 +4511,12 @@ namespace System.ServiceModel.Activities.Dispatcher
 
         class CancelAsyncResult : SimpleOperationAsyncResult
         {
+            // Using the transaction for Terminate is meaningless because all we do is schedule the terminate. In fact, the Terminate will take effect
+            // regardless of the outcome of the transaciton - commit or rollback. And the transaction could actually cause problems
+            // if the service is "busy" when the transacted terminate is received. Ignore the transaction if the
+            // AppSettings.IgnoreTransactionsForTransactedCancelAndTransactedTerminate is true.- DevDiv 258978.
             CancelAsyncResult(WorkflowServiceInstance instance, Transaction transaction, AsyncCallback callback, object state)
-                : base(instance, transaction, callback, state)
+                : base(instance, (AppSettings.IgnoreTransactionsForTransactedCancelAndTransactedTerminate ? null : transaction), callback, state)
             {
             }
 

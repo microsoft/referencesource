@@ -203,6 +203,10 @@ namespace System.Security {
         [System.Security.SecurityCritical]  // auto-generated
         internal void SetTokenHandles (SafeAccessTokenHandle callerToken, SafeAccessTokenHandle impToken)
         {
+            if (m_callerToken != null && !m_callerToken.IsInvalid)
+            {
+                m_callerToken.Dispose();
+            }
             m_callerToken = callerToken;
             m_impToken = impToken;
         }

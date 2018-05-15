@@ -1400,7 +1400,7 @@ namespace System.Web.Compilation {
             if (buildProviderType == null)
                 return null;
 
-            object o = HttpRuntime.CreatePublicInstance(buildProviderType);
+            object o = HttpRuntime.CreatePublicInstanceByWebObjectActivator(buildProviderType);
 
             BuildProvider buildProvider = (BuildProvider)o;
 
@@ -1420,7 +1420,7 @@ namespace System.Web.Compilation {
             List<Type> buildProviderTypes = CompilationUtil.GetFolderLevelBuildProviderTypes(compConfig, appliesTo);
             if (buildProviderTypes != null) {
                 foreach (Type buildProviderType in buildProviderTypes) {
-                    object o = HttpRuntime.CreatePublicInstance(buildProviderType);
+                    object o = HttpRuntime.CreatePublicInstanceByWebObjectActivator(buildProviderType);
 
                     BuildProvider buildProvider = (BuildProvider)o;
 

@@ -2121,8 +2121,14 @@ namespace System.Net {
 
             stream.ExchangeCallNesting(Nesting.Idle, Nesting.InternalIO);
 
-            if (error == WebExceptionStatus.Success && !stream.ErrorInStream) {
+            // Free the buffer now since we have finished writing it to the wire.
+            // Also, it must be freed before we call CheckStartReceive() since
+            // that can read the response and possibly resubmit the request
+            // due to auth challenges. If that happened and the buffer wasn't
+            // already freed, it would cause race conditions with SetWriteBuffer().
+            request.FreeWriteBuffer();
 
+            if (error == WebExceptionStatus.Success && !stream.ErrorInStream) {
                 error = WebExceptionStatus.ReceiveFailure;
 
                 // Start checking async for responses.  This needs to happen outside of the Nesting.InternalIO lock 
@@ -2143,7 +2149,6 @@ namespace System.Net {
 
             // Resend data, etc.
             request.WriteHeadersCallback(error, stream, true);
-            request.FreeWriteBuffer();
             GlobalLog.Leave("ConnectStream#" + ValidationHelper.HashString(stream) + "::WriteHeadersCallback",request.WriteBufferLength.ToString());
         }
 
@@ -2222,6 +2227,13 @@ namespace System.Net {
                 return; // WriteHeadersCallback will finish this async
             }
 
+            // Free the buffer now since we have finished writing it to the wire.
+            // Also, it must be freed before we call CheckStartReceive() since
+            // that can read the response and possibly resubmit the request
+            // due to auth challenges. If that happened and the buffer wasn't
+            // already freed, it would cause race conditions with SetWriteBuffer().
+            m_Request.FreeWriteBuffer();
+
             if (error == WebExceptionStatus.Success && !ErrorInStream)
             {
                 error = WebExceptionStatus.ReceiveFailure;
@@ -2253,7 +2265,6 @@ namespace System.Net {
             }
 
             m_Request.WriteHeadersCallback(error, this, async);            
-            m_Request.FreeWriteBuffer();
         }
 
         private void HandleWriteHeadersException(Exception e, WebExceptionStatus error) {

@@ -1342,7 +1342,8 @@ namespace System.IO {
             if (((FileAttributes)data.fileAttributes & FileAttributes.ReparsePoint) != 0)
                 recursive = false;
 
-            DeleteHelper(fullPath, userPath, recursive, true);
+            Win32Native.WIN32_FIND_DATA findData = new Win32Native.WIN32_FIND_DATA();
+            DeleteHelper(fullPath, userPath, recursive, true, ref findData);
         }
 
         // Note that fullPath is fully qualified, while userPath may be 
@@ -1351,7 +1352,7 @@ namespace System.IO {
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.Machine)]
         [ResourceConsumption(ResourceScope.Machine)]
-        private static void DeleteHelper(String fullPath, String userPath, bool recursive, bool throwOnTopLevelDirectoryNotFound)
+        private static void DeleteHelper(String fullPath, String userPath, bool recursive, bool throwOnTopLevelDirectoryNotFound, ref Win32Native.WIN32_FIND_DATA data)
         {
             bool r;
             int hr;
@@ -1367,10 +1368,8 @@ namespace System.IO {
             // the reparse point itself.
 
             if (recursive) {
-                Win32Native.WIN32_FIND_DATA data = new Win32Native.WIN32_FIND_DATA();
-                
                 // Open a Find handle
-                using (SafeFindHandle hnd = Win32Native.FindFirstFile(fullPath+Path.DirectorySeparatorCharAsString+"*", data)) {
+                using (SafeFindHandle hnd = Win32Native.FindFirstFile(fullPath + Path.DirectorySeparatorCharAsString + "*", ref data)) {
                     if (hnd.IsInvalid) {
                         hr = Marshal.GetLastWin32Error();
                         __Error.WinIOError(hr, fullPath);
@@ -1380,19 +1379,22 @@ namespace System.IO {
                         bool isDir = (0!=(data.dwFileAttributes & Win32Native.FILE_ATTRIBUTE_DIRECTORY));
                         if (isDir) {
                             // Skip ".", "..".
-                            if (data.cFileName.Equals(".") || data.cFileName.Equals(".."))
+                            if (data.IsRelativeDirectory)
                                 continue;
 
                             // Recurse for all directories, unless they are 
                             // reparse points.  Do not follow mount points nor
                             // symbolic links, but do delete the reparse point 
                             // itself.
+
+                            string fileName = data.cFileName;
+
                             bool shouldRecurse = (0 == (data.dwFileAttributes & (int) FileAttributes.ReparsePoint));
                             if (shouldRecurse) {
-                                String newFullPath = Path.InternalCombine(fullPath, data.cFileName);
-                                String newUserPath = Path.InternalCombine(userPath, data.cFileName);                        
+                                String newFullPath = Path.CombineNoChecks(fullPath, fileName);
+                                String newUserPath = Path.CombineNoChecks(userPath, fileName);
                                 try {
-                                    DeleteHelper(newFullPath, newUserPath, recursive, false);
+                                    DeleteHelper(newFullPath, newUserPath, recursive, false, ref data);
                                 }
                                 catch(Exception e) {
                                     if (ex == null) {
@@ -1405,13 +1407,13 @@ namespace System.IO {
                                 // unmount it.
                                 if (data.dwReserved0 == Win32Native.IO_REPARSE_TAG_MOUNT_POINT) {
                                     // Use full path plus a trailing '\'
-                                    String mountPoint = Path.InternalCombine(fullPath, data.cFileName + Path.DirectorySeparatorChar);
+                                    String mountPoint = Path.CombineNoChecks(fullPath, fileName + Path.DirectorySeparatorChar);
                                     r = Win32Native.DeleteVolumeMountPoint(mountPoint);
                                     if (!r) {
                                         hr = Marshal.GetLastWin32Error();
                                         if (hr != Win32Native.ERROR_PATH_NOT_FOUND) {
                                             try {
-                                                __Error.WinIOError(hr, data.cFileName);
+                                                __Error.WinIOError(hr, fileName);
                                             }
                                             catch(Exception e) {
                                                 if (ex == null) {
@@ -1424,13 +1426,13 @@ namespace System.IO {
 
                                 // RemoveDirectory on a symbolic link will
                                 // remove the link itself.
-                                String reparsePoint = Path.InternalCombine(fullPath, data.cFileName);
+                                String reparsePoint = Path.CombineNoChecks(fullPath, fileName);
                                 r = Win32Native.RemoveDirectory(reparsePoint);
                                 if (!r) {
                                     hr = Marshal.GetLastWin32Error();
                                     if (hr != Win32Native.ERROR_PATH_NOT_FOUND) {
                                         try {
-                                            __Error.WinIOError(hr, data.cFileName);
+                                            __Error.WinIOError(hr, fileName);
                                         }
                                         catch(Exception e) {
                                             if (ex == null) {
@@ -1442,13 +1444,13 @@ namespace System.IO {
                             }
                         }
                         else {
-                            String fileName = Path.InternalCombine(fullPath, data.cFileName);
-                            r = Win32Native.DeleteFile(fileName);
+                            string fileName = data.cFileName;
+                            r = Win32Native.DeleteFile(Path.CombineNoChecks(fullPath, fileName));
                             if (!r) {
                                 hr = Marshal.GetLastWin32Error();
                                 if (hr != Win32Native.ERROR_FILE_NOT_FOUND) {
                                     try {
-                                        __Error.WinIOError(hr, data.cFileName);
+                                        __Error.WinIOError(hr, fileName);
                                     }
                                     catch (Exception e) {
                                         if (ex == null) {
@@ -1458,7 +1460,8 @@ namespace System.IO {
                                 }
                             }
                         }
-                    } while (Win32Native.FindNextFile(hnd, data));
+                    } while (Win32Native.FindNextFile(hnd, ref data));
+
                     // Make sure we quit with a sensible error.
                     hr = Marshal.GetLastWin32Error();
                 }

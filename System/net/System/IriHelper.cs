@@ -12,8 +12,8 @@ namespace System
         internal static bool CheckIriUnicodeRange(char unicode, bool isQuery)
         {
             return ((unicode >= '\u00A0' && unicode <= '\uD7FF') ||
-               (unicode >= '\uF900' && unicode <= '\uFDCF') ||
-               (unicode >= '\uFDF0' && unicode <= '\uFFEF') ||
+                   (unicode >= '\uF900' && unicode <= '\uFDCF') ||
+                   (unicode >= '\uFDF0' && unicode <= '\uFFEF') ||
                (isQuery && unicode >= '\uE000' && unicode <= '\uF8FF'));
         }
 
@@ -91,11 +91,12 @@ namespace System
             {
                 return (component == (UriComponents)0) ? Uri.IsGenDelim(ch) : false;
             }
-            else
+            else if (UriParser.DontEnableStrictRFC3986ReservedCharacterSets)
             {
+                // Since we aren't enabling strict RFC 3986 reserved sets, we stick with the old behavior
+                // (for app-compat) which was a broken mix of RFCs 2396 and 3986.
                 switch (component)
                 {
-                    // Reserved chars according to rfc 3987
                     case UriComponents.UserInfo:
                         if (ch == '/' || ch == '?' || ch == '#' || ch == '[' || ch == ']' || ch == '@')
                             return true;
@@ -120,6 +121,10 @@ namespace System
                         break;
                 }
                 return false;
+            }
+            else
+            {
+                return (UriHelper.RFC3986ReservedMarks.IndexOf(ch) >= 0);
             }
         }
         
@@ -282,7 +287,7 @@ namespace System
                     {
                         if (CheckIriUnicodeRange(ch, component == UriComponents.Query))
                         {
-                            if (!Uri.IsBidiControlCharacter(ch))
+                            if (!Uri.IsBidiControlCharacter(ch) || !UriParser.DontKeepUnicodeBidiFormattingCharacters)
                             {
                                 // copy it
                                 Debug.Assert(dest.Length > destOffset, "Buffer overrun detected");

@@ -140,7 +140,12 @@ namespace System {
         internal const String RoundtripFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss.fffffffK";
         internal const String RoundtripDateTimeUnfixed = "yyyy'-'MM'-'ddTHH':'mm':'ss zzz";
     
-        private const int DEFAULT_ALL_DATETIMES_SIZE = 132; 
+        private const int DEFAULT_ALL_DATETIMES_SIZE = 132;
+
+        internal static readonly DateTimeFormatInfo InvariantFormatInfo = CultureInfo.InvariantCulture.DateTimeFormat;
+        internal static readonly string[] InvariantAbbreviatedMonthNames = InvariantFormatInfo.AbbreviatedMonthNames;
+        internal static readonly string[] InvariantAbbreviatedDayNames = InvariantFormatInfo.AbbreviatedDayNames;
+        internal const string Gmt = "GMT";
         
         internal static String[] fixedNumberFormats = new String[] {
             "0",
@@ -851,21 +856,6 @@ namespace System {
         //
         private static String ExpandPredefinedFormat(String format, ref DateTime dateTime, ref DateTimeFormatInfo dtfi, ref TimeSpan offset) {
             switch (format[0]) {
-                case 'o':
-                case 'O':       // Round trip format
-                    dtfi = DateTimeFormatInfo.InvariantInfo;
-                    break;
-                case 'r':
-                case 'R':       // RFC 1123 Standard                    
-                    if (offset != NullOffset) {
-                        // Convert to UTC invariants mean this will be in range
-                        dateTime = dateTime - offset;
-                    }
-                    else if (dateTime.Kind == DateTimeKind.Local) {
-                        InvalidFormatForLocal(format, dateTime);
-                    }
-                    dtfi = DateTimeFormatInfo.InvariantInfo;
-                    break;
                 case 's':       // Sortable without Time Zone Info                
                     dtfi = DateTimeFormatInfo.InvariantInfo;
                     break;                    
@@ -960,12 +950,106 @@ namespace System {
             }
 
             if (format.Length == 1) {
-                format = ExpandPredefinedFormat(format, ref dateTime, ref dtfi, ref offset);
-            }            
+                switch (format[0]) {
+                    case 'O':
+                    case 'o':
+                        return StringBuilderCache.GetStringAndRelease(FastFormatRoundtrip(dateTime, offset));
+                    case 'R':
+                    case 'r':
+                        return StringBuilderCache.GetStringAndRelease(FastFormatRfc1123(dateTime, offset, dtfi));
+                }
 
-            return (FormatCustomized(dateTime, format, dtfi, offset));
+                format = ExpandPredefinedFormat(format, ref dateTime, ref dtfi, ref offset);
+            }           
+
+            return FormatCustomized(dateTime, format, dtfi, offset);
         }
     
+        internal static StringBuilder FastFormatRfc1123(DateTime dateTime, TimeSpan offset, DateTimeFormatInfo dtfi)
+        {
+            // ddd, dd MMM yyyy HH:mm:ss GMT
+            const int Rfc1123FormatLength = 29;
+            StringBuilder result = StringBuilderCache.Acquire(Rfc1123FormatLength);
+
+            if (offset != NullOffset)
+            {
+                // Convert to UTC invariants
+                dateTime = dateTime - offset;
+            }
+
+            int year, month, day;
+            dateTime.GetDatePart(out year, out month, out day);
+
+            result.Append(InvariantAbbreviatedDayNames[(int)dateTime.DayOfWeek]);
+            result.Append(',');
+            result.Append(' ');
+            AppendNumber(result, day, 2);
+            result.Append(' ');
+            result.Append(InvariantAbbreviatedMonthNames[month - 1]);
+            result.Append(' ');
+            AppendNumber(result, year, 4);
+            result.Append(' ');
+            AppendHHmmssTimeOfDay(result, dateTime);
+            result.Append(' ');
+            result.Append(Gmt);
+
+            return result;
+        }
+
+        internal static StringBuilder FastFormatRoundtrip(DateTime dateTime, TimeSpan offset)
+        {
+            // yyyy-MM-ddTHH:mm:ss.fffffffK
+            const int roundTripFormatLength = 28;
+            StringBuilder result = StringBuilderCache.Acquire(roundTripFormatLength);
+
+            int year, month, day;
+            dateTime.GetDatePart(out year, out month, out day);
+
+            AppendNumber(result, year, 4);
+            result.Append('-');
+            AppendNumber(result, month, 2);
+            result.Append('-');
+            AppendNumber(result, day, 2);
+            result.Append('T');
+            AppendHHmmssTimeOfDay(result, dateTime);
+            result.Append('.');
+
+            long fraction = dateTime.Ticks % TimeSpan.TicksPerSecond;
+            AppendNumber(result, fraction, 7);
+
+            FormatCustomizedRoundripTimeZone(dateTime, offset, result);
+
+            return result;
+        }
+
+        private static void AppendHHmmssTimeOfDay(StringBuilder result, DateTime dateTime)
+        {
+            // HH:mm:ss
+            AppendNumber(result, dateTime.Hour, 2);
+            result.Append(':');
+            AppendNumber(result, dateTime.Minute, 2);
+            result.Append(':');
+            AppendNumber(result, dateTime.Second, 2);
+        }
+
+        internal static void AppendNumber(StringBuilder builder, long val, int digits)
+        {
+            for (int i = 0; i < digits; i++)
+            {
+                builder.Append('0');
+            }
+
+            int index = 1;
+            while (val > 0 && index <= digits)
+            {
+                builder[builder.Length - index] = (char)('0' + (val % 10));
+                val = val / 10;
+                index++;
+            }
+
+            BCLDebug.Assert(val == 0, "DateTimeFormat.AppendNumber(): digits less than size of val");
+        }
+
         internal static String[] GetAllDateTimes(DateTime dateTime, char format, DateTimeFormatInfo dtfi)
         {
             Contract.Requires(dtfi != null);

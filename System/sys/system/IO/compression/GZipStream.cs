@@ -16,9 +16,15 @@ namespace System.IO.Compression {
 
 
         public GZipStream(Stream stream, CompressionMode mode, bool leaveOpen) {
-
-            deflateStream = new DeflateStream(stream, mode, leaveOpen);
-            SetDeflateStreamFileFormatter(mode);
+            if (mode == CompressionMode.Decompress)
+            {
+                deflateStream = new DeflateStream(stream, leaveOpen, new GZipDecoder());
+            }
+            else
+            {
+                deflateStream = new DeflateStream(stream, mode, leaveOpen);
+                deflateStream.SetFileFormatWriter(new GZipFormatter());
+            }
         }
 
 
@@ -33,24 +39,8 @@ namespace System.IO.Compression {
         public GZipStream(Stream stream, CompressionLevel compressionLevel, bool leaveOpen) {
 
             deflateStream = new DeflateStream(stream, compressionLevel, leaveOpen);
-            SetDeflateStreamFileFormatter(CompressionMode.Compress);
+            deflateStream.SetFileFormatWriter(new GZipFormatter());
         }
-
-
-        private void SetDeflateStreamFileFormatter(CompressionMode mode) {
-
-            if (mode == CompressionMode.Compress) {
-
-                IFileFormatWriter writeCommand = new GZipFormatter();
-                deflateStream.SetFileFormatWriter(writeCommand);
-
-            } else {
-
-                IFileFormatReader readCommand = new GZipDecoder();
-                deflateStream.SetFileFormatReader(readCommand);
-            }
-        }
-
 
         public override bool CanRead { 
             get {

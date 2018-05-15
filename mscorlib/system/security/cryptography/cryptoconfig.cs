@@ -215,6 +215,8 @@ namespace System.Security.Cryptography {
                     // Cryptography algorithms in System.Core are referenced by name rather than type so
                     // that we don't force System.Core to load if we don't need any of its algorithms
                     string AesCryptoServiceProviderType = "System.Security.Cryptography.AesCryptoServiceProvider, " + AssemblyRef.SystemCore;
+                    string RSACngType = "System.Security.Cryptography.RSACng, " + AssemblyRef.SystemCore;
+                    string DSACngType = "System.Security.Cryptography.DSACng, " + AssemblyRef.SystemCore;
 #endif //FEATURE_CRYPTO
 #if FEATURE_CRYPTO || FEATURE_LEGACYNETCFCRYPTO
                     string AesManagedType = "System.Security.Cryptography.AesManaged, " + AssemblyRef.SystemCore;
@@ -324,6 +326,8 @@ namespace System.Security.Cryptography {
                     ht.Add("System.Security.Cryptography.AsymmetricAlgorithm", RSACryptoServiceProviderType);
 #endif //FEATURE_CRYPTO || FEATURE_LEGACYNETCFCRYPTO
 #if FEATURE_CRYPTO && !FEATURE_CORECLR
+                    ht.Add("RSAPSS", RSACngType);
+                    ht.Add("DSA-FIPS186-3", DSACngType);
                     ht.Add("DSA", DSACryptoServiceProviderType);
                     ht.Add("System.Security.Cryptography.DSA", DSACryptoServiceProviderType);
                     ht.Add("ECDsa", ECDsaCngType);

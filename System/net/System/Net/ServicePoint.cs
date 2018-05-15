@@ -5,16 +5,17 @@
 //------------------------------------------------------------------------------
 
 namespace System.Net {
-    using System.Net.Sockets;
     using System.Collections;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
     using System.IO;
-    using System.Threading;
+    using System.Net.Security;
+    using System.Net.Sockets;
+    using System.Runtime.CompilerServices;
     using System.Security.Authentication.ExtendedProtection;
     using System.Security.Cryptography.X509Certificates;
-    using System.Net.Security;
-    using System.Globalization;
-    using System.Collections.Generic;
-    using System.Runtime.CompilerServices;
+    using System.Threading;
 
     public delegate IPEndPoint BindIPEndPoint(ServicePoint servicePoint, IPEndPoint remoteEndPoint, int retryCount);
 
@@ -643,50 +644,101 @@ namespace System.Net {
         ///     Removes the specified Connection group from the ServicePoint, destroys safe and unsafe groups, but not internal.
         /// </devdoc>
 
-        public bool CloseConnectionGroup(string connectionGroupName) {
-            GlobalLog.Enter("ServicePoint#" + ValidationHelper.HashString(this) + "::CloseConnectionGroup() lookupStr:[" + connectionGroupName + "]");
-            if ( ReleaseConnectionGroup(HttpWebRequest.GenerateConnectionGroup(connectionGroupName, false, false).ToString())  ||
-                 ReleaseConnectionGroup(HttpWebRequest.GenerateConnectionGroup(connectionGroupName, true, false).ToString())  ||
-                 ConnectionPoolManager.RemoveConnectionPool(this, connectionGroupName)) {
-
-                GlobalLog.Leave("ServicePoint#" + ValidationHelper.HashString(this) + "::CloseConnectionGroup()","true");
-                return true;
-            }
-            GlobalLog.Leave("ServicePoint#" + ValidationHelper.HashString(this) + "::CloseConnectionGroup()","false");
-            return false;
+        public bool CloseConnectionGroup(string connectionGroupName)
+        {
+            if (Logging.On) Logging.PrintInfo(Logging.Web, this, "CloseConnectionGroup", connectionGroupName);
+            return CloseConnectionGroupHelper(connectionGroupName, closeInternal: false);
         }
 
-        internal void CloseConnectionGroupInternal(string connectionGroupName) {
-            
-            // Release all internal connection groups (both 'safe' and 'unsafe') with the given name. We're not 
-            // interested in the result value (it's OK if it is 'false', i.e. not found).
-            // We don't need to call ConnectionPoolManager.RemoveConnectionPool() since this method is only used for
-            // HTTP.
-            string connectionGroupPrefixSafe = HttpWebRequest.GenerateConnectionGroup(connectionGroupName, false, true).ToString();
-            string connectionGroupPrefixUnsafe = HttpWebRequest.GenerateConnectionGroup(connectionGroupName, true, true).ToString();
+        internal void CloseConnectionGroupInternal(string connectionGroupName)
+        {
+            if (Logging.On) Logging.PrintInfo(Logging.Web, this, "CloseConnectionGroupInternal", connectionGroupName);
+            CloseConnectionGroupHelper(connectionGroupName, closeInternal: true);
+        }
+
+        private bool CloseConnectionGroupHelper(string connectionGroupName, bool closeInternal)
+        {
+            if (Logging.On) Logging.PrintInfo(Logging.Web, this, "CloseConnectionGroupHelper", "connectionGroupName=" + connectionGroupName + ", closeInternal=" + closeInternal);
+
+            string connectionGroupPrefixSafe =
+                HttpWebRequest.GenerateConnectionGroup(connectionGroupName, unsafeConnectionGroup: false, isInternalGroup: false).ToString();
+            string connectionGroupPrefixUnsafe =
+                HttpWebRequest.GenerateConnectionGroup(connectionGroupName, unsafeConnectionGroup: true, isInternalGroup: false).ToString();
+            string connectionGroupPrefixSafeInternal =
+                HttpWebRequest.GenerateConnectionGroup(connectionGroupName, unsafeConnectionGroup: false, isInternalGroup: true).ToString();
+            string connectionGroupPrefixUnsafeInternal =
+                HttpWebRequest.GenerateConnectionGroup(connectionGroupName, unsafeConnectionGroup: true, isInternalGroup: true).ToString();
             List<string> connectionGroupNames = null;
 
-            lock (this) {                
+            // Validate assumptions about connection group name prefixes. The generated name for internal name prefixes
+            // is currently longer than non-internal group prefixes (it has a ">I" at the end). We need to be careful
+            // when doing substring matches looking for all possible group name matches since non-internal name prefixes
+            // are aubstrings of internal name prefixes.
+            Debug.Assert(connectionGroupPrefixSafeInternal.Length > connectionGroupPrefixSafe.Length);
+            Debug.Assert(connectionGroupPrefixUnsafeInternal.Length > connectionGroupPrefixUnsafe.Length);
+            Debug.Assert(connectionGroupPrefixSafeInternal.StartsWith(connectionGroupPrefixSafe, StringComparison.Ordinal));
+            Debug.Assert(connectionGroupPrefixUnsafeInternal.StartsWith(connectionGroupPrefixUnsafe, StringComparison.Ordinal));
+
+            lock (this)
+            {
                 // Find all connecion groups starting with the provided prefix. We just compare prefixes, since connection 
                 // groups may include suffixes for client certificates, SSL over proxy, authentication IDs.
-                foreach (var item in m_ConnectionGroupList.Keys) {                    
+                foreach (var item in m_ConnectionGroupList.Keys)
+                {
                     string current = item as string;
-                    if (current.StartsWith(connectionGroupPrefixSafe, StringComparison.Ordinal) || 
-                        current.StartsWith(connectionGroupPrefixUnsafe, StringComparison.Ordinal)) {
-                        if (connectionGroupNames == null) {
+
+                    // Do not change the order of these 'if' checks.
+                    // Always check string matching for internal group prefix before non-internal prefix.
+                    // Given the same 'connectionGroupName' parameter, the non-internal prefix is a
+                    // leading substring of the internal prefix. So, we need to check the longer (internal)
+                    // prefix first.                    
+                    if (current.StartsWith(connectionGroupPrefixSafeInternal, StringComparison.Ordinal) ||
+                        current.StartsWith(connectionGroupPrefixUnsafeInternal, StringComparison.Ordinal))
+                    {
+                        // This is an internal group matching the name. Only add it to the close list if we
+                        // should close internal groups. Otherwise, we skip it.
+                        if (closeInternal)
+                        {
+                            if (connectionGroupNames == null)
+                            {
+                                connectionGroupNames = new List<string>();
+                            }
+
+                            connectionGroupNames.Add(current);
+                        }
+                    }
+                    else if ((current.StartsWith(connectionGroupPrefixSafe, StringComparison.Ordinal) ||
+                              current.StartsWith(connectionGroupPrefixUnsafe, StringComparison.Ordinal)) &&
+                             !closeInternal)
+                    {
+                        // This is definitely a non-internal group matching the name. We add it to the close
+                        // list since we are closing non-internal groups.
+                        if (connectionGroupNames == null)
+                        {
                             connectionGroupNames = new List<string>();
                         }
+
                         connectionGroupNames.Add(current);
                     }
                 }
             }
 
             // If this service point contains any connection groups with the provided prefix, remove them.
-            if (connectionGroupNames != null) {
-                foreach (string item in connectionGroupNames) {
-                    ReleaseConnectionGroup(item);
+            bool released = false;
+            if (connectionGroupNames != null)
+            {
+                foreach (string item in connectionGroupNames)
+                {
+                    if (ReleaseConnectionGroup(item))
+                    {
+                        released = true;
+                    }
                 }
+
             }
+
+            if (Logging.On) Logging.PrintInfo(Logging.Web, this, "CloseConnectionGroupHelper, returning", released.ToString());
+            return released;
         }
 
         /// <devdoc>
@@ -1072,6 +1124,7 @@ namespace System.Net {
         ///    </para>
         /// </devdoc>
         internal bool ReleaseConnectionGroup(string connName) {
+            if (Logging.On) Logging.PrintInfo(Logging.Web, this, "ReleaseConnectionGroup", connName);
 
             ConnectionGroup connectionGroup = null;
 
@@ -1085,6 +1138,7 @@ namespace System.Net {
                 // force all connections on the ConnectionGroup to not be KeepAlive
                 //
                 if (connectionGroup == null) {
+                    if (Logging.On) Logging.PrintInfo(Logging.Web, this, "ReleaseConnectionGroup, returning", "false");
                     return false;
                 }
 
@@ -1103,6 +1157,7 @@ namespace System.Net {
             // end up taking a lock on a Connection (risk of deadlock).
             connectionGroup.DisableKeepAliveOnConnections();
 
+            if (Logging.On) Logging.PrintInfo(Logging.Web, this, "ReleaseConnectionGroup, returning", "true");
             return true;
         }
 

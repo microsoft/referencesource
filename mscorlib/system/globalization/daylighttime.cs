@@ -47,4 +47,18 @@ namespace System.Globalization {
     
     }
 
+    // Value type version of DaylightTime
+    internal struct DaylightTimeStruct
+    {
+        public DaylightTimeStruct(DateTime start, DateTime end, TimeSpan delta)
+        {
+            Start = start;
+            End = end;
+            Delta = delta;
+        }
+
+        public DateTime Start { get; }
+        public DateTime End { get; }
+        public TimeSpan Delta { get; }
+    }
 }

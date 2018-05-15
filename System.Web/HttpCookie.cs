@@ -39,6 +39,7 @@ namespace System.Web {
         private HttpValueCollection _multiValue;
         private bool _changed;
         private bool _added;
+        private SameSiteMode _sameSite;
 
         internal HttpCookie() {
             _changed = true;
@@ -83,7 +84,8 @@ namespace System.Web {
             HttpCookiesSection config = RuntimeConfig.GetConfig().HttpCookies;
             _secure = config.RequireSSL;
             _httpOnly = config.HttpOnlyCookies;
-            
+            _sameSite = config.SameSite;
+
             if (config.Domain != null && config.Domain.Length > 0)
                 _domain = config.Domain;
         }
@@ -266,6 +268,20 @@ namespace System.Web {
             }
         }
 
+        /// <devdoc>
+        ///     <para>SameSite mode for the current cookie</para>
+        /// </devdoc>
+        public SameSiteMode SameSite {
+            get {
+                return _sameSite;
+            }
+
+            set {
+                _sameSite = value;
+                _changed = true;
+            }
+        }
+
         /*
          * Checks is cookie has sub-keys
          */
@@ -406,6 +422,14 @@ namespace System.Web {
                 else if (StringUtil.EqualsIgnoreCase(attributeName, "HttpOnly")) {
                     cookie.HttpOnly = true;
                 }
+                //
+                // SameSite
+                else if(StringUtil.EqualsIgnoreCase(attributeName, "SameSite")) {
+                    SameSiteMode sameSite;
+                    if(Enum.TryParse<SameSiteMode>(attributeValue, true, out sameSite) && sameSite != SameSiteMode.None) {
+                        cookie.SameSite = sameSite;
+                    }
+                }
             }
 
             result = cookie;
@@ -458,6 +482,12 @@ namespace System.Web {
                 s.Append("; HttpOnly");
             }
 
+            // SameSite
+            if(_sameSite != SameSiteMode.None) {
+                s.Append("; SameSite=");
+                s.Append(_sameSite);
+            }
+
             // return as HttpResponseHeader
             return new HttpResponseHeader(HttpWorkerRequest.HeaderSetCookie, s.ToString());
         }
@@ -476,5 +506,13 @@ namespace System.Web {
         AutoDetect,      // cookieless=AutoDetect; Probe if device is cookied
 
         UseDeviceProfile // cookieless=UseDeviceProfile; Base decision on caps
+    }
+
+    public enum SameSiteMode {
+        None,
+
+        Lax,
+
+        Strict
     }
 }

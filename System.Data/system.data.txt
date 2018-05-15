@@ -1093,6 +1093,8 @@ SQL_SnapshotNotSupported=The {0} enumeration value, {1}, is not supported by SQL
 SQL_UserInstanceFailoverNotCompatible=User Instance and Failover are not compatible options.  Please choose only one of the two in the connection string.
 SQL_AuthenticationAndIntegratedSecurity=Cannot use 'Authentication' with 'Integrated Security'.
 SQL_IntegratedWithUserIDAndPassword=Cannot use 'Authentication=Active Directory Integrated' with 'User ID', 'UID', 'Password' or 'PWD' connection string keywords.
+SQL_InteractiveWithPassword=Cannot use 'Authentication=Active Directory Interactive' with 'PWD' connection string keywords.
+SQL_InteractiveWithoutUserID=Cannot use 'Authentication=Active Directory Interactive' without 'User ID' or 'UID' connection string keywords.
 SQL_SettingIntegratedWithCredential=Cannot use 'Authentication=Active Directory Integrated', if the Credential property has been set.
 SQL_SettingCredentialWithIntegrated=Cannot set the Credential property if 'Authentication=Active Directory Integrated' has been specified in the connection string.
 
@@ -1119,6 +1121,17 @@ SQL_ADALInnerException=Error code 0x{0}; state {1}
 ;NotSupportedException
 SQL_ChangePasswordRequiresYukon=ChangePassword requires SQL Server 9.0 or later.
 SQL_NonLocalSSEInstance=SSE Instance re-direction is not supported for non-local user instances.
+
+;SQL.AuthProvider
+SQL_UnsupportedAuthentication=The authentication '{0}' is not supported.
+SQL_UnsupportedSqlAuthenticationMethod=SQL authentication method '{0}' is not supported.
+SQL_CannotCreateAuthProvider=Failed to instantiate an authentication provider with type '{1}' for '{0}'.
+SQL_CannotCreateAuthInitializer=Failed to instantiate a SqlAuthenticationInitializer with type '{0}'.
+SQL_CannotInitializeAuthProvider=The provider '{0}' threw an exception while initializing.
+SQL_UnsupportedAuthenticationByProvider=The provider '{0}' does not support authentication '{1}'.
+SQL_CannotFindAuthProvider=Cannot find an authentication provider for '{0}'.
+SQL_CannotGetAuthProviderConfig=Failed to read the config section for authentication providers.
+SQL_ParameterCannotBeEmpty=Parameter '{0}' cannot be null or empty.
 
 ;;; SQLServer.DataCommand
 ; InvalidOperationException
@@ -1807,8 +1820,11 @@ TCE_InvalidAuthenticationTag=Specified ciphertext has an invalid authentication 
 TCE_NullColumnEncryptionAlgorithm=Internal error. Encryption algorithm cannot be null. Valid algorithms are: {0}.
 
 ; Errors from sp_describe_parameter_encryption
-TCE_UnexpectedDescribeParamFormat=Internal error. The format of the resultset returned by {0} is invalid. One of the resultsets is missing.
-TCE_InvalidEncryptionKeyOrdinal=Internal error. The referenced column encryption key ordinal '{1}' is missing in the encryption metadata returned by {0}. Max ordinal is '{2}'.
+TCE_UnexpectedDescribeParamFormatParameterMetadata=Internal error. The result returned by '{0}' is invalid. The parameter metadata resultset is missing.
+TCE_UnexpectedDescribeParamFormatAttestationInfo=Internal error. The result returned by '{0}' is invalid. The attestation information resultset is missing for enclave type '{1}'. 
+TCE_InvalidEncryptionKeyOrdinalEnclaveMetadata=Internal error. Error occurred when populating enclave metadata. The referenced column encryption key ordinal '{0}' is missing in the encryption metadata returned by SQL Server. Max ordinal is '{1}'. 
+TCE_InvalidEncryptionKeyOrdinalParameterMetadata=Internal error. Error occurred when populating parameter metadata. The referenced column encryption key ordinal '{0}' is missing in the encryption metadata returned by SQL Server. Max ordinal is '{1}'. 
+TCE_MultipleRowsReturnedForAttestationInfo=Internal error. Error occurred when parsing the results of '{0}'. The attestation information resultset is expected to contain only one row, but it contains multiple rows.
 TCE_ParamEncryptionMetaDataMissing=Internal error. Metadata for parameter '{1}' in statement or procedure '{2}' is missing in resultset returned by {0}.
 TCE_ProcEncryptionMetaDataMissing=Internal error. Metadata for parameters for command '{1}' in a batch is missing in the resultset returned by {0}.
 
@@ -1816,6 +1832,11 @@ TCE_ProcEncryptionMetaDataMissing=Internal error. Metadata for parameters for co
 TCE_ParamEncryptionFailed=Failed to encrypt parameter '{0}'.
 TCE_ColumnDecryptionFailed=Failed to decrypt column '{0}'.
 TCE_ParamDecryptionFailed=Failed to decrypt parameter '{0}'.
+
+; Signature verification errors
+TCE_ColumnMasterKeySignatureVerificationFailed=The signature returned by SQL Server for the column master key, specified in key path '{0}', is invalid (does not match the computed signature). Recreate column master key metadata, making sure the signature inside the metadata is computed using the column master key being referenced in the metadata. If the error persists, please contact Microsoft for assistance.
+TCE_ColumnMasterKeySignatureNotFound=Internal error. The signature returned by SQL Server for enclave-enabled column master key, specified at key path '{0}', cannot be null or empty.
+TCE_UnableToVerifyColumnMasterKeySignature=Unable to verify a column master key signature. Error message: {0} 
 
 ; Query processing error messages
 TCE_UnknownColumnEncryptionAlgorithm=Encryption algorithm '{0}' for the column in the database is either invalid or corrupted. Valid algorithms are: {1}.
@@ -1827,6 +1848,39 @@ TCE_UntrustedKeyPath=Column master key path '{0}' received from server '{1}' is 
 TCE_KeyDecryptionFailed=Failed to decrypt a column encryption key using key store provider: '{0}'. Verify the properties of the column encryption key and its column master key in your database. The last 10 bytes of the encrypted column encryption key are: '{1}'.
 TCE_UnsupportedDatatype=Encryption and decryption of data type '{0}' is not supported.
 TCE_DecryptionFailed=Decryption failed. The last 10 bytes of the encrypted column encryption key are: '{0}'. The first 10 bytes of ciphertext are: '{1}'.
+TCE_ExceptionWhenGeneratingEnclavePackage=Error encountered while generating package to be sent to enclave. Error message: {0}
+TCE_InvalidKeyIdUnableToCastToUnsignedShort=Internal Error. The given key id '{0}' is not valid. Error occurred when converting the key id to unsigned short. Error Message: {1}
+TCE_InvalidDatabaseIdUnableToCastToUnsignedInt=Internal Error. The given database id '{0}' is not valid. Error occurred when converting the database id to unsigned int. Error Message: {1}
+TCE_InvalidAttestationParameterUnableToConvertToUnsignedInt=Invalid attestation parameters specified by the enclave provider for enclave type '{0}'. Error occurred when converting the value '{1}' of parameter '{2}' to unsigned int. Error Message: {3}
+TCE_InvalidKeyStoreProviderName=Invalid key store provider name: '{0}'. A key store provider name must denote either a system key store provider or a registered custom key store provider. Valid system key store provider names are: {1}. Valid (currently registered) custom key store provider names are: {2}. Please verify key store provider information in column master key definitions in the database, and verify all custom key store providers used in your application are registered properly.
+TCE_FailedToEncryptRegisterRulesBytePackage=Internal Error.  Failed to encrypt byte package to be sent to the enclave. Error Message: {0} 
+TCE_OffsetOutOfBounds=Internal Error. Failed to serialize keys to be sent to the enclave. The start offset specified by argument '{0}' for method {1}.{2} is out of bounds.
+TCE_InsufficientBuffer=Internal Error. The buffer specified by argument '{0}' for method '{1}.{2}' has insufficient space.
+TCE_ColumnEncryptionKeysNotFound=Internal Error. Encrypted column encryption keys not found when trying to send the keys to the enclave.
+TCE_NullEnclaveSessionDuringQueryExecution=Internal Error. Enclave session is null during query execution. Enclave type is '{0}' and enclaveAttestationUrl is '{1}'.
+TCE_NullEnclavePackageForEnclaveBasedQuery=Internal Error. Enclave package is null during execution of an enclave based query. Enclave type is '{0}' and enclaveAttestationUrl is '{1}'.
+
+; TCE Attestation errors
+TCE_AttestationInfoNotReturnedFromSQLServer=Attestation information was not returned by SQL Server. Enclave type is '{0}' and enclave attestation URL is '{1}'.
+
+; TCE secure channel establishment errors
+TCE_UnableToEstablishSecureChannel=Unable to establish secure channel. Error Message: {0}
+TCE_NullArgumentInConstructorInternal=Internal Error. Null argument '{0}' specified when constructing an object of type '{1}'. '{0}' cannot be null.
+TCE_EmptyArgumentInConstructorInternal=Internal Error. Empty argument '{0}' specified when constructing an object of type '{1}'. '{0}' cannot be empty.
+TCE_NullArgumentInternal=Internal Error. Argument '{0}' cannot be null when executing method '{1}.{2}'.
+TCE_EmptyArgumentInternal=Internal Error. Argument '{0}' cannot be empty when executing method '{1}.{2}'.
+
+; TCE enclave provider/config
+TCE_DbConnectionString_EnclaveAttestationUrl=Specifies an endpoint of an enclave attestation service, which will be used to verify whether the enclave, configured in the SQL Server instance for computations on database columns encrypted using Always Encrypted, is valid and secure.
+TCE_CannotGetSqlColumnEncryptionEnclaveProviderConfig=Failed to read the configuration section for enclave providers. Make sure the section is correctly formatted in your application configuration file. Error Message: {0}
+TCE_CannotCreateSqlColumnEncryptionEnclaveProvider=Failed to instantiate an enclave provider with type '{1}' for name '{0}'. Error message: {2} 
+TCE_SqlColumnEncryptionEnclaveProviderNameCannotBeEmpty=Internal Error. SqlColumnEncryptionEnclaveProviderName cannot be null or empty.
+TCE_NoAttestationUrlSpecifiedForEnclaveBasedQuerySpDescribe=Error occured when reading '{0}' resultset. Attestation URL has not been specified in the connection string, but the query requires enclave computations.  Enclave type is '{1}'. 
+TCE_NoAttestationUrlSpecifiedForEnclaveBasedQueryGeneratingEnclavePackage=Error occured when generating enclave package. Attestation URL has not been specified in the connection string, but the query requires enclave computations.  Enclave type is '{0}'. 
+TCE_EnclaveTypeNullForEnclaveBasedQuery=Internal Error. Enclave type received from SQL Server is null or empty when executing a query requiring enclave computations.
+TCE_EnclaveProvidersNotConfiguredForEnclaveBasedQuery=Executing a query requires enclave computations, but the application configuration is missing the enclave provider  section.
+TCE_EnclaveProviderNotFound=No enclave provider found for enclave type '{0}'. Please specify the provider in the application configuration. 
+TCE_NullEnclaveSessionReturnedFromProvider=Unable to communicate with the enclave. Null enclave session information received from the enclave provider. Enclave type is '{0}' and enclave attestation URL is '{1}'.
 
 ; TCE Generic errors
 TCE_ParamInvalidForceColumnEncryptionSetting=Cannot set {0} for {3} '{1}' because encryption is not enabled for the statement or procedure '{2}'.
@@ -1834,6 +1888,8 @@ TCE_ParamUnExpectedEncryptionMetadata=Cannot execute statement or procedure '{1}
 
 ; TCE specific SQL connection related error messages
 TCE_NotSupportedByServer={0} instance in use does not support column encryption.
+TCE_EnclaveComputationsNotSupported=You have specified the enclave attestation URL in the connection string, but the SQL Server instance in use does not support enclave based computations.
+TCE_EnclaveTypeNotReturned=You have specified the enclave attestation URL in the connection string, but the SQL Server instance did not return an enclave type. Please make sure the enclave type is correctly configured in your instance.
 
 ; TCE specific SQL command/adapter related error messages
 TCE_BatchedUpdateColumnEncryptionSettingMismatch={0} should be identical on all commands ({1}, {2}, {3}, {4}) when doing batch updates.

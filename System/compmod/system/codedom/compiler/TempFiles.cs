@@ -14,9 +14,11 @@ namespace System.CodeDom.Compiler {
     using System.Runtime.InteropServices;
     using System.Text;
     using Microsoft.Win32;
+    using Microsoft.Win32.SafeHandles;
     using System.Security;
     using System.Security.Permissions;
     using System.Security.Principal;
+    using System.Threading.Tasks;
     using System.ComponentModel;
     using System.Security.Cryptography;
     using System.Globalization;
@@ -34,6 +36,10 @@ namespace System.CodeDom.Compiler {
         string tempDir;
         bool keepFiles;
         Hashtable files;
+        [NonSerialized]
+        private WindowsIdentity currentIdentity = null;
+        [NonSerialized]
+        private string highIntegrityDirectory = null;
 
         /// <devdoc>
         ///    <para>[To be supplied.]</para>
@@ -50,13 +56,27 @@ namespace System.CodeDom.Compiler {
         /// <devdoc>
         ///    <para>[To be supplied.]</para>
         /// </devdoc>
+#if !FEATURE_PAL
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert, ControlPrincipal = true)]
+#endif
         public TempFileCollection(string tempDir, bool keepFiles) {
             this.keepFiles = keepFiles;
             this.tempDir = tempDir;
 #if !FEATURE_CASE_SENSITIVE_FILESYSTEM            
-            files = new Hashtable(StringComparer.OrdinalIgnoreCase);            
+            files = new Hashtable(StringComparer.OrdinalIgnoreCase);
 #else
             files = new Hashtable();
+#endif
+#if !FEATURE_PAL
+            WindowsImpersonationContext impersonation = Executor.RevertImpersonation();
+            try
+            {
+                currentIdentity = WindowsIdentity.GetCurrent();
+            }
+            finally
+            {
+                Executor.ReImpersonate(impersonation);
+            }
 #endif
         }
 
@@ -74,6 +94,7 @@ namespace System.CodeDom.Compiler {
             // neither Hashtable nor String have a finalizer of their own that could 
             // be called before TempFileCollection Finalizer
             Delete();
+            DeleteHighIntegrityDirectory();
         }
 
         /// <devdoc>
@@ -211,7 +232,6 @@ namespace System.CodeDom.Compiler {
                     }
                 }while (!uniqueFile);
                 files.Add(tempFileName, keepFiles);
-                
             }
         }
 
@@ -247,6 +267,24 @@ namespace System.CodeDom.Compiler {
             }
         }
 
+        private void DeleteHighIntegrityDirectory()
+        {
+            try
+            {
+                if (currentIdentity != null && Directory.Exists(highIntegrityDirectory))
+                {
+                    // Remove the no delete policy from the directory.
+                    RemoveAceOnTempDirectory(highIntegrityDirectory, currentIdentity.User.ToString());
+                    if (Directory.GetFiles(highIntegrityDirectory).Length == 0)
+                    {
+                        // Delete the high integrity directory if all files are deleted.
+                        Directory.Delete(highIntegrityDirectory, true);
+                    }
+                }
+            }
+            catch { } // Ignore all errors.
+        }
+
         // This function deletes files after reverting impersonation.
         [ResourceExposure(ResourceScope.None)]
         [ResourceConsumption(ResourceScope.Process, ResourceScope.Process)]
@@ -277,11 +315,24 @@ namespace System.CodeDom.Compiler {
 
         [ResourceExposure(ResourceScope.Machine)]
         [ResourceConsumption(ResourceScope.Machine)]
-        static string GetTempFileName(string tempDir) {
+        string GetTempFileName(string tempDir) {
             string fileName;
-            if (String.IsNullOrEmpty(tempDir)) tempDir = Path.GetTempPath();
-            
             string randomFileName = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
+
+            if (String.IsNullOrEmpty(tempDir)) {
+                tempDir = Path.GetTempPath();
+
+                if (!LocalAppContextSwitches.DisableTempFileCollectionDirectoryFeature && currentIdentity != null &&
+                    new WindowsPrincipal(currentIdentity).IsInRole(WindowsBuiltInRole.Administrator))
+                {
+                    tempDir = Path.Combine(tempDir, randomFileName);
+
+                    // Create high integrity dir and set no delete policy for all files under the directory.
+                    // In case of failure, throw exception.
+                    CreateTempDirectoryWithAce(tempDir, currentIdentity.User.ToString());
+                    highIntegrityDirectory = tempDir;
+                }
+            }
 
             if (tempDir.EndsWith("\\", StringComparison.Ordinal))
                 fileName = tempDir + randomFileName;
@@ -289,6 +340,41 @@ namespace System.CodeDom.Compiler {
                 fileName = tempDir + "\\" + randomFileName;
 
             return fileName;
+        }
+
+        private static void CreateTempDirectoryWithAce(string directory, string identity)
+        {
+            // Dacl Sddl string:
+            // D: Dacl type
+            // D; Deny access
+            // OI; Object inherit ace
+            // SD; Standard delete function
+            // wIdentity.User Sid of the given user.
+            // A; Allow access
+            // OICI; Object inherit, container inherit
+            // FA File access
+            // BA Built-in administrators
+            // S: Sacl type
+            // ML;; Mandatory Label
+            // NW;;; No write policy
+            // HI High integrity processes only
+            string sddl = "D:(D;OI;SD;;;" + identity + ")(A;OICI;FA;;;BA)S:(ML;OI;NW;;;HI)";
+
+            SafeLocalMemHandle acl = null;
+            SafeLocalMemHandle.ConvertStringSecurityDescriptorToSecurityDescriptor(sddl, NativeMethods.SDDL_REVISION_1, out acl, IntPtr.Zero);
+
+            // Create the directory with the acl
+            NativeMethods.CreateDirectory(directory, acl);
+        }
+
+        private static void RemoveAceOnTempDirectory(string directory, string identity)
+        {
+            string sddl = "D:(A;OICI;FA;;;" + identity + ")(A;OICI;FA;;;BA)";
+
+            SafeLocalMemHandle acl = null;
+            SafeLocalMemHandle.ConvertStringSecurityDescriptorToSecurityDescriptor(sddl, NativeMethods.SDDL_REVISION_1, out acl, IntPtr.Zero);
+
+            NativeMethods.SetNamedSecurityInfo(directory, acl);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace System.Net {
     using System.Net.Configuration;
     using System.Runtime.Serialization;
     using System.Security;
+    using System.Security.Authentication;
     using System.Security.Cryptography.X509Certificates;
     using System.Security.Permissions;
     using System.Text;
@@ -301,6 +302,17 @@ namespace System.Net {
         // Properties
         //
 
+        // Used by HttpClientHandler
+        [FriendAccessAllowed]
+        internal object ServerCertificateValidationCallbackContext { get; set; }
+
+        [FriendAccessAllowed]
+        internal bool CheckCertificateRevocationList { get; set; }
+
+        [FriendAccessAllowed]
+        internal SslProtocols SslProtocols { get; set; }
+
+        // Used by HttpRequestMessage
         [FriendAccessAllowed]
         internal RtcState RtcState { get; set; }
 
@@ -3035,7 +3047,9 @@ namespace System.Net {
         // Get the buffer from the pinnable cache if the necessary space is small enough
         private void SetWriteBuffer(int bufferSize)
         {
-            if(bufferSize <= CachedWriteBufferSize)
+            Debug.Assert(_WriteBuffer == null);
+
+            if (bufferSize <= CachedWriteBufferSize)
             {
                 if (!_WriteBufferFromPinnableCache) 
                 {
@@ -5103,6 +5117,9 @@ namespace System.Net {
         internal HttpWebRequest(Uri uri, ServicePoint servicePoint) {
             if(Logging.On)Logging.Enter(Logging.Web, this, "HttpWebRequest", uri);
 
+            CheckCertificateRevocationList = ServicePointManager.CheckCertificateRevocationList;
+            SslProtocols = (SslProtocols)ServicePointManager.SecurityProtocol;
+
             CheckConnectPermission(uri, false);
 
             m_StartTimestamp = NetworkingPerfCounters.GetTimestamp();
@@ -5234,6 +5251,9 @@ namespace System.Net {
 #endif
             ExceptionHelper.WebPermissionUnrestricted.Demand();
             if(Logging.On)Logging.Enter(Logging.Web, this, "HttpWebRequest", serializationInfo);
+
+            CheckCertificateRevocationList = ServicePointManager.CheckCertificateRevocationList;
+            SslProtocols = (SslProtocols)ServicePointManager.SecurityProtocol;
 
             _HttpRequestHeaders         = (WebHeaderCollection)serializationInfo.GetValue("_HttpRequestHeaders", typeof(WebHeaderCollection));
             _Proxy                      = (IWebProxy)serializationInfo.GetValue("_Proxy", typeof(IWebProxy));

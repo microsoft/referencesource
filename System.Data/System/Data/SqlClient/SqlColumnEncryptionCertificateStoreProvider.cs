@@ -265,6 +265,66 @@ namespace System.Data.SqlClient
         }
 
         /// <summary>
+        /// This function must be implemented by the corresponding Key Store providers. This function should use an asymmetric key identified by a key path
+        /// and sign the masterkey metadata consisting of (masterKeyPath, allowEnclaveComputations bit, providerName).
+        /// </summary>
+        /// <param name="masterKeyPath">Complete path of an asymmetric key. Path format is specific to a key store provider.</param>
+        /// <param name="allowEnclaveComputations">Boolean indicating whether this key can be sent to trusted enclave</param>
+        /// <returns>Signature for master key metadata</returns>
+        public override byte[] SignColumnMasterKeyMetadata(string masterKeyPath, bool allowEnclaveComputations)
+        {
+            var hash = ComputeMasterKeyMetadataHash(masterKeyPath, allowEnclaveComputations, isSystemOp: false);
+
+            // Parse the certificate path and get the X509 cert
+            X509Certificate2 certificate = GetCertificateByPath(masterKeyPath, isSystemOp: false);
+
+            byte[] signature = RSASignHashedData(hash, certificate);
+
+            return signature;
+        }
+
+        /// <summary>
+        /// This function must be implemented by the corresponding Key Store providers. This function should use an asymmetric key identified by a key path
+        /// and verify the masterkey metadata consisting of (masterKeyPath, allowEnclaveComputations bit, providerName).
+        /// </summary>
+        /// <param name="masterKeyPath">Complete path of an asymmetric key. Path format is specific to a key store provider.</param>
+        /// <param name="allowEnclaveComputations">Boolean indicating whether this key can be sent to trusted enclave</param>
+        /// <param name="signature">Signature for the master key metadata</param>
+        /// <returns>Boolean indicating whether the master key metadata can be verified based on the provided signature</returns>
+        public override bool VerifyColumnMasterKeyMetadata(string masterKeyPath, bool allowEnclaveComputations, byte[] signature)
+        {
+            var hash = ComputeMasterKeyMetadataHash(masterKeyPath, allowEnclaveComputations, isSystemOp: true);
+
+            // Parse the certificate path and get the X509 cert
+            X509Certificate2 certificate = GetCertificateByPath(masterKeyPath, isSystemOp: true);
+
+            // Validate the signature
+            return RSAVerifySignature(hash, signature, certificate);
+        }
+
+        private byte[] ComputeMasterKeyMetadataHash(string masterKeyPath, bool allowEnclaveComputations, bool isSystemOp)
+        {
+            // Validate the input parameters
+            ValidateNonEmptyCertificatePath(masterKeyPath, isSystemOp);
+
+            // Validate masterKeyPath Length
+            ValidateCertificatePathLength(masterKeyPath, isSystemOp);
+
+            string masterkeyMetadata = ProviderName + masterKeyPath + allowEnclaveComputations;
+            masterkeyMetadata = masterkeyMetadata.ToLowerInvariant();
+            byte[] masterkeyMetadataBytes = Encoding.Unicode.GetBytes(masterkeyMetadata.ToLowerInvariant());
+
+            // Compute hash 
+            byte[] hash;
+            using (SHA256Cng sha256 = new SHA256Cng())
+            {
+                sha256.TransformFinalBlock(masterkeyMetadataBytes, 0, masterkeyMetadataBytes.Length);
+                hash = sha256.Hash;
+            }
+            return hash;
+        }
+
+        /// <summary>
         /// This function validates that the encryption algorithm is RSA_OAEP and if it is not,
         /// then throws an exception
         /// </summary>

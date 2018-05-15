@@ -6,6 +6,7 @@ namespace System.ServiceModel.Security
 {
     using System.IdentityModel.Selectors;
     using System.Runtime;
+    using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
     using System.ServiceModel;
 
@@ -15,6 +16,8 @@ namespace System.ServiceModel.Security
         internal const X509RevocationMode DefaultRevocationMode = X509RevocationMode.Online;
         internal const StoreLocation DefaultTrustedStoreLocation = StoreLocation.CurrentUser;
         static X509CertificateValidator defaultCertificateValidator;
+        // ASN.1 description: {iso(1) identified-organization(3) dod(6) internet(1) security(5) mechanisms(5) pkix(7) kp(3) serverAuth(1)}
+        static readonly Oid serverAuthOid = new Oid("1.3.6.1.5.5.7.3.1", "1.3.6.1.5.5.7.3.1");
 
         X509CertificateValidationMode certificateValidationMode = DefaultCertificateValidationMode;
         X509RevocationMode revocationMode = DefaultRevocationMode;
@@ -43,6 +46,12 @@ namespace System.ServiceModel.Security
                 {
                     bool useMachineContext = DefaultTrustedStoreLocation == StoreLocation.LocalMachine;
                     X509ChainPolicy chainPolicy = new X509ChainPolicy();
+
+                    if (!ServiceModelAppSettings.UseLegacyCertificateUsagePolicy)
+                    {
+                        chainPolicy.ApplicationPolicy.Add(serverAuthOid);
+                    }
+
                     chainPolicy.RevocationMode = DefaultRevocationMode;
                     defaultCertificateValidator = X509CertificateValidator.CreateChainTrustValidator(useMachineContext, chainPolicy);
                 }
@@ -122,6 +131,12 @@ namespace System.ServiceModel.Security
             {
                 bool useMachineContext = this.trustedStoreLocation == StoreLocation.LocalMachine;
                 X509ChainPolicy chainPolicy = new X509ChainPolicy();
+
+                if (!ServiceModelAppSettings.UseLegacyCertificateUsagePolicy)
+                {
+                    chainPolicy.ApplicationPolicy.Add(serverAuthOid);
+                }
+
                 chainPolicy.RevocationMode = this.revocationMode;
                 if (this.certificateValidationMode == X509CertificateValidationMode.ChainTrust)
                 {

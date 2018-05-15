@@ -101,6 +101,9 @@ namespace System.Collections.Generic {
         public HashSet()
             : this(EqualityComparer<T>.Default) { }
 
+        public HashSet(int capacity)
+            : this(capacity, EqualityComparer<T>.Default) { }
+
         public HashSet(IEqualityComparer<T> comparer) {
             if (comparer == null) {
                 comparer = EqualityComparer<T>.Default;
@@ -130,21 +133,65 @@ namespace System.Collections.Generic {
             }
             Contract.EndContractBlock();
 
-            // to avoid excess resizes, first set size based on collection's count. Collection
-            // may contain duplicates, so call TrimExcess if resulting hashset is larger than
-            // threshold
-            int suggestedCapacity = 0;
-            ICollection<T> coll = collection as ICollection<T>;
-            if (coll != null) {
-                suggestedCapacity = coll.Count;
+            var otherAsHashSet = collection as HashSet<T>;
+            if (otherAsHashSet != null && AreEqualityComparersEqual(this, otherAsHashSet)) {
+                CopyFrom(otherAsHashSet);
             }
-            Initialize(suggestedCapacity);
+            else {
+                // to avoid excess resizes, first set size based on collection's count. Collection
+                // may contain duplicates, so call TrimExcess if resulting hashset is larger than
+                // threshold
+                ICollection<T> coll = collection as ICollection<T>;
+                int suggestedCapacity = coll == null ? 0 : coll.Count;
+                Initialize(suggestedCapacity);
 
-            this.UnionWith(collection);
-            if ((m_count == 0 && m_slots.Length > HashHelpers.GetMinPrime()) ||
-                (m_count > 0 && m_slots.Length / m_count > ShrinkThreshold)) {
-                TrimExcess();
+                this.UnionWith(collection);
+
+                if (m_count > 0 && m_slots.Length / m_count > ShrinkThreshold) {
+                    TrimExcess();
+                }
             }
+        }
+
+        // Initializes the HashSet from another HashSet with the same element type and
+        // equality comparer.
+        private void CopyFrom(HashSet<T> source) {
+            int count = source.m_count;
+            if (count == 0) {
+                // As well as short-circuiting on the rest of the work done,
+                // this avoids errors from trying to access otherAsHashSet.m_buckets
+                // or otherAsHashSet.m_slots when they aren't initialized.
+                return;
+            }
+
+            int capacity = source.m_buckets.Length;
+            int threshold = HashHelpers.ExpandPrime(count + 1);
+
+            if (threshold >= capacity) {
+                m_buckets = (int[])source.m_buckets.Clone();
+                m_slots = (Slot[])source.m_slots.Clone();
+
+                m_lastIndex = source.m_lastIndex;
+                m_freeList = source.m_freeList;
+            }
+            else {
+                int lastIndex = source.m_lastIndex;
+                Slot[] slots = source.m_slots;
+                Initialize(count);
+                int index = 0;
+                for (int i = 0; i < lastIndex; ++i)
+                {
+                    int hashCode = slots[i].hashCode;
+                    if (hashCode >= 0)
+                    {
+                        AddValue(index, hashCode, slots[i].value);
+                        ++index;
+                    }
+                }
+                Debug.Assert(index == count);
+                m_lastIndex = index;
+            }
+            m_count = count;
         }
 
 #if !SILVERLIGHT
@@ -156,6 +203,21 @@ namespace System.Collections.Generic {
             m_siInfo = info;
         }
 #endif
+
+        public HashSet(int capacity, IEqualityComparer<T> comparer)
+            : this(comparer)
+        {
+            if (capacity < 0)
+            {
+                throw new ArgumentOutOfRangeException("capacity");
+            }
+            Contract.EndContractBlock();
+
+            if (capacity > 0)
+            {
+                Initialize(capacity);
+            }
+        }
 
         #endregion
 
@@ -372,6 +434,30 @@ namespace System.Collections.Generic {
         /// <returns>true if added, false if already present</returns>
         public bool Add(T item) {
             return AddIfNotPresent(item);
+        }
+
+        /// <summary>
+        /// Searches the set for a given value and returns the equal value it finds, if any.
+        /// </summary>
+        /// <param name="equalValue">The value to search for.</param>
+        /// <param name="actualValue">The value from the set that the search found, or the default value of <typeparamref name="T"/> when the search yielded no match.</param>
+        /// <returns>A value indicating whether the search was successful.</returns>
+        /// <remarks>
+        /// This can be useful when you want to reuse a previously stored reference instead of 
+        /// a newly constructed one (so that more sharing of references can occur) or to look up
+        /// a value that has more complete data than the value you currently have, although their
+        /// comparer functions indicate they are equal.
+        /// </remarks>
+        public bool TryGetValue(T equalValue, out T actualValue) {
+            if (m_buckets != null) {
+                int i = InternalIndexOf(equalValue);
+                if (i >= 0) {
+                    actualValue = m_slots[i].value;
+                    return true;
+                }
+            }
+            actualValue = default(T);
+            return false;
         }
 
         /// <summary>
@@ -1005,6 +1091,25 @@ namespace System.Collections.Generic {
             return true;
         }
 
+        // Add value at known index with known hash code. Used only
+        // when constructing from another HashSet.
+        private void AddValue(int index, int hashCode, T value) {
+            int bucket = hashCode % m_buckets.Length;
+
+#if DEBUG
+            Debug.Assert(InternalGetHashCode(value) == hashCode);
+            for (int i = m_buckets[bucket] - 1; i >= 0; i = m_slots[i].next) {
+                Debug.Assert(!m_comparer.Equals(m_slots[i].value, value));
+            }
+#endif
+
+            Debug.Assert(m_freeList == -1);
+            m_slots[index].hashCode = hashCode;
+            m_slots[index].value = value;
+            m_slots[index].next = m_buckets[bucket] - 1;
+            m_buckets[bucket] = index + 1;
+        }
+
         /// <summary>
         /// Checks if this contains of other's elements. Iterates over other's elements and 
         /// returns false as soon as it finds an element in other that's not in this.
@@ -1431,8 +1536,8 @@ namespace System.Collections.Generic {
 
         internal struct Slot {
             internal int hashCode;      // Lower 31 bits of hash code, -1 if unused
-            internal T value;
             internal int next;          // Index of next entry, -1 if last
+            internal T value;
         }
 
 #if !SILVERLIGHT

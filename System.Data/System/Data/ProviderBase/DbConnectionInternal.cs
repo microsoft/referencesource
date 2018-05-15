@@ -607,6 +607,11 @@ namespace System.Data.ProviderBase {
             Bid.PoolerTrace("<prov.DbConnectionInternal.DoomThisConnection|RES|INFO|CPOOL> %d#, Dooming\n", ObjectID);
         }
 
+        // Reset connection doomed status so it can be re-connected and pooled.
+        protected internal void UnDoomThisConnection() {
+            _connectionIsDoomed = false;
+        }
+
         abstract public void EnlistTransaction(SysTx.Transaction transaction);
 
         virtual protected internal DataTable GetSchema(DbConnectionFactory factory, DbConnectionPoolGroup poolGroup, DbConnection outerConnection, string collectionName, string[] restrictions){

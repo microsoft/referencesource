@@ -132,6 +132,47 @@ namespace System.Text.RegularExpressions {
         // desktop build still uses non-generic collections for AppCompat with .NET Framework 3.5 pre-compiled assemblies
         protected internal Hashtable caps;
         protected internal Hashtable capnames;
+
+        [CLSCompliant(false)]
+        protected IDictionary Caps
+        {
+            get
+            {
+                return caps;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+ 
+                caps = value as Hashtable;
+                if (caps == null)
+                {
+                    caps = new Hashtable(value);
+                }
+            }
+        }
+ 
+        [CLSCompliant(false)]
+        protected IDictionary CapNames
+        {
+            get
+            {
+                return capnames;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+ 
+                capnames = value as Hashtable;
+                if (capnames == null)
+                {
+                    capnames = new Hashtable(value);
+                }
+            }
+        }
+
 #endif
         protected internal String[]  capslist;               // if captures are sparse or named captures are used, this is the sorted list of names
         protected internal int       capsize;                // the size of the capture array

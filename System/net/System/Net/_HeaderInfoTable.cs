@@ -16,6 +16,7 @@ namespace System.Net {
         private static HeaderInfo UnknownHeaderInfo = new HeaderInfo(string.Empty, false, false, false, SingleParser);
         private static HeaderParser SingleParser = new HeaderParser(ParseSingleValue);
         private static HeaderParser MultiParser = new HeaderParser(ParseMultiValue);
+        private static HeaderParser SetCookieParser = new HeaderParser(ParseSetCookieValue);
 
         private static string[] ParseSingleValue(string value) {
             return new string[1]{value};
@@ -27,6 +28,14 @@ namespace System.Net {
 
 
         private static string[] ParseMultiValue(string value) {
+            return ParseValueHelper(value, false);
+        }
+
+        private static string[] ParseSetCookieValue(string value) {
+            return ParseValueHelper(value, true);
+        }
+
+        private static string[] ParseValueHelper(string value, bool isSetCookie) {
             StringCollection tempStringCollection = new StringCollection();
 
             bool inquote = false;
@@ -40,9 +49,11 @@ namespace System.Net {
                 }
                 else if ((value[i] == ',') && !inquote) {
                     singleValue = new string(vp, 0, chIndex);
-                    tempStringCollection.Add(singleValue.Trim());
-                    chIndex = 0;
-                    continue;
+                    if (!isSetCookie || !IsDuringExpiresAttributeParsing(singleValue)) {
+                        tempStringCollection.Add(singleValue.Trim());
+                        chIndex = 0;
+                        continue;
+                    }
                 }
                 vp[chIndex++] = value[i];
             }
@@ -57,8 +68,23 @@ namespace System.Net {
             }
 
             string[] stringArray = new string[tempStringCollection.Count];
-            tempStringCollection.CopyTo(stringArray, 0) ;
+            tempStringCollection.CopyTo(stringArray, 0);
             return stringArray;
+        }
+
+        // This method is to check if we are in the middle of parsing the Expires attribute
+        // for Set-Cookie header. It needs to check two conditions: 1. If current attribute
+        // is Expires. 2. Have we finished parsing it yet. Because the Expires attribute
+        // will contain exactly one comma, no comma means we are still parsing it.
+        private static bool IsDuringExpiresAttributeParsing(string singleValue) {
+            string[] attributeArray = singleValue.Split(';');
+            string lastElement = attributeArray[attributeArray.Length - 1].Trim();
+            bool noComma = lastElement.IndexOf(',') < 0;
+
+            string lastAttribute = lastElement.Split('=')[0].Trim();
+            bool isExpires = (lastAttribute.IndexOf("Expires", StringComparison.OrdinalIgnoreCase) >= 0) && (lastAttribute.Length == 7);
+
+            return (isExpires && noComma);
         }
 
         static HeaderInfoTable() {
@@ -105,8 +131,8 @@ namespace System.Net {
                 new HeaderInfo(HttpKnownHeaderNames.Referer,            true,   false,  false,  SingleParser),
                 new HeaderInfo(HttpKnownHeaderNames.RetryAfter,         false,  false,  false,  SingleParser),
                 new HeaderInfo(HttpKnownHeaderNames.Server,             false,  false,  false,  SingleParser),
-                new HeaderInfo(HttpKnownHeaderNames.SetCookie,          false,  false,  true,   MultiParser),
-                new HeaderInfo(HttpKnownHeaderNames.SetCookie2,         false,  false,  true,   MultiParser),
+                new HeaderInfo(HttpKnownHeaderNames.SetCookie,          false,  false,  true,   SetCookieParser),
+                new HeaderInfo(HttpKnownHeaderNames.SetCookie2,         false,  false,  true,   SetCookieParser),
                 new HeaderInfo(HttpKnownHeaderNames.TE,                 false,  false,  true,   MultiParser),
                 new HeaderInfo(HttpKnownHeaderNames.Trailer,            false,  false,  true,   MultiParser),
                 new HeaderInfo(HttpKnownHeaderNames.TransferEncoding,   true,   true,   true,   MultiParser),

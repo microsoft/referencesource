@@ -79,6 +79,7 @@ namespace System.Net {
         private static bool s_disableSendAuxRecord;
         private static bool s_disableSystemDefaultTlsVersions;
         private static SslProtocols s_defaultSslProtocols;
+        private static bool s_disableCertificateEKUs;
 
 #endif // !FEATURE_PAL
 
@@ -300,6 +301,15 @@ namespace System.Net {
             {
                 EnsureConfigurationLoaded();
                 return s_disableSendAuxRecord;
+            }
+        }
+
+        internal static bool DisableCertificateEKUs
+        {
+            get
+            {
+                EnsureConfigurationLoaded();
+                return s_disableCertificateEKUs;
             }
         }
 

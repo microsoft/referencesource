@@ -83,10 +83,10 @@ namespace System.IO
         }
 
         [System.Security.SecurityCritical]
-        internal void InitializeFrom(Win32Native.WIN32_FIND_DATA findData)
+        internal void InitializeFrom(ref Win32Native.WIN32_FIND_DATA findData)
         {
             _data = new Win32Native.WIN32_FILE_ATTRIBUTE_DATA();
-            _data.PopulateFrom(findData);
+            _data.PopulateFrom(ref findData);
             _dataInitialised = 0;
         }
 
@@ -179,8 +179,7 @@ namespace System.IO
                 if (_dataInitialised != 0) // Refresh was unable to initialise the data
                     __Error.WinIOError(_dataInitialised, DisplayPath);
                 
-                long fileTime = ((long)_data.ftCreationTimeHigh << 32) | _data.ftCreationTimeLow;
-                return DateTime.FromFileTimeUtc(fileTime);
+                return DateTime.FromFileTimeUtc(_data.ftCreationTime.ToTicks());
                 
             }
         
@@ -223,10 +222,8 @@ namespace System.IO
 
                 if (_dataInitialised != 0) // Refresh was unable to initialise the data
                     __Error.WinIOError(_dataInitialised, DisplayPath);
-                    
-                long fileTime = ((long)_data.ftLastAccessTimeHigh << 32) | _data.ftLastAccessTimeLow;
-                return DateTime.FromFileTimeUtc(fileTime);
-    
+
+                return DateTime.FromFileTimeUtc(_data.ftLastAccessTime.ToTicks());
             }
 
             [ResourceExposure(ResourceScope.None)]
@@ -268,10 +265,8 @@ namespace System.IO
 
                 if (_dataInitialised != 0) // Refresh was unable to initialise the data
                     __Error.WinIOError(_dataInitialised, DisplayPath);
-        
-            
-                long fileTime = ((long)_data.ftLastWriteTimeHigh << 32) | _data.ftLastWriteTimeLow;
-                return DateTime.FromFileTimeUtc(fileTime);
+
+                return DateTime.FromFileTimeUtc(_data.ftLastWriteTime.ToTicks());
             }
 
             [ResourceExposure(ResourceScope.None)]
@@ -311,11 +306,7 @@ namespace System.IO
 
                 return (FileAttributes) _data.fileAttributes;
             }
-            #if FEATURE_CORECLR
-            [System.Security.SecurityCritical] // auto-generated
-            #else
             [System.Security.SecuritySafeCritical]
-            #endif
             set {
 #if !FEATURE_CORECLR
                 FileIOPermission.QuickDemand(FileIOPermissionAccess.Write, FullPath);
