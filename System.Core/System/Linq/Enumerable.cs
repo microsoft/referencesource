@@ -1017,6 +1017,21 @@ namespace System.Linq
             }
         }
 
+		public static IEnumerable<TSource> DefaultIfEmpty<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> defaultEnumeration) {
+			if (source == null) throw Error.ArgumentNull("source");
+
+			using (IEnumerator<TSource> e = source.GetEnumerator()) {
+				if (e.MoveNext()) {
+					do {
+						yield return e.Current;
+					} while (e.MoveNext());
+				}
+				else {
+					foreach (var item in defaultEnumeration) yield return item;
+				}
+			}
+		}
+
         public static IEnumerable<TResult> OfType<TResult>(this IEnumerable source) {
             if (source == null) throw Error.ArgumentNull("source");
             return OfTypeIterator<TResult>(source);
