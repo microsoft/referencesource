@@ -267,6 +267,7 @@ CantContainNullEntries=Array '{0}' cannot contain null entries.
 InvalidPathCharsInChecksum=The CodeChecksumPragma file name '{0}' contains invalid path characters.
 InvalidRegion=The region directive '{0}' contains invalid characters.  RegionText cannot contain any new line characters.
 Provider_does_not_support_options=This CodeDomProvider type does not have a constructor that takes providerOptions - "{0}"
+FileIntegrityCheckFailed=Integrity check for file '{0}' failed.
 
 #----------------------------------------------------------------------
 # Metadata helpers
@@ -2144,3 +2145,7 @@ Argument_InvalidThreshold=maximumThreshold cannot be less than initialThreshold.
 #if !SILVERLIGHT
 net_ssl_io_already_shutdown=Write operations are not allowed after the channel was shutdown.
 #endif // !SILVERLIGHT
+
+net_io_readwritefailure=Unable to transfer data on the transport connection: {0}.
+
+Cryptography_X509_InvalidFlagCombination=The flags '{0}' may not be specified together.

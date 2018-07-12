@@ -43,6 +43,7 @@ public class AssemblyBuilder {
     // CodeChecksumPragma.ChecksumAlgorithmId takes this GUID to represent a SHA1 hash of the file contents
     // See: http://msdn.microsoft.com/en-us/library/system.codedom.codechecksumpragma.checksumalgorithmid.aspx
     private static readonly Guid s_codeChecksumSha1Id = new Guid(0xff1816ec, 0xaa5e, 0x4d10, 0x87, 0xf7, 0x6f, 0x49, 0x63, 0x83, 0x34, 0x60);
+    private static readonly Guid s_codeChecksumSha256Id = new Guid(0x8829d00f, 0x11b8, 0x4213, 0x87, 0x8b, 0x77, 0x0e, 0x85, 0x97, 0xac, 0x16);
 
     // List of BuildProviders involved in this compilation
     // The key is either a virtual path, or the BuildProvider itself if
@@ -324,13 +325,23 @@ public class AssemblyBuilder {
         _objectFactoryGenerator.AddFactoryMethod(typeName);
     }
 
+    internal void GenerateTypeFactory(string typeName, CodeCompileUnit ccu) {
+        // Create the object factory generator on demand
+        if (_objectFactoryGenerator == null) {
+            _objectFactoryGenerator = new ObjectFactoryCodeDomTreeGenerator(OutputAssemblyName);
+        }
+
+        // Add a method to fast create this type
+        _objectFactoryGenerator.AddFactoryMethod(typeName, ccu);
+    }
+
     /// <devdoc>
     ///     Creates a new resource that will be added to the compilation.  The build provider
     ///     can write to it using the returned Stream.
     ///     The build provider should close the Stream when it is done writing to it.
     ///     The build provider should pass itself as a parameter to this method.
     /// </devdoc>
-    public Stream CreateEmbeddedResource(BuildProvider buildProvider, string name) {
+        public Stream CreateEmbeddedResource(BuildProvider buildProvider, string name) {
 
         // Make sure it's just a valid simple file name
         if (!Util.IsValidFileName(name)) {
@@ -639,8 +650,9 @@ public class AssemblyBuilder {
         if (!File.Exists(physicalPath))
             return;
 
+        string hashAlgorithm = BinaryCompatibility.Current.TargetsAtLeastFramework472 ? "SHA256" : "SHA1";
         CodeChecksumPragma pragma = new CodeChecksumPragma() {
-            ChecksumAlgorithmId = s_codeChecksumSha1Id
+            ChecksumAlgorithmId = (BinaryCompatibility.Current.TargetsAtLeastFramework472 ? s_codeChecksumSha256Id : s_codeChecksumSha1Id)
         };
 
         if (_compConfig.UrlLinePragmas) {
@@ -650,19 +662,13 @@ public class AssemblyBuilder {
             pragma.FileName = physicalPath;
         }
 
-        // Generate a SHA1 hash from the contents of the file
+            // Generate a SHA1 hash from the contents of the file
 
-        // The VS debugger uses a cryptographic hash of the file being debugged so that it doesn't accidentally
-        // display to the user the wrong version of the file. This is merely a convenience feature for debugging
-        // purposes and is not security-related in any way. Since VS only supports MD5 and SHA1 hashes, we just
-        // use SHA1 and suppress the [Obsolete] warning.
-#pragma warning disable 618
         using (Stream stream = new FileStream(physicalPath, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-            using (SHA1 hashAlgorithm = CryptoAlgorithms.CreateSHA1()) {
-                pragma.ChecksumData = hashAlgorithm.ComputeHash(stream);
+            using (HashAlgorithm ha = (HashAlgorithm)CryptoConfig.CreateFromName(hashAlgorithm)) {
+                pragma.ChecksumData = ha.ComputeHash(stream);
             }
         }
-#pragma warning restore 618
 
         // Add the pragma to the CodeCompileUnit
         compileUnit.StartDirectives.Add(pragma);

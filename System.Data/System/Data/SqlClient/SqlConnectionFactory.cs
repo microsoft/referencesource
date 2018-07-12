@@ -158,6 +158,16 @@ namespace System.Data.SqlClient
                 else if (connectionTimeout >= Int32.MaxValue/1000)
                     connectionTimeout = Int32.MaxValue;
 
+                if (opt.Authentication == SqlAuthenticationMethod.ActiveDirectoryInteractive) {
+                    // interactive mode will always have pool's CreateTimeout = 10 x ConnectTimeout.
+                    if (connectionTimeout >= Int32.MaxValue / 10) {
+                        connectionTimeout = Int32.MaxValue;
+                    } else {
+                        connectionTimeout *= 10;
+                    }
+                    Bid.Trace($"<sc.SqlConnectionFactory.CreateConnectionPoolGroupOptions>Set connection pool CreateTimeout={connectionTimeout} when AD Interactive is in use.\n");
+                }
+
                 poolingOptions = new DbConnectionPoolGroupOptions(
                                                     opt.IntegratedSecurity || opt.Authentication == SqlAuthenticationMethod.ActiveDirectoryIntegrated,
                                                     opt.MinPoolSize,

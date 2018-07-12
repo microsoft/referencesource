@@ -293,6 +293,17 @@ namespace System.Security.Cryptography.X509Certificates {
         
         private static int s_publicKeyOffset;
 
+        internal const X509KeyStorageFlags KeyStorageFlags47 =
+            X509KeyStorageFlags.UserKeySet |
+            X509KeyStorageFlags.MachineKeySet |
+            X509KeyStorageFlags.Exportable |
+            X509KeyStorageFlags.UserProtected |
+            X509KeyStorageFlags.PersistKeySet;
+
+        internal const X509KeyStorageFlags KeyStorageFlagsAll =
+            KeyStorageFlags47 |
+            X509KeyStorageFlags.EphemeralKeySet;
+
         //
         // public constructors
         //
@@ -741,10 +752,24 @@ namespace System.Security.Cryptography.X509Certificates {
                     throw new CryptographicException(SR.GetString(SR.Cryptography_InvalidHandle), "m_safeCertContext");
 
                 uint cbData = 0;
-                return CAPI.CertGetCertificateContextProperty(m_safeCertContext,
-                                                              CAPI.CERT_KEY_PROV_INFO_PROP_ID,
-                                                              SafeLocalAllocHandle.InvalidHandle,
-                                                              ref cbData);
+
+                bool hasPrivateKey;
+
+                using (SafeLocalAllocHandle invalidHandle = SafeLocalAllocHandle.InvalidHandle) {
+                    hasPrivateKey = CAPI.CertGetCertificateContextProperty(m_safeCertContext,
+                                                                           CAPI.CERT_KEY_CONTEXT_PROP_ID,
+                                                                           invalidHandle,
+                                                                           ref cbData);
+
+                    if (!hasPrivateKey) {
+                        hasPrivateKey = CAPI.CertGetCertificateContextProperty(m_safeCertContext,
+                                                                               CAPI.CERT_KEY_PROV_INFO_PROP_ID,
+                                                                               invalidHandle,
+                                                                               ref cbData);
+                    }
+                }
+
+                return hasPrivateKey;
             }
         }
 
@@ -1210,23 +1235,25 @@ namespace System.Security.Cryptography.X509Certificates {
         [SecuritySafeCritical]
 #endif
         private void AppendPrivateKeyInfo (StringBuilder sb) {
+            if (!HasPrivateKey)
+                return;
+
             CspKeyContainerInfo cspKeyContainerInfo = null;
             try {
-                if (this.HasPrivateKey) {
-                    CspParameters parameters = new CspParameters();
-                    if (GetPrivateKeyInfo(m_safeCertContext, ref parameters))
-                        cspKeyContainerInfo = new CspKeyContainerInfo(parameters);
-                }
+                CspParameters parameters = new CspParameters();
+                if (GetPrivateKeyInfo(m_safeCertContext, ref parameters))
+                    cspKeyContainerInfo = new CspKeyContainerInfo(parameters);
             }
             // We don't have the permission to access the key container. Just return.
             catch (SecurityException) {}
             // We could not access the key container. Just return.
             catch (CryptographicException) {}
 
+            sb.Append(Environment.NewLine + Environment.NewLine + "[Private Key]");
+
             if (cspKeyContainerInfo == null)
                 return;
 
-            sb.Append(Environment.NewLine + Environment.NewLine + "[Private Key]");
             sb.Append(Environment.NewLine + "  Key Store: ");
             sb.Append(cspKeyContainerInfo.MachineKeyStore ? "Machine" : "User");
             sb.Append(Environment.NewLine + "  Provider Name: ");

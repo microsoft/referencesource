@@ -39,6 +39,7 @@ namespace System.Web.Util {
             TargetsAtLeastFramework46 = (version >= VersionUtil.Framework46);
             TargetsAtLeastFramework461 = (version >= VersionUtil.Framework461);
             TargetsAtLeastFramework463 = (version >= VersionUtil.Framework463);
+            TargetsAtLeastFramework472 = (version >= VersionUtil.Framework472);
         }
 
         public bool TargetsAtLeastFramework45 { get; private set; }
@@ -47,6 +48,7 @@ namespace System.Web.Util {
         public bool TargetsAtLeastFramework46 { get; private set; }
         public bool TargetsAtLeastFramework461 { get; private set; }
         public bool TargetsAtLeastFramework463 { get; private set; }
+        public bool TargetsAtLeastFramework472 { get; private set; }
 
         public Version TargetFramework { get; private set; }
 

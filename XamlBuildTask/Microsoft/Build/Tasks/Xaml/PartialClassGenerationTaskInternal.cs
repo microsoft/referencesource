@@ -9,6 +9,7 @@ namespace Microsoft.Build.Tasks.Xaml
     using System.CodeDom;
     using System.CodeDom.Compiler;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Runtime;
     using System.Xaml;
@@ -597,6 +598,11 @@ namespace Microsoft.Build.Tasks.Xaml
             return Path.Combine(this.OutputPath, markupItemName);
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3053:UseXmlSecureResolver", 
+            Justification = @"For the call to XmlReader.Create() below, CA3053 recommends setting the 
+XmlReaderSettings.XmlResolver property to either null or an instance of XmlSecureResolver. 
+But after setting this property to null, a warning of CA3053 still shows up in FxCop. 
+So we suppress this error until the reporting for CA3053 has been updated to fix this issue.")]
         XamlNodeList ReadXamlNodes(string xamlFileName)
         {
             XamlNodeList nodeList = new XamlNodeList(this.SchemaContext);
@@ -611,7 +617,7 @@ namespace Microsoft.Build.Tasks.Xaml
 
                 using (StreamReader streamReader = new StreamReader(xamlFileName))
                 {
-                    XamlReader reader = new XamlXmlReader(XmlReader.Create(streamReader), this.SchemaContext, settings);
+                    XamlReader reader = new XamlXmlReader(XmlReader.Create(streamReader, new XmlReaderSettings { XmlResolver = null }), this.SchemaContext, settings);
                     XamlServices.Transform(reader, nodeList.Writer);
                 }
             }

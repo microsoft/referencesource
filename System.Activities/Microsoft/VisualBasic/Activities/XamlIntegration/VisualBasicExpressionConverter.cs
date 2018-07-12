@@ -206,10 +206,11 @@ namespace Microsoft.VisualBasic.Activities.XamlIntegration
 
                 if (assembly.IsDefined(typeof(XmlnsDefinitionAttribute), false) && !assembly.IsDynamic)
                 {
-                    lock (XmlnsMappingsLockObject)
-                    {
-                        CacheLoadedAssembly(assembly);
-                    }
+                    // Don't lock XmlnsMappingsLockObject here. Leave it up to CacheLoadedAssembly to do it. If we
+                    // do it here, we could get a deadlock because the GetCustomAttribute in CacheLoadedAssembly might
+                    // induce another attempt to load an assembly whose "load lock" is already held by another thread
+                    // that may end up waiting for this XmlnsMappingsLockObject. (DevDiv 251926)
+                    CacheLoadedAssembly(assembly);
                 }
             }
 
@@ -265,26 +266,38 @@ namespace Microsoft.VisualBasic.Activities.XamlIntegration
                 string assemblyName = assembly.FullName;
                 XmlnsMapping mapping;
 
-                for (int i = 0; i < attributes.Length; ++i)
+                // Obtain the lock that is protecting the xmlnsMappings dictionary because we are going
+                // to access it and potentially modify it here. Do the lock here, rather than requiring
+                // the caller to do it because GetCustomAttributes may end up triggering another
+                // assembly load during OnAssemblyLoaded processing, which could cause a deadlock with
+                // a lock used when loading an assembly that is out of our control. One caller - EnsureInitialized -
+                // will get the lock before calling this. But that's okay because locking again on the same thread
+                // works. (DevDiv 251926)
+                // Note that CollectXmlNamespacesAndAssemblies also does this lock because it calls
+                // WrapCachedMapping, which also access and potentially modifieds the xmlnsMapping dictionary.
+                lock (XmlnsMappingsLockObject)
                 {
-                    XNamespace xmlns = XNamespace.Get(attributes[i].XmlNamespace);
-
-                    if (!xmlnsMappings.TryGetValue(xmlns, out mapping))
+                    for (int i = 0; i < attributes.Length; ++i)
                     {
-                        mapping.ImportReferences = new HashSet<VisualBasicImportReference>();
-                        xmlnsMappings[xmlns] = mapping;
+                        XNamespace xmlns = XNamespace.Get(attributes[i].XmlNamespace);
+
+                        if (!xmlnsMappings.TryGetValue(xmlns, out mapping))
+                        {
+                            mapping.ImportReferences = new HashSet<VisualBasicImportReference>();
+                            xmlnsMappings[xmlns] = mapping;
+                        }
+
+                        VisualBasicImportReference newImportReference = new VisualBasicImportReference
+                        {
+                            Assembly = assemblyName,
+                            Import = attributes[i].ClrNamespace,
+                            Xmlns = xmlns,
+                        };
+                        // early binding the assembly
+                        // this leads to the short-cut, skipping the normal assembly resolution routine
+                        newImportReference.EarlyBoundAssembly = assembly;
+                        mapping.ImportReferences.Add(newImportReference);
                     }
-
-                    VisualBasicImportReference newImportReference = new VisualBasicImportReference
-                    {
-                        Assembly = assemblyName,
-                        Import = attributes[i].ClrNamespace,
-                        Xmlns = xmlns,
-                    };
-                    // early binding the assembly
-                    // this leads to the short-cut, skipping the normal assembly resolution routine
-                    newImportReference.EarlyBoundAssembly = assembly;
-                    mapping.ImportReferences.Add(newImportReference);
                 }
             }
 

@@ -10,12 +10,13 @@ namespace System.Net {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Globalization;
+    using System.Net.Configuration;
     using System.Net.Sockets;
     using System.Threading;
     using System.Security;
-    using System.Globalization;
-    using System.Net.Configuration;
-    using System.Diagnostics.CodeAnalysis;
+    using System.Security.Authentication;
 
     internal enum ReadState {
         Start,
@@ -326,6 +327,8 @@ namespace System.Net {
         //  of a errand writer still banging away on another thread.
         //
 
+        private DateTime        m_PrepareCloseConnectionSocketCalledUtc;
+        private DateTime        m_AbortSocketCalledUtc;
         private DateTime        m_IdleSinceUtc;
         private HttpWebRequest  m_LockedRequest;
         private HttpWebRequest  m_CurrentRequest; // This is the request whose response is being parsed, same as WriteList[0] but could be different if request was aborted.
@@ -810,13 +813,9 @@ namespace System.Net {
                         ValidationHelper.HashString(request));
                     return TriState.Unspecified; // don't use it
                 } else if (canPollRead) {
-                    // Not timed out from our perspective but...
-                    // Check if remote has:
-                    //   1) closed an idle connection (TCP FIN)
-                    // or
-                    //   2) sent some errant data on an idle connection.
-                    bool pollRead = PollRead();
-                    if (pollRead) {
+                    // Not timed out from our perspective.
+                    // Check if the connection can be reused.
+                    if (!IsConnectionReusable()) {
                         GlobalLog.Leave(
                             "Connection#" + ValidationHelper.HashString(this) +
                             "::StartRequest() " +
@@ -870,6 +869,26 @@ namespace System.Net {
 
             GlobalLog.Leave("Connection#" + ValidationHelper.HashString(this) + "::StartRequest", needReConnect.ToString());
             return needReConnect;
+        }
+
+        private bool IsConnectionReusable() {
+            try {
+                if (PollRead()) {
+                    // PollRead() returns true if there is
+                    // data still left to read from the socket or
+                    // the socket has been closed (FIN). So, we can't
+                    // reuse this connection.
+                    return false;
+                }
+            }
+            catch (SocketException ex) {
+                // PollRead() can also throw SocketException for other problems
+                // with the socket (i.e. RST).
+                if (Logging.On) Logging.PrintError(Logging.Web, this, "IsConnectionReusable", ex.ToString());
+                return false;
+            }
+
+            return true;
         }
 
         private void CompleteStartRequest(bool onSubmitThread, HttpWebRequest request, TriState needReConnect) {
@@ -1087,8 +1106,14 @@ namespace System.Net {
                 try {
 #if !FEATURE_PAL
                     if (request.Address.Scheme == Uri.UriSchemeHttps) {
-                        TlsStream tlsStream = new TlsStream(request.GetRemoteResourceUri().IdnHost,
-                            NetworkStream, request.ClientCertificates, ServicePoint, request,
+                        TlsStream tlsStream = new TlsStream(
+                            request.GetRemoteResourceUri().IdnHost,
+                            NetworkStream,
+                            request.CheckCertificateRevocationList,
+                            request.SslProtocols,
+                            request.ClientCertificates,
+                            ServicePoint,
+                            request,
                             request.Async ? request.GetConnectingContext().ContextCopy : null);
                         NetworkStream = tlsStream;
                     }
@@ -1456,6 +1481,7 @@ namespace System.Net {
         {
             lock (this)
             {
+                Debug.Assert(request.WriteBuffer == null);
                 request.HeadersCompleted = true;
                 if (m_WriteList.Count == 0)
                 {
@@ -2766,6 +2792,8 @@ quit:
 
         internal void AbortSocket(bool isAbortState)
         {
+            m_AbortSocketCalledUtc = DateTime.UtcNow;
+
             // The timer/finalization thread is allowed to call this.  (It doesn't call user code and doesn't block.)
             GlobalLog.ThreadContract(ThreadKinds.Unknown, ThreadKinds.SafeSources | ThreadKinds.Timer | ThreadKinds.Finalization, "Connection#" + ValidationHelper.HashString(this) + "::AbortSocket");
             GlobalLog.Enter("Connection#" + ValidationHelper.HashString(this) + "::Abort", "isAbortState:" + isAbortState.ToString());
@@ -2809,6 +2837,8 @@ quit:
         private void PrepareCloseConnectionSocket(ref ConnectionReturnResult returnResult)
         {
             GlobalLog.Enter("Connection#" + ValidationHelper.HashString(this) + "::PrepareCloseConnectionSocket", m_Error.ToString());
+
+            m_PrepareCloseConnectionSocketCalledUtc = DateTime.UtcNow;
 
             // Effectivelly, closing a connection makes it exempted from the "Idling" logic
             m_IdleSinceUtc = DateTime.MinValue;
@@ -2999,13 +3029,17 @@ quit:
             }
             if (!m_RemovedFromConnectionList && ConnectionGroup != null)
             {
-                m_RemovedFromConnectionList = true;
-                ConnectionGroup.Disassociate(this);
+                RemoveFromConnectionList();
             }
 
             GlobalLog.Leave("Connection#" + ValidationHelper.HashString(this) + "::PrepareCloseConnectionSocket");
         }
 
+        internal void RemoveFromConnectionList()
+        {
+            m_RemovedFromConnectionList = true;
+            ConnectionGroup.Disassociate(this);
+        }
 
         /*++
 
@@ -3683,6 +3717,7 @@ done:
                 connectRequest.Credentials = originalRequest.InternalProxy == null ? null : originalRequest.InternalProxy.Credentials;
                 connectRequest.InternalProxy = null;
                 connectRequest.PreAuthenticate = true;
+                connectRequest.UserAgent = originalRequest.UserAgent;
 
                 if(async){
                     TunnelStateObject o = new TunnelStateObject(originalRequest, this);

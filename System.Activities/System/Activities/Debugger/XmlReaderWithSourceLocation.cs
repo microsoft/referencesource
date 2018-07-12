@@ -5,6 +5,7 @@
 namespace System.Activities.Debugger
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Xml;
 
@@ -18,11 +19,16 @@ namespace System.Activities.Debugger
         private CharacterSpottingTextReader characterSpottingTextReader;
         private Stack<DocumentLocation> contentStartLocationStack;
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3053:UseXmlSecureResolver", 
+            Justification = @"For the call to XmlReader.Create() below, CA3053 recommends setting the 
+XmlReaderSettings.XmlResolver property to either null or an instance of XmlSecureResolver. 
+But after setting this property to null, a warning of CA3053 still shows up in FxCop. 
+So we suppress this error until the reporting for CA3053 has been updated to fix this issue.")]
         public XmlReaderWithSourceLocation(TextReader underlyingTextReader)
         {
             UnitTestUtility.Assert(underlyingTextReader != null, "CharacterSpottingTextReader cannot be null and should be ensured by caller.");
             CharacterSpottingTextReader characterSpottingTextReader = new CharacterSpottingTextReader(underlyingTextReader);
-            this.BaseReader = XmlReader.Create(characterSpottingTextReader);
+            this.BaseReader = XmlReader.Create(characterSpottingTextReader, new XmlReaderSettings { XmlResolver = null });
             UnitTestUtility.Assert(this.BaseReaderAsLineInfo != null, "The XmlReader created by XmlReader.Create should ensure this.");
             UnitTestUtility.Assert(this.BaseReaderAsLineInfo.HasLineInfo(), "The XmlReader created by XmlReader.Create should ensure this.");
             this.characterSpottingTextReader = characterSpottingTextReader;

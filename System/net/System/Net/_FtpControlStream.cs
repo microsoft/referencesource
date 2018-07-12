@@ -11,6 +11,7 @@ namespace System.Net {
     using System.IO;
     using System.Security.Cryptography.X509Certificates ;
     using System.Net.Sockets;
+    using System.Security.Authentication;
     using System.Security.Permissions;
     using System.Text;
     using System.Diagnostics;
@@ -191,7 +192,15 @@ namespace System.Net {
             {
                 FtpWebRequest request = (FtpWebRequest) m_Request;
 
-                TlsStream tlsStream = new TlsStream(request.RequestUri.Host, networkStream, request.ClientCertificates, Pool.ServicePoint, request, m_Async ? request.GetWritingContext().ContextCopy : null);
+                TlsStream tlsStream = new TlsStream(
+                    request.RequestUri.Host,
+                    networkStream,
+                    ServicePointManager.CheckCertificateRevocationList,
+                    (SslProtocols)ServicePointManager.SecurityProtocol,
+                    request.ClientCertificates,
+                    Pool.ServicePoint,
+                    request,
+                    m_Async ? request.GetWritingContext().ContextCopy : null);
                 networkStream = tlsStream;
 
                 if (m_Async)
@@ -391,7 +400,15 @@ namespace System.Net {
             else if (status == FtpStatusCode.ServerWantsSecureSession)
             {
                 FtpWebRequest request = (FtpWebRequest) m_Request;
-                TlsStream tlsStream = new TlsStream(request.RequestUri.Host, NetworkStream, request.ClientCertificates, Pool.ServicePoint, request, m_Async ? request.GetWritingContext().ContextCopy : null);
+                TlsStream tlsStream = new TlsStream(
+                    request.RequestUri.Host,
+                    NetworkStream,
+                    ServicePointManager.CheckCertificateRevocationList,
+                    (SslProtocols)ServicePointManager.SecurityProtocol,
+                    request.ClientCertificates,
+                    Pool.ServicePoint,
+                    request,
+                    m_Async ? request.GetWritingContext().ContextCopy : null);
                 NetworkStream = tlsStream;
             }
 #endif // !FEATURE_PAL

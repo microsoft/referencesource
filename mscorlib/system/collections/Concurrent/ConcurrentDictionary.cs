@@ -86,7 +86,7 @@ namespace System.Collections.Concurrent
         private volatile Tables m_tables; // Internal tables of the dictionary       
         // NOTE: this is only used for compat reasons to serialize the comparer.
         // This should not be accessed from anywhere else outside of the serialization methods.
-        internal IEqualityComparer<TKey> m_comparer; 
+        internal IEqualityComparer<TKey> m_comparer;
 #if !FEATURE_CORECLR
         [NonSerialized]
 #endif
@@ -115,12 +115,6 @@ namespace System.Collections.Concurrent
 
         private int m_serializationCapacity; // used to save the capacity in serialization
 #endif
-        // The default concurrency level is DEFAULT_CONCURRENCY_MULTIPLIER * #CPUs. The higher the
-        // DEFAULT_CONCURRENCY_MULTIPLIER, the more concurrent writes can take place without interference
-        // and blocking, but also the more expensive operations that require all locks become (e.g. table
-        // resizing, ToArray, Count, etc). According to brief benchmarks that we ran, 4 seems like a good
-        // compromise.
-        private const int DEFAULT_CONCURRENCY_MULTIPLIER = 4;
 
         // The default capacity, i.e. the initial # of buckets. When choosing this value, we are making
         // a trade-off between the size of a very small dictionary, and the number of resizes when
@@ -149,24 +143,29 @@ namespace System.Collections.Concurrent
             //
             // See http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-335.pdf
             //
-            bool isAtomic =
-                (valueType.IsClass)
-                || valueType == typeof(Boolean)
-                || valueType == typeof(Char)
-                || valueType == typeof(Byte)
-                || valueType == typeof(SByte)
-                || valueType == typeof(Int16)
-                || valueType == typeof(UInt16)
-                || valueType == typeof(Int32)
-                || valueType == typeof(UInt32)
-                || valueType == typeof(Single);
-
-            if (!isAtomic && IntPtr.Size == 8)
+            if (valueType.IsClass)
             {
-                isAtomic |= valueType == typeof(Double) || valueType == typeof(Int64);
+                return true;
             }
-
-            return isAtomic;
+            switch (Type.GetTypeCode(valueType))
+            {
+                case TypeCode.Boolean:
+                case TypeCode.Byte:
+                case TypeCode.Char:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.SByte:
+                case TypeCode.Single:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                    return true;
+                case TypeCode.Int64:
+                case TypeCode.Double:
+                case TypeCode.UInt64:
+                    return IntPtr.Size == 8;
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
@@ -704,6 +703,11 @@ namespace System.Collections.Concurrent
                     }
                 }
 
+                if (count == 0)
+                {
+                    return Array.Empty<KeyValuePair<TKey, TValue>>();
+                }
+
                 KeyValuePair<TKey, TValue>[] array = new KeyValuePair<TKey, TValue>[count];
 
                 CopyToPairs(array, 0);
@@ -996,29 +1000,45 @@ namespace System.Collections.Concurrent
             [SuppressMessage("Microsoft.Concurrency", "CA8001", Justification = "ConcurrencyCop just doesn't know about these locks")]
             get
             {
-                int count = 0;
-
                 int acquiredLocks = 0;
                 try
                 {
                     // Acquire all locks
                     AcquireAllLocks(ref acquiredLocks);
 
-                    // Compute the count, we allow overflow
-                    for (int i = 0; i < m_tables.m_countPerLock.Length; i++)
-                    {
-                        count += m_tables.m_countPerLock[i];
-                    }
-
+                    return GetCountInternal();
                 }
                 finally
                 {
                     // Release locks that have been acquired earlier
                     ReleaseLocks(0, acquiredLocks);
                 }
-
-                return count;
             }
+        }
+
+        /// <summary>
+        /// Gets the number of key/value pairs contained in the <see
+        /// cref="ConcurrentDictionary{TKey,TValue}"/>. Should only be used after all locks
+        /// have been acquired.
+        /// </summary>
+        /// <exception cref="T:System.OverflowException">The dictionary contains too many
+        /// elements.</exception>
+        /// <value>The number of key/value pairs contained in the <see
+        /// cref="ConcurrentDictionary{TKey,TValue}"/>.</value>
+        /// <remarks>Count has snapshot semantics and represents the number of items in the <see
+        /// cref="ConcurrentDictionary{TKey,TValue}"/>
+        /// at the moment when Count was accessed.</remarks>
+        private int GetCountInternal()
+        {
+            int count = 0;
+
+            // Compute the count, we allow overflow
+            for (int i = 0; i < m_tables.m_countPerLock.Length; i++)
+            {
+                count += m_tables.m_countPerLock[i];
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -1069,6 +1089,86 @@ namespace System.Collections.Concurrent
             TValue resultingValue;
             TryAddInternal(key, value, false, true, out resultingValue);
             return resultingValue;
+        }
+
+        /// <summary>
+        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/> 
+        /// if the key does not already exist.
+        /// </summary>
+        /// <param name="key">The key of the element to add.</param>
+        /// <param name="valueFactory">The function used to generate a value for the key</param>
+        /// <param name="factoryArgument">An argument value to pass into <paramref name="valueFactory"/>.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is a null reference
+        /// (Nothing in Visual Basic).</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="valueFactory"/> is a null reference
+        /// (Nothing in Visual Basic).</exception>
+        /// <exception cref="T:System.OverflowException">The dictionary contains too many
+        /// elements.</exception>
+        /// <returns>The value for the key.  This will be either the existing value for the key if the
+        /// key is already in the dictionary, or the new value for the key as returned by valueFactory
+        /// if the key was not in the dictionary.</returns>
+        public TValue GetOrAdd<TArg>(TKey key, Func<TKey, TArg, TValue> valueFactory, TArg factoryArgument)
+        {
+            if (key == null) throw new ArgumentNullException("key");
+            if (valueFactory == null) throw new ArgumentNullException("valueFactory");
+
+            TValue resultingValue;
+            if (!TryGetValue(key, out resultingValue))
+            {
+                TryAddInternal(key, valueFactory(key, factoryArgument), false, true, out resultingValue);
+            }
+            return resultingValue;
+        }
+
+        /// <summary>
+        /// Adds a key/value pair to the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key does not already 
+        /// exist, or updates a key/value pair in the <see cref="ConcurrentDictionary{TKey,TValue}"/> if the key 
+        /// already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key
+        /// based on the key's existing value</param>
+        /// <param name="factoryArgument">An argument to pass into <paramref name="addValueFactory"/> and <paramref name="updateValueFactory"/>.</param>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is a null reference
+        /// (Nothing in Visual Basic).</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="addValueFactory"/> is a null reference
+        /// (Nothing in Visual Basic).</exception>
+        /// <exception cref="T:System.ArgumentNullException"><paramref name="updateValueFactory"/> is a null reference
+        /// (Nothing in Visual Basic).</exception>
+        /// <exception cref="T:System.OverflowException">The dictionary contains too many
+        /// elements.</exception>
+        /// <returns>The new value for the key.  This will be either be the result of addValueFactory (if the key was 
+        /// absent) or the result of updateValueFactory (if the key was present).</returns>
+        public TValue AddOrUpdate<TArg>(
+            TKey key, Func<TKey, TArg, TValue> addValueFactory, Func<TKey, TValue, TArg, TValue> updateValueFactory, TArg factoryArgument)
+        {
+            if (key == null) throw new ArgumentNullException("key");
+            if (addValueFactory == null) throw new ArgumentNullException("addValueFactory");
+            if (updateValueFactory == null) throw new ArgumentNullException("updateValueFactory");
+
+            while (true)
+            {
+                TValue oldValue;
+                if (TryGetValue(key, out oldValue))
+                {
+                    // key exists, try to update
+                    TValue newValue = updateValueFactory(key, oldValue, factoryArgument);
+                    if (TryUpdate(key, newValue, oldValue))
+                    {
+                        return newValue;
+                    }
+                }
+                else
+                {
+                    // key doesn't exist, try to add
+                    TValue resultingValue;
+                    if (TryAddInternal(key, addValueFactory(key, factoryArgument), false, true, out resultingValue))
+                    {
+                        return resultingValue;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1852,7 +1952,7 @@ namespace System.Collections.Concurrent
         private static int DefaultConcurrencyLevel
         {
 
-            get { return DEFAULT_CONCURRENCY_MULTIPLIER * PlatformHelper.ProcessorCount; }
+            get { return PlatformHelper.ProcessorCount; }
         }
 
         /// <summary>
@@ -1934,8 +2034,11 @@ namespace System.Collections.Concurrent
             try
             {
                 AcquireAllLocks(ref locksAcquired);
-                List<TKey> keys = new List<TKey>();
 
+                int count = GetCountInternal();
+                if (count < 0) throw new OutOfMemoryException();
+
+                List<TKey> keys = new List<TKey>(count);
                 for (int i = 0; i < m_tables.m_buckets.Length; i++)
                 {
                     Node current = m_tables.m_buckets[i];
@@ -1964,7 +2067,11 @@ namespace System.Collections.Concurrent
             try
             {
                 AcquireAllLocks(ref locksAcquired);
-                List<TValue> values = new List<TValue>();
+
+                int count = GetCountInternal();
+                if (count < 0) throw new OutOfMemoryException();
+
+                List<TValue> values = new List<TValue>(count);
 
                 for (int i = 0; i < m_tables.m_buckets.Length; i++)
                 {

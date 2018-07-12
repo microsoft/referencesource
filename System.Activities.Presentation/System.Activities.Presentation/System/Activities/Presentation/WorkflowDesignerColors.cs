@@ -22,6 +22,7 @@ namespace System.Activities.Presentation
         public const string WorkflowViewElementBackgroundColorKey = "WorkflowViewElementBackgroundColorKey";
         public const string WorkflowViewElementSelectedBackgroundColorKey = "WorkflowViewElementSelectedBackgroundColorKey";
         public const string WorkflowViewElementSelectedBorderColorKey = "WorkflowViewElementSelectedBorderColorKey";
+        public const string WorkflowViewElementSelectedCaptionColorKey = "WorkflowViewElementSelectedCaptionBrushColorKey";
         public const string DesignerViewStatusBarBackgroundColorKey = "DesignerViewStatusBarBackgroundColorKey";
         public const string WorkflowViewElementCaptionColorKey = "WorkflowViewElementCaptionBrushColorKey";
         public const string DesignerViewBackgroundColorKey = "DesignerViewBackgroundColorKey";
@@ -68,14 +69,12 @@ namespace System.Activities.Presentation
         public static string PropertyInspectorToolBarBackgroundBrushKey { get { return PropertyInspectorMergedResources.ToolBarBackgroundBrushKey; } }
         public static string PropertyInspectorToolBarSeparatorBrushKey { get { return PropertyInspectorMergedResources.ToolBarSeparatorBrushKey; } }
         public static string PropertyInspectorToolBarTextBoxBorderBrushKey { get { return PropertyInspectorMergedResources.ToolBarTextBoxBorderBrushKey; } }
-
-
+        
         public const string FlowchartExpressionButtonColorKey = "FlowchartExpressionButtonColorKey";
         public const string FlowchartExpressionButtonMouseOverColorKey = "FlowchartExpressionButtonMouseOverColorKey";
         public const string FlowchartExpressionButtonPressedColorKey = "FlowchartExpressionButtonPressedColorKey";
-
+        public const string FlowchartConnectorColorKey = "FlowchartConnectorColorKey";
         
-
         public const string AnnotationBackgroundGradientBeginColorKey = "AnnotationBackgroundGradientBeginColorKey";
         public const string AnnotationBackgroundGradientMiddleColorKey = "AnnotationBackgroundGradientMiddleColorKey";
         public const string AnnotationBackgroundGradientEndColorKey = "AnnotationBackgroundGradientEndColorKey";
@@ -102,7 +101,9 @@ namespace System.Activities.Presentation
         public static readonly string FontFamilyKey = CreateKey("FontFamilyKey");
         public static readonly string FontWeightKey = CreateKey("FontWeightKey");
 
-
+        public const string PropertyToolBarHightlightedButtonForegroundColorKey = "PropertyToolBarHightlightedButtonForegroundColor";
+        public const string ActivityDesignerSelectedTitleForegroundColorKey = "ActivityDesignerSelectedTitleForegroundColorKey";
+        
         static ResourceDictionary DefaultColors
         {
             get
@@ -240,7 +241,7 @@ namespace System.Activities.Presentation
                 return GetColor(WorkflowDesignerColors.WorkflowViewElementCaptionColorKey);
             }
         }
-        internal static Color WorkflowViewElementSelectedCaptionColor
+        public static Color WorkflowViewElementSelectedCaptionColor
         {
             get
             {
@@ -248,7 +249,7 @@ namespace System.Activities.Presentation
                 {
                     return WorkflowViewElementCaptionColor;
                 }
-                return GetColor(WorkflowDesignerColorsInternal.WorkflowViewElementSelectedCaptionColorKey);
+                return GetColor(WorkflowDesignerColors.WorkflowViewElementSelectedCaptionColorKey);
             }
         }
         public static Color DesignerViewBackgroundColor
@@ -319,7 +320,7 @@ namespace System.Activities.Presentation
             get { return GetBrush(WorkflowDesignerColors.DesignerViewExpandAllCollapseAllPressedColorKey); }
         }
 
-        internal static Color PropertyToolBarHightlightedButtonForegroundColor
+        public static Color PropertyToolBarHightlightedButtonForegroundColor
         {
             get
             {
@@ -327,12 +328,12 @@ namespace System.Activities.Presentation
                 {
                     return Colors.Black;
                 }
-                return GetColor(WorkflowDesignerColorsInternal.PropertyToolBarHightlightedButtonForegroundColorKey);
+                return GetColor(WorkflowDesignerColors.PropertyToolBarHightlightedButtonForegroundColorKey);
             }
         }
-        internal static Color ActivityDesignerSelectedTitleForegroundColor
+        public static Color ActivityDesignerSelectedTitleForegroundColor
         {
-            get { return GetColor(WorkflowDesignerColorsInternal.ActivityDesignerSelectedTitleForegroundColorKey); }
+            get { return GetColor(WorkflowDesignerColors.ActivityDesignerSelectedTitleForegroundColorKey); }
         }
         public static Color ContextMenuBackgroundGradientBeginColor
         {
@@ -388,7 +389,7 @@ namespace System.Activities.Presentation
             get { return GetColor(WorkflowDesignerColors.ContextMenuItemTextHoverColorKey); }
         }
 
-        internal static Color ContextMenuItemTextHoverQuirkedColor
+        public static Color ContextMenuItemTextHoverQuirkedColor
         {
             get
             {
@@ -415,7 +416,7 @@ namespace System.Activities.Presentation
             get { return GetColor(WorkflowDesignerColors.ContextMenuSeparatorColorKey); }
         }
 
-        internal static Color FlowchartConnectorColor
+        public static Color FlowchartConnectorColor
         {
             get
             {
@@ -423,7 +424,7 @@ namespace System.Activities.Presentation
                 {
                     return WorkflowViewElementBorderColor;
                 }
-                return GetColor(WorkflowDesignerColorsInternal.FlowchartConnectorColorKey);
+                return GetColor(WorkflowDesignerColors.FlowchartConnectorColorKey);
             }
         }
 

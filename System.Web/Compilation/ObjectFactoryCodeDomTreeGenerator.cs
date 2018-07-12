@@ -18,6 +18,7 @@ using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Web.Util;
 using Util = System.Web.UI.Util;
+using System.Linq;
 
 
 internal delegate object InstantiateObject();
@@ -71,7 +72,7 @@ internal class ObjectFactoryCodeDomTreeGenerator {
         sourceDataNamespace.Types.Add(_factoryClass);
     }
 
-    internal void AddFactoryMethod(string typeToCreate) {
+    internal void AddFactoryMethod(string typeToCreate, CodeCompileUnit ccu = null) {
 
         // Generate a simple factory method for this type.  e.g.
         // static object Create_Acme_Foo() {
@@ -83,14 +84,84 @@ internal class ObjectFactoryCodeDomTreeGenerator {
         method.ReturnType = new CodeTypeReference(typeof(object));
         method.Attributes = MemberAttributes.Static;
 
-        CodeMethodReturnStatement cmrs = new CodeMethodReturnStatement(
-            new CodeObjectCreateExpression(typeToCreate));
-        method.Statements.Add(cmrs);
+        AddCreateTypeInstanceStatement(typeToCreate, ccu, method.Statements);
 
         _factoryClass.Members.Add(method);
     }
 
-    private static string GetCreateMethodNameForType(string typeToCreate) {
+    private static void AddCreateTypeInstanceStatement(string typeToCreate, CodeCompileUnit ccu, CodeStatementCollection statements) {
+        if (BinaryCompatibility.Current.TargetsAtLeastFramework472 && ccu != null) {                
+            /* Generate code like below
+            
+            IServiceProvider __activator = HttpRuntime.WebObjectActivator;
+            
+            //-- Generate code like this if default c-tor exists
+                if (activator != null) {
+                    return activator.GetService(ctrlType);
+                }
+
+                else {
+                    return new ....
+                }
+
+            //-- if default c-tor doesn't exist, assume dev wants to use DI.
+            // if there is no default c-tor, you will get compilation error on framework 4.7.1 and below.
+                return activator.GetService(ctrlType);
+            */            
+            var webObjectActivatorExpr = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression("System.Web.HttpRuntime"), "WebObjectActivator");
+            statements.Add(new CodeVariableDeclarationStatement(typeof(IServiceProvider), "__activator"));
+            var activatorRefExpr = new CodeVariableReferenceExpression("__activator");
+            statements.Add(new CodeAssignStatement(activatorRefExpr, webObjectActivatorExpr));
+            var getServiceExpr = new CodeMethodInvokeExpression(activatorRefExpr, "GetService", new CodeTypeOfExpression(typeToCreate));
+            
+            // If default c-tor exists
+            if (DoesGeneratedCodeHaveDefaultCtor(typeToCreate, ccu)) {
+                var createObjectStatement = new CodeConditionStatement() { 
+                    Condition = new CodeBinaryOperatorExpression(activatorRefExpr,
+                                                                    CodeBinaryOperatorType.IdentityInequality, 
+                                                                    new CodePrimitiveExpression(null))
+                };
+                createObjectStatement.TrueStatements.Add(new CodeMethodReturnStatement(getServiceExpr));
+
+                var newObjectExpr = new CodeObjectCreateExpression(typeToCreate);
+                createObjectStatement.FalseStatements.Add(new CodeMethodReturnStatement(newObjectExpr));
+
+                statements.Add(createObjectStatement);
+            }
+            else {
+                statements.Add(new CodeMethodReturnStatement(getServiceExpr));
+            }
+        }
+        else {
+            // Generate new typeToCreate()
+            var newObjectExpression = new CodeObjectCreateExpression(typeToCreate);
+            statements.Add(new CodeMethodReturnStatement(newObjectExpression));
+        }
+    }
+        
+        private static bool DoesGeneratedCodeHaveDefaultCtor(string typeToCreate, CodeCompileUnit ccu) {
+            for(var i = 0; i < ccu.Namespaces.Count; i++) {
+                var ns = ccu.Namespaces[i];
+                for(var n = 0; n < ns.Types.Count; n++) {
+                    var type = ns.Types[n];
+                    if(StringUtil.Equals(typeToCreate, ns.Name + "." + type.Name)) {
+                        foreach (var ctm in type.Members) {
+                            var ctor = ctm as CodeConstructor;
+                            if (ctor != null) {
+                                // public default constructor
+                                if (ctor.Parameters.Count == 0 && (ctor.Attributes & MemberAttributes.Public) == MemberAttributes.Public) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        private static string GetCreateMethodNameForType(string typeToCreate) {
         return "Create_" + Util.MakeValidTypeNameFromString(typeToCreate);
     }
 

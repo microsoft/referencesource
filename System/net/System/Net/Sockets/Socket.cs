@@ -25,12 +25,14 @@ namespace System.Net.Sockets {
     /// </devdoc>
 
 
-    public class Socket : IDisposable
+    public partial class Socket : IDisposable
     {
         internal const int DefaultCloseTimeout = -1; // don't change for default, otherwise breaking change
 
         // AcceptQueue - queued list of accept requests for BeginAccept or async Result for Begin Connect
         private object m_AcceptQueueOrConnectResult;
+        // Async connect operation integrity check.
+        private int asyncConnectOperationLock = 0;
 
         // the following 8 members represent the state of the socket
         private SafeCloseSocket  m_Handle;
@@ -2737,6 +2739,11 @@ namespace System.Net.Sockets {
                 throw new InvalidOperationException(SR.GetString(SR.net_sockets_mustnotlisten));
             }
 
+            if (Interlocked.Exchange(ref asyncConnectOperationLock, 1) != 0)
+            {
+                throw new InvalidOperationException(SR.GetString(SR.net_sockets_no_duplicate_async));
+            }
+
             DnsEndPoint dnsEP = remoteEP as DnsEndPoint;
             if (dnsEP != null) 
             {
@@ -2744,8 +2751,8 @@ namespace System.Net.Sockets {
                 {
                     throw new NotSupportedException(SR.GetString(SR.net_invalidversion));
                 }
-
-                return BeginConnect(dnsEP.Host, dnsEP.Port, callback, state);
+                
+                return InternalBeginConnectHostName(dnsEP.Host, dnsEP.Port, callback, state);
             }
 
             if (CanUseConnectEx(remoteEP))
@@ -2964,6 +2971,7 @@ namespace System.Net.Sockets {
             //
             // If we came here due to a ---- between BeginConnect and Dispose
             //
+            GlobalLog.Assert(asyncResult != null, "Socket#{0}::ConnectCallback()|asyncResult should not be null.", ValidationHelper.HashString(this));
             if (asyncResult.InternalPeekCompleted)
             {
                 GlobalLog.Assert(CleanedUp, "Socket#{0}::ConnectCallback()|asyncResult is compelted but the socket does not have CleanedUp set.", ValidationHelper.HashString(this));
@@ -3081,22 +3089,13 @@ namespace System.Net.Sockets {
                 throw new InvalidOperationException(SR.GetString(SR.net_sockets_mustnotlisten));
             }
 
-            // Here, want to flow the context.  No need to lock.
-            MultipleAddressConnectAsyncResult result = new MultipleAddressConnectAsyncResult(null, port, this, state, requestCallback);
-            result.StartPostingAsyncOp(false);
-
-            IAsyncResult dnsResult = Dns.UnsafeBeginGetHostAddresses(host, new AsyncCallback(DnsCallback), result);
-            if (dnsResult.CompletedSynchronously)
+            if (Interlocked.Exchange(ref asyncConnectOperationLock, 1) != 0)
             {
-                if (DoDnsCallback(dnsResult, result))
-                {
-                    result.InvokeCallback();
-                }
+                throw new InvalidOperationException(SR.GetString(SR.net_sockets_no_duplicate_async));
             }
 
-            // Done posting.
-            result.FinishPostingAsyncOp(ref Caches.ConnectClosureCache);
-
+            MultipleAddressConnectAsyncResult result = InternalBeginConnectHostName(host, port, requestCallback, state);
+            
             if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", result);
             return result;
         }
@@ -3119,6 +3118,7 @@ namespace System.Net.Sockets {
                 throw new NotSupportedException(SR.GetString(SR.net_invalidversion));
             }
 
+            // The BeginConnect() overload below will perform async connect check.
             IAsyncResult result = BeginConnect(new IPEndPoint(address,port),requestCallback,state);
             if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", result);
             return result;
@@ -3148,6 +3148,11 @@ namespace System.Net.Sockets {
             if (isListening)
             {
                 throw new InvalidOperationException(SR.GetString(SR.net_sockets_mustnotlisten));
+            }
+
+            if (Interlocked.Exchange(ref asyncConnectOperationLock, 1) != 0)
+            {
+                throw new InvalidOperationException(SR.GetString(SR.net_sockets_no_duplicate_async));
             }
 
             // Set up the result to capture the context.  No need for a lock.
@@ -3295,70 +3300,22 @@ namespace System.Net.Sockets {
         /// <devdoc>
         ///    <para>[To be supplied.]</para>
         /// </devdoc>
-        public void EndConnect(IAsyncResult asyncResult) {
-            if(s_LoggingEnabled)Logging.Enter(Logging.Sockets, this, "EndConnect", asyncResult);
-            if (CleanedUp) {
-                throw new ObjectDisposedException(this.GetType().FullName);
+        public void EndConnect(IAsyncResult asyncResult)
+        {
+            if (s_LoggingEnabled) Logging.Enter(Logging.Sockets, this, "EndConnect", asyncResult);
+
+            try
+            {
+                InternalEndConnect(asyncResult);
             }
-            //
-            // parameter validation
-            //
-            if (asyncResult==null) {
-                throw new ArgumentNullException("asyncResult");
+            finally
+            {
+                // User delegate has completed. Clear the async connect lock status.
+                Interlocked.Exchange(ref asyncConnectOperationLock, 0);
             }
 
-            LazyAsyncResult castedAsyncResult = null;
-            EndPoint remoteEndPoint = null;
-            ConnectOverlappedAsyncResult coar;
-            MultipleAddressConnectAsyncResult macar;
-            ConnectAsyncResult car;
-
-            coar = asyncResult as ConnectOverlappedAsyncResult;
-            if (coar == null) {
-                macar = asyncResult as MultipleAddressConnectAsyncResult;
-                if (macar == null) {
-                    car = asyncResult as ConnectAsyncResult;
-                    if (car != null) {
-                        remoteEndPoint = car.RemoteEndPoint;
-                        castedAsyncResult = car;
-                    }
-                } else {
-                    remoteEndPoint = macar.RemoteEndPoint;
-                    castedAsyncResult = macar;
-                }
-            } else {
-                remoteEndPoint = coar.RemoteEndPoint;
-                castedAsyncResult = coar;
-            }
-            
-            if (castedAsyncResult == null || castedAsyncResult.AsyncObject!=this) {
-                throw new ArgumentException(SR.GetString(SR.net_io_invalidasyncresult), "asyncResult");
-            }
-            if (castedAsyncResult.EndCalled) {
-                throw new InvalidOperationException(SR.GetString(SR.net_io_invalidendcall, "EndConnect"));
-            }
-
-            castedAsyncResult.InternalWaitForCompletion();
-            castedAsyncResult.EndCalled = true;
-            m_AcceptQueueOrConnectResult = null;
-
-            GlobalLog.Print("Socket#" + ValidationHelper.HashString(this) + "::EndConnect() asyncResult:" + ValidationHelper.HashString(asyncResult));
-
-            if (castedAsyncResult.Result is Exception) {
-                if(s_LoggingEnabled)Logging.Exception(Logging.Sockets, this, "EndConnect", (Exception)castedAsyncResult.Result);
-                throw (Exception)castedAsyncResult.Result;
-            }
-            if ((SocketError)castedAsyncResult.ErrorCode!=SocketError.Success) {
-                //
-                // update our internal state after this socket error and throw
-                //
-                SocketException socketException = new SocketException(castedAsyncResult.ErrorCode, remoteEndPoint);
-                UpdateStatusAfterSocketError(socketException);
-                if(s_LoggingEnabled)Logging.Exception(Logging.Sockets, this, "EndConnect", socketException);
-                throw socketException;
-            }
-            if (s_LoggingEnabled) {
-                Logging.PrintInfo(Logging.Sockets, this, SR.GetString(SR.net_log_socket_connected, LocalEndPoint, RemoteEndPoint));
+            if (s_LoggingEnabled)
+            {
                 Logging.Exit(Logging.Sockets, this, "EndConnect", "");
             }
         }
@@ -6085,6 +6042,108 @@ namespace System.Net.Sockets {
             }
         }
 
+        private MultipleAddressConnectAsyncResult InternalBeginConnectHostName(string host, int port, AsyncCallback requestCallback, object state)
+        {
+            if (s_LoggingEnabled) Logging.Enter(Logging.Sockets, this, "InternalBeginConnectHostName", host);
+
+            // Want to flow the context here. No need to lock.
+            MultipleAddressConnectAsyncResult result = new MultipleAddressConnectAsyncResult(null, port, this, state, requestCallback);
+            result.StartPostingAsyncOp(false);
+
+            IAsyncResult dnsResult = Dns.UnsafeBeginGetHostAddresses(host, new AsyncCallback(DnsCallback), result);
+            if (dnsResult.CompletedSynchronously)
+            {
+                if (DoDnsCallback(dnsResult, result))
+                {
+                    result.InvokeCallback();
+                }
+            }
+
+            // Done posting.
+            result.FinishPostingAsyncOp(ref Caches.ConnectClosureCache);
+
+            if (s_LoggingEnabled) Logging.Exit(Logging.Sockets, this, "InternalBeginConnectHostName", result);
+            return result;
+        }
+
+        private void InternalEndConnect(IAsyncResult asyncResult)
+        {
+            if (s_LoggingEnabled) Logging.Enter(Logging.Sockets, this, "InternalEndConnect", asyncResult);
+            if (CleanedUp)
+            {
+                throw new ObjectDisposedException(this.GetType().FullName);
+            }
+            // Parameter validation.
+            if (asyncResult == null)
+            {
+                throw new ArgumentNullException("asyncResult");
+            }
+
+            LazyAsyncResult castedAsyncResult = null;
+            EndPoint remoteEndPoint = null;
+            ConnectOverlappedAsyncResult coar;
+            MultipleAddressConnectAsyncResult macar;
+            ConnectAsyncResult car;
+
+            coar = asyncResult as ConnectOverlappedAsyncResult;
+            if (coar == null)
+            {
+                macar = asyncResult as MultipleAddressConnectAsyncResult;
+                if (macar == null)
+                {
+                    car = asyncResult as ConnectAsyncResult;
+                    if (car != null)
+                    {
+                        remoteEndPoint = car.RemoteEndPoint;
+                        castedAsyncResult = car;
+                    }
+                }
+                else
+                {
+                    remoteEndPoint = macar.RemoteEndPoint;
+                    castedAsyncResult = macar;
+                }
+            }
+            else
+            {
+                remoteEndPoint = coar.RemoteEndPoint;
+                castedAsyncResult = coar;
+            }
+
+            if (castedAsyncResult == null || castedAsyncResult.AsyncObject != this)
+            {
+                throw new ArgumentException(SR.GetString(SR.net_io_invalidasyncresult), "asyncResult");
+            }
+            if (castedAsyncResult.EndCalled)
+            {
+                throw new InvalidOperationException(SR.GetString(SR.net_io_invalidendcall, "InternalEndConnect"));
+            }
+
+            castedAsyncResult.InternalWaitForCompletion();
+            castedAsyncResult.EndCalled = true;
+            m_AcceptQueueOrConnectResult = null;
+
+            GlobalLog.Print("Socket#" + ValidationHelper.HashString(this) + "::InternalEndConnect() asyncResult:" + ValidationHelper.HashString(asyncResult));
+
+            if (castedAsyncResult.Result is Exception)
+            {
+                if (s_LoggingEnabled) Logging.Exception(Logging.Sockets, this, "InternalEndConnect", (Exception)castedAsyncResult.Result);
+                throw (Exception)castedAsyncResult.Result;
+            }
+            if ((SocketError)castedAsyncResult.ErrorCode != SocketError.Success)
+            {
+                // Update our internal state after this socket error and throw.
+                SocketException socketException = new SocketException(castedAsyncResult.ErrorCode, remoteEndPoint);
+                UpdateStatusAfterSocketError(socketException);
+                if (s_LoggingEnabled) Logging.Exception(Logging.Sockets, this, "InternalEndConnect", socketException);
+                throw socketException;
+            }
+            if (s_LoggingEnabled)
+            {
+                Logging.PrintInfo(Logging.Sockets, this, SR.GetString(SR.net_log_socket_connected, LocalEndPoint, RemoteEndPoint));
+                Logging.Exit(Logging.Sockets, this, "InternalEndConnect", "");
+            }
+        }
 
         internal void InternalConnect(EndPoint remoteEP)
         {
@@ -7075,7 +7134,7 @@ namespace System.Net.Sockets {
                 {
                     try
                     {
-                        context.socket.EndConnect((IAsyncResult) result);
+                        context.socket.InternalEndConnect((IAsyncResult) result);
                     }
                     catch (Exception exception)
                     {
@@ -9402,7 +9461,7 @@ namespace System.Net.Sockets {
                 }
 
                 // Free any alloc'd GCHandles
-                
+
                 if(m_SocketAddressGCHandle.IsAllocated) {
                     m_SocketAddressGCHandle.Free();
                 }
@@ -9483,16 +9542,27 @@ namespace System.Net.Sockets {
 
             // Number of things to pin is number of buffers.
             // Ensure we have properly sized object array.
-            if(m_ObjectsToPin == null || (m_ObjectsToPin.Length != tempList.Length)) {
+            if (m_ObjectsToPin == null || (m_ObjectsToPin.Length != tempList.Length)) {
                 m_ObjectsToPin = new object[tempList.Length];
             }
 
-            // Fill in object array.
-            for(int i = 0; i < (tempList.Length); i++) {
-                m_ObjectsToPin[i] = tempList[i].Array;
+            // If the buffer array isn't initialized, or the length has changed, reallocate it.
+            bool allocateNewWSABuffers = false;
+            if (m_WSABufferArray == null || m_WSABufferArray.Length != tempList.Length) {
+                allocateNewWSABuffers = true;
             }
 
-            if(m_WSABufferArray == null || m_WSABufferArray.Length != tempList.Length) {
+            // Fill in object array.
+            for (int i = 0; i < (tempList.Length); i++) {
+                m_ObjectsToPin[i] = tempList[i].Array;
+
+                // If the length of any of the buffers has changed, we need to reallocate the whole array.
+                if (!allocateNewWSABuffers && tempList[i].Count != m_WSABufferArray[i].Length) {
+                    allocateNewWSABuffers = true;
+                }
+            }
+
+            if (allocateNewWSABuffers) {
                 m_WSABufferArray = new WSABuffer[tempList.Length];
             }
 

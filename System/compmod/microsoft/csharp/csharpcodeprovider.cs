@@ -19,6 +19,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Globalization;
 using System.Security.Permissions;
+using System.Security.Policy;
 using System.Security.Principal;
 using System.Collections.Generic;
 using System.Runtime.Versioning;
@@ -578,6 +579,9 @@ namespace Microsoft.CSharp {
 
             // Get UTF8 output from the compiler
             sb.Append("/utf8output ");
+
+            if (FileIntegrity.IsEnabled)
+                sb.Append("/EnforceCodeIntegrity ");
 
             string coreAssemblyFileName = options.CoreAssemblyFileName;
 
@@ -3452,7 +3456,21 @@ namespace Microsoft.CSharp {
             }
 
             // Read assembly into memory:
-            byte[] assemblyBuff = File.ReadAllBytes(options.OutputAssembly);
+            byte[] assemblyBuff;
+            if (!FileIntegrity.IsEnabled) {
+                assemblyBuff = File.ReadAllBytes(options.OutputAssembly);
+            }
+            else {
+                using (FileStream fs = new FileStream(options.OutputAssembly, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    if (!FileIntegrity.IsTrusted(fs.SafeFileHandle))
+                        throw new IOException(SR.GetString(SR.FileIntegrityCheckFailed, options.OutputAssembly));
+
+                    int fileLen = (int)fs.Length;
+                    assemblyBuff = new byte[fileLen];
+                    fs.Read(assemblyBuff, 0, fileLen);
+                }
+            }
 
             // Read symbol file into mempory and ignore any errors that may be encountered:
             // (This functionality was added in NetFx 4.5, errors must be ignored to ensure compatibility)
@@ -3473,12 +3491,15 @@ namespace Microsoft.CSharp {
             perm.Assert();
 
             try {
-
-                #pragma warning disable 618 // Load with evidence is obsolete - this warning is passed on via the options.Evidence property
-                results.CompiledAssembly = Assembly.Load(assemblyBuff, symbolsBuff, options.Evidence);
-                #pragma warning restore 618
-
-            } finally {
+                    if (!FileIntegrity.IsEnabled) {
+#pragma warning disable 618 // Load with evidence is obsolete - this warning is passed on via the options.Evidence property
+                        results.CompiledAssembly = Assembly.Load(assemblyBuff, symbolsBuff, options.Evidence);
+#pragma warning restore 618
+                    } else {
+                        results.CompiledAssembly = CodeCompiler.LoadImageSkipIntegrityCheck(assemblyBuff, symbolsBuff, options.Evidence);
+                    }
+            }
+            finally {
                 SecurityPermission.RevertAssert();
             }
 
@@ -3774,6 +3795,7 @@ namespace Microsoft.CSharp {
             new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 
             string[] filenames = new string[sources.Length];
+            FileStream[] fileStreams = new FileStream[sources.Length];
 
             CompilerResults results = null;
 #if !FEATURE_PAL
@@ -3782,21 +3804,27 @@ namespace Microsoft.CSharp {
                 WindowsImpersonationContext impersonation = Executor.RevertImpersonation();
                 try {      
 #endif // !FEATURE_PAL
-                    for (int i = 0; i < sources.Length; i++) {
-                        string name = options.TempFiles.AddExtension(i + FileExtension);
-                        Stream temp = new FileStream(name, FileMode.Create, FileAccess.Write, FileShare.Read);
-                        try {
-                            using (StreamWriter sw = new StreamWriter(temp, Encoding.UTF8)) {
+                    try {
+                        bool isFileIntegrityEnabled = FileIntegrity.IsEnabled;
+                        for (int i = 0; i < sources.Length; i++) {
+                            string name = options.TempFiles.AddExtension(i + FileExtension);
+                            FileStream fileStream = new FileStream(name, FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+                            fileStreams[i] = fileStream;
+                            using (StreamWriter sw = new StreamWriter(fileStream, Encoding.UTF8)) {
                                 sw.Write(sources[i]);
                                 sw.Flush();
+                                if (isFileIntegrityEnabled)
+                                    FileIntegrity.MarkAsTrusted(fileStream.SafeFileHandle);
                             }
+                            filenames[i] = name;
                         }
-                        finally {
-                            temp.Close();
-                        }
-                        filenames[i] = name;
-                   }
-                   results = FromFileBatch(options, filenames);
+
+                        results = FromFileBatch(options, filenames);
+                    }
+                    finally {
+                        for (int i = 0; i < fileStreams.Length && fileStreams[i] != null; i++)
+                            fileStreams[i].Close();
+                    }
 #if !FEATURE_PAL
                 }
                 finally {

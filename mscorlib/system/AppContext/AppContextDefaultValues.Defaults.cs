@@ -1,7 +1,7 @@
 ﻿// ==++==
-// 
+//
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
-// 
+//
 // ==--==
 using System;
 
@@ -9,14 +9,16 @@ namespace System
 {
     internal static partial class AppContextDefaultValues
     {
-
         internal static readonly string SwitchNoAsyncCurrentCulture = "Switch.System.Globalization.NoAsyncCurrentCulture";
+        internal static readonly string SwitchEnforceJapaneseEraYearRanges = "Switch.System.Globalization.EnforceJapaneseEraYearRanges";
         internal static readonly string SwitchThrowExceptionIfDisposedCancellationTokenSource = "Switch.System.Threading.ThrowExceptionIfDisposedCancellationTokenSource";
         internal static readonly string SwitchPreserveEventListnerObjectIdentity = "Switch.System.Diagnostics.EventSource.PreserveEventListnerObjectIdentity";
         internal static readonly string SwitchUseLegacyPathHandling = "Switch.System.IO.UseLegacyPathHandling";
         internal static readonly string SwitchBlockLongPaths = "Switch.System.IO.BlockLongPaths";
         internal static readonly string SwitchDoNotAddrOfCspParentWindowHandle = "Switch.System.Security.Cryptography.DoNotAddrOfCspParentWindowHandle";
         internal static readonly string SwitchSetActorAsReferenceWhenCopyingClaimsIdentity = "Switch.System.Security.ClaimsIdentity.SetActorAsReferenceWhenCopyingClaimsIdentity";
+        internal static readonly string SwitchIgnorePortablePDBsInStackTraces = "Switch.System.Diagnostics.IgnorePortablePDBsInStackTraces";
+        internal static readonly string SwitchUseNewMaxArraySize = "Switch.System.Runtime.Serialization.UseNewMaxArraySize";
 
         // This is a partial method. Platforms can provide an implementation of it that will set override values
         // from whatever mechanism is available on that platform. If no implementation is provided, the compiler is going to remove the calls
@@ -57,6 +59,11 @@ namespace System
                             AppContext.DefineSwitchDefault(SwitchDoNotAddrOfCspParentWindowHandle, true);
                         }
 
+                        if (version <= 40701)
+                        {
+                            AppContext.DefineSwitchDefault(SwitchIgnorePortablePDBsInStackTraces, true);
+                        }
+
                         break;
                     }
                 case "WindowsPhone":
@@ -69,6 +76,7 @@ namespace System
                             AppContext.DefineSwitchDefault(SwitchUseLegacyPathHandling, true);
                             AppContext.DefineSwitchDefault(SwitchBlockLongPaths, true);
                             AppContext.DefineSwitchDefault(SwitchDoNotAddrOfCspParentWindowHandle, true);
+                            AppContext.DefineSwitchDefault(SwitchIgnorePortablePDBsInStackTraces, true);
                         }
                         break;
                     }

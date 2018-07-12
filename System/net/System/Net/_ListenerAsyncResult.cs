@@ -99,7 +99,7 @@ namespace System.Net {
             {
                 if (NclUtilities.IsFatal(exception)) throw;
 
-                GlobalLog.Print("ListenerAsyncResult#" + ValidationHelper.HashString(asyncResult) + "::WaitCallback() Caught exception:" + exception.ToString());
+                if (Logging.On) Logging.PrintError(Logging.HttpListener, ValidationHelper.HashString(asyncResult), "IOCompleted", exception.ToString());
                 result = exception;
             }
             asyncResult.InvokeCallback(result);

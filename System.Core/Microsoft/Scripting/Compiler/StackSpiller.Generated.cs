@@ -22,6 +22,7 @@ namespace Microsoft.Scripting.Ast.Compiler {
 namespace System.Linq.Expressions.Compiler {
 #endif
     internal partial class StackSpiller {
+        private readonly StackGuard _guard = new StackGuard();
 
         /// <summary>
         /// Rewrite the expression
@@ -35,6 +36,14 @@ namespace System.Linq.Expressions.Compiler {
         private Result RewriteExpression(Expression node, Stack stack) {
             if (node == null) {
                 return new Result(RewriteAction.None, null);
+            }
+
+            // When compling deep trees, we run the risk of triggering a terminating StackOverflowException,
+            // so we use the StackGuard utility here to probe for sufficient stack and continue the work on
+            // another thread when we run out of stack space.
+            if (!_guard.TryEnterOnCurrentStack())
+            {
+                return _guard.RunOnEmptyStack((StackSpiller @this, Expression n, Stack s) => @this.RewriteExpression(n, s), this, node, stack);
             }
 
             Result result;

@@ -17,11 +17,17 @@ namespace System.ServiceModel
         internal const string UseConfiguredTransportSecurityHeaderLayoutString = "wcf:useConfiguredTransportSecurityHeaderLayout";
         internal const string UseBestMatchNamedPipeUriString = "wcf:useBestMatchNamedPipeUri";
         internal const string DisableOperationContextAsyncFlowString = "wcf:disableOperationContextAsyncFlow";
+        internal const string UseLegacyCertificateUsagePolicyString = "wcf:useLegacyCertificateUsagePolicy";
+
         const bool DefaultHttpTransportPerFactoryConnectionPool = false;
         const bool DefaultEnsureUniquePerformanceCounterInstanceNames = false;
         const bool DefaultUseConfiguredTransportSecurityHeaderLayout = false;
         const bool DefaultUseBestMatchNamedPipeUri = false;
+        const bool DefaultUseLegacyCertificateUsagePolicy = false;
+
         const bool DefaultDisableOperationContextAsyncFlow = true;
+
+        static bool useLegacyCertificateUsagePolicy;
         static bool httpTransportPerFactoryConnectionPool;
         static bool ensureUniquePerformanceCounterInstanceNames;
         static bool useConfiguredTransportSecurityHeaderLayout;
@@ -29,6 +35,16 @@ namespace System.ServiceModel
         static bool disableOperationContextAsyncFlow;
         static volatile bool settingsInitalized = false;
         static object appSettingsLock = new object();
+
+        internal static bool UseLegacyCertificateUsagePolicy
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+
+                return useLegacyCertificateUsagePolicy;
+            }
+        }
 
         internal static bool HttpTransportPerFactoryConnectionPool
         {
@@ -99,6 +115,11 @@ namespace System.ServiceModel
                         }
                         finally
                         {
+                            if ((appSettingsSection == null) || !bool.TryParse(appSettingsSection[UseLegacyCertificateUsagePolicyString], out useLegacyCertificateUsagePolicy))
+                            {
+                                useLegacyCertificateUsagePolicy = DefaultUseLegacyCertificateUsagePolicy;
+                            }
+
                             if ((appSettingsSection == null) || !bool.TryParse(appSettingsSection[HttpTransportPerFactoryConnectionPoolString], out httpTransportPerFactoryConnectionPool))
                             {
                                 httpTransportPerFactoryConnectionPool = DefaultHttpTransportPerFactoryConnectionPool;

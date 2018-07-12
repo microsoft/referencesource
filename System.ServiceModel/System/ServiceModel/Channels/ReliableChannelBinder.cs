@@ -3338,13 +3338,6 @@ namespace System.ServiceModel.Channels
                 }
             }
 
-            bool CompleteOutput(IAsyncResult result)
-            {
-                this.EndOutput(this.binder, this.channel, this.maskingMode, result);
-                this.Cleanup();
-                return true;
-            }
-
             bool CompleteTryGetChannel(IAsyncResult result)
             {
                 bool timedOut = !this.binder.synchronizer.EndTryGetChannel(result,
@@ -3370,7 +3363,9 @@ namespace System.ServiceModel.Channels
 
                 if (result.CompletedSynchronously)
                 {
-                    return this.CompleteOutput(result);
+                    this.EndOutput(this.binder, this.channel, this.maskingMode, result);
+                    this.Cleanup();
+                    return true;
                 }
                 else
                 {
@@ -3392,7 +3387,9 @@ namespace System.ServiceModel.Channels
 
                     try
                     {
-                        complete = this.CompleteOutput(result);
+                        this.EndOutput(this.binder, this.channel, this.maskingMode, result);
+                        complete = true;
+                        this.Cleanup();
                     }
 #pragma warning suppress 56500 // covered by FxCOP
                     catch (Exception e)
@@ -3402,18 +3399,18 @@ namespace System.ServiceModel.Channels
                             throw;
                         }
 
-                        this.Cleanup();
-                        complete = true;
+                        if (!complete)
+                        {
+                            this.Cleanup();
+                        }
+                        
                         if (!this.binder.HandleException(e, this.maskingMode, this.autoAborted))
                         {
                             completeException = e;
                         }
                     }
 
-                    if (complete)
-                    {
-                        this.Complete(false, completeException);
-                    }
+                    this.Complete(false, completeException);
                 }
             }
 

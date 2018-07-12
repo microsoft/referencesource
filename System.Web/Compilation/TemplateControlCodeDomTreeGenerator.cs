@@ -267,5 +267,36 @@ internal abstract class TemplateControlCodeDomTreeGenerator : BaseTemplateCodeDo
             appType, propRef)));
         _intermediateClass.Members.Add(prop);
     }
-}
+
+        protected override void BuildDefaultConstructor() {
+            base.BuildDefaultConstructor();
+
+            if (BinaryCompatibility.Current.TargetsAtLeastFramework472 &&
+                !(_designerMode || _sourceDataClass == null)) {
+                foreach (var c in Parser.BaseType.GetConstructors(BindingFlags.Instance | BindingFlags.Public)) {
+                    if (c.GetParameters().Length > 0) {
+                        AddConstructorToSource(c);
+                    }
+                }
+            }
+        }
+        
+        private void AddConstructorToSource(ConstructorInfo ctor) {
+            Debug.Assert(ctor != null);
+            Debug.Assert(ctor.GetParameters().Length > 0);
+
+            var ctorCode = new CodeConstructor();
+            AddDebuggerNonUserCodeAttribute(ctorCode);
+            ctorCode.Attributes &= ~MemberAttributes.AccessMask;
+            ctorCode.Attributes |= MemberAttributes.Public;
+
+            foreach (var p in ctor.GetParameters()) {
+                ctorCode.Parameters.Add(new CodeParameterDeclarationExpression(p.ParameterType, p.Name));
+                ctorCode.BaseConstructorArgs.Add(new CodeVariableReferenceExpression(p.Name));
+            }
+                        
+            ctorCode.Statements.Add(CreateInitInvoke());
+            _sourceDataClass.Members.Add(ctorCode);
+        }
+    }
 }

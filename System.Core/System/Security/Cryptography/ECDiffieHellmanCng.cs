@@ -240,7 +240,12 @@ namespace System.Security.Cryptography {
                             break;
                     }
 
-                    m_key = CngKey.Create(algorithm);
+                    CngKeyCreationParameters creationParameters = new CngKeyCreationParameters()
+                    {
+                        ExportPolicy = CngExportPolicies.AllowPlaintextExport,
+                    };
+
+                    m_key = CngKey.Create(algorithm, null, creationParameters);
                 }
 
                 return m_key;
@@ -316,7 +321,7 @@ namespace System.Security.Cryptography {
 
             // We can only work with ECDiffieHellmanCngPublicKeys
             ECDiffieHellmanCngPublicKey otherKey = otherPartyPublicKey as ECDiffieHellmanCngPublicKey;
-            if (otherPartyPublicKey == null) {
+            if (otherKey == null) {
                 throw new ArgumentException(SR.GetString(SR.Cryptography_ArgExpectedECDiffieHellmanCngPublicKey));
             }
 

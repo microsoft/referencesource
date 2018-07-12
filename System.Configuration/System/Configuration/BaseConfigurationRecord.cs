@@ -1932,7 +1932,7 @@ namespace System.Configuration {
                         // "unrecognized attribute" further down the road. So let's remove it here.
                         XmlDocument doc = new XmlDocument();
                         doc.PreserveWhitespace = true;
-                        doc.LoadXml(reader.RawXml);
+                        doc.Load(reader);
                         doc.DocumentElement.RemoveAttribute(KEYWORD_CONFIG_BUILDER);
                         reader = new ConfigXmlReader(doc.DocumentElement.OuterXml, filename, lineNumber);
                     }
@@ -4200,7 +4200,7 @@ namespace System.Configuration {
             try {
                 XmlDocument doc = new XmlDocument();
                 doc.PreserveWhitespace = true;
-                doc.LoadXml(reader.RawXml);
+                doc.Load(reader);
                 processedXml = CallHostProcessRawXml(doc.DocumentElement, configBuilder);
             }
             catch (Exception e) {

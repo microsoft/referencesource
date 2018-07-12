@@ -569,8 +569,8 @@ namespace System.Net {
         //
 
 
-        // This will return an client token when conducted authentication on server side'
-        // This token can be used ofr impersanation
+        // This will return a client token during authentication on the server side.
+        // This token can be used directly or with impersonation.
         // We use it to create a WindowsIdentity and hand it out to the server app.
         internal SafeCloseHandle GetContextToken(out SecurityStatus status)
         {

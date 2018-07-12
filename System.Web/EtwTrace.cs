@@ -121,7 +121,6 @@ namespace System.Web {
     internal static class EtwTrace {
         private static int _traceLevel = 0;
         private static int _traceFlags = 0;
-        private static EtwWorkerRequestType s_WrType = EtwWorkerRequestType.Undefined;
 
         internal static int InferVerbosity(IntegratedTraceType traceType) {
 
@@ -191,22 +190,6 @@ namespace System.Web {
             return false;
         }
 
-        private static void ResolveWorkerRequestType(HttpWorkerRequest workerRequest)
-        {
-            if (workerRequest is IIS7WorkerRequest) {
-                s_WrType = EtwWorkerRequestType.IIS7Integrated;
-            }
-            else if (workerRequest is ISAPIWorkerRequestInProc) {
-                    s_WrType = EtwWorkerRequestType.InProc;
-            }
-            else if (workerRequest is ISAPIWorkerRequestOutOfProc){
-                s_WrType = EtwWorkerRequestType.OutOfProc;
-            }
-            else {
-                s_WrType = EtwWorkerRequestType.Unknown;
-            }
-        }
-
         internal static void TraceEnableCheck(EtwTraceConfigType configType, IntPtr p)
         {
             // Don't activate if webengine.dll isn't loaded
@@ -249,24 +232,31 @@ namespace System.Web {
 
         internal static void Trace(EtwTraceType traceType, HttpWorkerRequest workerRequest, string data1, string data2, string data3, string data4)
         {
-            if (s_WrType == EtwWorkerRequestType.Undefined) {
-                ResolveWorkerRequestType(workerRequest);
-            }
-
-            if (s_WrType == EtwWorkerRequestType.Unknown) 
-                return;
-
             if (workerRequest == null)
                 return;
-            
-            if (s_WrType == EtwWorkerRequestType.IIS7Integrated) {
-                UnsafeNativeMethods.TraceRaiseEventMgdHandler((int) traceType, ((IIS7WorkerRequest)workerRequest).RequestContext, data1, data2, data3, data4);
+
+            // 
+            // IIS7WorkerRequest
+            IIS7WorkerRequest iis7wr = workerRequest as IIS7WorkerRequest;
+            if (iis7wr != null) {
+                UnsafeNativeMethods.TraceRaiseEventMgdHandler((int) traceType, iis7wr.RequestContext, data1, data2, data3, data4);
+                return;
             }
-            else if (s_WrType == EtwWorkerRequestType.InProc) {
-                UnsafeNativeMethods.TraceRaiseEventWithEcb((int) traceType, ((ISAPIWorkerRequest)workerRequest).Ecb, data1, data2, data3, data4);
+
+            // 
+            // ISAPIWorkerRequestInProc
+            ISAPIWorkerRequestInProc inproc = workerRequest as ISAPIWorkerRequestInProc;
+            if (inproc != null) {
+                UnsafeNativeMethods.TraceRaiseEventWithEcb((int) traceType, inproc.Ecb, data1, data2, data3, data4);
+                return;
             }
-            else if (s_WrType == EtwWorkerRequestType.OutOfProc) {
-                UnsafeNativeMethods.PMTraceRaiseEvent((int) traceType, ((ISAPIWorkerRequest)workerRequest).Ecb, data1, data2, data3, data4);
+
+            // 
+            // ISAPIWorkerRequestOutOfProc
+            ISAPIWorkerRequestOutOfProc outofproc = workerRequest as ISAPIWorkerRequestOutOfProc;
+            if (outofproc != null) {
+                UnsafeNativeMethods.PMTraceRaiseEvent((int) traceType, outofproc.Ecb, data1, data2, data3, data4);
+                return;
             }
         }
 

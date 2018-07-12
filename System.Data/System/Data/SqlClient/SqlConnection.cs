@@ -15,6 +15,7 @@ namespace System.Data.SqlClient
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Configuration;
     using System.Configuration.Assemblies;
     using System.ComponentModel;
     using System.Data;
@@ -46,7 +47,19 @@ namespace System.Data.SqlClient
     [DefaultEvent("InfoMessage")]
     public sealed partial class SqlConnection: DbConnection, ICloneable {
 
+        static SqlConnection() {
+            SqlColumnEncryptionEnclaveProviderConfigurationSection sqlColumnEncryptionEnclaveProviderConfigurationSection = null;
+            try {
+                sqlColumnEncryptionEnclaveProviderConfigurationSection = (SqlColumnEncryptionEnclaveProviderConfigurationSection)ConfigurationManager.GetSection("SqlColumnEncryptionEnclaveProviders");
+            } catch (ConfigurationErrorsException e) {
+                throw SQL.CannotGetSqlColumnEncryptionEnclaveProviderConfig(e);
+            }
+
+            sqlColumnEncryptionEnclaveProviderConfigurationManager = new SqlColumnEncryptionEnclaveProviderConfigurationManager(sqlColumnEncryptionEnclaveProviderConfigurationSection);
+        }
+
         static private readonly object EventInfoMessage = new object();
+        static internal readonly SqlColumnEncryptionEnclaveProviderConfigurationManager sqlColumnEncryptionEnclaveProviderConfigurationManager;
 
         // System column encryption key store providers are added by default
         static private readonly Dictionary<string, SqlColumnEncryptionKeyStoreProvider> _SystemColumnEncryptionKeyStoreProviders
@@ -344,6 +357,12 @@ namespace System.Data.SqlClient
             SqlConnectionString connString = ConnectionOptions as SqlConnectionString;
             if (connString != null) {
                 _connectRetryCount = connString.ConnectRetryCount;
+                // For Azure SQL connection, set _connectRetryCount to 2 instead of 1 will greatly improve recovery
+                //   success rate 
+                if (_connectRetryCount == 1 && ADP.IsAzureSqlServerEndpoint(connString.DataSource))
+                {
+                    _connectRetryCount = 2;
+                }
             }
         }
 
@@ -433,6 +452,16 @@ namespace System.Data.SqlClient
             get {
                 SqlConnectionString opt = (SqlConnectionString)ConnectionOptions;
                 return opt != null ? opt.ColumnEncryptionSetting == SqlConnectionColumnEncryptionSetting.Enabled : false;
+            }
+        }
+
+        /// <summary>
+        /// Get enclave attestation url to be used with enclave based Always Encrypted
+        /// </summary>
+        internal string EnclaveAttestationUrl {
+            get {
+                SqlConnectionString opt = (SqlConnectionString)ConnectionOptions;
+                return opt.EnclaveAttestationUrl;
             }
         }
 

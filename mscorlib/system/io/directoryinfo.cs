@@ -118,6 +118,16 @@ namespace System.IO
             DisplayPath = GetDisplayName(OriginalPath, FullPath);
         }
 
+#if FEATURE_CORESYSTEM
+        [System.Security.SecuritySafeCritical]
+#endif //FEATURE_CORESYSTEM
+        internal DirectoryInfo(string fullPath, string fileName)
+        {
+            OriginalPath = fileName;
+            FullPath = fullPath;
+            DisplayPath = GetDisplayName(OriginalPath, FullPath);
+        }
+
         [System.Security.SecurityCritical]  // auto-generated
         private DirectoryInfo(SerializationInfo info, StreamingContext context) : base(info, context)
         {

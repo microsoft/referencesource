@@ -418,7 +418,8 @@ namespace System.Reflection
                 null, // symbol store
                 null, // evidence
                 ref stackMark,
-                false,  // fIntrospection
+                false, // fIntrospection
+                false, // fSkipIntegrityCheck
                 SecurityContextSource.CurrentAssembly);
         }
 
@@ -440,6 +441,7 @@ namespace System.Reflection
                 null, // evidence
                 ref stackMark,
                 true,  // fIntrospection
+                false, // fSkipIntegrityCheck
                 SecurityContextSource.CurrentAssembly);
         }
 
@@ -468,7 +470,8 @@ namespace System.Reflection
                 rawSymbolStore,
                 null, // evidence
                 ref stackMark,
-                false,  // fIntrospection
+                false, // fIntrospection
+                false, // fSkipIntegrityCheck
                 SecurityContextSource.CurrentAssembly);
         }
 
@@ -498,6 +501,37 @@ namespace System.Reflection
                                               null,             // evidence
                                               ref stackMark,
                                               false,            // fIntrospection
+                                              false,            // fSkipIntegrityCheck
+                                              securityContextSource);
+        }
+
+        // Load an assembly from a byte array, controlling where the grant set of this assembly is
+        // propagated from. Skips the integrity check to support CodeDom.
+        [SecuritySafeCritical]
+        [MethodImpl(MethodImplOptions.NoInlining)]  // Due to the stack crawl mark
+        internal static Assembly LoadImageSkipIntegrityCheck(byte[] rawAssembly,
+                                    byte[] rawSymbolStore,
+                                    SecurityContextSource securityContextSource)
+        {
+
+            Contract.Ensures(Contract.Result<Assembly>() != null);
+            Contract.Ensures(!Contract.Result<Assembly>().ReflectionOnly);
+
+            AppDomain.CheckLoadByteArraySupported();
+
+            if (securityContextSource < SecurityContextSource.CurrentAppDomain ||
+                securityContextSource > SecurityContextSource.CurrentAssembly)
+            {
+                throw new ArgumentOutOfRangeException("securityContextSource");
+            }
+
+            StackCrawlMark stackMark = StackCrawlMark.LookForMyCaller;
+            return RuntimeAssembly.nLoadImage(rawAssembly,
+                                              rawSymbolStore,
+                                              null,             // evidence
+                                              ref stackMark,
+                                              false,            // fIntrospection
+                                              true,             // fSkipIntegrityCheck
                                               securityContextSource);
         }
 
@@ -533,7 +567,8 @@ namespace System.Reflection
                 rawSymbolStore,
                 securityEvidence,
                 ref stackMark,
-                false,  // fIntrospection
+                false, // fIntrospection
+                false, // fSkipIntegrityCheck
                 SecurityContextSource.CurrentAssembly);
         }
 #endif // FEATURE_CAS_POLICY
@@ -3138,6 +3173,7 @@ namespace System.Reflection
                                                           Evidence evidence,
                                                           ref StackCrawlMark stackMark,
                                                           bool fIntrospection,
+                                                          bool fSkipIntegrityCheck,
                                                           SecurityContextSource securityContextSource);
 #if FEATURE_CORECLR
         [System.Security.SecurityCritical]  // auto-generated

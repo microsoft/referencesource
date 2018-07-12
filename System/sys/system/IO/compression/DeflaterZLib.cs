@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 using System.Security;
+using System.Threading;
 
 using ZErrorCode = System.IO.Compression.ZLibNative.ErrorCode;
 using ZFlushCode = System.IO.Compression.ZLibNative.FlushCode;
@@ -23,8 +24,11 @@ namespace System.IO.Compression {
 internal class DeflaterZLib : IDeflater {
 
     private ZLibNative.ZLibStreamHandle _zlibStream;
-    private GCHandle? _inputBufferHandle;
+    private GCHandle _inputBufferHandle;
     private bool _isDisposed;
+
+    // non-zero indicates a valid handle
+    private int _isValid;
 
     // Note, DeflateStream or the deflater do not try to be thread safe.
     // The lock is just used to make writing to unmanaged structures atomic to make sure
@@ -89,19 +93,29 @@ internal class DeflaterZLib : IDeflater {
         DeflateInit(zlibCompressionLevel, windowBits, memLevel, strategy);        
     }
 
+    ~DeflaterZLib()
+    {
+        if (Environment.HasShutdownStarted)
+            return;
+            
+        Dispose(false);
+    }    
+
     void IDisposable.Dispose() {
         Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     [SecuritySafeCritical]
     protected virtual void Dispose(bool disposing) {
 
-        if (disposing && !_isDisposed) {
-
-            if (_inputBufferHandle.HasValue)
+        if (!_isDisposed) {
+            if (disposing)
+                _zlibStream.Dispose();
+           
+            if (_inputBufferHandle.IsAllocated)
                 DeallocateInputBufferHandle();
 
-            _zlibStream.Dispose();            
             _isDisposed = true;
         }
     }
@@ -122,7 +136,7 @@ internal class DeflaterZLib : IDeflater {
         Contract.Assert(NeedsInput(), "We have something left in previous input!");
         Contract.Assert(null != inputBuffer);
         Contract.Assert(startIndex >= 0 && count >= 0 && count + startIndex <= inputBuffer.Length);
-        Contract.Assert(!_inputBufferHandle.HasValue);
+        Contract.Assert(!_inputBufferHandle.IsAllocated);
 
         if (0 == count)
             return;
@@ -130,8 +144,9 @@ internal class DeflaterZLib : IDeflater {
         lock (syncLock) {
 
             _inputBufferHandle = GCHandle.Alloc(inputBuffer, GCHandleType.Pinned);
+            _isValid = 1;
         
-            _zlibStream.NextIn = _inputBufferHandle.Value.AddrOfPinnedObject() + startIndex;
+            _zlibStream.NextIn = _inputBufferHandle.AddrOfPinnedObject() + startIndex;
             _zlibStream.AvailIn = (uint) count;
         }
     }
@@ -143,8 +158,7 @@ internal class DeflaterZLib : IDeflater {
 
         Contract.Assert(null != outputBuffer, "Can't pass in a null output buffer!");
         Contract.Assert(!NeedsInput(), "GetDeflateOutput should only be called after providing input");
-        Contract.Assert(_inputBufferHandle.HasValue);
-        Contract.Assert(_inputBufferHandle.Value.IsAllocated);
+        Contract.Assert(_inputBufferHandle.IsAllocated);
 
         try {
             int bytesRead;
@@ -153,30 +167,24 @@ internal class DeflaterZLib : IDeflater {
 
         } finally {
             // Before returning, make sure to release input buffer if necesary:
-            if (0 == _zlibStream.AvailIn && _inputBufferHandle.HasValue)
+            if (0 == _zlibStream.AvailIn && _inputBufferHandle.IsAllocated)
                 DeallocateInputBufferHandle();
         }
     }
 
-    private ZErrorCode ReadDeflateOutput(byte[] outputBuffer, ZFlushCode flushCode, out int bytesRead) {
+    private unsafe ZErrorCode ReadDeflateOutput(byte[] outputBuffer, ZFlushCode flushCode, out int bytesRead) {
 
         lock (syncLock) {
 
-            GCHandle outputBufferHndl = GCHandle.Alloc(outputBuffer, GCHandleType.Pinned);
-
-            try {
-
-
-                _zlibStream.NextOut = outputBufferHndl.AddrOfPinnedObject();
+            fixed (byte* bufPtr = outputBuffer)
+            {
+                _zlibStream.NextOut = (IntPtr) bufPtr;
                 _zlibStream.AvailOut = (uint) outputBuffer.Length;
 
                 ZErrorCode errC = Deflate(flushCode);
                 bytesRead = outputBuffer.Length - (int) _zlibStream.AvailOut;
 
                 return errC;
-
-            } finally {
-                outputBufferHndl.Free();
             }
         }
     }
@@ -185,7 +193,7 @@ internal class DeflaterZLib : IDeflater {
 
         Contract.Assert(null != outputBuffer, "Can't pass in a null output buffer!");
         Contract.Assert(NeedsInput(), "We have something left in previous input!");
-        Contract.Assert(!_inputBufferHandle.HasValue);
+        Contract.Assert(!_inputBufferHandle.IsAllocated);
             
         // Note: we require that NeedsInput() == true, i.e. that 0 == _zlibStream.AvailIn.
         // If there is still input left we should never be getting here; instead we
@@ -202,14 +210,15 @@ internal class DeflaterZLib : IDeflater {
 
     private void DeallocateInputBufferHandle() {
 
-        Contract.Assert(_inputBufferHandle.HasValue);
-        Contract.Assert(_inputBufferHandle.Value.IsAllocated);
+        Contract.Assert(_inputBufferHandle.IsAllocated);
 
         lock(syncLock) {
             _zlibStream.AvailIn = 0;
             _zlibStream.NextIn = ZLibNative.ZNullPtr;
-            _inputBufferHandle.Value.Free();
-            _inputBufferHandle = null;
+
+            if (Interlocked.Exchange(ref _isValid, 0) != 0) {
+                _inputBufferHandle.Free();
+            }
         }
     }
 

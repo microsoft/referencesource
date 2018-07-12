@@ -364,7 +364,7 @@ namespace System.Web.Security {
             return password;
         }
 
-        private static void Initialize()
+        private static void Initialize() 
         {
             if (s_Initialized && s_InitializedDefaultProvider) {
                 return;
@@ -399,7 +399,6 @@ namespace System.Web.Security {
                     MembershipSection settings = appConfig.Membership;
                     generalSettingsInitialized = InitializeSettings(initializeGeneralSettings, appConfig, settings);
                     defaultProviderInitialized = InitializeDefaultProvider(initializeDefaultProvider, settings);
-
                     // VSO #265267 log warning in event log when using clear password and encrypted password in Membership provider
                     // VSO #433626 In order to minimize the behavior change, we are going to read the password format from the config settings only instead of getting from the provider class
                     // Also allow user to opt-out this feature.
@@ -430,8 +429,8 @@ namespace System.Web.Security {
                 if (settings != null && settings.Providers != null) {
                     foreach (ProviderSettings ps in settings.Providers) {
                         if (ps != null && ps.Parameters != null) {
-                            string passwordFormat = ps.Parameters["passwordFormat"];
-                            if (StringUtil.EqualsIgnoreCase(passwordFormat, "Clear") || StringUtil.EqualsIgnoreCase(passwordFormat, "Encrypted")) {
+                           string passwordFormat = ps.Parameters["passwordFormat"];
+                            if(StringUtil.EqualsIgnoreCase(passwordFormat, "Clear") || StringUtil.EqualsIgnoreCase(passwordFormat, "Encrypted")) {
                                 string providerName = ps.Name ?? string.Empty;
                                 WebBaseEvent.RaiseRuntimeError(new ConfigurationErrorsException(SR.GetString(SR.MembershipPasswordFormat_Obsoleted, providerName, passwordFormat)), typeof(MembershipProvider));
                             }

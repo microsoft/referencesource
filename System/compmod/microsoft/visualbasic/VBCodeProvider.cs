@@ -559,6 +559,12 @@ namespace Microsoft.VisualBasic {
             // Get UTF8 output from the compiler
             sb.Append("/utf8output ");
 
+            // This compiler argument was not added yet to VBC. It is needed to support safe code
+            // compilation and load under Device Guard. If it ever gets added, here is the correct
+            // place to do it (just remove this comment and uncomment the lines below).
+            // if (FileIntegrity.IsEnabled)
+            //    sb.Append("/EnforceCodeIntegrity ");
+
             string coreAssemblyFileName = options.CoreAssemblyFileName;
 
             if (String.IsNullOrWhiteSpace(options.CoreAssemblyFileName)) {
@@ -2908,9 +2914,16 @@ namespace Microsoft.VisualBasic {
                     SecurityPermission perm = new SecurityPermission(SecurityPermissionFlag.ControlEvidence);
                     perm.Assert();
                     try {
-#pragma warning disable 618 // Load with evidence is obsolete - this warning is passed on via the options.Evidence parameter
-                       results.CompiledAssembly = Assembly.Load(b,null,options.Evidence);
+                        if (!FileIntegrity.IsEnabled) {
+#pragma warning disable 618 // Load with evidence is obsolete - this warning is passed on via the options parameter
+                            results.CompiledAssembly = Assembly.Load(b, null, options.Evidence);
 #pragma warning restore 618
+                        } else {
+                            if (!FileIntegrity.IsTrusted(fs.SafeFileHandle))
+                                throw new IOException(SR.GetString(SR.FileIntegrityCheckFailed, outputAssemblyFile));
+
+                            results.CompiledAssembly = LoadImageSkipIntegrityCheck(b, null, options.Evidence);
+                        }
                     }
                     finally {
                        SecurityPermission.RevertAssert();

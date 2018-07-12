@@ -50,7 +50,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace System.IO.Ports
 {
-    internal sealed class SerialStream : Stream
+    internal sealed partial class SerialStream : Stream
     {
         const int errorEvents = (int) (SerialError.Frame | SerialError.Overrun |
                                  SerialError.RXOver | SerialError.RXParity | SerialError.TXFull);
@@ -765,7 +765,10 @@ namespace System.IO.Ports
 
                 // prep. for starting event cycle.
                 eventRunner = new EventLoopRunner(this);
-                Thread eventLoopThread = new Thread(new ThreadStart(eventRunner.WaitForCommEvent));
+                Thread eventLoopThread = LocalAppContextSwitches.DoNotCatchSerialStreamThreadExceptions
+                    ? new Thread(new ThreadStart(eventRunner.WaitForCommEvent))
+                    : new Thread(new ThreadStart(eventRunner.SafelyWaitForCommEvent));
+
                 eventLoopThread.IsBackground = true;
                 eventLoopThread.Start();
                 
@@ -1664,7 +1667,7 @@ namespace System.IO.Ports
 
         // ----SECTION: internal classes --------*
 
-        internal sealed class EventLoopRunner {
+        internal sealed partial class EventLoopRunner {
             private WeakReference streamWeakReference;
             internal ManualResetEvent eventLoopEndedSignal = new ManualResetEvent(false);
             internal ManualResetEvent waitCommEventWaitHandle = new ManualResetEvent(false);

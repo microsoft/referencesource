@@ -170,6 +170,7 @@ namespace System.Web.Security {
                     cookie.HttpOnly = true;
                     if (FormsAuthentication.CookieDomain != null)
                         cookie.Domain = FormsAuthentication.CookieDomain;
+                    cookie.SameSite = FormsAuthentication.CookieSameSite;
                     e.Context.Response.Cookies.Remove(cookie.Name);
                     e.Context.Response.Cookies.Add(cookie);
                 }

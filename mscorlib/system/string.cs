@@ -413,6 +413,50 @@ namespace System {
                 return (length <= 0);
             }
         }
+
+        [System.Security.SecuritySafeCritical]
+        private unsafe static bool EqualsIgnoreCaseAsciiHelper(String strA, String strB)
+        {
+            Contract.Requires(strA != null);
+            Contract.Requires(strB != null);
+            Contract.Requires(strA.Length == strB.Length, "Lengths of strA and strB must be the same");
+            int length = strA.Length;
+
+            fixed (char* ap = &strA.m_firstChar)
+            fixed (char* bp = &strB.m_firstChar)
+            {
+                char* a = ap;
+                char* b = bp;
+
+                while (length != 0)
+                {
+                    int charA = *a;
+                    int charB = *b;
+
+                    Contract.Assert((charA | charB) <= 0x7F, "strings have to be ASCII");
+
+                    // Ordinal equals or lowercase equals if the result ends up in the a-z range 
+                    if (charA == charB ||
+                       ((charA | 0x20) == (charB | 0x20) &&
+                          (uint)((charA | 0x20) - 'a') <= (uint)('z' - 'a')))
+                    {
+                        a++;
+                        b++;
+                        length--;
+                    }
+                    else
+                    {
+                        // We use goto for perf reasons. x86 JIT does not optimize around gotos.
+                        goto ReturnFalse;
+                    }
+                }
+
+                return true;
+
+                ReturnFalse:
+                return false;
+            }
+        }
         
         [System.Security.SecuritySafeCritical]  // auto-generated
         private unsafe static int CompareOrdinalHelper(String strA, String strB)
@@ -578,7 +622,7 @@ namespace System {
 
                     // If both strings are ASCII strings, we can take the fast path.
                     if (this.IsAscii() && value.IsAscii()) {
-                        return (CompareOrdinalIgnoreCaseHelper(this, value) == 0);
+                        return EqualsIgnoreCaseAsciiHelper(this, value);
                     }
                     // Take the slow path.                                    
                     return (TextInfo.CompareOrdinalIgnoreCase(this, value) == 0);
@@ -646,7 +690,7 @@ namespace System {
                     else {
                         // If both strings are ASCII strings, we can take the fast path.
                         if (a.IsAscii() && b.IsAscii()) {
-                            return (CompareOrdinalIgnoreCaseHelper(a, b) == 0);
+                            return EqualsIgnoreCaseAsciiHelper(a, b);
                         }
                         // Take the slow path.
 
