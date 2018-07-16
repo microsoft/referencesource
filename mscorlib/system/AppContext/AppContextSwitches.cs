@@ -1,7 +1,7 @@
 // ==++==
-// 
+//
 //   Copyright (c) Microsoft Corporation.  All rights reserved.
-// 
+//
 // ==--==
 
 namespace System
@@ -18,6 +18,16 @@ namespace System
             get
             {
                 return GetCachedSwitchValue(AppContextDefaultValues.SwitchNoAsyncCurrentCulture, ref _noAsyncCurrentCulture);
+            }
+        }
+
+        private static int _enforceJapaneseEraYearRanges;
+        public static bool EnforceJapaneseEraYearRanges
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchEnforceJapaneseEraYearRanges, ref _enforceJapaneseEraYearRanges);
             }
         }
 

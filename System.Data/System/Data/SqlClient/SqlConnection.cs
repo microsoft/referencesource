@@ -357,12 +357,12 @@ namespace System.Data.SqlClient
             SqlConnectionString connString = ConnectionOptions as SqlConnectionString;
             if (connString != null) {
                 _connectRetryCount = connString.ConnectRetryCount;
-            }
-
-            // For Azure SQL connection, set _connectRetryCount to 2 instead of 1 will greatly improve recovery
-            //   success rate 
-            if (_connectRetryCount == 1 && ADP.IsAzureSqlServerEndpoint(connString.DataSource)) {
-                _connectRetryCount = 2;
+                // For Azure SQL connection, set _connectRetryCount to 2 instead of 1 will greatly improve recovery
+                //   success rate 
+                if (_connectRetryCount == 1 && ADP.IsAzureSqlServerEndpoint(connString.DataSource))
+                {
+                    _connectRetryCount = 2;
+                }
             }
         }
 
