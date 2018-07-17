@@ -1,0 +1,68 @@
+;==++==
+;
+;   Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;==--==
+
+; IMPORTANT: This file needs to be kept in sync with ndp\fx\src\csharp.small\Microsoft.CSharp.txt
+;
+; Silverlight builds currently support only one resource file per project so we need to manually
+; keep these files in sync.
+; When porting exceptions, they should be added to ndp\fx\src\csharp.small\Error.cs instead 
+; since SL build puts them in a wrong namespace. 
+
+; NOTE: do not use \", use ' instead
+; NOTE: Use # or ; for comments
+
+; These are the managed resources for System.Core.Dll.  See
+; ResourceManager documentation and the ResGen tool.
+
+## ExceptionType=RuntimeBinderInternalCompilerException
+InternalCompilerError=An unexpected exception occurred while binding a dynamic operation
+
+## ExceptionType=ArgumentException
+BindRequireArguments=Cannot bind call with no calling object
+
+## ExceptionType=RuntimeBinderException
+BindCallFailedOverloadResolution=Overload resolution failed
+
+## ExceptionType=ArgumentException
+BindBinaryOperatorRequireTwoArguments=Binary operators must be invoked with two arguments
+
+## ExceptionType=ArgumentException
+BindUnaryOperatorRequireOneArgument=Unary operators must be invoked with one argument
+
+## ExceptionType=RuntimeBinderException
+BindPropertyFailedMethodGroup=The name '{0}' is bound to a method and cannot be used like a property
+
+## ExceptionType=RuntimeBinderException
+BindPropertyFailedEvent=The event '{0}' can only appear on the left hand side of += or -=
+
+## ExceptionType=RuntimeBinderException
+BindInvokeFailedNonDelegate=Cannot invoke a non-delegate type
+
+## ExceptionType=ArgumentException
+BindImplicitConversionRequireOneArgument=Implicit conversion takes exactly one argument
+
+## ExceptionType=ArgumentException
+BindExplicitConversionRequireOneArgument=Explicit conversion takes exactly one argument
+
+## ExceptionType=ArgumentException
+BindBinaryAssignmentRequireTwoArguments=Binary operators cannot be invoked with one argument
+
+## ExceptionType=RuntimeBinderException
+BindBinaryAssignmentFailedNullReference=Cannot perform member assignment on a null reference
+
+## ExceptionType=RuntimeBinderException
+NullReferenceOnMemberException=Cannot perform runtime binding on a null reference
+
+## ExceptionType=RuntimeBinderException
+BindCallToConditionalMethod=Cannot dynamically invoke method '{0}' because it has a Conditional attribute
+
+## ExceptionType=RuntimeBinderException
+BindToVoidMethodButExpectResult=Cannot implicitly convert type 'void' to 'object'
+
+EmptyDynamicView=No further information on this object could be discovered
+
+##ExceptionType=MissingMemberException
+GetValueonWriteOnlyProperty=Write Only properties are not supported
