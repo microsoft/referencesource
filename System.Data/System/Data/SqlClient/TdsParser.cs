@@ -8114,10 +8114,10 @@ namespace System.Data.SqlClient {
 
                           // Options
                           WriteShort((short)rpcext.options, stateObj);
-                      }
 
-                      byte[] enclavePackage = cmd.enclavePackage != null ? cmd.enclavePackage.EnclavePackageBytes : null;
-                      WriteEnclaveInfo(stateObj, enclavePackage);
+                          byte[] enclavePackage = cmd.enclavePackage != null ? cmd.enclavePackage.EnclavePackageBytes : null;
+                          WriteEnclaveInfo(stateObj, enclavePackage);
+                      }
 
                       // Stream out parameters
                       SqlParameter[] parameters = rpcext.parameters;
@@ -8628,6 +8628,7 @@ namespace System.Data.SqlClient {
       }
 
         private void WriteEnclaveInfo(TdsParserStateObject stateObj, byte[] enclavePackage) {
+
             //If the server supports enclave computations, write enclave info.
             if (TceVersionSupported >= TdsEnums.MIN_TCE_VERSION_WITH_ENCLAVE_SUPPORT) {
                 if (enclavePackage != null) {
