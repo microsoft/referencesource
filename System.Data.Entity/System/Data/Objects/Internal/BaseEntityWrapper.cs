@@ -56,7 +56,7 @@ namespace System.Data.Objects.Internal
         /// <summary>
         /// Constructs a wrapper as part of the materialization process.  This constructor is only used
         /// during materialization where it is known that the entity being wrapped is newly constructed.
-        /// This means that some checks are not performed that might be needed when thw wrapper is
+        /// This means that some checks are not performed that might be needed when the wrapper is
         /// created at other times, and information such as the identity type is passed in because
         /// it is readily available in the materializer.
         /// </summary>
