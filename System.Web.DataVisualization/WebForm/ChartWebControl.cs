@@ -1,6 +1,6 @@
 //-------------------------------------------------------------
-// <copyright company=�Microsoft Corporation�>
-//   Copyright � Microsoft Corporation. All Rights Reserved.
+// <copyright company='Microsoft Corporation'>
+//   Copyright @ Microsoft Corporation. All Rights Reserved.
 // </copyright>
 //-------------------------------------------------------------
 // @owner=alexgor, deliant
