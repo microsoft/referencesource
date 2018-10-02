@@ -961,7 +961,7 @@ namespace System.Web.UI.DataVisualization.Charting
 			//** Stacked column and bar charts can be drawn side-by-side
 			//** using the StackGroupName custom properties. The code 
 			//** checks if multiple groups are used how many of these
-			//** groups exsist.
+			//** groups exist.
 			//**
 			//** If isClustered mode enabled each stack group is drawn 
 			//** using it's own cluster.
@@ -971,7 +971,7 @@ namespace System.Web.UI.DataVisualization.Charting
 				// Check series support stack groups
 				if(Common.ChartTypeRegistry.GetChartType(smallestIntervalSeries.ChartTypeName).SupportStackedGroups)
 				{
-					// Calculate how many stack groups exsist
+					// Calculate how many stack groups exist
 					seriesNumber = 0;
 					ArrayList stackGroupNames = new ArrayList();
 					foreach(string seriesName in this._series)
@@ -986,7 +986,7 @@ namespace System.Web.UI.DataVisualization.Charting
 								seriesStackGroupName = curSeries[CustomPropertyName.StackedGroupName];
 							}
 
-							// Add group name if it do not already exsist
+							// Add group name if it does not already exist
 							if(!stackGroupNames.Contains(seriesStackGroupName))
 							{
 								stackGroupNames.Add(seriesStackGroupName);
@@ -1679,7 +1679,7 @@ namespace System.Web.UI.DataVisualization.Charting
 					stackGroupName = ser[CustomPropertyName.StackedGroupName];
 				}
 
-				// Add group name if it do not already exsist
+				// Add group name if it does not already exist
 				if(!this._stackGroupNames.Contains(stackGroupName))
 				{
 					this._stackGroupNames.Add(stackGroupName);

@@ -1,6 +1,6 @@
 //-------------------------------------------------------------
-// <copyright company=’Microsoft Corporation’>
-//   Copyright © Microsoft Corporation. All Rights Reserved.
+// <copyright company=ï¿½Microsoft Corporationï¿½>
+//   Copyright ï¿½ Microsoft Corporation. All Rights Reserved.
 // </copyright>
 //-------------------------------------------------------------
 // @owner=alexgor, deliant
@@ -855,7 +855,7 @@ namespace System.Web.UI.DataVisualization.Charting
 			result = String.Format(CultureInfo.InvariantCulture, result, imageSeqNumber);
 
 			//*********************************************************
-			//** Check if the image with this name exsists and it's
+			//** Check if the image with this name exists and its
 			//** live time is smaller than image time-to-live specified.
 			//** In this case put a warning into the even log.
 			//*********************************************************
@@ -868,7 +868,7 @@ namespace System.Web.UI.DataVisualization.Charting
 		}
 
 		/// <summary>
-		/// Check if the image with this name exsists and it's
+		/// Check if the image with this name exists and its
 		/// live time is smaller than image time-to-live specified.
 		/// In this case put a warning into the even log.
 		/// </summary>
@@ -877,7 +877,7 @@ namespace System.Web.UI.DataVisualization.Charting
 		private void CheckChartFileTime(string fileName, int imageTimeToLive)
 		{
 			//*********************************************************
-			//** Check if the image with this name exsists and it's
+			//** Check if the image with this name exists and its
 			//** live time is smaller than image time-to-live specified.
 			//** In this case put a warning into the even log.
 			//*********************************************************

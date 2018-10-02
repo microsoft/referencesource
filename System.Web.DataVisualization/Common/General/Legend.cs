@@ -1,6 +1,6 @@
 //-------------------------------------------------------------
-// <copyright company=’Microsoft Corporation’>
-//   Copyright © Microsoft Corporation. All Rights Reserved.
+// <copyright company=ï¿½Microsoft Corporationï¿½>
+//   Copyright ï¿½ Microsoft Corporation. All Rights Reserved.
 // </copyright>
 //-------------------------------------------------------------
 // @owner=alexgor, deliant
@@ -305,7 +305,7 @@ namespace System.Web.UI.DataVisualization.Charting
 		// Legend column collection
 		private LegendCellColumnCollection _cellColumns = null;
 
-		// Indicates that legend items automatically added based on the exsisting 
+		// Indicates that legend items automatically added based on the existing 
 		// series in reversed order.
         private LegendItemOrder _legendItemOrder = LegendItemOrder.Auto;
 
@@ -2084,7 +2084,7 @@ namespace System.Web.UI.DataVisualization.Charting
 			// Flag which indicates that series requires legend items to be reversed
 			bool	seriesWithReversedLegendItemsPresent = false;
 
-			// Add legend items based on the exsisting chart series
+			// Add legend items based on the existing chart series
 			foreach(Series series in this.Common.DataManager.Series)
 			{
                 // Check if series uses this legend

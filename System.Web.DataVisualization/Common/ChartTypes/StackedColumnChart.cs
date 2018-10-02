@@ -1,6 +1,6 @@
 //-------------------------------------------------------------
-// <copyright company=’Microsoft Corporation’>
-//   Copyright © Microsoft Corporation. All Rights Reserved.
+// <copyright company=ï¿½Microsoft Corporationï¿½>
+//   Copyright ï¿½ Microsoft Corporation. All Rights Reserved.
 // </copyright>
 //-------------------------------------------------------------
 // @owner=alexgor, deliant
@@ -605,7 +605,7 @@ using System.Drawing.Text;
 				// Get stack group name from the series
 				string stackGroupName = StackedColumnChart.GetSeriesStackGroupName(ser);
 
-				// Add group name if it do not already exsist
+				// Add group name if it does not already exist
 				if(!this.stackGroupNames.Contains(stackGroupName))
 				{
 					this.stackGroupNames.Add(stackGroupName);

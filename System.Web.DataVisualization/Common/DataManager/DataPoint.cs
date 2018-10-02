@@ -1,6 +1,6 @@
 //-------------------------------------------------------------
-// <copyright company=’Microsoft Corporation’>
-//   Copyright © Microsoft Corporation. All Rights Reserved.
+// <copyright company=ï¿½Microsoft Corporationï¿½>
+//   Copyright ï¿½ Microsoft Corporation. All Rights Reserved.
 // </copyright>
 //-------------------------------------------------------------
 // @owner=alexgor, deliant
@@ -452,7 +452,7 @@ namespace System.Web.UI.DataVisualization.Charting
 			}
 
 			// Add data points
-			bool		valueExsist = true;
+			bool		valueExists = true;
 			object[]	yValuesObj = new object[yFieldNames.Length];
 			object		xValueObj = null;
 			bool		autoDetectType = true;
@@ -463,9 +463,9 @@ namespace System.Web.UI.DataVisualization.Charting
                 do
                 {
                     // Move to the next objects in the enumerations
-                    if (valueExsist)
+                    if (valueExists)
                     {
-                        valueExsist = enumerator.MoveNext();
+                        valueExists = enumerator.MoveNext();
                     }
 
                     // Auto detect valu(s) type
@@ -476,7 +476,7 @@ namespace System.Web.UI.DataVisualization.Charting
                     }
 
                     // Create and initialize data point
-                    if (valueExsist)
+                    if (valueExists)
                     {
                         DataPoint newDataPoint = new DataPoint(series);
                         bool emptyValues = false;
@@ -563,7 +563,7 @@ namespace System.Web.UI.DataVisualization.Charting
                         }
                     }
 
-                } while (valueExsist);
+                } while (valueExists);
 
             }
             finally
@@ -648,8 +648,8 @@ namespace System.Web.UI.DataVisualization.Charting
 			}
 
 			// Add data points
-			bool		xValueExsist = false;
-			bool		yValueExsist = true;
+			bool		xvalueExists = false;
+			bool		yvalueExists = true;
 			object[]	yValuesObj = new object[series.YValuesPerPoint];
 			object		xValueObj = null;
 			bool		autoDetectType = true;
@@ -660,18 +660,18 @@ namespace System.Web.UI.DataVisualization.Charting
                 do
                 {
                     // Move to the next objects in the enumerations
-                    yValueExsist = true;
+                    yvalueExists = true;
                     for (int i = 0; i < yValues.Length; i++)
                     {
-                        if (yValueExsist)
+                        if (yvalueExists)
                         {
-                            yValueExsist = yEnumerator[i].MoveNext();
+                            yvalueExists = yEnumerator[i].MoveNext();
                         }
                     }
                     if (xValue != null)
                     {
-                        xValueExsist = xEnumerator.MoveNext();
-                        if (yValueExsist && !xValueExsist)
+                        xvalueExists = xEnumerator.MoveNext();
+                        if (yvalueExists && !xvalueExists)
                         {
                             throw (new ArgumentOutOfRangeException("xValue", SR.ExceptionDataPointInsertionXValuesQtyIsLessYValues));
                         }
@@ -685,13 +685,13 @@ namespace System.Web.UI.DataVisualization.Charting
                     }
 
                     // Create and initialize data point
-                    if (xValueExsist || yValueExsist)
+                    if (xvalueExists || yvalueExists)
                     {
                         DataPoint newDataPoint = new DataPoint(series);
                         bool emptyValues = false;
 
                         // Set X to the value provided
-                        if (xValueExsist)
+                        if (xvalueExists)
                         {
                             xValueObj = ConvertEnumerationItem(xEnumerator.Current, null);
                             if (xValueObj is System.DBNull || xValueObj == null)
@@ -743,7 +743,7 @@ namespace System.Web.UI.DataVisualization.Charting
 
                     }
 
-                } while (xValueExsist || yValueExsist);
+                } while (xvalueExists || yvalueExists);
 
             }
             finally 
@@ -825,8 +825,8 @@ namespace System.Web.UI.DataVisualization.Charting
 			}
 
 			// Add data points
-			bool		xValueExsist = false;
-			bool		yValueExsist = true;
+			bool		xvalueExists = false;
+			bool		yvalueExists = true;
 			object[]	yValuesObj = new object[yFieldNames.Length];
 			object		xValueObj = null;
 			bool		autoDetectType = true;
@@ -837,23 +837,23 @@ namespace System.Web.UI.DataVisualization.Charting
                 do
                 {
                     // Move to the next objects in the enumerations
-                    if (yValueExsist)
+                    if (yvalueExists)
                     {
-                        yValueExsist = yEnumerator.MoveNext();
+                        yvalueExists = yEnumerator.MoveNext();
                     }
                     if (xValue != null)
                     {
                         if (xValue != yValue)
                         {
-                            xValueExsist = xEnumerator.MoveNext();
-                            if (yValueExsist && !xValueExsist)
+                            xvalueExists = xEnumerator.MoveNext();
+                            if (yvalueExists && !xvalueExists)
                             {
                                 throw (new ArgumentOutOfRangeException("xValue", SR.ExceptionDataPointInsertionXValuesQtyIsLessYValues));
                             }
                         }
                         else
                         {
-                            xValueExsist = yValueExsist;
+                            xvalueExists = yvalueExists;
                         }
                     }
 
@@ -865,13 +865,13 @@ namespace System.Web.UI.DataVisualization.Charting
                     }
 
                     // Create and initialize data point
-                    if (xValueExsist || yValueExsist)
+                    if (xvalueExists || yvalueExists)
                     {
                         DataPoint newDataPoint = new DataPoint(series);
                         bool emptyValues = false;
 
                         // Set X to the value provided or use sequence numbers starting with 1
-                        if (xValueExsist)
+                        if (xvalueExists)
                         {
                             xValueObj = ConvertEnumerationItem(xEnumerator.Current, xField);
                             if (IsEmptyValue(xValueObj))
@@ -934,7 +934,7 @@ namespace System.Web.UI.DataVisualization.Charting
                         }
                     }
 
-                } while (xValueExsist || yValueExsist);
+                } while (xvalueExists || yvalueExists);
 
             }
             finally 

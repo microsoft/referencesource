@@ -1,6 +1,6 @@
 //-------------------------------------------------------------
-// <copyright company=’Microsoft Corporation’>
-//   Copyright © Microsoft Corporation. All Rights Reserved.
+// <copyright company=ï¿½Microsoft Corporationï¿½>
+//   Copyright ï¿½ Microsoft Corporation. All Rights Reserved.
 // </copyright>
 //-------------------------------------------------------------
 // @owner=alexgor, deliant
@@ -765,12 +765,12 @@ namespace System.Web.UI.DataVisualization.Charting
 				//************************************************************
 				//** Loop through the enumerator.
 				//************************************************************
-				bool	valueExsists = true;
+				bool	valueExists = true;
 				bool	autoDetectType = true;
 				do
 				{
 					// Move to the next item
-					valueExsists = enumerator.MoveNext();
+					valueExists = enumerator.MoveNext();
 
 					// Loop through all series 
 					foreach(Series series in seriesList)
@@ -807,7 +807,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							//************************************************************
 							//** Create new data point.
 							//************************************************************
-							if(valueExsists)
+							if(valueExists)
 							{
 								// Auto detect values type
 								if(autoDetectType)
@@ -918,7 +918,7 @@ namespace System.Web.UI.DataVisualization.Charting
 						}
 					}
 				
-				} while(valueExsists);
+				} while(valueExists);
 
 			}
 		}
@@ -1163,7 +1163,7 @@ namespace System.Web.UI.DataVisualization.Charting
 			}
 
 			// Add data points
-			bool		valueExsist = true;
+			bool		valueExists = true;
 			object[]	yValuesObj = new object[yFieldNames.Length];
 			object		xValueObj = null;
 			bool		autoDetectType = true;
@@ -1171,13 +1171,13 @@ namespace System.Web.UI.DataVisualization.Charting
 			do 
 			{
 				// Move to the next objects in the enumerations
-				if(valueExsist)
+				if(valueExists)
 				{
-					valueExsist = enumerator.MoveNext();
+					valueExists = enumerator.MoveNext();
 				}
 
 				// Create and initialize data point
-				if(valueExsist)
+				if(valueExists)
 				{
 					// Get value of the group by field
 					object groupObj = DataPointCollection.ConvertEnumerationItem(
@@ -1318,7 +1318,7 @@ namespace System.Web.UI.DataVisualization.Charting
 					}
 				}
 
-			} while(valueExsist);
+			} while(valueExists);
 
 			// Sort series usig values of group by field
 			if(sort)

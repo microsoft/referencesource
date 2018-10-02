@@ -31,7 +31,7 @@ namespace System.ServiceModel.Description
             return attribute;
         }
         // -----------------------------------------------------------------------------------------------------------------------
-        // Developers Note: We go through a little song an dance here to Get or Create an exsisting SoapBinding from the WSDL
+        // Developers Note: We go through a little song and dance here to Get or Create an existing SoapBinding from the WSDL
         // Extensions for a number of reasons:
         //      1. Multiple Extensions may contribute to the settings in the soap binding and so to make this work without
         //          relying on ordering, we need the GetOrCreate method.

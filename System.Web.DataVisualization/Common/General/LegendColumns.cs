@@ -1,6 +1,6 @@
 //-------------------------------------------------------------
-// <copyright company=’Microsoft Corporation’>
-//   Copyright © Microsoft Corporation. All Rights Reserved.
+// <copyright company=ï¿½Microsoft Corporationï¿½>
+//   Copyright ï¿½ Microsoft Corporation. All Rights Reserved.
 // </copyright>
 //-------------------------------------------------------------
 // @owner=alexgor, deliant
@@ -1575,7 +1575,7 @@ namespace System.Web.UI.DataVisualization.Charting
 						int cellIndex = this.LegendItem.Cells.IndexOf(this);
 						if(cellIndex >= 0)
 						{
-							// Check if associated column exsists
+							// Check if associated column exists
 							if(cellIndex < this.Legend.CellColumns.Count && 
 								!this.Legend.CellColumns[cellIndex].BackColor.IsEmpty)
 							{
@@ -1646,7 +1646,7 @@ namespace System.Web.UI.DataVisualization.Charting
 						int cellIndex = this.LegendItem.Cells.IndexOf(this);
 						if(cellIndex >= 0)
 						{
-							// Check if associated column exsists
+							// Check if associated column exists
 							if(cellIndex < this.Legend.CellColumns.Count && 
 								this.Legend.CellColumns[cellIndex].Font != null)
 							{
@@ -1878,7 +1878,7 @@ namespace System.Web.UI.DataVisualization.Charting
 						int cellIndex = this.LegendItem.Cells.IndexOf(this);
 						if(cellIndex >= 0)
 						{
-							// Check if associated column exsists
+							// Check if associated column exists
 							if(cellIndex < this.Legend.CellColumns.Count && 
 								!this.Legend.CellColumns[cellIndex].ForeColor.IsEmpty)
 							{
