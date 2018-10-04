@@ -237,6 +237,11 @@ namespace System.Web.UI.HtmlControls {
                 writer.WriteAttribute("href", postBackEventReference, true);
             }
             else {
+                if (HRef != null && HRef.Trim() == "#")
+                {
+                    writer.WriteAttribute("href", "#");
+                    Attributes.Remove("href");
+                }
                 PreProcessRelativeReferenceAttribute(writer, "href");
                 base.RenderAttributes(writer);
             }
