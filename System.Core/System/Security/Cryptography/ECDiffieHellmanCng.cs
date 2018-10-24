@@ -90,7 +90,7 @@ namespace System.Security.Cryptography {
             // expose the key handles to calling code (without first demanding UnmanagedCode via the Handle
             // property of CngKey).
             //
-            // The bizzare looking disposal of the key.Handle property is intentional - Handle returns a
+            // The bizarre looking disposal of the key.Handle property is intentional - Handle returns a
             // duplicate - without disposing it, we keep the key alive until the GC runs.
             new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Assert();
             using (SafeNCryptKeyHandle importHandle = key.Handle) {
