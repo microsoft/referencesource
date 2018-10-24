@@ -1977,7 +1977,7 @@ namespace System.Text
             // Might also need an extra 1 if there's a left over high surrogate in the decoder.
             long charCount = (long)(byteCount >> 1) + (byteCount & 1) + 1;
 
-            // Don't forget fallback (in case they have a bunch of lonely surrogates or something bizzare like that)
+            // Don't forget fallback (in case they have a bunch of lonely surrogates or something bizarre like that)
             if (DecoderFallback.MaxCharCount > 1)
                 charCount *= DecoderFallback.MaxCharCount;
 
