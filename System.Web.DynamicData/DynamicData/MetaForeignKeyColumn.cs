@@ -60,7 +60,7 @@ namespace System.Web.DynamicData {
         }
 
         /// <summary>
-        /// Returns true if this foriegn key column is part of the primary key of its table
+        /// Returns true if this foreign key column is part of the primary key of its table
         /// e.g. Order and Product are PKs in the Order_Details table
         /// </summary>
         public bool IsPrimaryKeyInThisTable {
