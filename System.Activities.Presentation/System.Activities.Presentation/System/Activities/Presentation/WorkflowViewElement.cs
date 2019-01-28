@@ -859,7 +859,7 @@ namespace System.Activities.Presentation
         }
 
         // This is to set the cursor to the forbidden icon when dragging to the designer.
-        // It doesn't affect the drag-drop behavior of components that have AllowDrop == ture within the designer.
+        // It doesn't affect the drag-drop behavior of components that have AllowDrop == true within the designer.
         protected override void OnDragEnter(DragEventArgs e)
         {
             this.OnDrag(e);
@@ -867,7 +867,7 @@ namespace System.Activities.Presentation
         }
 
         // This is to set the cursor to the forbidden icon when dragging within the designer.
-        // It doesn't affect the drag-drop behavior of components that have AllowDrop == ture within the designer.
+        // It doesn't affect the drag-drop behavior of components that have AllowDrop == true within the designer.
         protected override void OnDragOver(DragEventArgs e)
         {
             this.OnDrag(e);
