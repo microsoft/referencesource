@@ -368,7 +368,7 @@ namespace System
                                 {
                                     escapeReserved = true;
                                 }
-                                // escape (escapeReserved==ture) or otheriwse unescape the sequence
+                                // escape (escapeReserved==true) or otheriwse unescape the sequence
                                 break;
                             }
                             else if ((unescapeMode & (UnescapeMode.Unescape | UnescapeMode.UnescapeAll)) 
