@@ -1,0 +1,60 @@
+﻿<? Copyright (c) Microsoft Corporation.  All rights reserved.?>
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <CdfRootPath>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), 'Microsoft.CDF.Settings.targets'))</CdfRootPath>
+  </PropertyGroup>
+  <Import Project="$(CdfRootPath)\src\Microsoft.CDF.Source.Settings.targets" />
+  <PropertyGroup>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>Microsoft.Activities.Build</AssemblyName>
+    <OutputType>Library</OutputType>
+    <Defaultnamespace>$(AssemblyName)</Defaultnamespace>
+    <AssemblyAttributeClsCompliant>true</AssemblyAttributeClsCompliant>
+    <AssemblyKeyType>MSSHARED</AssemblyKeyType>
+    <SecurityMigration>false</SecurityMigration>
+    <CreateMetaAssembly>true</CreateMetaAssembly>
+    <ProjectGuid>{B3C9BB78-FC5F-4644-B898-E237C8ACF854}</ProjectGuid>
+    <DocumentationFile>$(ADPDocumentationPath)\$(AssemblyName).xml</DocumentationFile>
+    <DefineConstants>$(DefineConstants);NONAPTCA</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StringResourceFile>SR.resx</StringResourceFile>
+    <ResourcesNamespace>$(AssemblyName)</ResourcesNamespace>
+    <GenerateFxTraceFile>$(AssemblyName)</GenerateFxTraceFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="$(AdpRefPath)\System.Activities.dll" />
+    <Reference Include="$(AdpRefPath)\System.ServiceModel.Internals.dll" />
+    <Reference Include="$(AdpRefPath)\XamlBuildTask.dll" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <PropertyGroup>
+    <ValidationSources>Microsoft\Activities\Build\Validation</ValidationSources>
+    <ExpressionsSources>Microsoft\Activities\Build\Expressions</ExpressionsSources>
+    <DebuggerSources>Microsoft\Activities\Build\Debugger</DebuggerSources>
+    <BuildSources>Microsoft\Activities\Build</BuildSources>
+  </PropertyGroup>
+  <ItemGroup>
+    <DataFile Include="Microsoft.WorkflowBuildExtensions.targets" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(BuildSources)\BeforeInitializeComponentExtension.cs" />
+    <Compile Include="$(ValidationSources)\ValidationBuildExtension.cs" />
+    <Compile Include="$(ValidationSources)\ReportDeferredValidationErrorsTask.cs" />
+    <Compile Include="$(ValidationSources)\DeferredValidationTask.cs" />
+    <Compile Include="$(ExpressionsSources)\ExpressionsBuildExtension.cs" />
+    <Compile Include="$(DebuggerSources)\DebugBuildExtension.cs" />
+    <Compile Include="$(BuildSources)\WorkflowBuildMessageTask.cs">
+      <ExcludeFromStyleCop>true</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Microsoft\Activities\Build\Utilities.cs" />
+  </ItemGroup>
+  <Import Project="$(CDFRootPath)\Microsoft.CDF.targets" />
+</Project>
