@@ -11,4 +11,4 @@ Questions, bugs, and pull requests should be done through [.NET Core](https://gi
 
 ## License
 
-The files in this repository are licensed with the [MIT](LICENSE.txt) license unless otherwise specified in the file header.
+The files in this repository are licensed under the [MIT](LICENSE.txt) license unless otherwise specified in the file header. If the file header only contains a copyright header (e.g., "Copyright (c) Microsoft Corporation. All rights reserved.", you can assume the associated file to be MIT-licensed.
