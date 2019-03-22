@@ -1,0 +1,323 @@
+﻿<ResourceDictionary
+  x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:InternalEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Editors"
+  xmlns:Data="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+  xmlns:sys="clr-namespace:System;assembly=Mscorlib"
+  xmlns:sap="clr-namespace:System.Activities.Presentation"
+  xmlns:Internal="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing">
+  
+  <ResourceDictionary.MergedDictionaries>
+    <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+  </ResourceDictionary.MergedDictionaries>
+  
+  <InternalEditors:NonZeroToBoolConverter x:Uid="InternalEditors:NonZeroToBoolConverter_1" x:Key="NonZeroToTrueConverter"/>
+  <sys:String x:Uid="String_1" x:Key="ByCategoryViewButtonAutomationName">By Category View Button</sys:String>
+  <sys:String x:Uid="String_2" x:Key="AlphabeticalViewButtonAutomationName">Alphabetical View Button</sys:String>
+  <sys:String x:Uid="String_3" x:Key="SearchLabelAutomationName">Search Label</sys:String>
+  <sys:String x:Uid="String_4" x:Key="SearchTextAutomationName">Enter Search Text</sys:String>
+  <sys:String x:Uid="String_5" x:Key="ClearSearchButtonAutomationName">Clear Search Button</sys:String>
+  <Data:SwitchConverter x:Uid="Data:SwitchConverter_1" x:Key="BoolToBlackConverter" DefaultValue="{x:Null}">
+    <Data:SwitchCase x:Uid="Data:SwitchCase_1" Out="{StaticResource PropertyToolBarHightlightedButtonForegroundColor}">
+      <Data:SwitchCase.In>
+        <sys:Boolean x:Uid="sys:Boolean_1">True</sys:Boolean>
+      </Data:SwitchCase.In>
+    </Data:SwitchCase>
+  </Data:SwitchConverter>
+  
+  <!-- ***************************** -->
+  <!-- ToggleButtonTemplate Template -->
+  <!-- ***************************** -->
+
+  <ControlTemplate x:Uid="ControlTemplate_1" x:Key="ToggleButtonTemplate" TargetType="{x:Type RadioButton}">
+
+    <Grid x:Uid="Grid_2">
+      <Rectangle x:Uid="BackgroundRect" Name="BackgroundRect"
+                 Stroke="Transparent"
+                 StrokeThickness="1"
+                 Fill="Transparent"
+                 SnapsToDevicePixels="True"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"/>
+      <ContentPresenter x:Uid="ContentPresenter_1"/>
+      <Rectangle x:Uid="Rectangle_1"
+                 Fill="{x:Null}"
+                 Stroke="{Binding Path=IsFocused, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToBlackConverter}}"
+                 StrokeThickness="1"
+                 StrokeDashArray="1 2"
+                 SnapsToDevicePixels="True"/>
+    </Grid>
+
+    <ControlTemplate.Triggers>
+      <Trigger x:Uid="Trigger_1" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_1" Property="Fill" TargetName="BackgroundRect"
+                Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemHoverBackgroundBrushKey}}"/>
+        <Setter x:Uid="Setter_4" Property="Stroke" TargetName="BackgroundRect" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemHoverBorderBrushKey}}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_2" Property="IsChecked" Value="True">
+        <Setter x:Uid="Setter_2" Property="Fill" TargetName="BackgroundRect"
+                Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemSelectedBackgroundBrushKey}}"/>
+        <Setter x:Uid="Setter_5" Property="Stroke" TargetName="BackgroundRect" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemSelectedBorderBrushKey}}"/>
+      </Trigger>
+      <!-- If the button is disabled, hide the selection rectangle -->
+      <Trigger x:Uid="Trigger_5" Property="IsEnabled" Value="False">
+        <Setter x:Uid="Setter_11" Property="Fill" TargetName="BackgroundRect" Value="Transparent"/>
+        <Setter x:Uid="Setter_12" Property="Stroke" TargetName="BackgroundRect" Value="Transparent"/>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <!-- ************************ -->
+  <!-- PropertyToolBar Template -->
+  <!-- ************************ -->
+
+  <Style x:Uid="Style_1" TargetType="{x:Type Internal:PropertyToolBar}">
+    <Style.Setters>
+      <Setter x:Uid="Setter_6" Property="Focusable" Value="False"/>
+      <Setter x:Uid="Setter_3" Property="Template">
+        <Setter.Value>
+          <ControlTemplate x:Uid="ControlTemplate_2" TargetType="{x:Type Internal:PropertyToolBar}">
+
+            <Border x:Uid="Border_1"
+                    BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BorderBrushKey}}"
+                    BorderThickness="0,0,0,1"
+                    Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarBackgroundBrushKey}}"
+                    SnapsToDevicePixels="True" >
+
+              <Grid x:Uid="Grid_1">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition x:Uid="ColumnDefinition_7" Width="Auto" SharedSizeGroup="IconColumn"/> <!-- Buttons and Separator -->
+                  <ColumnDefinition x:Uid="ColumnDefinition_4" Width="Auto"/>                              <!-- 'Search:' -->
+                  <ColumnDefinition x:Uid="ColumnDefinition_5" Width="*"/>                                 <!-- Search TextBox -->
+                  <ColumnDefinition x:Uid="ColumnDefinition_6" Width="Auto"/>                              <!-- Clear Button -->
+                </Grid.ColumnDefinitions>
+
+                <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal" Margin="2,1,6,1" Grid.Column="0">
+
+                  <!-- Categorization Options: Category view -->
+                  <Internal:KeyboardEnabledRadioButton x:Uid="PART_ByCategoryViewButton"
+                               Name="PART_ByCategoryViewButton"
+                               Template="{StaticResource ToggleButtonTemplate}"
+                               FocusVisualStyle="{x:Null}"
+                               Width="22" Height="22"
+                               GroupName="ViewMode"
+                               ToolTip="Categorized"
+                               IsEnabled="{Binding Path=CategoryList.Items.Count, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NonZeroToTrueConverter}}"
+                               IsChecked="{Binding Path=IsCategoryViewSelected, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                    <Internal:KeyboardEnabledRadioButton.Style>
+                      <Style x:Uid="Style_2">
+                        <Style.Triggers>
+                          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                            <Setter x:Uid="Setter_15" Property="AutomationProperties.Name" Value="{StaticResource ByCategoryViewButtonAutomationName}"/>
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Internal:KeyboardEnabledRadioButton.Style>
+                    <Rectangle x:Uid="Rectangle_2" Width="16" Height="16">
+                      <Rectangle.Fill>
+                        <ImageBrush x:Uid="ImageBrush_1" ImageSource="/System.Activities.Presentation;component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/CategorizedSort.png"/>
+                      </Rectangle.Fill>
+                    </Rectangle>
+                  </Internal:KeyboardEnabledRadioButton>
+
+                  <!-- Categorization Options: Alpha view -->
+                  <Internal:KeyboardEnabledRadioButton x:Uid="PART_AlphaViewButton"
+                               Name="PART_AlphaViewButton"
+                               Template="{StaticResource ToggleButtonTemplate}"
+                               FocusVisualStyle="{x:Null}"
+                               Width="22" Height="22"
+                               GroupName="ViewMode"
+                               ToolTip="Alphabetical"
+                               IsEnabled="{Binding Path=CategoryList.Items.Count, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NonZeroToTrueConverter}}"
+                               IsChecked="{Binding Path=IsAlphaViewSelected, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                    <Internal:KeyboardEnabledRadioButton.Style>
+                      <Style x:Uid="Style_3">
+                        <Style.Triggers>
+                          <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                            <Setter x:Uid="Setter_16" Property="AutomationProperties.Name" Value="{StaticResource AlphabeticalViewButtonAutomationName}"/>
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Internal:KeyboardEnabledRadioButton.Style>
+                    <Rectangle x:Uid="Rectangle_3" Width="16" Height="16">
+                      <Rectangle.Fill>
+                        <ImageBrush x:Uid="ImageBrush_2" ImageSource="/System.Activities.Presentation;component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/AlphaSort.png"/>
+                      </Rectangle.Fill>
+                    </Rectangle>
+                  </Internal:KeyboardEnabledRadioButton>
+
+                  <!-- Separator -->
+                  <Rectangle x:Uid="Rectangle_4"
+                             Fill="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarSeparatorBrushKey}}"
+                             Width="1" HorizontalAlignment="Stretch" Margin="2,0,0,0"/>
+
+                
+              </StackPanel>
+
+                <!-- Label -->
+                <TextBlock
+                  x:Uid="PART_SearchLabel" Grid.Column="1"
+                  Name="PART_SearchLabel"
+                  Margin="0,1,0,1"
+                  Text="Search:"
+                  FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+                  FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+                  FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+                  Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Center">
+                  <TextBlock.Style>
+                    <Style x:Uid="Style_4">
+                      <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                          <Setter x:Uid="Setter_17" Property="AutomationProperties.Name" Value="{StaticResource SearchLabelAutomationName}"/>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Filter TextBox -->
+                <TextBox
+                  x:Uid="PART_SearchTextBox" Name="PART_SearchTextBox"
+                  Margin="4,1,0,1"
+                  VerticalContentAlignment="Bottom"
+                  SnapsToDevicePixels="True"
+                  Grid.Column="2"
+                  MinHeight="19"
+                  Text="{Binding Path=CategoryList.FilterString, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                  FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+                  FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+                  FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+                  BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarTextBoxBorderBrushKey}}"
+                  Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"
+                  Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"
+                  ToolTip="Enter search string."
+                  Focusable="{Binding Path=CategoryList.Items.Count, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NonZeroToTrueConverter}}"
+                  FocusVisualStyle="{x:Null}">
+                  <TextBox.Style>
+                    <Style x:Uid="Style_5">
+                      <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                          <Setter x:Uid="Setter_18" Property="AutomationProperties.Name" Value="{StaticResource SearchTextAutomationName}"/>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBox.Style>
+                </TextBox>
+
+                <!-- Clear Button -->
+                <Button
+                  x:Uid="PART_SearchClearButton"
+                  Name="PART_SearchClearButton"
+                  Grid.Column="3"
+                  Margin="0,1,4,1"
+                  Focusable="True"
+                  VerticalAlignment="Center"
+                  Command="{Binding Path=CategoryList.ClearFilterCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                  IsEnabled="{Binding Path=CategoryList.Items.Count, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource NonZeroToTrueConverter}}">
+                  <Button.Template>
+                    <ControlTemplate x:Uid="ControlTemplate_3" TargetType="{x:Type Button}">
+                      <Border x:Uid="ButtonBackground" Name="ButtonBackground"
+                              BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarTextBoxBorderBrushKey}}"
+                              BorderThickness="1,1,1,1">
+
+                        <Grid x:Uid="Grid_3" 
+                              Height="{Binding Path=ActualHeight, ElementName=PART_SearchTextBox}">
+
+                          <TextBlock x:Uid="TextBlock_1" Margin="14,-1,14,-1"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Text="Clear"
+                                     FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+                                     FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+                                     FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}">
+                            <TextBlock.Style>
+                              <Style x:Uid="Style_8" TargetType="TextBlock">
+                                <Style.Triggers>
+                                  <DataTrigger x:Uid="DataTrigger_7" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="True" >
+                                    <Setter x:Uid="Setter_24" Property="Foreground" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"/>
+                                  </DataTrigger>
+                                  <MultiDataTrigger x:Uid="MultiDataTrigger_2">
+                                    <MultiDataTrigger.Conditions>
+                                      <Condition x:Uid="Condition_3" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False" />
+                                      <Condition x:Uid="Condition_4" Binding="{Binding Path=IsFocused, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter x:Uid="Setter_23" Property="Foreground" Value="{StaticResource PropertyToolBarHightlightedButtonForegroundColor}"/>
+                                  </MultiDataTrigger>
+                                  <MultiDataTrigger x:Uid="MultiDataTrigger_3">
+                                    <MultiDataTrigger.Conditions>
+                                      <Condition x:Uid="Condition_5" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False" />
+                                      <Condition x:Uid="Condition_6" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter x:Uid="Setter_25" Property="Foreground" Value="{StaticResource PropertyToolBarHightlightedButtonForegroundColor}"/>
+                                  </MultiDataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </TextBlock.Style>
+                          </TextBlock>
+
+                          <Rectangle x:Uid="Rectangle_5"
+                                     Fill="{x:Null}"
+                                     Stroke="{Binding Path=IsFocused, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BoolToBlackConverter}}"
+                                     StrokeThickness="1"
+                                     StrokeDashArray="1 2"
+                                     SnapsToDevicePixels="True"/>
+                        </Grid>
+                        <Border.Style>
+                          <Style x:Uid="Style_7" TargetType="Border">
+                            <Style.Triggers>
+                              <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="True" >
+                                <Setter x:Uid="Setter_22" Property="Background" Value="Transparent"/>
+                              </DataTrigger>
+                              <MultiDataTrigger x:Uid="MultiDataTrigger_1">
+                                <MultiDataTrigger.Conditions>
+                                  <Condition x:Uid="Condition_1" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False" />
+                                  <Condition x:Uid="Condition_2" Binding="{Binding Path=IsFocused, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter x:Uid="Setter_20" Property="Background" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemHoverBackgroundBrushKey}}"/>
+                                <Setter x:Uid="Setter_21" Property="BorderBrush" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemHoverBorderBrushKey}}"/>
+                              </MultiDataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Border.Style>
+                      </Border>
+
+                      <ControlTemplate.Triggers>
+                        <Trigger x:Uid="Trigger_3" Property="IsMouseOver" Value="True">
+                          <Setter x:Uid="Setter_7" Property="Background" TargetName="ButtonBackground"
+                                  Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemHoverBackgroundBrushKey}}"/>
+                          <Setter x:Uid="Setter_8" Property="BorderBrush" TargetName="ButtonBackground" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemHoverBorderBrushKey}}"/>
+                        </Trigger>
+                        <Trigger x:Uid="Trigger_4" Property="IsPressed" Value="True">
+                          <Setter x:Uid="Setter_9" Property="Background" TargetName="ButtonBackground"
+                                  Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemSelectedBackgroundBrushKey}}"/>
+                          <Setter x:Uid="Setter_10" Property="BorderBrush" TargetName="ButtonBackground" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.ToolBarItemSelectedBorderBrushKey}}"/>
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                  </Button.Template>
+                  <Button.Style>
+                    <Style x:Uid="Style_6">
+                      <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False">
+                          <Setter x:Uid="Setter_19" Property="AutomationProperties.Name" Value="{StaticResource ClearSearchButtonAutomationName}"/>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Button.Style>
+                
+              </Button>
+
+              </Grid>
+
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style.Setters>
+  </Style>
+
+</ResourceDictionary>

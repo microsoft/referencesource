@@ -1,0 +1,273 @@
+﻿<ResourceDictionary
+    x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:ValueEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.ValueEditors" 
+    xmlns:PropertyEditing="clr-namespace:System.Activities.Presentation.PropertyEditing" 
+    xmlns:Data="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+    xmlns:Framework="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.PropertyInspector"
+    xmlns:System="clr-namespace:System;assembly=Mscorlib"
+    xmlns:sap="clr-namespace:System.Activities.Presentation"
+    xmlns:Internal="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing"
+    xmlns:InternalEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Editors"
+    xmlns:InternalAutomation="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Automation"
+    xmlns:InternalResources="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Resources"
+    xmlns:InternalSelection="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Selection"
+    >
+
+  <!-- Converters -->
+  <Data:ComposingConverter x:Uid="Data:ComposingConverter_1" x:Key="NotNullToVisibilityConverter">
+    <Data:ComposingConverter.Converters>
+      <Data:IsNullConverter x:Uid="Data:IsNullConverter_1"/>
+      <Data:NotConverter x:Uid="Data:NotConverter_1"/>
+      <Data:BoolToVisibilityConverter x:Uid="Data:BoolToVisibilityConverter_1"/>
+    </Data:ComposingConverter.Converters>
+  </Data:ComposingConverter>
+
+  <Data:BoolToVisibilityCollapsedConverter x:Uid="Data:BoolToVisibilityCollapsedConverter_1" x:Key="BoolToVisibilityCollapsedConverterInverted" InvertBoolean="True"/>
+  <Data:NotConverter x:Uid="Data:NotConverter_2" x:Key="NotConverter"/>
+  <InternalEditors:ImageSourceToImageConverter x:Uid="InternalEditors:ImageSourceToImageConverter_1" x:Key="ImageSourceToImageConverter"/>
+  <InternalEditors:ValueToToolTipConverter x:Uid="InternalEditors:ValueToToolTipConverter_1" x:Key="ValueToToolTipConverter"/>
+  <InternalAutomation:TextFormatConverter x:Uid="InternalAutomation:TextFormatConverter_1" x:Key="StringEditorAutomationIdFormatConverter" Format="{}{0}StringEditor"/>
+  <InternalAutomation:TextFormatConverter x:Uid="InternalAutomation:TextFormatConverter_2" x:Key="ChoiceEditorAutomationIdFormatConverter" Format="{}{0}ChoiceEditor"/>
+  <InternalAutomation:TextFormatConverter x:Uid="InternalAutomation:TextFormatConverter_3" x:Key="CheckBoxAutomationIdFormatConverter" Format="{}{0}ChoiceEditor"/>
+
+  <!-- ************** -->
+  <!-- Focus defaults -->
+  <!-- ************** -->
+  
+  <Style x:Uid="Style_1" TargetType="{x:Type ContentControl}">
+    <Setter x:Uid="Setter_1" Property="Focusable" Value="False"/>
+  </Style>
+
+  <Style x:Uid="Style_2" TargetType="{x:Type Internal:CiderStandardCategoryLayout}">
+    <Setter x:Uid="Setter_2" Property="Focusable" Value="False"/>
+  </Style>
+  
+  <!-- ************ -->
+  <!-- StringEditor -->
+  <!-- ************ -->
+  
+  <Style x:Uid="Style_3" TargetType="{x:Type ValueEditors:StringEditor}">
+    <Setter x:Uid="Setter_3" Property="AutomationProperties.AutomationId" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=(PropertyEditing:PropertyContainer.OwningPropertyContainer).PropertyEntry.PropertyName, Converter={StaticResource StringEditorAutomationIdFormatConverter}}"/>
+    <Setter x:Uid="Setter_4" Property="BorderBrush" Value="{x:Null}"/>
+    <Setter x:Uid="Setter_61" Property="Background" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"/>
+    <Setter x:Uid="Setter_5" Property="FinishEditingCommand" Value="{x:Static PropertyEditing:PropertyValueEditorCommands.FinishEditing}"/>
+    <Setter x:Uid="Setter_6" Property="Tag" Value="{DynamicResource SelectedControlFlowDirectionRTL}"/>
+    <Setter x:Uid="Setter_7" Property="FontFamily" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"/>
+    <Setter x:Uid="Setter_8" Property="FontSize" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"/>
+    <Setter x:Uid="Setter_9" Property="FontWeight" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"/>
+    <Setter x:Uid="Setter_60" Property="ToolTip">
+      <Setter.Value>
+        <MultiBinding x:Uid="MultiBinding_1" Mode="OneWay" Converter="{StaticResource ValueToToolTipConverter}">
+          <Binding x:Uid="Binding_1" Path="Value" RelativeSource="{RelativeSource Self}"/>
+          <Binding x:Uid="Binding_2" Path="IsEditing" RelativeSource="{RelativeSource Self}"/>
+        </MultiBinding>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- ************ -->
+  <!-- ChoiceEditor -->
+  <!-- ************ -->
+
+  <ValueEditors:ValueToIconConverter x:Uid="ValueEditors:ValueToIconConverter_1" x:Key="ValueToIconConverter"/>
+
+  <ControlTemplate x:Uid="ControlTemplate_4" x:Key="ChoiceEditorComboTemplate" TargetType="{x:Type InternalAutomation:AutomatedChoiceEditor}">
+    <ComboBox x:Uid="_comboChoiceEditor" Name="_comboChoiceEditor"
+      IsEnabled="{TemplateBinding IsEnabled}"
+      IsEditable="{TemplateBinding IsEditable}"
+      IsDropDownOpen="{Binding InternalIsSelectingValue, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWayToSource}"
+      ItemTemplate="{TemplateBinding ItemTemplate}"
+      ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+      TextSearch.TextPath="{TemplateBinding TextSearch.TextPath}"
+      BorderBrush="{x:Null}"
+      Background="{TemplateBinding Background}"
+      Padding="3,1,0,0">
+      <ComboBox.ToolTip>
+        <MultiBinding x:Uid="MultiBinding_2" Mode="OneWay" Converter="{StaticResource ValueToToolTipConverter}">
+          <Binding x:Uid="Binding_3" Path="Value" RelativeSource="{RelativeSource TemplatedParent}"/>
+          <Binding x:Uid="Binding_4" Path="IsKeyboardFocusWithin" RelativeSource="{RelativeSource Self}"/>
+        </MultiBinding>
+      </ComboBox.ToolTip>
+    </ComboBox>
+    <ControlTemplate.Triggers>
+      <!-- 
+        This is a work around for Avalon bug 1756023 that causes bindings to be cleared on the properties of a combo when ItemsSource is bound
+        Once that bug is fixed, we can set these bindings directly on the element.
+      -->
+      <Trigger x:Uid="Trigger_3" Property="ForceBinding" Value="True">
+        <Setter x:Uid="Setter_34" TargetName="_comboChoiceEditor" Property="SelectedItem" Value="{Binding Path=InternalValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+        <Setter x:Uid="Setter_35" TargetName="_comboChoiceEditor" Property="Text" Value="{Binding InternalStringValue, RelativeSource={RelativeSource Mode=TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"/>
+        <Setter x:Uid="Setter_36" TargetName="_comboChoiceEditor" Property="ItemsSource" Value="{Binding ItemsSource, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=OneWay}"/>
+      </Trigger>
+      <!-- Fix against the shift of property-value by 2 pixels when the combobox is in edit mode -->
+      <Trigger x:Uid="Trigger_4" Property="IsEditable" Value="True">
+        <Setter x:Uid="Setter_37" TargetName="_comboChoiceEditor" Property="Padding" Value="1,2,0,0"/>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <Style x:Uid="Style_7" TargetType="{x:Type InternalAutomation:AutomatedChoiceEditor}">
+    <Setter x:Uid="Setter_38" Property="Focusable" Value="False"/>
+    <Setter x:Uid="Setter_39" Property="AutomationProperties.AutomationId" Value="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=(PropertyEditing:PropertyContainer.OwningPropertyContainer).PropertyEntry.PropertyName, Converter={StaticResource ChoiceEditorAutomationIdFormatConverter}}"/>
+    <Setter x:Uid="Setter_40" Property="Background" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"/>
+    <Setter x:Uid="Setter_41" Property="Foreground" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"/>
+    <Setter x:Uid="Setter_42" Property="BorderBrush" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"/>
+    <Setter x:Uid="Setter_43" Property="FontFamily" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"/>
+    <Setter x:Uid="Setter_44" Property="FontSize" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"/>
+    <Setter x:Uid="Setter_45" Property="FontWeight" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"/>
+    <Setter x:Uid="Setter_46" Property="MinHeight" Value="21" />
+    <Setter x:Uid="Setter_Finish_Editing" Property="FinishEditingCommand" Value="{x:Static PropertyEditing:PropertyValueEditorCommands.FinishEditing}"/>
+    <Setter x:Uid="Setter_47" Property="Template">
+      <Setter.Value>
+        <ControlTemplate x:Uid="ControlTemplate_5" TargetType="{x:Type InternalAutomation:AutomatedChoiceEditor}">
+          <ContentControl
+            x:Uid="ContentControl_1" Margin="3,0,17,0"
+            VerticalAlignment="Center" HorizontalAlignment="Stretch"
+            Content="{Binding Path=InternalValue, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=OneWay}"
+            ContentTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=OneWay}"
+            ContentTemplateSelector="{Binding Path=ItemTemplateSelector, RelativeSource={RelativeSource Mode=TemplatedParent}, Mode=OneWay}" 
+            />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <!-- Make sure we at least show the full template when the mouse is over the control -->
+      <Trigger x:Uid="Trigger_5" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_48" Property="ShowFullControl" Value="True"/>
+      </Trigger>
+      <!-- Or when the property row itself is selected -->
+      <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=(PropertyEditing:PropertyContainer.OwningPropertyContainer).(InternalSelection:PropertySelection.IsSelected)}" Value="True">
+        <Setter x:Uid="Setter_49" Property="ShowFullControl" Value="True"/>
+      </DataTrigger>
+      <Trigger x:Uid="Trigger_6" Property ="ViewType" Value="Combo">
+        <Setter x:Uid="Setter_50" Property="DropButtonInset" Value="2,1,1,1"/>
+        <Setter x:Uid="Setter_51" Property="TextAreaInset" Value="1,1,17,1"/>
+        <Setter x:Uid="Setter_52" Property="DropButtonBrush" Value="{DynamicResource ButtonDefaultBrush}"/>
+        <Setter x:Uid="Setter_53" Property="ButtonIcon" Value="{DynamicResource ExpressionComboBoxButtonIcon}"/>
+        <Setter x:Uid="Setter_54" Property="IconWidth" Value="8"/>
+        <Setter x:Uid="Setter_55" Property="IconHeight" Value="5"/>
+      </Trigger>
+      <!-- ViewType = Combo -->
+      <MultiTrigger x:Uid="MultiTrigger_3">
+        <MultiTrigger.Conditions>
+          <Condition x:Uid="Condition_5" Property="ViewType" Value="Combo"/>
+          <Condition x:Uid="Condition_6" Property="ShowFullControl" Value="True"/>
+          <Condition x:Uid="Condition_7" Property="IsEnabled" Value="True"/>
+        </MultiTrigger.Conditions>
+        <Setter x:Uid="Setter_56" Property="Template" Value="{DynamicResource ChoiceEditorComboTemplate}"/>
+      </MultiTrigger>
+      <!-- ViewType = Toggle -->
+      <Trigger x:Uid="Trigger_8" Property="ViewType" Value="Toggle">
+        <Setter x:Uid="Setter_59" Property="Template">
+          <Setter.Value>
+            <ControlTemplate x:Uid="ControlTemplate_7" TargetType="{x:Type InternalAutomation:AutomatedChoiceEditor}">
+              <CheckBox x:Uid="CheckBox_1"
+                        IsChecked="{Binding Path=InternalValue, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                        IsEnabled="{TemplateBinding IsEnabled}"
+                        ContentTemplate="{TemplateBinding ItemTemplate}"
+                        Margin="4,0,0,0"
+                        AutomationProperties.AutomationId="{Binding Path=ParentProperty.PropertyName, Converter={StaticResource CheckBoxAutomationIdFormatConverter}}"
+                        VerticalAlignment="Center">
+                <CheckBox.Style>
+                  <Style x:Uid="Style_8">
+                    <Style.Triggers>
+                      <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                        <Setter x:Uid="Setter_62" Property="AutomationProperties.Name" Value="{Binding Path=ParentProperty.PropertyName}" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </CheckBox.Style>
+              </CheckBox>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      <!-- ViewType = Buttons -->
+      <!-- Note: we currently don't handle the Buttons ViewType because we don't use it in the UI -->
+      <!-- Steal the code from Blend if we ever need to bring it back -->
+    </Style.Triggers>
+  </Style>
+
+
+  <!-- **************** -->
+  <!-- BoolViewTemplate -->
+  <!-- **************** -->
+
+  <DataTemplate x:Uid="DataTemplate_4" x:Key="BoolViewTemplate">
+    <InternalAutomation:AutomatedChoiceEditor
+      x:Uid="InternalAutomation:AutomatedChoiceEditor_2" ViewType="Toggle" Value="{Binding Path=Value}"
+      IsEnabled="{Binding Path=ParentProperty.IsReadOnly, Mode=OneWay, Converter={StaticResource NotConverter}}"
+      Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"/>
+  </DataTemplate>
+
+  <!-- **************************** -->
+  <!-- CollectionViewInlineTemplate -->
+  <!-- **************************** -->
+
+  <DataTemplate x:Uid="DataTemplate_9" x:Key="CollectionViewInlineTemplate">
+    <Grid x:Uid="Grid_3" MinHeight="20">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_5" Width="*"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_6" Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      
+      <TextBlock x:Uid="TextBlock_5" Grid.Column="0" Text="{x:Static InternalResources:PropertyInspectorResources.DefaultCollectionStringValue}"
+                 VerticalAlignment="Center" HorizontalAlignment="Left"
+                 TextTrimming="CharacterEllipsis"
+                 FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+                 FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+                 FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+                 />
+      
+        <!-- PS 33246: Disabled for M2 as we dont have any Collection Editors -->
+      <!--<PropertyEditing:EditModeSwitchButton AutomationProperties.AutomationId="PropertyEditing:EditModeSwitchButton_1"
+                 x:Uid="PropertyEditing:EditModeSwitchButton_1" Grid.Column="1"
+                 Visibility="{Binding Path=IsMixedValue, Converter={StaticResource BoolToVisibilityCollapsedConverterInverted}}"
+                 ToolTip="Edit items in this collection"/>-->
+      
+    </Grid>
+  </DataTemplate>
+
+
+  <!-- ********************* -->
+  <!-- QuickTypeItemTemplate -->
+  <!-- ********************* -->
+
+  <!-- This template is used by both CollectionEditor and SubPropertyEditor -->
+
+  <!-- DataContent = NewItemFactoryTypeModel -->
+  <DataTemplate x:Uid="DataTemplate_11" x:Key="QuickTypeItemTemplate">
+    <StackPanel x:Uid="StackPanel_2" Orientation="Horizontal">
+      <ContentControl
+        x:Uid="ContentControl_10" Height="16" Width="16"
+        Content="{Binding Image, Converter={StaticResource ImageSourceToImageConverter}}"
+        Visibility="{Binding Path=Image, Converter={StaticResource NotNullToVisibilityConverter}}" />
+      <TextBlock x:Uid="TextBlock_4" Text="{Binding DisplayName}"/>
+    </StackPanel>
+  </DataTemplate>
+
+  <!-- *************************** -->
+  <!-- QuickTypeItemInlineTemplate -->
+  <!-- *************************** -->
+
+  <!-- DataContent = NewItemFactoryTypeModel -->
+  <DataTemplate x:Uid="DataTemplate_12" x:Key="QuickTypeItemInlineTemplate">
+    <TextBlock x:Uid="TextBlock_6" Text="{Binding DisplayName}"/>
+  </DataTemplate>
+
+  <!-- ************************* -->
+  <!-- QuickItemTemplateSelector -->
+  <!-- ************************* -->
+  
+  <!--
+    DataTemplateSelector we use to choose between QuickTypeItemTemplate and QuickTypeItemInlineTemplate
+    for the template to use in SubPropertyEditor's ComboBox depending on whether the item in question is
+    being displayed in the combo's popup or inline.  See DevDiv bug 142464 for more details.
+  -->
+  <InternalEditors:QuickItemTemplateSelector x:Uid="QuickItemTemplateSelector_1"
+                                             x:Key="QuickItemTemplateSelector"
+                                             PopupTemplate="{StaticResource QuickTypeItemTemplate}"
+                                             InlineTemplate="{StaticResource QuickTypeItemInlineTemplate}"/>
+
+</ResourceDictionary>

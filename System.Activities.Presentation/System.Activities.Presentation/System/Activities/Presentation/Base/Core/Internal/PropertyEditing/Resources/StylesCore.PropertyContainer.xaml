@@ -1,0 +1,311 @@
+﻿<ResourceDictionary
+    x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:ValueEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.ValueEditors" 
+    xmlns:PropertyEditing="clr-namespace:System.Activities.Presentation.PropertyEditing" 
+    xmlns:Framework="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.PropertyInspector"
+    xmlns:Data="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+    xmlns:Internal="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing" 
+    xmlns:InternalEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Editors" 
+    xmlns:InternalAutomation="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Automation"
+    xmlns:InternalSelection="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Selection"
+    xmlns:Core="clr-namespace:System.Activities.Presentation.Core"
+    >
+
+    <!-- Converters -->
+  <InternalEditors:PropertyValueToStandardValuesConverter x:Uid="InternalEditors:PropertyValueToStandardValuesConverter_1" x:Key="PropertyValueToStandardValuesConverter"/>
+  <Data:EqualsConverter x:Uid="Data:EqualsConverter_1" x:Key="EqualsConverter"/>
+  <Data:NotConverter x:Uid="Data:NotConverter_1" x:Key="NotConverter"/>
+  <InternalEditors:RTLValueConveter x:Uid="InternalEditors:RTLValueConveter_1" x:Key="RTLValueConverter"/>
+  <Core:GenericTypeParameterConverter x:Uid="typeConverter" x:Key="TypeParameterConverter"/>
+
+  <!-- ***************** -->
+  <!-- InlineRowTemplate -->
+  <!-- ***************** -->
+
+  <!-- DataContext = Can be anything, depending on use -->
+  <ControlTemplate x:Uid="ControlTemplate_1" x:Key="PropertyContainerInlineRowTemplate">
+    
+    <!-- Set DataContext to PropertyContainer -->
+    <Internal:PropertyPanel
+      x:Uid="Internal:PropertyPanel_1" 
+      x:Name="ParentPanel"
+      DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(PropertyEditing:PropertyContainer.OwningPropertyContainer)}"
+      LastChildWidth="{Binding Path=(Internal:SharedPropertyValueColumnWidthContainer.OwningSharedPropertyValueColumnWidthContainer).ValueColumnWidth.Value}"
+      Level="{Binding Path=PropertyEntry.Depth}"
+      OutlineBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.PaneBrushKey}}"
+      Margin="13,0,0,0"
+      >
+      
+      <!-- When the property is selected, change the SelectionBrush color accordingly -->
+      <Internal:PropertyPanel.Style>
+        <Style x:Uid="Style_1" TargetType="{x:Type Internal:PropertyPanel}">
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_1" Value="True" Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(PropertyEditing:PropertyContainer.OwningPropertyContainer).(InternalSelection:PropertySelection.IsSelected)}">
+              <Setter x:Uid="Setter_1" Property="Internal:PropertyPanel.SelectionBrush" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.SelectedBackgroundBrushKey}}"/>
+            </DataTrigger>
+            <DataTrigger x:Uid="DataTrigger_2" Value="False" Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(PropertyEditing:PropertyContainer.OwningPropertyContainer).(InternalSelection:PropertySelection.IsSelected)}">
+              <Setter x:Uid="Setter_2" Property="Internal:PropertyPanel.SelectionBrush" Value="Transparent"/>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Internal:PropertyPanel.Style>
+      
+      <!-- Name area -->
+      <TextBlock
+        x:Uid="TextBlock_1" Focusable="True"
+        FocusVisualStyle="{x:Null}"
+        Margin="5,2,7,2" 
+        VerticalAlignment="Center"
+        TextTrimming="CharacterEllipsis"
+        Text="{Binding Path=PropertyEntry.DisplayName}"
+        FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+        FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}" 
+        FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"        
+        InternalSelection:PropertySelection.KeyDownTarget="{Binding ElementName=PropertyValueContentPresenter}"
+        >
+        
+        <TextBlock.ToolTip>
+          <StackPanel x:Uid="StackPanel_3">
+            <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal">
+              <TextBlock x:Uid="TextBlock_2" Text="{Binding Path=PropertyEntry.DisplayName, Mode=OneTime}"/>
+              
+              <TextBlock x:Uid="TextBlock_3" Text=": "/>
+              <TextBlock x:Uid="TextBlock_4" FontWeight="Bold" Text="{Binding Path=PropertyEntry.PropertyType, Converter={StaticResource TypeParameterConverter}, Mode=OneTime}"/>
+            </StackPanel>
+            <TextBlock x:Uid="TextBlock_5" Text="{Binding Path=PropertyEntry.Description}" TextWrapping="Wrap" MaxWidth="250">
+              <TextBlock.Style>
+                <Style x:Uid="Style_4" TargetType="{x:Type TextBlock}">
+                  <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_6" Value="" Binding="{Binding Path=PropertyEntry.Description}">
+                      <Setter x:Uid="Setter_12" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger x:Uid="DataTrigger_7" Value="{x:Null}" Binding="{Binding Path=PropertyEntry.Description}">
+                      <Setter x:Uid="Setter_13" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+          </StackPanel>
+        </TextBlock.ToolTip>
+
+        <!-- When the property is selected, change the text Foreground color -->
+        <TextBlock.Style>
+          <Style x:Uid="Style_2" TargetType="{x:Type TextBlock}">
+            <Style.Triggers>
+              <DataTrigger x:Uid="DataTrigger_3" Value="True" Binding="{Binding Path=(InternalSelection:PropertySelection.IsSelected)}">
+                <Setter x:Uid="Setter_3" Property="Foreground" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.SelectedForegroundBrushKey}}"/>
+              </DataTrigger>
+              <DataTrigger x:Uid="DataTrigger_10" Value="False" Binding="{Binding Path=(InternalSelection:PropertySelection.IsSelected)}">
+                <Setter x:Uid="Setter_4" Property="Foreground" Value="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"/>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </TextBlock.Style>
+
+      </TextBlock>
+
+      <!-- Property value -->
+      <ContentPresenter
+        Name="PropertyValueContentPresenter"
+        x:Uid="ContentPresenter_1" Margin="0,0,1,1"
+        VerticalAlignment="Center"
+        Content="{Binding Path=PropertyEntry.PropertyValue}"
+        IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type PropertyEditing:PropertyContainer}}, Path=IsValueEditEnabled, Mode=OneWay}"
+        ContentTemplate="{Binding RelativeSource={RelativeSource Self}, Path=(PropertyEditing:PropertyContainer.OwningPropertyContainer).InlineEditorTemplate}"/>
+      
+    </Internal:PropertyPanel>
+  </ControlTemplate>
+
+  <!-- ************************ -->
+  <!-- ExtendedPopupRowTemplate -->
+  <!-- ************************ -->
+
+  <!-- DataContext = Can be anything, depending on use -->
+  <ControlTemplate x:Uid="ControlTemplate_2" x:Key="PropertyContainerExtendedPopupRowTemplate">
+
+    <StackPanel x:Uid="StackPanel_2"         
+       IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type PropertyEditing:PropertyContainer}}, Path=IsValueEditEnabled, Mode=OneWay}">
+      
+      <!-- InlineRowTemplate -->
+      <Control 
+        x:Uid="Control_1" Template="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=InlineRowTemplate, Mode=OneWay}" />
+
+      <!-- Popup containing ExtendedEditorTemplate -->
+      <Framework:PropertyContainerPopup
+        x:Uid="Framework:PropertyContainerPopup_1" Focusable="False" 
+        Placement="Custom"
+        CustomPopupPlacementCallback="{x:Static Framework:PropertyContainerPopup.RightAlignedPopupPlacement}" 
+        StaysOpen="true"
+        PopupAnimation="Slide"
+        IsOpen="true"
+        AllowsTransparency="True">
+
+        <Border x:Uid="Border_1" Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.PopupBrushKey}}" BorderBrush="#777777" BorderThickness="1">
+          <ContentControl
+            x:Uid="FocusablePopupItem" Name="FocusablePopupItem" 
+            Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PropertyEntry.PropertyValue}"
+            ContentTemplate="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ExtendedEditorTemplate}"
+            Margin="4"/>
+        </Border>
+      </Framework:PropertyContainerPopup>
+    </StackPanel>
+
+  </ControlTemplate>
+
+  <!-- ************************* -->
+  <!-- ExtendedPinnedRowTemplate -->
+  <!-- ************************* -->
+
+  <!-- DataContext = Can be anything, depending on use -->
+  <ControlTemplate x:Uid="ControlTemplate_3" x:Key="ExtendedPinnedRowTemplate">
+    <Grid x:Uid="Grid_1"
+      IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type PropertyEditing:PropertyContainer}}, Path=IsValueEditEnabled, Mode=OneWay}">
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_1" Width="{DynamicResource OpenCloseColumnGridLength}"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_2" Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Grid.RowDefinitions>
+        <RowDefinition x:Uid="RowDefinition_1"/>
+        <RowDefinition x:Uid="RowDefinition_2"/>
+      </Grid.RowDefinitions>
+
+      <!-- InlineRowTemplate -->
+      <Control 
+        x:Uid="Control_2" Focusable="False" 
+        Grid.Row="0" 
+        Grid.ColumnSpan="2" 
+        Template="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=InlineRowTemplate, Mode=OneWay}" />
+
+      <!-- ExtendedEditorTemplate -->
+      <ContentControl 
+        x:Uid="ContentControl_2" Focusable="False" 
+        Grid.Row="1" Grid.Column="1" 
+        HorizontalAlignment="Right"
+        Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PropertyEntry.PropertyValue, Mode=OneWay}"
+        ContentTemplate="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ExtendedEditorTemplate, Mode=OneWay}"/>
+
+    </Grid>
+  </ControlTemplate>
+
+  <!-- ************************** -->
+  <!-- DefaultPropertyValueEditor -->
+  <!-- ************************** -->
+
+  <!-- DataContext = PropertyEditing:PropertyValue -->
+  <DataTemplate x:Uid="DataTemplate_1" x:Key="PropertyContainerDefaultInlineTemplate">
+    <ValueEditors:StringEditor
+      x:Uid="ValueEditors:StringEditor_1" MinHeight="20" Padding="0"
+      Value="{Binding Path=StringValue}"
+      IsReadOnly="{Binding Path=ParentProperty.IsReadOnly, Mode=OneWay}"
+      IsEnabled="{Binding Path=ParentProperty.IsReadOnly, Mode=OneWay, Converter={StaticResource NotConverter}}"
+      IsNinched="{Binding Path=IsMixedValue}"
+      AutomationName="{Binding Path=ParentProperty.DisplayName, Mode=OneWay}">
+      <ValueEditors:StringEditor.FlowDirection>
+        <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource RTLValueConverter}">
+          <Binding x:Uid="Binding_1" Path="Value"/>
+          <Binding x:Uid="Binding_2" Path="ParentProperty"/>
+          <Binding x:Uid="Binding_3" RelativeSource="{RelativeSource Self}" Path="Tag"/>
+        </MultiBinding>
+      </ValueEditors:StringEditor.FlowDirection>
+    </ValueEditors:StringEditor>
+  </DataTemplate>
+
+  <PropertyEditing:PropertyValueEditor 
+    x:Uid="PropertyEditing:PropertyValueEditor_1" x:Key="PropertyContainerDefaultPropertyValueEditor" 
+    InlineEditorTemplate="{StaticResource PropertyContainerDefaultInlineTemplate}" />
+
+  <!-- **************************************** -->
+  <!-- DefaultStandardValuesPropertyValueEditor -->
+  <!-- **************************************** -->
+
+  <!-- DataContext = PropertyEditing:PropertyValue -->
+  <DataTemplate x:Uid="DataTemplate_2" x:Key="PropertyContainerDefaultStandardValuesInlineTemplate">
+    <InternalAutomation:AutomatedChoiceEditor
+      x:Uid="InternalAutomation:AutomatedChoiceEditor_1" ViewType="Combo" 
+      IsEditable="{Binding Path=ParentProperty.StandardValuesExclusive, Mode=OneWay, Converter={StaticResource NotConverter}}"
+      IsEnabled="{Binding Path=ParentProperty.IsReadOnly, Mode=OneWay, Converter={StaticResource NotConverter}}"
+      Value="{Binding Path=StringValue}"
+      ItemsSource="{Binding Converter={StaticResource PropertyValueToStandardValuesConverter}}"
+      IsNinched="{Binding Path=IsMixedValue}"/>
+  </DataTemplate>
+
+  <PropertyEditing:PropertyValueEditor
+    x:Uid="PropertyEditing:PropertyValueEditor_2" x:Key="PropertyContainerDefaultStandardValuesPropertyValueEditor" 
+    InlineEditorTemplate="{StaticResource PropertyContainerDefaultStandardValuesInlineTemplate}" />
+
+  <!-- ************************* -->
+  <!-- MarkerSubPropertyTemplate -->
+  <!-- ************************* -->
+
+  <!-- This is just a simple marker that we use as an indicator that we should replace the
+       entire InlineRowTemplate with the sub-property inline row template.  Sub-property editing
+       is special, because it modifies the UI beyond what we allow third parties to do.  Specifically,
+       we need to add the +/- button in the margin, which the publicly exposed extensibility mechanism
+       doesn't allow us to do. -->
+  
+  <DataTemplate x:Uid="DataTemplate_3" x:Key="MarkerSubPropertyTemplate"/>
+  
+  <!-- **************************** -->
+  <!-- SubPropertyInlineRowTemplate -->
+  <!-- **************************** -->
+
+  <!-- DataContext = Can be anything, depending on use -->
+  <ControlTemplate x:Uid="ControlTemplate_4" x:Key="SubPropertyInlineRowTemplate">
+    <InternalEditors:SubPropertyEditor x:Uid="InternalEditors:SubPropertyEditor_1" PropertyEntry="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PropertyEntry}"
+       IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type PropertyEditing:PropertyContainer}}, Path=IsValueEditEnabled, Mode=OneWay}"/>
+  </ControlTemplate>
+
+  <!-- ***************** -->
+  <!-- PropertyContainer -->
+  <!-- ***************** -->
+
+  <Style x:Uid="Style_3" TargetType="{x:Type PropertyEditing:PropertyContainer}">
+    <!-- Standard style components -->
+    <Style.Setters>
+      <Setter x:Uid="Setter_16" Property="Focusable" Value="False" />
+      <Setter x:Uid="Setter_5" Property="DefaultPropertyValueEditor" Value="{StaticResource PropertyContainerDefaultPropertyValueEditor}"/>
+      <Setter x:Uid="Setter_6" Property="DefaultStandardValuesPropertyValueEditor" Value="{StaticResource PropertyContainerDefaultStandardValuesPropertyValueEditor}"/>
+      <Setter x:Uid="Setter_7" Property="InlineRowTemplate" Value="{StaticResource PropertyContainerInlineRowTemplate}"/>
+      <Setter x:Uid="Setter_8" Property="ExtendedPopupRowTemplate" Value="{StaticResource PropertyContainerExtendedPopupRowTemplate}"/>
+      <Setter x:Uid="Setter_9" Property="ExtendedPinnedRowTemplate" Value="{StaticResource ExtendedPinnedRowTemplate}"/>
+    </Style.Setters>
+    
+    <Style.Triggers>
+
+      <!-- Special-case sub-property editor -
+           We replace the Inline and the Extended row templates with ones specific 
+           to sub-property editing when needed -->
+      <DataTrigger x:Uid="DataTrigger_4" Value="true">
+        <DataTrigger.Binding>
+          <Binding x:Uid="Binding_4" Path="InlineEditorTemplate"
+                   RelativeSource="{RelativeSource Self}"
+                   Mode="OneWay"
+                   Converter="{StaticResource EqualsConverter}"
+                   ConverterParameter="{StaticResource MarkerSubPropertyTemplate}"/>
+        </DataTrigger.Binding>
+        <Setter x:Uid="Setter_10" Property="InlineRowTemplate" Value="{StaticResource SubPropertyInlineRowTemplate}"/>
+      </DataTrigger>
+
+      <!-- Hide the PropertyContainer if it doesn't match the filter -->
+      <DataTrigger x:Uid="DataTrigger_5" Value="false"
+                   Binding="{Binding RelativeSource={RelativeSource Self}, Path=MatchesFilter}">
+        <Setter x:Uid="Setter_11" Property="Visibility" Value="Collapsed"/>
+      </DataTrigger>
+
+      <DataTrigger x:Uid="DataTrigger_8" Binding="{Binding Path=IsReadOnly, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Internal:PropertyInspector}}, Mode=OneWay}" Value="True">
+        <Setter x:Uid="Setter_14" Property="IsValueEditEnabled" Value="False"/>
+      </DataTrigger>
+
+      <DataTrigger x:Uid="DataTrigger_9" Binding="{Binding Path=IsReadOnly, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Internal:PropertyInspector}}, Mode=OneWay}" Value="False">
+        <Setter x:Uid="Setter_15" Property="IsValueEditEnabled" Value="True"/>
+      </DataTrigger>
+
+    </Style.Triggers>
+
+  </Style>
+
+</ResourceDictionary>

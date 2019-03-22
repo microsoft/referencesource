@@ -1,0 +1,16 @@
+﻿<ResourceDictionary
+    x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:System="clr-namespace:System;assembly=Mscorlib"
+    >
+
+  <GridLength x:Uid="GridLength_1" x:Key="OpenCloseColumnGridLength">13.0</GridLength>
+  <System:Double x:Uid="OpenCloseColumnWidth" x:Key="OpenCloseColumnWidth">13.0</System:Double>
+
+  <System:Double x:Uid="System:Double_1" x:Key="TypeIconWidth">16</System:Double>
+  <System:Double x:Uid="System:Double_2" x:Key="TypeIconHeight">16</System:Double>
+  
+  <!-- RTL support for PI -->
+  <FlowDirection x:Uid="FlowDirection_1" x:Key="SelectedControlFlowDirectionRTL">LeftToRight</FlowDirection>
+
+</ResourceDictionary>
