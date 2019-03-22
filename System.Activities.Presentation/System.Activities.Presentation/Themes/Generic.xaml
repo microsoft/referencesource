@@ -1,0 +1,727 @@
+<? Copyright (c) Microsoft Corporation.  All rights reserved.?>
+<ResourceDictionary x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:swd="clr-namespace:System.Activities.Presentation"
+    xmlns:swdv="clr-namespace:System.Activities.Presentation.View"
+    xmlns:swdt="clr-namespace:System.Activities.Presentation.Toolbox"
+    xmlns:sapipffd="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+    >
+    <ResourceDictionary.MergedDictionaries>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="/System.Activities.Presentation;component/System/Activities/Presentation/WorkflowElementDesignerDefaultTemplate.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_6" Source="/System.Activities.Presentation;component/Themes/ExtensionWindowDefaultTemplate.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_7" Source="/System.Activities.Presentation;component/Themes/ExtensionWindowHeaderDefaultTemplate.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_8" Source="/System.Activities.Presentation;component/Themes/ExtensionWindowResizeGripDefaultTemplate.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_11" Source="/System.Activities.Presentation;component/Themes/ToolboxDefaultTemplate.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_12" Source="/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <LinearGradientBrush x:Uid="ExtensionWindowHeaderBackground" x:Key="ExtensionWindowHeaderBackground" StartPoint="0,0" EndPoint="0,1">
+      <LinearGradientBrush.GradientStops>
+        <GradientStop x:Uid="ExtensionWindowHeaderBackgroundGradientStop_1" Color="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarColorGradientBeginColor}" Offset="0"/>
+        <GradientStop x:Uid="ExtensionWindowHeaderBackgroundGradientStop_2" Color="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarColorGradientEndColor}" Offset="0.3"/>
+      </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+  
+    <Style x:Uid="Style_1" TargetType="{x:Type swd:ActivityDesigner}" >
+        <Setter x:Uid="Setter_1" Property="Template" Value="{StaticResource WorkflowElementDesignerDefaultTemplate}" />
+        <Setter x:Uid="Setter_2" Property="HorizontalAlignment" Value="Center" />
+        <Setter x:Uid="Setter_3" Property="VerticalAlignment" Value="Center" />
+        <Setter x:Uid="Setter_4" Property="Focusable" Value="True" />
+        <Setter x:Uid="Setter_6" Property="Background" Value="{DynamicResource DesignerViewBackground}"  />
+        <Setter x:Uid="Setter_7" Property="BorderBrush" Value="{DynamicResource WorkflowViewElementBorderBrush}"  />
+        <Setter x:Uid="Setter_8" Property="MinWidth" Value="200" />
+        <Setter x:Uid="Setter_9" Property="MinHeight" Value="20" />
+		<Setter x:Uid="Setter_10" Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style x:Uid="Style_4" TargetType="{x:Type swdv:ExtensionWindow}">
+        <Setter x:Uid="Setter_31" Property="Template" Value="{StaticResource ExtensionWindowDefaultTemplate}"/>
+        <Setter x:Uid="Setter_32" Property="Background" Value="{StaticResource ExtensionWindowBackground}"/>
+        <Setter x:Uid="Setter_33" Property="BorderBrush" Value="{StaticResource ExtensionWindowBorderBrush}"/>
+        <Setter x:Uid="Setter_34" Property="MinWidth" Value="50"/>
+        <Setter x:Uid="Setter_35" Property="MinHeight" Value="50"/>
+        <Setter x:Uid="Setter_36" Property="BorderThickness" Value="1"/>
+        <Setter x:Uid="Setter_37" Property="AutomationProperties.AutomationId" Value="ExtensionWindow"/>
+    </Style>  
+    
+    <Style x:Uid="Style_5" TargetType="{x:Type swdv:ExtensionWindowHeader}">
+        <Setter x:Uid="Setter_38" Property="Template" Value="{StaticResource ExtensionWindowHeaderDefaultTemplate}"/>      
+        <Setter x:Uid="Setter_40" Property="Background" Value="{StaticResource ExtensionWindowHeaderBackground}" />
+        <Setter x:Uid="Setter_41" Property="ButtonCloseIcon" Value="{StaticResource PopupCloseIcon}"/>
+        <Setter x:Uid="Setter_42" Property="DropDownMenuIcon" Value="{StaticResource MenuIcon}"/>
+        <Setter x:Uid="Setter_43" Property="Foreground" Value="{DynamicResource ShellBarForegroundInactiveColor}" />
+    </Style>
+    
+    <Style x:Uid="Style_6" TargetType="{x:Type swdv:ExtensionWindowResizeGrip}">
+        <Setter x:Uid="Setter_44" Property="Template" Value="{StaticResource ExtensionWindowResizeGripDefaultTemplate}"/>
+        <Setter x:Uid="Setter_45" Property="Icon" Value="{x:Static swd:WorkflowDesignerIcons+DesignerItems.ResizeGrip}"/>
+    </Style>
+
+    <!--Style x:Uid="Style_8" TargetType="{x:Type swdv:ArgumentParameterMappingControl}">
+        <Setter x:Uid="Setter_47" Property="Template" Value="{StaticResource ArgumentParameterMappingControlDefaultTemplate}"/>
+        <Setter x:Uid="Setter_48" Property="MinHeight" Value="100"/>
+        <Setter x:Uid="Setter_49" Property="MinWidth" Value="50"/>
+    </Style-->
+
+    <Style x:Uid="Style_9" TargetType="{x:Type swdt:ToolboxControl}">
+        <Style.Resources>
+            <swdt:ToolboxItemImageConverter x:Uid="swdt:ToolboxItemImageConverter_1" x:Key="ImageConverter"/>
+        </Style.Resources>
+        <Setter x:Uid="Setter_50" Property="Template" Value="{StaticResource ToolboxDefaultTemplate}"/>
+        <Setter x:Uid="Setter_51" Property="Background" Value="{StaticResource DesignerViewBackground}"  />
+        <Setter x:Uid="Setter_52" Property="BorderBrush" Value="{StaticResource WorkflowViewElementBorderBrush}"  />
+        <Setter x:Uid="Setter_53" Property="BorderThickness" Value="1"/>
+        <Setter x:Uid="Setter_54" Property="Grid.IsSharedSizeScope" Value="True"/>
+        <Setter x:Uid="Setter_55" Property="CategoryTemplate">
+            <Setter.Value>
+                <HierarchicalDataTemplate x:Uid="HierarchicalDataTemplate_1" DataType="{x:Type swdt:ToolboxCategory}" ItemsSource="{Binding Path=Tools}" >
+                    <Grid x:Uid="Grid_1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Uid="ColumnDefinition_1" Width="*" SharedSizeGroup="categoryLabel"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Uid="TextBlock_1" Grid.Column="0" Text="{Binding Path=CategoryName}" MinWidth="150" Margin="5,3"/>
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_56" Property="ToolTemplate">
+            <Setter.Value>
+                <DataTemplate x:Uid="DataTemplate_1" DataType="{x:Type swdt:ToolboxItemWrapper}">
+                    <Grid x:Uid="Grid_2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Uid="ColumnDefinition_2" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_3" Width="*" SharedSizeGroup="toolLabel"/>
+                        </Grid.ColumnDefinitions>
+                        <Image x:Uid="Image_1" Grid.Column="0" Source="{Binding Path=Bitmap, Converter={StaticResource ImageConverter}}"/>
+                        <TextBlock x:Uid="TextBlock_2" Grid.Column="1" Text="{Binding Path=DisplayName}" Margin="5,1,5,0"/>                
+                    </Grid>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_57" Property="CategoryItemStyle">
+            <Setter.Value>
+                <Style x:Uid="Style_10" TargetType="{x:Type TreeViewItem}">
+                    <Setter x:Uid="Setter_129" Property="AutomationProperties.Name" Value="{Binding Path=CategoryName}"/>
+                    <Setter x:Uid="Setter_58" Property="IsExpanded" Value="True"/>
+                    <Setter x:Uid="Setter_59" Property="Background" Value="{StaticResource WorkflowViewElementBackground}"/>
+                    <Setter x:Uid="Setter_60" Property="FontWeight" Value="Bold"/>
+                    <Setter x:Uid="Setter_61" Property="BorderThickness" Value="1"/>
+                    <Setter x:Uid="Setter_62" Property="BorderBrush" Value="{x:Null}"/>
+                    <Style.Triggers>
+                        <Trigger x:Uid="Trigger_1" Property="IsSelected" Value="True">
+                          <Setter x:Uid="Setter_63" Property="BorderBrush" Value="{StaticResource WorkflowViewElementSelectedBorder}"/>
+                          <Setter x:Uid="Setter_183" Property="Background" Value="{StaticResource WorkflowViewElementSelectedBackground}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_64" Property="ToolItemStyle">
+            <Setter.Value>
+                <Style x:Uid="Style_11" TargetType="{x:Type TreeViewItem}">
+                    <Setter x:Uid="Setter_130" Property="AutomationProperties.Name" Value="{Binding Path=ToolboxItem.DisplayName}"/>
+                    <Setter x:Uid="Setter_65" Property="FontWeight" Value="Normal"/>
+                    <Setter x:Uid="Setter_66" Property="BorderThickness" Value="1"/>
+                    <Setter x:Uid="Setter_67" Property="BorderBrush" Value="{x:Null}"/>
+                    <Style.Triggers>
+                        <Trigger x:Uid="Trigger_2" Property="IsMouseOver" Value="True">
+                            <Setter x:Uid="Setter_68" Property="BorderBrush" Value="{StaticResource WorkflowViewElementSelectedBackground}"/>
+                            <Setter x:Uid="Setter_69" Property="Background" Value="{StaticResource WorkflowViewElementSelectedBackground}"/>
+                        </Trigger>
+                        <Trigger x:Uid="Trigger_3" Property="IsSelected" Value="True">
+                            <Setter x:Uid="Setter_70" Property="BorderBrush" Value="{StaticResource WorkflowViewElementSelectedBorder}"/>
+                            <Setter x:Uid="Setter_70_" Property="Background" Value="{StaticResource WorkflowViewElementSelectedBackground}"/>
+                            <Setter x:Uid="Setter_71" Property="FontWeight" Value="Bold"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Uid="Style_12" TargetType="{x:Type Rectangle}" x:Key="errorIndicatorStyle">
+        <Setter x:Uid="Setter_72" Property="Visibility" Value="Visible"/>
+        <Setter x:Uid="Setter_73" Property="Fill" Value="{x:Static swd:WorkflowDesignerIcons+DesignerItems.TextBoxErrorValidation}"/>
+        <Setter x:Uid="Setter_131" Property="Width" Value="12"/>
+        <Setter x:Uid="Setter_132" Property="Height" Value="12"/>
+        <Setter x:Uid="Setter_133" Property="Margin" Value="2,2,2,0"/>
+        <Setter x:Uid="Setter_77" Property="IsHitTestVisible" Value="False"/>
+        <Setter x:Uid="Setter_78" Property="HorizontalAlignment" Value="Right"/>
+        <Setter x:Uid="Setter_134" Property="VerticalAlignment" Value="Top"/>
+    </Style>
+    
+    <ControlTemplate x:Uid="ControlTemplate_1" x:Key="validationTemplate" >
+        <Grid x:Uid="Grid_3">
+            <AdornedElementPlaceholder x:Uid="AdornedElementPlaceholder_1" />
+            <Rectangle x:Uid="Rectangle_1" Style="{StaticResource errorIndicatorStyle}"/>
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Uid="Style_13" x:Key="errorBaseStyle" TargetType="{x:Type Control}">
+        <Setter x:Uid="Setter_79" Property="Validation.ErrorTemplate" Value="{StaticResource validationTemplate}"/>
+        <Style.Triggers>
+            <Trigger x:Uid="Trigger_4" Property="Validation.HasError" Value="true">
+                <Setter x:Uid="Setter_80" Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Uid="Style_14" TargetType="{x:Type Button}" x:Key="iconButtonStyle">
+        <Setter x:Uid="Setter_81" Property="Cursor" Value="Arrow"/>
+        <Setter x:Uid="Setter_82" Property="Background" Value="{x:Null}"/>
+        <Setter x:Uid="Setter_83" Property="Template">
+            <Setter.Value>
+                <ControlTemplate x:Uid="ControlTemplate_2">
+                    <Border x:Uid="Bd" MinHeight="{TemplateBinding MinHeight}" MinWidth="{TemplateBinding MinWidth}" x:Name="Bd" Background="{TemplateBinding Background}" BorderThickness="1" BorderBrush="{x:Null}"  >
+                        <ContentPresenter x:Uid="ContentPresenter_1" Content="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger x:Uid="Trigger_5" Property="Button.IsPressed" Value="True">
+                            <Setter x:Uid="Setter_84" Property="Background" Value="LightGray" TargetName="Bd"/>
+                        </Trigger>
+                        <Trigger x:Uid="Trigger_6" Property="Button.IsMouseOver" Value="True">
+                            <Setter x:Uid="Setter_85" Property="Background" Value="LightBlue" TargetName="Bd"/>
+                            <Setter x:Uid="Setter_86" Property="BorderBrush" Value="Blue" TargetName="Bd"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style x:Uid="Style_15" TargetType="{x:Type TextBlock}" x:Key="hintTextBlockStyle">
+        <Setter x:Uid="Setter_87" Property="IsHitTestVisible" Value="False"/>
+        <Setter x:Uid="Setter_88" Property="Foreground" Value="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}"/>
+        <Setter x:Uid="Setter_89" Property="Visibility" Value="Hidden"/>
+        <Setter x:Uid="Setter_90" Property="Margin" Value="5,0"/>
+        <Setter x:Uid="Setter_91" Property="VerticalAlignment" Value="Center"/>
+        <Setter x:Uid="Setter_92" Property="FontStyle" Value="Italic"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=Tag.Text, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+              <Setter x:Uid="Setter_93" Property="Visibility" Value="Visible"/>
+          </DataTrigger>
+          <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=Tag.Text.Length, RelativeSource={RelativeSource Self}}" Value="0">
+              <Setter x:Uid="Setter_94" Property="Visibility" Value="Visible"/>
+          </DataTrigger>
+          <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=Tag.IsKeyboardFocusWithin, RelativeSource={RelativeSource Self}}" Value="True">
+            <Setter x:Uid="Setter_135" Property="Visibility" Value="Hidden"/>
+          </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- style for headers -->
+    <Style x:Uid="Style_16" TargetType="{x:Type TextBlock}" x:Key="headerTextStyle">
+        <Setter x:Uid="Setter_95" Property="FontWeight" Value="Bold"/>
+        <Setter x:Uid="Setter_96" Property="Margin" Value="0,4,0,4"/>
+        <Setter x:Uid="Setter_97" Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+
+    <Style x:Uid="Style_17" x:Key="ButtonFocusVisual">
+        <Setter x:Uid="Setter_98" Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate x:Uid="ControlTemplate_3">
+                    <Rectangle x:Uid="Rectangle_2" SnapsToDevicePixels="true" Margin="2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeDashArray="1 2" StrokeThickness="1"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+  
+    <LinearGradientBrush x:Uid="LinearGradientBrush_1" x:Key="ButtonNormalBackground" EndPoint="0,1" StartPoint="0,0">
+        <GradientStop x:Uid="GradientStop_1" Color="#F3F3F3" Offset="0"/>
+        <GradientStop x:Uid="GradientStop_2" Color="#EBEBEB" Offset="0.5"/>
+        <GradientStop x:Uid="GradientStop_3" Color="#DDDDDD" Offset="0.5"/>
+        <GradientStop x:Uid="GradientStop_4" Color="#CDCDCD" Offset="1"/>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Uid="SolidColorBrush_1" x:Key="ButtonNormalBorder" Color="#FF707070"/>
+
+  <Style x:Uid="Style_23" x:Key="statusBarTextBlockStyle" TargetType="{x:Type TextBlock}">
+    <Setter x:Uid="Setter_136" Property="VerticalAlignment" Value="Center"/>
+    <Setter x:Uid="Setter_137" Property="Margin" Value="5,0"/>
+  </Style>
+
+  <Style x:Uid="Style_24" x:Key="statusBarButtonStyle" TargetType="{x:Type ButtonBase}">
+    <Setter x:Uid="Setter_139" Property="FocusVisualStyle" Value="{x:Null}"/>
+    <Setter x:Uid="Setter_140" Property="FontFamily" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontFamilyKey}}"/>
+    <Setter x:Uid="Setter_141" Property="FontSize" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontSizeKey}}"/>
+    <Setter x:Uid="Setter_142" Property="FontWeight" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontWeightKey}}"/>
+    <Setter x:Uid="Setter_143" Property="Foreground" Value="{DynamicResource ShellBarForegroundInactiveColor}"/>
+    <Setter x:Uid="Setter_144" Property="Background" Value="{DynamicResource ShellBarControlBackground}"/>
+    <Setter x:Uid="Setter_145" Property="BorderThickness" Value="0"/>
+    <Setter x:Uid="Setter_146" Property="Template">
+      <Setter.Value>
+        <ControlTemplate x:Uid="ControlTemplate_4" TargetType="{x:Type ButtonBase}">
+          <Grid x:Uid="Grid_4">
+            <Border x:Uid="border" x:Name="border" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" BorderBrush="#FF000000" >
+              <ContentPresenter x:Uid="ContentPresenter_2" Content="{TemplateBinding Content}" />
+            </Border>
+            <Rectangle x:Uid="focusRectangle" x:Name="focusRectangle" SnapsToDevicePixels="true" Margin="2" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeDashArray="1 2" StrokeThickness="1" Visibility="Collapsed"/>
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger x:Uid="Trigger_14" Property="IsKeyboardFocusWithin" Value="True">
+              <Setter x:Uid="Setter_186" Property="Visibility" TargetName="focusRectangle" Value="Visible"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger x:Uid="Trigger_7" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_147" Property="Background" Value="{DynamicResource ShellStatusBarHoverBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_8" Property="IsPressed" Value="True">
+        <Setter x:Uid="Setter_148" Property="Foreground" Value="{DynamicResource ShellBarForegroundActiveColor}"/>
+        <Setter x:Uid="Setter_149" Property="Background" Value="{DynamicResource ShellStatusBarPressedBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_9" Property="ToggleButton.IsChecked" Value="True">
+        <Setter x:Uid="Setter_150" Property="Foreground" Value="{DynamicResource ShellBarForegroundActiveColor}"/>
+        <Setter x:Uid="Setter_151" Property="Background" Value="{DynamicResource ShellStatusBarSelectedBrush}"/>
+      </Trigger>
+      <MultiDataTrigger x:Uid="MultiDataTrigger_1">
+        <MultiDataTrigger.Conditions>
+          <Condition x:Uid="Condition_3" Binding="{Binding Path=IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value="True" />
+          <Condition x:Uid="Condition_4" Binding="{Binding Source={x:Static swd:LocalAppContextSwitches.UseLegacyAccessibilityFeatures2}}" Value="False" />
+        </MultiDataTrigger.Conditions>
+        <Setter x:Uid="Setter_234" Property="Foreground" Value="{DynamicResource ShellBarForegroundActiveColor}"/>
+        <Setter x:Uid="Setter_235" Property="Background" Value="{DynamicResource ShellStatusBarPressedBrush}"/>
+      </MultiDataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Uid="Style_25" x:Key="statusBarComboBoxStyle" TargetType="{x:Type ComboBox}">
+    <Setter x:Uid="Setter_ComboBox_FontFamily" Property="FontFamily" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontFamilyKey}}"/>
+    <Setter x:Uid="Setter_ComboBox_FontSize" Property="FontSize" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontSizeKey}}"/>
+    <Setter x:Uid="Setter_ComboBox_FontWeight" Property="FontWeight" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontWeightKey}}"/>
+    <Setter x:Uid="Setter_152" Property="Foreground" Value="{DynamicResource ShellBarForegroundInactiveColor}"/>
+    <Setter x:Uid="Setter_153" Property="Background" Value="{DynamicResource ShellBarControlBackground}"/>
+    <Setter x:Uid="Setter_154" Property="BorderThickness" Value="0"/>
+    <Setter x:Uid="Setter_155" Property="BorderBrush" Value="Transparent"/>
+    <Style.Triggers>
+      <Trigger x:Uid="Trigger_10" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_157" Property="Background" Value="{StaticResource ShellStatusBarHoverBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_11" Property="IsKeyboardFocusWithin" Value="True">
+        <Setter x:Uid="Setter_158" Property="Foreground" Value="{DynamicResource ShellBarForegroundActiveColor}"/>
+        <Setter x:Uid="Setter_159" Property="Background" Value="{DynamicResource ShellStatusBarSelectedBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_12" Property="IsDropDownOpen" Value="True">
+        <Setter x:Uid="Setter_160" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter x:Uid="Setter_161" Property="Background" Value="{StaticResource ShellStatusBarSelectedBrush}"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+    
+    <Style x:Uid="Style_19" TargetType="{x:Type TextBlock}" x:Key="ExtensionWindowSubHeaderTextStyle">
+        <Setter x:Uid="Setter_114" Property="Foreground" Value="{StaticResource ExtensionWindowSubtitleTextColor}"/>
+        <Setter x:Uid="Setter_115" Property="FontSize" Value="12"/>
+        <Setter x:Uid="Setter_116" Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style x:Uid="Style_20" TargetType="{x:Type Window}" x:Key="WorkflowWindowStyle">
+      <Setter x:Uid="Setter_117" Property="FontFamily" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontFamilyKey}}"/>
+      <Setter x:Uid="Setter_118" Property="FontSize" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontSizeKey}}"/>
+      <Setter x:Uid="Setter_119" Property="FontWeight" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontWeightKey}}"/>
+    </Style>
+
+  <Style x:Uid="Style_21" TargetType="{x:Type ContentControl}" x:Key="WorkflowContentControlStyle">
+    <Setter x:Uid="Setter_123" Property="FontFamily" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontFamilyKey}}"/>
+    <Setter x:Uid="Setter_124" Property="FontSize" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontSizeKey}}"/>
+    <Setter x:Uid="Setter_125" Property="FontWeight" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontWeightKey}}"/>
+  </Style>
+
+  <Style x:Uid="Style_22" TargetType="{x:Type UserControl}" x:Key="WorkflowUserControlStyle">
+    <Setter x:Uid="Setter_126" Property="FontFamily" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontFamilyKey}}"/>
+    <Setter x:Uid="Setter_127" Property="FontSize" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontSizeKey}}"/>
+    <Setter x:Uid="Setter_128" Property="FontWeight" Value="{DynamicResource {x:Static swd:WorkflowDesignerColors.FontWeightKey}}"/>
+  </Style>
+
+  <!-- toggle button style, used to mimic TreeView expand/collapse button behaviour -->
+  <Style x:Uid="Style_26" TargetType="{x:Type ToggleButton}" x:Key="expandCollapseButtonStyle">
+    <Setter x:Uid="Setter_162" Property="AutomationProperties.AutomationId" Value="expandCollapseToggleButton"/>
+    <Setter x:Uid="Setter_163" Property="Template">
+      <Setter.Value>
+        <ControlTemplate x:Uid="ControlTemplate_5" TargetType="{x:Type ToggleButton}" >
+          <Border x:Uid="Border_1" Width="16" Height="16" Background="Transparent" Padding="5,5,5,5">
+            <Path x:Uid="ExpandPath" x:Name="ExpandPath" Fill="Transparent" Stroke="#FF989898">
+              <Path.Data>
+                <PathGeometry x:Uid="PathGeometry_1">
+                  <PathGeometry.Figures>
+                    <PathFigureCollection x:Uid="PathFigureCollection_1" >
+                      <PathFigure x:Uid="PathFigure_1" IsFilled="True" StartPoint="0 0" IsClosed="True">
+                        <PathFigure.Segments>
+                          <PathSegmentCollection x:Uid="PathSegmentCollection_1" >
+                            <LineSegment x:Uid="LineSegment_1" Point="0 6"/>
+                            <LineSegment x:Uid="LineSegment_2" Point="6 0"/>
+                          </PathSegmentCollection>
+                        </PathFigure.Segments>
+                      </PathFigure>
+                    </PathFigureCollection>
+                  </PathGeometry.Figures>
+                </PathGeometry>
+              </Path.Data>
+              <Path.RenderTransform>
+                <RotateTransform x:Uid="RotateTransform_1" Angle="135" CenterX="3" CenterY="3"/>
+              </Path.RenderTransform>
+            </Path>
+          </Border>
+
+          <ControlTemplate.Triggers>
+            <Trigger x:Uid="Trigger_13" Property="IsChecked" Value="True">
+              <Setter x:Uid="Setter_164" TargetName="ExpandPath" Property="RenderTransform">
+                <Setter.Value>
+                  <RotateTransform x:Uid="RotateTransform_2" Angle="180" CenterX="3" CenterY="3"/>
+                </Setter.Value>
+              </Setter>
+              <Setter x:Uid="Setter_165" Property="Fill" TargetName="ExpandPath" Value="Black"/>
+              <Setter x:Uid="Setter_166" Property="Stroke" TargetName="ExpandPath" Value="Black"/>
+            </Trigger>
+
+            <MultiTrigger x:Uid="MultiTrigger_1" >
+              <MultiTrigger.Conditions>
+                <Condition x:Uid="Condition_1" Property="IsMouseOver" Value="True"/>
+                <Condition x:Uid="Condition_2" Property="IsChecked" Value="False"/>
+              </MultiTrigger.Conditions>
+              <Setter x:Uid="Setter_167" Property="Stroke" TargetName="ExpandPath" Value="Black"/>
+            </MultiTrigger>
+
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <!-- default auto-wrapping style for tool-tips -->
+  <Style x:Uid="Style_28" x:Key="{x:Type ToolTip}" TargetType="{x:Type ToolTip}">
+    <Setter x:Uid="Setter_187" Property="ContentTemplate">
+        <Setter.Value>
+          <DataTemplate x:Uid="DataTemplate_2">
+            <ContentPresenter x:Uid="ContentPresenter_3" Content="{TemplateBinding ToolTip.Content}">
+              <ContentPresenter.Resources>
+                <Style x:Uid="Style_29" TargetType="{x:Type TextBlock}">
+                  <Setter x:Uid="Setter_188" Property="MaxWidth" Value="400"/>
+                  <Setter x:Uid="Setter_189" Property="Padding" Value="4"/>
+                  <Setter x:Uid="Setter_190" Property="TextWrapping" Value="Wrap"/>
+                </Style>
+              </ContentPresenter.Resources>
+          </ContentPresenter>
+          </DataTemplate>
+        </Setter.Value>
+      </Setter>
+  </Style>
+
+  <Style x:Uid="Style_8" x:Key="defaultDataGridStyle" TargetType="{x:Type DataGrid}">    
+    <Setter x:Uid="Setter_168" Property="CanUserAddRows" Value="True"/>
+    <Setter x:Uid="Setter_169" Property="CanUserDeleteRows" Value="True"/>
+    <Setter x:Uid="Setter_170" Property="CanUserResizeColumns" Value="True"/>
+    <Setter x:Uid="Setter_171" Property="CanUserReorderColumns" Value="False"/>
+    <Setter x:Uid="Setter_172" Property="GridLinesVisibility" Value="All"/>
+    <Setter x:Uid="Setter_173" Property="HorizontalGridLinesBrush" Value="{StaticResource GridViewRowUnderlineColor}"/>
+    <Setter x:Uid="Setter_174" Property="VerticalGridLinesBrush" Value="{StaticResource GridViewRowUnderlineColor}"/>
+    <Setter x:Uid="Setter_175" Property="EnableColumnVirtualization" Value="False"/>
+    <Setter x:Uid="Setter_176" Property="EnableRowVirtualization" Value="False"/>
+    <Setter x:Uid="Setter_11" Property="AutoGenerateColumns" Value="False"/>
+    <Setter x:Uid="Setter_177" Property="BorderBrush" Value="{StaticResource GridViewRowUnderlineColor}"/>
+    <Setter x:Uid="Setter_178" Property="Background" Value="Transparent"/>
+    <Setter x:Uid="Setter_179" Property="HeadersVisibility" Value="Column"/>
+    <Setter x:Uid="Setter_180" Property="ColumnHeaderStyle">
+      <Setter.Value>
+        <Style x:Uid="Style_27" TargetType="{x:Type DataGridColumnHeader}">
+          <Setter x:Uid="Setter_181" Property="SeparatorVisibility" Value="Visible"/>
+          <Setter x:Uid="Setter_182" Property="SeparatorBrush" Value="{StaticResource GridViewRowUnderlineColor}"/>
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Source={x:Static swd:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False">
+              <Setter x:Uid="Setter_231" Property="Focusable" Value="True"/>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Setter.Value>
+    </Setter>  
+  </Style>
+
+  <Style x:Uid="Style_30" x:Key="baseDataRowStyle" TargetType="{x:Type DataGridRow}">
+    <Style.Triggers>
+      <Trigger x:Uid="Trigger_15" Property="Item" Value="{x:Static CollectionView.NewItemPlaceholder}">
+        <Setter x:Uid="Setter_191" Property="AutomationProperties.AutomationId" Value="NewItemPlaceholder"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_16" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_192" Property="Background" Value="{StaticResource GridViewRowHoverColor}"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Uid="Style_31" x:Key="baseDataCellStyle" TargetType="{x:Type DataGridCell}">
+    <Setter x:Uid="Setter_1951" Property="Foreground" Value="{StaticResource WorkflowViewElementCaptionBrush}"/>
+    <Style.Triggers>
+      <Trigger x:Uid="Trigger_17" Property="IsSelected" Value="True">
+        <Setter x:Uid="Setter_193" Property="Background" Value="{StaticResource GridViewRowSelectedColor}"/>
+        <Setter x:Uid="Setter_194" Property="BorderBrush" Value="{StaticResource WorkflowViewElementSelectedBorder}"/>
+        <Setter x:Uid="Setter_195" Property="Foreground" Value="{StaticResource WorkflowViewElementSelectedCaptionBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_18" Property="IsKeyboardFocusWithin" Value="True">
+        <Setter x:Uid="Setter_196" Property="BorderBrush" Value="{StaticResource WorkflowViewElementSelectedBorder}"/>
+      </Trigger>
+      <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Source={x:Static swd:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False" >
+        <Setter x:Uid="Setter_233" Property="KeyboardNavigation.TabNavigation" Value="None"/>
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Uid="Style_32" TargetType="{x:Type ContextMenu}">
+    <Setter x:Uid="Setter_197" Property="Template">
+      <Setter.Value>
+        <ControlTemplate x:Uid="ControlTemplate_6">
+          <Border x:Uid="Border_2" BorderBrush="{StaticResource ContextMenuBorderBrush}" 
+                  BorderThickness="1" 
+                  Background="{StaticResource ContextMenuBackgroundBrush}" 
+                  Grid.IsSharedSizeScope="True" 
+                  CornerRadius="2">
+            <Grid x:Uid="Grid_5">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Uid="ColumnDefinition_4" MaxWidth="30" Width="30" SharedSizeGroup="icon"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_5" Width="*"/>
+              </Grid.ColumnDefinitions>
+              <Border x:Uid="Border_3" Grid.Column="0" BorderThickness="0" Background="{StaticResource ContextMenuIconAreaBrush}"/>
+              <ItemsPresenter x:Uid="ItemsPresenter_1" Grid.Column="0" Grid.ColumnSpan="2"/>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter x:Uid="Setter_198" Property="FontFamily" Value="{x:Static swd:WorkflowDesignerColors.FontFamily}"/>
+    <Setter x:Uid="Setter_199" Property="FontSize" Value="{x:Static swd:WorkflowDesignerColors.FontSize}"/>
+    <Setter x:Uid="Setter_200" Property="FontWeight" Value="{x:Static swd:WorkflowDesignerColors.FontWeight}"/>
+  </Style>
+
+  <ControlTemplate x:Uid="ControlTemplate_7" TargetType="{x:Type MenuItem}" x:Key="menuItemTemplate">
+    <Grid x:Uid="Grid_6" Background="Transparent">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_6" Width="0"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_7" SharedSizeGroup="icon"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_8" Width="5"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_9" Width="*"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_10" Width="30"/>
+      </Grid.ColumnDefinitions>
+      
+      <Border x:Uid="selection" Grid.Column="0" Grid.ColumnSpan="6" Margin="1" Padding="3" 
+              CornerRadius="2" x:Name="selection" Visibility="Hidden" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" />
+      
+      <ContentPresenter x:Uid="Icon" x:Name="Icon" Margin="0,4" VerticalAlignment="Center" ContentSource="Icon" SnapsToDevicePixels="True" Grid.Column="1"/>
+      <ContentPresenter x:Uid="Header" x:Name="Header" Margin="0,4" RecognizesAccessKey="True" VerticalAlignment="Center" ContentSource="Header" SnapsToDevicePixels="True" Grid.Column="3"/>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger x:Uid="Trigger_19" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_201" Property="Visibility" TargetName="selection" Value="Visible"/>
+        <Setter x:Uid="Setter_202" Property="Background" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBrush}"/>
+        <Setter x:Uid="Setter_203" Property="BorderBrush" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBorderBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_20" Property="IsHighlighted" Value="True">
+        <Setter x:Uid="Setter_204" Property="Visibility" TargetName="selection" Value="Visible"/>
+        <Setter x:Uid="Setter_205" Property="Background" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBrush}"/>
+        <Setter x:Uid="Setter_206" Property="BorderBrush" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBorderBrush}"/>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <ControlTemplate x:Uid="ControlTemplate_8" TargetType="{x:Type MenuItem}" x:Key="menuItemGroupTemplate">
+    <Grid x:Uid="Grid_7" Background="Transparent">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_11" Width="0"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_12" SharedSizeGroup="icon"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_13" Width="5"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_14" Width="*"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_15" Width="30"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_16" Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <Border x:Uid="Border_4" Grid.Column="0" Grid.ColumnSpan="6" Margin="1" Padding="3" CornerRadius="2" x:Name="selection" Visibility="Hidden" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" />
+      <ContentPresenter x:Uid="ContentPresenter_4" x:Name="Icon" Margin="0,4" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Icon" SnapsToDevicePixels="True" Grid.Column="1"/>
+      <ContentPresenter x:Uid="ContentPresenter_5" x:Name="Header" Margin="0,4" RecognizesAccessKey="True" VerticalAlignment="Center" ContentSource="Header" SnapsToDevicePixels="True" Grid.Column="3"/>
+      <Path x:Uid="Path_1" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,4,0" Fill="{TemplateBinding Foreground}">
+        <Path.Data>
+          <Geometry x:Uid="Geometry_1">M 0,0 L 4,3.5 L 0,7 Z</Geometry>
+        </Path.Data>
+      </Path>
+      <Popup x:Uid="PART_Popup" x:Name="PART_Popup" Grid.Column="5"
+                         HorizontalOffset="-2"
+                         VerticalOffset="-3"
+                         AllowsTransparency="true"
+                         Placement="Right"
+                         IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                         Focusable="False">
+
+        <Border x:Uid="Border_5" BorderBrush="{StaticResource ContextMenuBorderBrush}" BorderThickness="1" Background="{StaticResource ContextMenuBackgroundBrush}" Grid.IsSharedSizeScope="True" CornerRadius="2">
+          <Grid x:Uid="Grid_8">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Uid="ColumnDefinition_17" MaxWidth="30" Width="30" SharedSizeGroup="icon"/>
+              <ColumnDefinition x:Uid="ColumnDefinition_18" Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border x:Uid="Border_6" Grid.Column="0" BorderThickness="0" Background="{StaticResource ContextMenuIconAreaBrush}"/>
+            <ItemsPresenter x:Uid="ItemsPresenter_2" Grid.Column="0" Grid.ColumnSpan="2" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+          </Grid>
+        </Border>
+      </Popup>
+    </Grid>
+    <ControlTemplate.Triggers>
+      <Trigger x:Uid="Trigger_21" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_207" Property="Visibility" TargetName="selection" Value="Visible"/>
+        <Setter x:Uid="Setter_208" Property="Background" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBrush}"/>
+        <Setter x:Uid="Setter_209" Property="BorderBrush" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBorderBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_22" Property="IsHighlighted" Value="True">
+        <Setter x:Uid="Setter_210" Property="Visibility" TargetName="selection" Value="Visible"/>
+        <Setter x:Uid="Setter_211" Property="Background" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBrush}"/>
+        <Setter x:Uid="Setter_212" Property="BorderBrush" TargetName="selection" Value="{StaticResource ContextMenuItemHoverBorderBrush}"/>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+
+  <Style x:Uid="Style_33" TargetType="{x:Type MenuItem}" x:Key="menuItemStyle">
+    <Setter x:Uid="Setter_213" Property="Foreground" Value="{StaticResource ContextMenuTextBrush}"/>
+    <Setter x:Uid="Setter_214" Property="Template" Value="{StaticResource menuItemTemplate}"/>
+    <Style.Triggers>
+      <Trigger x:Uid="Trigger_23" Property="Role" Value="SubmenuHeader">
+        <Setter x:Uid="Setter_215" Property="Template" Value="{StaticResource menuItemGroupTemplate}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_241" Property="IsFocused" Value="True">
+        <Setter x:Uid="Setter_2161" Property="Foreground" Value="{StaticResource ContextMenuTextHoverQuirkedBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_24" Property="IsMouseOver" Value="True">
+        <Setter x:Uid="Setter_216" Property="Foreground" Value="{StaticResource ContextMenuTextHoverBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_25" Property="IsPressed" Value="True">
+        <Setter x:Uid="Setter_217" Property="Foreground" Value="{StaticResource ContextMenuTextSelectedBrush}"/>
+      </Trigger>
+      <Trigger x:Uid="Trigger_26" Property="IsEnabled" Value="False">
+        <Setter x:Uid="Setter_218" Property="Foreground" Value="{StaticResource ContextMenuTextDisabledBrush}"/>
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+
+  <ControlTemplate x:Uid="ControlTemplate_9" TargetType="{x:Type Separator}" x:Key="separatorTemplate">
+    <Grid x:Uid="Grid_9">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_19" Width="40"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_20" Width="*"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_21" Width="5"/>
+      </Grid.ColumnDefinitions>
+      <Rectangle x:Uid="Rectangle_3" Height="1" Fill="{StaticResource ContextMenuSeparatorBrush}" Grid.Column="1"/>
+    </Grid>
+  </ControlTemplate>
+
+  <Style x:Uid="Style_34" TargetType="{x:Type Separator}" x:Key="separatorStyle">
+    <Setter x:Uid="Setter_219" Property="Template" Value="{StaticResource separatorTemplate}"/>
+  </Style>
+
+  <Style x:Uid="Style_37" x:Key="LinkButtonStyle" TargetType="Button">
+      <Setter x:Uid="Setter_1025" Property="Template">
+          <Setter.Value>
+              <ControlTemplate x:Uid="ControlTemplate_12" TargetType="Button">
+                  <TextBlock x:Uid="TextBlock_4" Text="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}">
+                      <TextBlock.Style>
+                          <Style x:Uid="Style_38" TargetType="TextBlock">
+                              <Style.Triggers>
+                                  <Trigger x:Uid="Trigger_31" Property="IsMouseOver" Value="true">
+                                      <Setter x:Uid="Setter_5" Property="TextDecorations" Value="Underline" />
+                                  </Trigger>
+                              </Style.Triggers>
+                          </Style>
+                      </TextBlock.Style>
+                  </TextBlock>
+              </ControlTemplate>
+          </Setter.Value>
+      </Setter>
+      <Setter x:Uid="Setter_1026" Property="Foreground" Value="Blue" />
+      <Setter x:Uid="Setter_1027" Property="Cursor" Value="Hand" />
+  </Style>
+
+  <Style x:Uid="Style_35" TargetType="{x:Type Button}" x:Key="designerButtonStyle">
+    <Setter x:Uid="Setter_220" Property="Template">
+      <Setter.Value>
+        <ControlTemplate x:Uid="ControlTemplate_10" TargetType="{x:Type Button}">
+          <Border x:Uid="Border_7" x:Name="border" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" CornerRadius="2" Margin="1">
+            <TextBlock x:Uid="content" x:Name="content" Text="{TemplateBinding Content}" Foreground="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" Margin="4,3" HorizontalAlignment="Left" VerticalAlignment="Center" FontStyle="Italic"/>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger x:Uid="Trigger_27" Property="IsMouseOver" Value="True">
+              <Setter x:Uid="Setter_221" Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}"/>
+            </Trigger>
+            <Trigger x:Uid="Trigger_28" Property="IsPressed" Value="True">
+              <Setter x:Uid="Setter_222" Property="Background" TargetName="border" Value="{StaticResource WorkflowViewElementSelectedBackground}"/>
+              <Setter x:Uid="Setter_223" Property="BorderBrush" TargetName="border" Value="{StaticResource WorkflowViewElementSelectedBorder}"/>
+              <Setter x:Uid="Setter_224" Property="Foreground" TargetName="content" Value="{StaticResource WorkflowViewElementCaptionBrush}"/>
+            </Trigger>
+            <Trigger x:Uid="Trigger_29" Property="IsKeyboardFocusWithin" Value="True">
+              <Setter x:Uid="Setter_225" Property="BorderBrush" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}"/>
+            </Trigger>
+            <Trigger x:Uid="Trigger_30" Property="IsEnabled" Value="False">
+              <Setter x:Uid="Setter_226" Property="Background" TargetName="border" Value="{DynamicResource ResourceKey={x:Static SystemColors.InactiveCaptionBrushKey}}"/>
+              <Setter x:Uid="Setter_227" Property="Foreground" TargetName="content" Value="{DynamicResource ResourceKey={x:Static SystemColors.InactiveCaptionTextBrushKey}}"/>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Setter x:Uid="Setter_228" Property="FocusVisualStyle">
+      <Setter.Value>
+        <Style x:Uid="Style_36">
+          <Setter x:Uid="Setter_229" Property="Control.Template">
+            <Setter.Value>
+              <ControlTemplate x:Uid="ControlTemplate_11">
+                <Rectangle x:Uid="Rectangle_4" Margin="-2" StrokeThickness="1" StrokeDashArray="1 2" Stroke="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}"/>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Style>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style x:Uid="Style_40" x:Key="designerReadOnlyTextBoxFocusVisualStyle">
+    <Setter x:Uid="Setter_232" Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate x:Uid="ControlTemplate_13">
+          <Rectangle x:Uid="Rectangle_5" Margin="-2" StrokeThickness="1" StrokeDashArray="1 2" Stroke="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}"/>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  
+  <ControlTemplate x:Uid="activityDelegatePresenterDefaultTemplate" x:Key="activityDelegatePresenterDefaultTemplate" TargetType="{x:Type swd:ActivityDelegatePresenter}">
+    <ControlTemplate.Resources>
+      <swd:TypeNameConverter x:Uid="typeConverter" x:Key="typeConverter" />
+      
+      <DataTemplate x:Uid="DataTemplate_3" x:Key="delegateArgumentTemplate">
+          <Grid x:Uid="Grid_11">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Uid="ColumnDefinition_23" SharedSizeGroup="Group1" />
+              <ColumnDefinition x:Uid="ColumnDefinition_24" SharedSizeGroup="Group2"/>
+              <ColumnDefinition x:Uid="ColumnDefinition_25" SharedSizeGroup="Group3" />
+              <ColumnDefinition x:Uid="ColumnDefinition_27" SharedSizeGroup="Group4" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Uid="TextBox_1" Grid.Column="0" Margin="1,2" BorderThickness="1" BorderBrush="LightGray" Text="{Binding Path=Name}" Width="120" />
+            <TextBlock x:Uid="TextBlock_5" Grid.Column="1" Margin="1,2" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" Text=":" />
+            <TextBlock x:Uid="TextBlock_6" Grid.Column="2" Margin="1,2" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Path=Direction}" />
+            <TextBlock x:Uid="TextBlock_7" Grid.Column="3" Margin="3,2" VerticalAlignment="Bottom" HorizontalAlignment="Left" TextAlignment="Left" Text="{Binding Path=Type, Converter={StaticResource typeConverter}, ConverterParameter='False'}" />
+          </Grid>
+      </DataTemplate>
+      
+    </ControlTemplate.Resources>
+    <Grid x:Uid="Grid_10" Margin="6">
+      <Grid.RowDefinitions>
+        <RowDefinition x:Uid="RowDefinition_1" Height="Auto" MinHeight="0" />
+        <RowDefinition x:Uid="RowDefinition_2" Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <ItemsControl Grid.Row="0" x:Uid="argumentsItemsControl" ItemsSource="{Binding Path=Arguments, RelativeSource={RelativeSource TemplatedParent}}" ItemTemplate="{StaticResource delegateArgumentTemplate}" Grid.IsSharedSizeScope="True" />
+      <swd:WorkflowItemPresenter Grid.Row="1" x:Uid="swd:WorkflowItemPresenter_1" HintText="Drop activity here" Item="{Binding Path=Handler, RelativeSource={RelativeSource TemplatedParent}}" AllowedItemType="{x:Type sa:Activity}" />
+    </Grid>
+  </ControlTemplate>
+
+  <Style x:Uid="activityDelegatePresenterStyle" TargetType="{x:Type swd:ActivityDelegatePresenter}">
+    <Setter x:Uid="Setter_230" Property="Template" Value="{StaticResource activityDelegatePresenterDefaultTemplate}" />
+  </Style>
+  
+</ResourceDictionary>

@@ -1,0 +1,448 @@
+﻿<ResourceDictionary
+    x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ValueEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.ValueEditors"
+    xmlns:PropertyEditing="clr-namespace:System.Activities.Presentation.PropertyEditing"
+    xmlns:Framework="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.PropertyInspector"
+    xmlns:Data="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+    xmlns:Internal="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing"
+    xmlns:InternalAutomation="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Automation"
+    xmlns:InternalResources="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Resources"
+    xmlns:InternalSelection="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Selection"
+    xmlns:sap="clr-namespace:System.Activities.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=Mscorlib"
+    >
+
+  <!-- Converters -->
+  <Data:BoolToVisibilityConverter x:Uid="Data:BoolToVisibilityConverter_1" x:Key="BooleanToVisibilityConverter" />
+
+  <Data:SwitchConverter x:Uid="Data:SwitchConverter_1" x:Key="BoolToBlackConverter" DefaultValue="{x:Null}">
+    <Data:SwitchCase x:Uid="Data:SwitchCase_1" Out="Black">
+      <Data:SwitchCase.In>
+        <sys:Boolean x:Uid="sys:Boolean_1">True</sys:Boolean>
+      </Data:SwitchCase.In>
+    </Data:SwitchCase>
+  </Data:SwitchConverter>
+
+
+  <!-- ************************* -->
+  <!-- CategoryExpander Template -->
+  <!-- ************************* -->
+
+  <ControlTemplate x:Uid="ControlTemplate_1" x:Key="CategoryExpander" TargetType="{x:Type Expander}">
+    <Grid x:Uid="Grid_1" Name="PART_BasicSection">
+
+      <Grid.RowDefinitions>
+        <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+        <RowDefinition x:Uid="RowDefinition_2" Height="Auto"/>
+      </Grid.RowDefinitions>
+
+      <!-- Expander Header -->
+      <Grid
+        x:Uid="ExpandedHeader"
+        Name="ExpandedHeader"
+        Focusable="True"
+        InternalSelection:PropertySelection.SelectionStop="{Binding Path=BasicCategorySelectionStop}"
+        InternalSelection:PropertySelection.IsSelectionStopDoubleClickTarget="True"
+        Visibility="{Binding Path=ShowCategoryHeader, Converter={StaticResource BooleanToVisibilityConverter}}"
+        >
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition x:Uid="ColumnDefinition_1" Width="{DynamicResource OpenCloseColumnGridLength}"/>
+          <ColumnDefinition x:Uid="ColumnDefinition_2" Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle
+          x:Uid="Rectangle_1" Grid.ColumnSpan="2"
+          Fill="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.PaneBrushKey}}"
+          Stroke="{Binding Path=(InternalSelection:PropertySelection.IsSelected), ElementName=ExpandedHeader, Converter={StaticResource BoolToBlackConverter}}"
+          StrokeThickness="1"
+          StrokeDashArray="1 2"
+          SnapsToDevicePixels="True"/>
+
+        <ToggleButton
+          x:Uid="ToggleButton_1" x:Name="ExpandButton"
+          IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+          Grid.Column="0">
+          <ToggleButton.Content>
+            <Image x:Uid="Image_1" x:Name="ButtonImage" Height="9" Width="9" SnapsToDevicePixels="True"/>
+          </ToggleButton.Content>
+
+          <ToggleButton.Template>
+            <ControlTemplate x:Uid="ControlTemplate_2" TargetType="ToggleButton">
+              <Border x:Uid="Border_1" Background="Transparent" BorderBrush="{x:Null}">
+                <ContentControl x:Uid="ContentControl_1" Content="{TemplateBinding Content}"/>
+              </Border>
+            </ControlTemplate>
+          </ToggleButton.Template>
+          <ToggleButton.Style>
+            <Style x:Uid="Style_3">
+              <Style.Triggers>
+                <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False">
+                  <Setter x:Uid="Setter_16" Property="ToggleButton.Focusable" Value="True"/>
+                </DataTrigger>
+                <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="True">
+                  <Setter x:Uid="Setter_18" Property="ToggleButton.Focusable" Value="False"/>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </ToggleButton.Style>
+        </ToggleButton>
+
+        <TextBlock
+          x:Uid="TextBlock_1" Grid.Column="1"
+          VerticalAlignment="Top" HorizontalAlignment="Left"
+          Text="{TemplateBinding Header}"
+          Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.CategoryCaptionTextBrushKey}}"
+          FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+          FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+          FontWeight="Bold"
+          IsHitTestVisible="False"
+          Margin="4,2,0,2"/>
+      </Grid>
+
+      <!-- Expander Content -->
+      <ContentPresenter
+        x:Uid="ContentPresenter_1" x:Name="ExpandSite"
+        Visibility="Collapsed"
+        Grid.Row="1"
+        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+        Content="{TemplateBinding Content}"
+        ContentTemplate="{TemplateBinding ContentTemplate}"
+        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
+
+    </Grid>
+
+    <ControlTemplate.Triggers>
+      <Trigger x:Uid="Trigger_1" Property="IsExpanded" Value="True">
+        <Setter x:Uid="Setter_1" TargetName="ExpandSite" Property="Visibility" Value="Visible"/>
+      </Trigger>
+
+      <Trigger x:Uid="Trigger_2" SourceName="ExpandButton" Property="IsChecked" Value="False">
+        <Setter x:Uid="Setter_2" TargetName="ButtonImage" Property="Source">
+          <Setter.Value>
+            <!-- this DrawingImage should be kept the same as the one in StylesCore.SubPropertyEditor.xaml with x:Uid DrawingImage_1 -->
+            <DrawingImage x:Uid="DrawingImage_1">
+              <DrawingImage.Drawing>
+                <GeometryDrawing x:Uid="GeometryDrawing_14" Brush="{x:Null}" >
+                  <GeometryDrawing.Pen>
+                    <Pen x:Uid="Pen_11" Brush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}" />
+                  </GeometryDrawing.Pen>
+                  <GeometryDrawing.Geometry>
+                    <GeometryGroup x:Uid="GeometryGroup_1">
+                      <RectangleGeometry x:Uid="RectangleGeometry_3" Rect="0,0,8,8"/>
+                      <LineGeometry x:Uid="LineGeometry_1" StartPoint="4,2" EndPoint="4,6"/>
+                      <LineGeometry x:Uid="LineGeometry_2" StartPoint="2,4" EndPoint="6,4"/>
+                    </GeometryGroup>
+                  </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+              </DrawingImage.Drawing>
+            </DrawingImage>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      <Trigger x:Uid="Trigger_3" SourceName="ExpandButton" Property="IsChecked" Value="True">
+        <Setter x:Uid="Setter_3" TargetName="ButtonImage" Property="Source">
+          <Setter.Value>
+            <!-- this DrawingImage should be kept the same as the one in StylesCore.SubPropertyEditor.xaml with x:Uid DrawingImage_2 -->
+            <DrawingImage x:Uid="DrawingImage_2">
+              <DrawingImage.Drawing>
+                <GeometryDrawing x:Uid="GeometryDrawing_15" Brush="{x:Null}">
+                  <GeometryDrawing.Pen>
+                    <Pen x:Uid="Pen_12" Brush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"/>
+                  </GeometryDrawing.Pen>
+                  <GeometryDrawing.Geometry>
+                    <GeometryGroup x:Uid="GeometryGroup_2">
+                      <RectangleGeometry x:Uid="RectangleGeometry_4" Rect="0,0,8,8"/>
+                      <LineGeometry x:Uid="LineGeometry_3" StartPoint="2,4" EndPoint="6,4"/>
+                    </GeometryGroup>
+                  </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+              </DrawingImage.Drawing>
+            </DrawingImage>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+    </ControlTemplate.Triggers>
+
+  </ControlTemplate>
+
+  <!-- *********************************** -->
+  <!-- AdvancedPropertiesExpander Template -->
+  <!-- *********************************** -->
+
+  <ControlTemplate x:Uid="ControlTemplate_3" x:Key="AdvancedPropertiesExpander" TargetType="{x:Type Expander}">
+    <Grid x:Uid="Grid_2" Name="PART_AdvancedSection">
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_3" Width="{DynamicResource OpenCloseColumnGridLength}"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_11" Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Grid.RowDefinitions>
+        <RowDefinition x:Uid="RowDefinition_3" Height="Auto"/>
+        <RowDefinition x:Uid="RowDefinition_4" Height="Auto"/>
+      </Grid.RowDefinitions>
+
+      <!-- Expander Header -->
+      <Grid
+        x:Uid="Grid_3"
+        Name="AdvancedExpanderHeader"
+        Grid.Column="1"
+        Focusable="True"
+        FocusVisualStyle="{x:Null}"
+        InternalSelection:PropertySelection.SelectionStop="{Binding Path=AdvancedCategorySelectionStop}"
+        InternalSelection:PropertySelection.IsSelectionStopDoubleClickTarget="True"
+        >
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition x:Uid="ColumnDefinition_4" Width="*" />
+          <ColumnDefinition x:Uid="ColumnDefinition_5" Width="15" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Background -->
+        <Rectangle
+          x:Uid="Rectangle_2" Grid.ColumnSpan="2"
+          Fill="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.PaneBrushKey}}"
+          Margin="0,-1,0,0"
+          SnapsToDevicePixels="True"/>
+
+        <Rectangle
+          x:Uid="Rectangle_Border_2" Grid.ColumnSpan="2"
+          Stroke="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"
+          StrokeThickness="1" Margin="0,0,1,1"
+          SnapsToDevicePixels="True"/>
+
+        <!-- Selection rectangle -->
+        <Rectangle
+          x:Uid="Rectangle_3" Grid.ColumnSpan="2"
+          Margin="0,-1,0,0"
+          Stroke="{Binding Path=(InternalSelection:PropertySelection.IsSelected), ElementName=AdvancedExpanderHeader, Converter={StaticResource BoolToBlackConverter}}"
+          StrokeThickness="1"
+          StrokeDashArray="1 2"
+          SnapsToDevicePixels="True"/>
+
+        <TextBlock
+          x:Uid="TextBlock_2"
+          VerticalAlignment="Center" HorizontalAlignment="Left"
+          FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+          FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+          FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+          Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"
+          Text="{TemplateBinding Header}"
+          Margin="4,2,0,2"
+          IsHitTestVisible="False"
+          />
+
+        <ToggleButton
+          Margin="0,2,0,1"
+          x:Uid="ToggleButton_2" x:Name="ExpandButton"
+          IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+          Grid.Column="1">
+          <ToggleButton.Template>
+            <ControlTemplate x:Uid="ControlTemplate_4" TargetType="ToggleButton">
+              <Border x:Uid="Border_2" Background="Transparent" BorderBrush="{x:Null}">
+                <ContentControl x:Uid="ContentControl_2" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+              </Border>
+            </ControlTemplate>
+          </ToggleButton.Template>
+          <ToggleButton.Style>
+            <Style x:Uid="Style_2">
+              <Style.Triggers>
+                <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="False">
+                  <Setter x:Uid="Setter_12" Property="ToggleButton.Focusable" Value="True"/>
+                  <Setter x:Uid="Setter_13" Property="ToggleButton.Height" Value="11"/>
+                  <Setter x:Uid="Setter_14" Property="ToggleButton.Width" Value="11"/>
+                </DataTrigger>
+                <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="True">
+                  <Setter x:Uid="Setter_15" Property="ToggleButton.Focusable" Value="False"/>
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </ToggleButton.Style>
+        </ToggleButton>
+
+      </Grid>
+
+      <!-- Expander Content -->
+      <ContentPresenter
+        x:Uid="ContentPresenter_2" x:Name="ExpandSite"
+        Visibility="Collapsed"
+        Grid.Row="1" Grid.ColumnSpan="2"
+        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+        Content="{TemplateBinding Content}"
+        ContentTemplate="{TemplateBinding ContentTemplate}"
+        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"/>
+    </Grid>
+
+    <ControlTemplate.Triggers>
+      <Trigger x:Uid="Trigger_4" Property="IsExpanded" Value="True">
+        <Setter x:Uid="Setter_4" TargetName="ExpandSite" Property="Visibility" Value="Visible"/>
+      </Trigger>
+
+      <Trigger x:Uid="Trigger_5" SourceName="ExpandButton" Property="IsChecked" Value="False">
+        <Setter x:Uid="Setter_5" TargetName="ExpandButton" Property="ContentTemplate">
+          <Setter.Value>
+            <DataTemplate x:Uid="ExpandButton_1">
+              <Grid x:Uid="ExpandButton_2" x:Name="ExpandTemplate">
+                <Border x:Uid="ExpandButton_3" SnapsToDevicePixels="True" HorizontalAlignment="Left" x:Name="Icon_border" VerticalAlignment="Top" Width="11" Height="11" BorderThickness="1,1,1,1" Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}" BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"/>
+                <Canvas x:Uid="ExpandButton_4" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto" Height="Auto" x:Name="Icon_Canvas">
+                  <Path x:Uid="ExpandButton_5" Fill="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}" Stretch="Uniform" Stroke="{x:Null}" Height="4" Width="5" Data="M0,0 L0,2 1,2 1,3 2,3 2,4 3,4 3,3 4,3 4,2 5,2 5,0 4,0 4,1 3,1 3,2 2,2 2,1 1,1 1,0 z" StrokeThickness="0" Canvas.Left="3" Canvas.Top="2" HorizontalAlignment="Left" x:Name="Top_Arrow" VerticalAlignment="Top"/>
+                  <Path x:Uid="ExpandButton_6" Fill="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}" Stretch="Uniform" Stroke="{x:Null}" Height="4" Width="5" Data="M0,0 L0,2 1,2 1,3 2,3 2,4 3,4 3,3 4,3 4,2 5,2 5,0 4,0 4,1 3,1 3,2 2,2 2,1 1,1 1,0 z" StrokeThickness="0" Canvas.Left="3" Canvas.Top="5" HorizontalAlignment="Left" x:Name="Bottom_Arrow" VerticalAlignment="Top"/>
+                </Canvas>
+              </Grid>
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+      <Trigger x:Uid="Trigger_6" SourceName="ExpandButton" Property="IsChecked" Value="True">
+        <Setter x:Uid="Setter_6" TargetName="ExpandButton" Property="ContentTemplate">
+          <Setter.Value>
+            <DataTemplate x:Uid="ExpandButton_11">
+              <Grid x:Uid="ExpandButton_12" x:Name="CollapseTemplate">
+                <Border x:Uid="ExpandButton_13" SnapsToDevicePixels="True" HorizontalAlignment="Left" x:Name="Icon_border" VerticalAlignment="Top" Width="11" Height="11" BorderThickness="1,1,1,1" Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}" BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"/>
+                <Canvas x:Uid="ExpandButton_14" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="Auto" Height="Auto" x:Name="Icon_Canvas">
+                  <Path x:Uid="ExpandButton_15" Fill="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}" Stretch="Uniform" Height="4" Width="5" Data="M0,2 L0,4 1,4 1,3 2,3 2,2 3,2 3,3 4,3 4,4 5,4 5,2 4,2 4,1 3,1 3,0 2,0 2,1 1,1 1,2  z" StrokeThickness="0" Canvas.Left="3" Canvas.Top="5" HorizontalAlignment="Left" x:Name="Bottom_Arrow" VerticalAlignment="Top" />
+                  <Path x:Uid="ExpandButton_16" Fill="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}" Stretch="Uniform" Height="4" Width="5" Data="M0,2 L0,4 1,4 1,3 2,3 2,2 3,2 3,3 4,3 4,4 5,4 5,2 4,2 4,1 3,1 3,0 2,0 2,1 1,1 1,2  z" StrokeThickness="0" x:Name="Top_Arrow" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="3" Canvas.Top="2"/>
+                </Canvas>
+              </Grid>
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+      </Trigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
+  <!-- **************************** -->
+  <!-- CiderCategoryContainer Style -->
+  <!-- **************************** -->
+
+  <Style x:Uid="Style_1" TargetType="{x:Type Internal:CiderCategoryContainer}">
+    <Style.Setters>
+
+      <Setter x:Uid="Setter_7" Property="Category" Value="{Binding}"/>
+      <Setter x:Uid="Setter_8" Property="Focusable" Value="False"/>
+
+      <Setter x:Uid="Setter_9" Property="Template">
+        <Setter.Value>
+          <ControlTemplate x:Uid="ControlTemplate_5" TargetType="{x:Type Framework:CategoryContainer}">
+
+            <Expander 
+              x:Uid="PART_MainExpander" Name="PART_MainExpander" Template="{StaticResource CategoryExpander}"
+              Header="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Category.CategoryName}"
+              DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+              IsExpanded ="{Binding Path=Expanded, Mode=TwoWay}">
+
+              <Grid x:Uid="Grid_4">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition x:Uid="ColumnDefinition_6" Width="{DynamicResource OpenCloseColumnGridLength}"/>
+                  <ColumnDefinition x:Uid="ColumnDefinition_7" Width="*"/>
+                  <ColumnDefinition x:Uid="ColumnDefinition_Splitter1"
+                                    Width="{Binding Mode=TwoWay, Path=(Internal:SharedPropertyValueColumnWidthContainer.OwningSharedPropertyValueColumnWidthContainer).ValueColumnWidth}"
+                                    MaxWidth="{Binding Mode=OneWay, Path=(Internal:SharedPropertyValueColumnWidthContainer.OwningSharedPropertyValueColumnWidthContainer).ContainerWidth}"/>
+
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition x:Uid="RowDefinition_5" Height="Auto"/>
+                  <RowDefinition x:Uid="RowDefinition_6" Height="Auto"/>
+                  <RowDefinition x:Uid="RowDefinition_7" Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Basic category editors -->
+                <Internal:CiderCategoryLayoutContainer
+                  x:Uid="PART_BasicCategoryEditors" Name="PART_BasicCategoryEditors"
+                  ItemsSource="{Binding Path=BasicCategoryEditors}"
+                  Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                  Focusable="False"/>
+
+                <!-- Basic properties -->
+                <Internal:CiderStandardCategoryLayout
+                  x:Uid="PART_BasicPropertyList" Name="PART_BasicPropertyList"
+                  Grid.Row="1" Grid.ColumnSpan="3"
+                  Margin="1,1,0,0"
+                  ItemsSource="{Binding Path=UnconsumedBasicProperties}"/>
+
+                <!-- Invisible grid-splitter - each property row is responsible for drawing its own borders -->
+                <GridSplitter
+                  x:Uid="GridSplitter_1" Grid.Column="2" Grid.Row="1"
+                  Focusable="False"
+                  ResizeDirection="Columns" Width="7"
+                  Background="Transparent" HorizontalAlignment="Left"
+                  Margin="-4,0,0,0"
+                  VerticalAlignment="Stretch"/>
+
+                <Expander
+                  x:Uid="PART_AdvancedExpander" Name="PART_AdvancedExpander"
+                  Template="{StaticResource AdvancedPropertiesExpander}"
+                  Header="More Properties"
+                  Grid.Row="2" Grid.ColumnSpan="3"
+                  IsExpanded="{Binding Path=AdvancedSectionPinned, Mode=TwoWay}"
+                  Visibility="{Binding Path=ShowAdvancedHeader, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  HorizontalAlignment="Stretch">
+
+                  <Grid x:Uid="Grid_5">
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition x:Uid="ColumnDefinition_8" Width="{DynamicResource OpenCloseColumnGridLength}"/>
+                      <ColumnDefinition x:Uid="ColumnDefinition_9" Width="*"/>
+                      <ColumnDefinition x:Uid="ColumnDefinition_Splitter2"
+                                        Width="{Binding Mode=TwoWay, Path=(Internal:SharedPropertyValueColumnWidthContainer.OwningSharedPropertyValueColumnWidthContainer).ValueColumnWidth}"
+                                        MaxWidth="{Binding Mode=OneWay, Path=(Internal:SharedPropertyValueColumnWidthContainer.OwningSharedPropertyValueColumnWidthContainer).ContainerWidth}"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                      <RowDefinition x:Uid="RowDefinition_8" Height="Auto"/>
+                      <RowDefinition x:Uid="RowDefinition_9" Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Advanced category editors -->
+                    <Internal:CiderCategoryLayoutContainer
+                      x:Uid="PART_AdvancedCategoryEditors" Name="PART_AdvancedCategoryEditors"
+                      ItemsSource="{Binding Path=AdvancedCategoryEditors}"
+                      Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2"
+                      Focusable="False"/>
+
+                    <!-- Advanced properties -->
+                    <Internal:CiderStandardCategoryLayout
+                      x:Uid="PART_AdvancedPropertyList" Name="PART_AdvancedPropertyList"
+                      Grid.Row="1" Grid.ColumnSpan="3"
+                      ItemsSource="{Binding Path=UnconsumedAdvancedProperties}"/>
+
+                    <!-- Invisible grid-splitter - each property row is responsible for drawing its own borders -->
+                    <GridSplitter
+                      x:Uid="GridSplitter_2" Grid.Column="2" Grid.Row="1"
+                      Focusable="False"
+                      ResizeDirection="Columns" Width="7"
+                      Background="Transparent" HorizontalAlignment="Left"
+                      Margin="-4,0,0,0"
+                      VerticalAlignment="Stretch"/>
+
+                  </Grid>
+
+                </Expander>
+              </Grid>
+
+            </Expander>
+
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+
+    </Style.Setters>
+
+    <Style.Triggers>
+      <MultiTrigger x:Uid="MultiTrigger_1">
+        <MultiTrigger.Conditions>
+          <Condition x:Uid="Condition_1" Property="BasicPropertyMatchesFilter" Value="False"/>
+          <Condition x:Uid="Condition_2" Property="AdvancedPropertyMatchesFilter" Value="False"/>
+        </MultiTrigger.Conditions>
+        <Setter x:Uid="Setter_10" Property="Visibility" Value="Collapsed" />
+      </MultiTrigger>
+
+      <Trigger x:Uid="Trigger_7" Property="IsEmpty" Value="true">
+        <Setter x:Uid="Setter_11" Property="Visibility" Value="Collapsed" />
+      </Trigger>
+
+    </Style.Triggers>
+
+  </Style>
+
+</ResourceDictionary>

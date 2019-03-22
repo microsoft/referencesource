@@ -1,0 +1,31 @@
+﻿<ResourceDictionary
+    x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:ValueEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.ValueEditors" 
+    xmlns:PropertyEditing="clr-namespace:System.Activities.Presentation.PropertyEditing" 
+    xmlns:Data="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+    >
+
+    <!-- Converters -->
+  <Data:BoolToVisibilityConverter x:Uid="Data:BoolToVisibilityConverter_1" x:Key="BooleanToVisibilityConverter" />
+
+  <!-- **************** -->
+  <!-- ValueAreaWrapper -->
+  <!-- **************** -->
+
+  <!-- ValueAreaWrapper can be used to make the Value portion of a PropertyContainer
+       unclickable. Right now it's not being used by Cider, but it may be in the future. -->
+  
+  <Style x:Uid="Style_1" x:Key="ValueAreaWrapper" TargetType="{x:Type Rectangle}">
+    <Setter x:Uid="Setter_1" Property="Fill" Value="#00000000" />
+    <Setter x:Uid="Setter_2" Property="StrokeThickness" Value="1" />
+    <Setter x:Uid="Setter_3" Property="RadiusX" Value="4" />
+    <Setter x:Uid="Setter_4" Property="RadiusY" Value="4" />
+    <Setter x:Uid="Setter_5" Property="Panel.ZIndex" Value="1" />
+    <!--<Setter Property="Visibility" Value="{Binding ElementName=Marker, Path=AssociatedProperty.IsExpression, Converter={StaticResource BooleanToVisibilityConverter}}" />-->
+    <!--<Setter Property="Stroke" Value="{Binding ElementName=Marker, Path=DotBrush}"/>-->
+    <!--<Setter Property="Controls:ClickBehavior.MouseClickCommand" Value="{Binding ElementName=Marker, Path=ShowContextMenuCommand}" />-->
+    <Setter x:Uid="Setter_6" Property="Visibility" Value="Hidden" />
+  </Style>
+  
+</ResourceDictionary>

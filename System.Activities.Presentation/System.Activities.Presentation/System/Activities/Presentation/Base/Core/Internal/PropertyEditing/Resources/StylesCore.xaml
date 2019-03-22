@@ -1,0 +1,19 @@
+﻿<ResourceDictionary
+	x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Internal="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing"
+  >
+
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary x:Uid="ResourceDictionary_2" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.Constants.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_3" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.PropertyContainer.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_4" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.CategoryContainer.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_5" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.EditModeSwitchButton.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_6" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.PropertyInspector.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_7" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.Editors.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_10" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.SubPropertyEditor.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_11" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.CategoryList.xaml" />
+    <ResourceDictionary x:Uid="ResourceDictionary_12" Source="/System.Activities.Presentation;Component/System/Activities/Presentation/Base/Core/Internal/PropertyEditing/Resources/StylesCore.PropertyToolBar.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>
