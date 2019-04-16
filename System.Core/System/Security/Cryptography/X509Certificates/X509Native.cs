@@ -494,7 +494,12 @@ namespace System.Security.Cryptography.X509Certificates {
         internal static SafeCertContextHandle InvalidHandle
         {
             [SecuritySafeCritical]
-            get { return new SafeCertContextHandle(IntPtr.Zero); }
+            get {
+                SafeCertContextHandle invalidHandle = new SafeCertContextHandle(IntPtr.Zero);
+                // This is valid since we don't expose any way to replace the handle value
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         [DllImport("Crypt32.dll", SetLastError = true),

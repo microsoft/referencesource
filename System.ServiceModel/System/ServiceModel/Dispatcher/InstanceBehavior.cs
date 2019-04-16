@@ -214,7 +214,21 @@ namespace System.ServiceModel.Dispatcher
                 throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidOperationException(SR.GetString(SR.SFxNoDefaultConstructor)));
             }
 
-            return this.provider.GetInstance(instanceContext);
+            bool outputTiming = DS.InstanceProviderIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = Stopwatch.StartNew();
+            }
+
+            object instance = this.provider.GetInstance(instanceContext);
+
+            if (outputTiming)
+            {
+                DS.InstanceProviderGet(this.provider.GetType(), instance, sw.Elapsed);
+            }
+
+            return instance;
         }
 
         internal object GetInstance(InstanceContext instanceContext, Message request)
@@ -224,7 +238,21 @@ namespace System.ServiceModel.Dispatcher
                 throw TraceUtility.ThrowHelperError(new InvalidOperationException(SR.GetString(SR.SFxNoDefaultConstructor)), request);
             }
 
-            return this.provider.GetInstance(instanceContext, request);
+            bool outputTiming = DS.InstanceProviderIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = Stopwatch.StartNew();
+            }
+
+            object instance = this.provider.GetInstance(instanceContext, request);
+
+            if (outputTiming)
+            {
+                DS.InstanceProviderGet(this.provider.GetType(), instance, sw.Elapsed);
+            }
+
+            return instance;
         }
 
         internal void Initialize(InstanceContext instanceContext)
@@ -268,7 +296,21 @@ namespace System.ServiceModel.Dispatcher
             {
                 try
                 {
+                    bool outputTiming = DS.InstanceProviderIsEnabled();
+                    Stopwatch sw = null;
+                    if (outputTiming)
+                    {
+                        sw = Stopwatch.StartNew();
+                    }
+
                     this.provider.ReleaseInstance(instanceContext, instance);
+
+                    if (outputTiming)
+                    {
+                        // It is safe to pass a possibly disposed instance to InstanceProviderRelease as it retrieves
+                        // the hashcode using RuntimeHelpers.GetHashCode so doesn't access any members on the instance.
+                        DS.InstanceProviderRelease(this.provider.GetType(), instance, sw.Elapsed);
+                    }
                 }
                 catch (Exception e)
                 {

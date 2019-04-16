@@ -37,11 +37,14 @@ namespace System.IdentityModel
         Tls12Client = 0x00000800,
         Tls12Server = 0x00000400,
         Tls12 = (Tls12Client | Tls12Server),
+        Tls13Client = 0x00002000,
+        Tls13Server = 0x00001000,
+        Tls13 = (Tls13Client | Tls13Server),
         UniClient = unchecked((int)0x80000000),
         UniServer = 0x40000000,
         Unified = (UniClient | UniServer),
-        ClientMask = (PctClient | Ssl2Client | Ssl3Client | TlsClient | Tls11Client | Tls12Client | UniClient),
-        ServerMask = (PctServer | Ssl2Server | Ssl3Server | TlsServer | Tls11Server | Tls12Server | UniServer)
+        ClientMask = (PctClient | Ssl2Client | Ssl3Client | TlsClient | Tls11Client | Tls12Client | Tls13Client | UniClient),
+        ServerMask = (PctServer | Ssl2Server | Ssl3Server | TlsServer | Tls11Server | Tls12Server | Tls13Server | UniServer)
     };
 
     //From WinCrypt.h

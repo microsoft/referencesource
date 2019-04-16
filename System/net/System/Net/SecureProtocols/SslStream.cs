@@ -128,7 +128,7 @@ using System.Net.Configuration;
 
         public virtual void AuthenticateAsClient(string targetHost, X509CertificateCollection clientCertificates, bool checkCertificateRevocation)
         {
-            AuthenticateAsClient(targetHost, clientCertificates, ServicePointManager.DefaultSslProtocols, false);
+            AuthenticateAsClient(targetHost, clientCertificates, ServicePointManager.DefaultSslProtocols, LocalAppContextSwitches.DontCheckCertificateRevocation ? false : checkCertificateRevocation);
         }
 
         //

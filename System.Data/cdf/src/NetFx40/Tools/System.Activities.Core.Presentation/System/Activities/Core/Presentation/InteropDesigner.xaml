@@ -1,0 +1,35 @@
+﻿<swd:ActivityDesigner
+    x:Uid="swd:WorkflowElementDesigner_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:swdc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:swdv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:proj="clr-namespace:System.Activities.Core.Presentation"
+    x:Class="System.Activities.Core.Presentation.InteropDesigner"
+    xmlns:swdm="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    x:ClassModifier="internal"
+    Collapsible="False">
+
+    <swd:ActivityDesigner.Resources>
+        <swdc:ModelToObjectValueConverter x:Uid="swdm:ModelToObjectValueConverter_1" x:Key="modelItemConverter"/>
+    </swd:ActivityDesigner.Resources>
+
+
+    <Grid x:Uid="Grid_1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Uid="ColumnDefinition_1"/>
+            <ColumnDefinition x:Uid="ColumnDefinition_2"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock x:Uid="TextBlock_1" Text="ActivityType" Grid.Column="0" HorizontalAlignment="Right" Margin="10,2,10,0" Localization.Attributes="Text(Unreadable Unmodifiable)"/>
+        <swdv:TypePresenter x:Uid="swdv:TypePresenter_1" 
+                            Type="{Binding ModelItem.ActivityType, Mode=TwoWay, Converter={StaticResource modelItemConverter}}"
+                            Context="{Binding Context}"
+                            Filter="{Binding Filter}"
+                            BrowseTypeDirectly="True"
+                            Grid.Column="1" 
+                            HorizontalAlignment="Right"
+                            Label="ActivityType"/>
+    </Grid>
+
+</swd:ActivityDesigner>

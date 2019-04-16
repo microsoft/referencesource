@@ -14,6 +14,9 @@ namespace System.ServiceModel.WasHosting
     class TcpAppDomainProtocolHandler : BaseAppDomainProtocolHandler
     {
         HostedTcpTransportManager transportManager;
+        // HostedTcpTransportManager isn't thread safe when calling Start and Stop concurrently.
+        private static object m_lock = new object();
+
         public TcpAppDomainProtocolHandler()
             : base(Uri.UriSchemeNetTcp)
         {
@@ -23,14 +26,20 @@ namespace System.ServiceModel.WasHosting
         {
             TcpHostedTransportConfiguration configuration = HostedTransportConfigurationManager.GetConfiguration(Uri.UriSchemeNetTcp) as TcpHostedTransportConfiguration;
             transportManager = configuration.TransportManager as HostedTcpTransportManager;
-            transportManager.Start(listenerChannelContext.ListenerChannelId, listenerChannelContext.Token, OnMessageReceived);
+            lock (m_lock)
+            {
+                transportManager.Start(listenerChannelContext.ListenerChannelId, listenerChannelContext.Token, OnMessageReceived);
+            }
         }
 
         protected override void OnStop()
         {
             if (transportManager != null)
             {
-                transportManager.Stop(DefaultStopTimeout);
+                lock (m_lock)
+                {
+                    transportManager.Stop(DefaultStopTimeout);
+                }
             }
         }
     }

@@ -18,14 +18,15 @@ namespace System.ServiceModel
         internal const string UseBestMatchNamedPipeUriString = "wcf:useBestMatchNamedPipeUri";
         internal const string DisableOperationContextAsyncFlowString = "wcf:disableOperationContextAsyncFlow";
         internal const string UseLegacyCertificateUsagePolicyString = "wcf:useLegacyCertificateUsagePolicy";
+        internal const string DeferSslStreamServerCertificateCleanupString = "wcf:deferSslStreamServerCertificateCleanup";
 
         const bool DefaultHttpTransportPerFactoryConnectionPool = false;
         const bool DefaultEnsureUniquePerformanceCounterInstanceNames = false;
         const bool DefaultUseConfiguredTransportSecurityHeaderLayout = false;
         const bool DefaultUseBestMatchNamedPipeUri = false;
         const bool DefaultUseLegacyCertificateUsagePolicy = false;
-
         const bool DefaultDisableOperationContextAsyncFlow = true;
+        const bool DefaultDeferSslStreamServerCertificateCleanup = false;
 
         static bool useLegacyCertificateUsagePolicy;
         static bool httpTransportPerFactoryConnectionPool;
@@ -33,6 +34,7 @@ namespace System.ServiceModel
         static bool useConfiguredTransportSecurityHeaderLayout;
         static bool useBestMatchNamedPipeUri;
         static bool disableOperationContextAsyncFlow;
+        static bool deferSslStreamServerCertificateCleanup;
         static volatile bool settingsInitalized = false;
         static object appSettingsLock = new object();
 
@@ -95,6 +97,16 @@ namespace System.ServiceModel
             }
         }
 
+        internal static bool DeferSslStreamServerCertificateCleanup
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+
+                return deferSslStreamServerCertificateCleanup;
+            }
+        }
+
         [SuppressMessage(FxCop.Category.ReliabilityBasic, "Reliability104:CaughtAndHandledExceptionsRule",
             Justification = "Handle the configuration exceptions here to avoid regressions on customer's existing scenarios")]
         static void EnsureSettingsLoaded()
@@ -143,6 +155,11 @@ namespace System.ServiceModel
                             if ((appSettingsSection == null) || !bool.TryParse(appSettingsSection[UseBestMatchNamedPipeUriString], out useBestMatchNamedPipeUri))
                             {
                                 useBestMatchNamedPipeUri = DefaultUseBestMatchNamedPipeUri;
+                            }
+
+                            if ((appSettingsSection == null) || !bool.TryParse(appSettingsSection[DeferSslStreamServerCertificateCleanupString], out deferSslStreamServerCertificateCleanup))
+                            {
+                                deferSslStreamServerCertificateCleanup = DefaultDeferSslStreamServerCertificateCleanup;
                             }
 
                             settingsInitalized = true;

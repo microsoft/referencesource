@@ -643,7 +643,7 @@ namespace System.Workflow.ComponentModel.Compiler
             documentWalker.FoundActivity += delegate(Walker walker, WalkerEventArgs e)
             {
                 Activity currentActivity = e.CurrentActivity;
-                if (!currentActivity.Enabled)
+                if (!currentActivity.Enabled && AppSettings.AllowXCode)
                 {
                     e.Action = WalkerAction.Skip;
                     return;

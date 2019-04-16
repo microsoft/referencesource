@@ -112,6 +112,9 @@ namespace System.Net {
 
         [DllImport(KERNEL32, ExactSpelling = true, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static unsafe extern uint CancelIoEx(CriticalHandle handle, NativeOverlapped* overlapped);
+	
+        [DllImport(KERNEL32, ExactSpelling = true, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
+        internal static unsafe extern uint CancelIoEx(SafeHandle handle, IntPtr overlapped);
 
         [SuppressMessage("Microsoft.Security", "CA2118:ReviewSuppressUnmanagedCodeSecurityUsage", Justification = "Implementation requires unmanaged code usage")]
         [DllImport(KERNEL32, ExactSpelling = true, CallingConvention = CallingConvention.StdCall, SetLastError = true)]

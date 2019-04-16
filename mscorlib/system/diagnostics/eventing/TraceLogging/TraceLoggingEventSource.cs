@@ -659,7 +659,7 @@ namespace System.Diagnostics.Tracing
                             if (m_Dispatchers != null)
                             {
                                 var eventData = (EventPayload)(eventTypes.typeInfo.GetData(data));
-                                WriteToAllListeners(eventName, ref descriptor, nameInfo.tags, pActivityId, eventData);
+                                WriteToAllListeners(eventName, ref descriptor, nameInfo.tags, pActivityId, pRelatedActivityId, eventData);
                             }
 
                         }
@@ -687,10 +687,11 @@ namespace System.Diagnostics.Tracing
         }
 
         [SecurityCritical]
-        private unsafe void WriteToAllListeners(string eventName, ref EventDescriptor eventDescriptor, EventTags tags, Guid* pActivityId, EventPayload payload)
+        private unsafe void WriteToAllListeners(string eventName, ref EventDescriptor eventDescriptor, EventTags tags, Guid* pActivityId, Guid* pChildActivityId, EventPayload payload)
         {
             EventWrittenEventArgs eventCallbackArgs = new EventWrittenEventArgs(this);
             eventCallbackArgs.EventName = eventName;
+            eventCallbackArgs.m_level = (EventLevel) eventDescriptor.Level;
             eventCallbackArgs.m_keywords = (EventKeywords) eventDescriptor.Keywords;
             eventCallbackArgs.m_opcode = (EventOpcode) eventDescriptor.Opcode;
             eventCallbackArgs.m_tags = tags;
@@ -698,7 +699,9 @@ namespace System.Diagnostics.Tracing
             // Self described events do not have an id attached. We mark it internally with -1.
             eventCallbackArgs.EventId = -1;
             if (pActivityId != null)
-                eventCallbackArgs.RelatedActivityId = *pActivityId;
+                eventCallbackArgs.ActivityId = *pActivityId;
+            if (pChildActivityId != null)
+                eventCallbackArgs.RelatedActivityId = *pChildActivityId;
 
             if (payload != null)
             {

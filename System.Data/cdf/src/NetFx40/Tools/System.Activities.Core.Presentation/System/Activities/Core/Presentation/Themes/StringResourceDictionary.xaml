@@ -1,0 +1,70 @@
+﻿<ResourceDictionary x:Uid="ResourceDictionary_1" x:Class="System.Activities.Core.Presentation.Themes.StringResourceDictionary"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <sys:String x:Uid="sys:String_4" x:Key="displayNameLabel">Display name</sys:String>
+    <sys:String x:Uid="sys:String_33" x:Key="bindingLabel">Binding</sys:String>
+    <sys:String x:Uid="sys:String_34" x:Key="createEndpointHint">Please create an endpoint first</sys:String>
+    <sys:String x:Uid="sys:String_42" x:Key="dropActivityHint">Drop activity here</sys:String>
+    <sys:String x:Uid="sys:String_159" x:Key="dropActionActivityHint">Drop Action activity here</sys:String>
+    <sys:String x:Uid="sys:String_160" x:Key="dropTriggerActivityHint">Drop Trigger activity here</sys:String>
+    <sys:String x:Uid="sys:String_45" x:Key="storedProcedureCommandTitle">Stored procedure</sys:String>
+    <sys:String x:Uid="sys:String_46" x:Key="textCommandTitle">Text</sys:String>
+    <sys:String x:Uid="sys:String_47" x:Key="tableDirectCommandTitle">Table direct</sys:String>
+    <sys:String x:Uid="sys:String_49" x:Key="MessagingActivityTitle">Messaging Activity</sys:String>
+    <sys:String x:Uid="sys:String_92" x:Key="sendActivityCreateReplyErrorLabel">Source 'Send' activity element not found.</sys:String>
+    <sys:String x:Uid="sys:String_93" x:Key="receiveActivityCreateReplyErrorLabel">Source 'Reply' activity element not found.</sys:String>
+    <sys:String x:Uid="sys:String_94" x:Key="editReceiveContent">Edit Receive Content</sys:String>
+    <sys:String x:Uid="sys:String_95" x:Key="editSendContent">Edit Send Content</sys:String>
+    <sys:String x:Uid="sys:String_96" x:Key="editHttpUriBuilder">Edit Http UriBuilder</sys:String>
+
+    <sys:String x:Uid="sys:String_122" x:Key="correlationsCategoryLabel">Correlations</sys:String>
+    <sys:String x:Uid="sys:String_123" x:Key="endpointCategoryLabel">Endpoint</sys:String>
+    <sys:String x:Uid="sys:String_124" x:Key="miscellaneousCategoryLabel">Misc</sys:String>
+    <sys:String x:Uid="sys:String_125" x:Key="advancedCategoryLabel">More...</sys:String>
+    <sys:String x:Uid="sys:String_126" x:Key="collectionPropertyLabel">(Collection)</sys:String>
+
+    <sys:String x:Uid="sys:String_127" x:Key="bindingEditorEmptyBindingLabel">Undefined binding</sys:String>
+
+    <sys:String x:Uid="sys:String_129" x:Key="variableDisplayNameLabel">Name</sys:String>
+    <sys:String x:Uid="sys:String_130" x:Key="variableTypeLabel">Type</sys:String>
+    <sys:String x:Uid="sys:String_131" x:Key="variableDefaultExpressionLabel">Default value</sys:String>
+
+    <sys:String x:Uid="sys:String_133" x:Key="schemaPropertyNameLabel">Name</sys:String>
+    <sys:String x:Uid="sys:String_134" x:Key="schemaPropertyTypeLabel">Property type</sys:String>
+
+    <sys:String x:Uid="sys:String_135" x:Key="createReceiveReplyCommandLabel">Create R_eceiveReply</sys:String>
+    <sys:String x:Uid="sys:String_136" x:Key="createReceiveReplyCommandHint">Creates a ReceiveReply activity and puts it on the canvas (for Sequence or Flowchart) or copies it to the clipboard</sys:String>
+    <sys:String x:Uid="sys:String_137" x:Key="createSendReplyCommandLabel">Create S_endReply</sys:String>
+    <sys:String x:Uid="sys:String_138" x:Key="createSendReplyCommandHint">Creates a SendReply activity and puts it on the canvas (for Sequence or Flowchart) or copies it to the clipboard</sys:String>
+
+    <sys:String x:Uid="sys:String_140" x:Key="messagingValueHint">Expression to bind</sys:String>
+    <sys:String x:Uid="sys:String_141" x:Key="messagingCorrelatesWithHint">Correlation handle</sys:String>
+    <sys:String x:Uid="correlationData" x:Key="messagingCorrelationDataHint">Initialize new Dictionary(Of String, String)</sys:String>
+    <sys:String x:Uid="sys:String_142" x:Key="messagingEndpointAddressHint">Enter Uri</sys:String>
+
+    <sys:String x:Uid="sys:String_143" x:Key="BranchHint">Drop branch here</sys:String>
+    <sys:String x:Uid="sys:String_144" x:Key="CatchHint">Drop catch here</sys:String>
+
+    <sys:String x:Uid="sys:String_151" x:Key="InvokeMethodParameterEditing">Edit InvokeMethod Parameters</sys:String>
+    <sys:String x:Uid="sys:String_152" x:Key="addNewParameterHint">Add new parameter</sys:String>
+
+    <sys:String x:Uid="sys:String_153" x:Key="serverCategoryLabel">Server</sys:String>
+    <sys:String x:Uid="sys:String_154" x:Key="addressCategoryLabel">Addresses</sys:String>
+    <sys:String x:Uid="sys:String_155" x:Key="contentCategoryLabel">Content</sys:String>
+    <sys:String x:Uid="sys:String_156" x:Key="deliveryCategoryLabel">DeliveryMethod</sys:String>
+    <sys:String x:Uid="sys:String_157" x:Key="securityCategoryLabel">Security</sys:String>
+    
+    <sys:String x:Uid="sys:String_161" x:Key="connectionCategoryLabel">Connection</sys:String>
+    <sys:String x:Uid="sys:String_162" x:Key="commandCategoryLabel">Command</sys:String>
+    <sys:String x:Uid="sys:String_163" x:Key="resultCategoryLabel">Result</sys:String>
+
+    <sys:String x:Uid="sys:String_158" x:Key="exampleLabel">Example:</sys:String>
+    <sys:String x:Uid="sys:String_164" x:Key="availableStateLabel">Available states to connect:</sys:String>
+    <sys:String x:Uid="sys:String_165" x:Key="addTransitionLabel">Add shared trigger transition</sys:String>
+    <sys:String x:Uid="sys:String_166" x:Key="addCaseLabel">Add new case</sys:String>
+
+    <sys:String x:Uid="activityFactoryWrongTarget" x:Key="activityFactoryWrongTarget">Input parameter is not assignamble from WorkflowViewElement</sys:String>
+</ResourceDictionary>

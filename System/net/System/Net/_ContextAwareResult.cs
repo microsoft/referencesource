@@ -146,7 +146,6 @@ namespace System.Net {
         {
             get
             {
-                GlobalLog.Assert(!InternalPeekCompleted || (_Flags & StateFlags.ThreadSafeContextCopy) != 0, "ContextAwareResult#{0}::ContextCopy|Called on completed result.", ValidationHelper.HashString(this));
                 if (InternalPeekCompleted)
                 {
                     throw new InvalidOperationException(SR.GetString(SR.net_completed_result));
@@ -169,7 +168,6 @@ namespace System.Net {
                     lock (_Lock) { }
                 }
 
-                GlobalLog.Assert(!InternalPeekCompleted || (_Flags & StateFlags.ThreadSafeContextCopy) != 0, "ContextAwareResult#{0}::ContextCopy|Result became completed during call.", ValidationHelper.HashString(this));
                 if (InternalPeekCompleted)
                 {
                     throw new InvalidOperationException(SR.GetString(SR.net_completed_result));

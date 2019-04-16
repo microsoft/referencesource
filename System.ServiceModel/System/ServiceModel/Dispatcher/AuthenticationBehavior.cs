@@ -34,6 +34,13 @@ namespace System.ServiceModel.Dispatcher
         {
             SecurityMessageProperty security = SecurityMessageProperty.GetOrCreate(rpc.Request);
             ReadOnlyCollection<IAuthorizationPolicy> authPolicy = security.ServiceSecurityContext.AuthorizationPolicies;
+            bool outputTiming = DS.AuthenticationIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = Stopwatch.StartNew();
+            }
+
             try
             {
                 authPolicy = this.serviceAuthenticationManager.Authenticate(security.ServiceSecurityContext.AuthorizationPolicies, rpc.Channel.ListenUri, ref rpc.Request);
@@ -41,12 +48,22 @@ namespace System.ServiceModel.Dispatcher
                 {
                     throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidOperationException(SR.GetString(SR.AuthenticationManagerShouldNotReturnNull)));
                 }
+
+                if (outputTiming)
+                {
+                    DS.Authentication(this.serviceAuthenticationManager.GetType(), true, sw.Elapsed);
+                }
             }
             catch (Exception ex)
             {
                 if (Fx.IsFatal(ex))
                 {
                     throw;
+                }
+
+                if (outputTiming)
+                {
+                    DS.Authentication(this.serviceAuthenticationManager.GetType(), false, sw.Elapsed);
                 }
 
                 if (PerformanceCounters.PerformanceCountersEnabled)

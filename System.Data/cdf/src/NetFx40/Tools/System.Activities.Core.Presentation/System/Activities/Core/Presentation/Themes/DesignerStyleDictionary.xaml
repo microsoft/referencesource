@@ -1,0 +1,178 @@
+﻿<ResourceDictionary x:Uid="ResourceDictionary_1" 
+    x:Class="System.Activities.Core.Presentation.Themes.DesignerStylesDictionary" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sacd="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:sas="clr-namespace:System.Activities.Statements;assembly=System.Activities"
+    xmlns:ssmad="clr-namespace:System.ServiceModel.Activities.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=System"
+    xmlns:sys_core="clr-namespace:System;assembly=mscorlib">
+
+    <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_5" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/StringResourceDictionary.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+
+    <LinearGradientBrush x:Uid="LinearGradientBrush_1" x:Key="ArrowBackgroundBrush" StartPoint="0.386829,0.470066" EndPoint="0.599222,0.470066">
+        <LinearGradientBrush.GradientStops>
+            <GradientStop x:Uid="GradientStop_1" Color="#FF9AE5FD" Offset="0.0366492"/>
+            <GradientStop x:Uid="GradientStop_2" Color="#FF3DBCE7" Offset="0.958115"/>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <Style x:Uid="Style_1" TargetType="{x:Type TextBlock}" x:Key="expanderHeader">
+        <Setter x:Uid="Setter_1" Property="FontWeight" Value="Bold"/>
+    </Style>
+    <Style x:Uid="Style_2" TargetType="{x:Type TextBlock}" x:Key="header">
+        <Setter x:Uid="Setter_2" Property="Margin" Value="10,4,4,4"/>
+        <Setter x:Uid="Setter_3" Property="FontWeight" Value="Bold"/>
+    </Style>
+
+    <Style x:Uid="Style_3" TargetType="{x:Type TextBlock}" x:Key="subHeader">
+        <Setter x:Uid="Setter_4" Property="Margin" Value="15,4,4,4"/>
+    </Style>
+
+    <Style x:Uid="Style_4" TargetType="{x:Type TextBlock}" x:Key="subHeaderContent">
+        <Setter x:Uid="Setter_5" Property="Margin" Value="20,4,4,4"/>
+    </Style>
+    <ControlTemplate x:Uid="ControlTemplate_1" x:Key="ResizeGripDefaultTemplate" TargetType="{x:Type Control}">
+        <Rectangle x:Uid="Rectangle_1" Width="11" Height="11" Fill="{Binding Path=Icon, RelativeSource={RelativeSource TemplatedParent}}"/>
+    </ControlTemplate>
+
+    <DrawingBrush x:Uid="DrawingBrush_1" x:Key="ArrowEndPoint" Stretch="Uniform">
+        <DrawingBrush.Drawing>
+            <DrawingGroup x:Uid="DrawingGroup_1">
+                <DrawingGroup.Children>
+                    <!--<GeometryDrawing Brush="#FFBBBBBB" Geometry="F1 M 13.0878,7.64737C 16.2692,7.64737 18.8483,10.2264 18.8483,13.4079C 18.8483,16.5893 16.2692,19.1684 13.0878,19.1684C 9.90633,19.1684 7.32728,16.5893 7.32728,13.4079C 7.32728,10.2264 9.90633,7.64737 13.0878,7.64737 Z "/>-->
+                    <GeometryDrawing x:Uid="GeometryDrawing_1" Brush="#FFAAAAAA" Geometry="F1 M 15.5906,13.408L 11.0368,11.1311L 11.0368,15.6849L 15.5906,13.408 Z "/>
+                </DrawingGroup.Children>
+            </DrawingGroup>
+        </DrawingBrush.Drawing>
+    </DrawingBrush>
+    
+    <ControlTemplate x:Uid="ControlTemplate_2" x:Key="DownArrowButtonTemplate" TargetType="{x:Type Button}">
+        <Border x:Uid="Border_1" x:Name="border" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" CornerRadius="2" Margin="1">
+            <Rectangle x:Uid="Rectangle_2" x:Name="arrow" Margin="1" >
+                <Rectangle.Fill>
+                    <DrawingBrush x:Uid="DrawingBrush_4" Stretch="Uniform">
+                        <DrawingBrush.Drawing>
+                            <DrawingGroup x:Uid="DrawingGroup_4">
+                                <DrawingGroup.Children>
+                                    <GeometryDrawing x:Uid="GeometryDrawing_2" Brush="{StaticResource ArrowBackgroundBrush}"
+                                                     Geometry="F1 M 1.58468,3.20002L 0.634746,1.91782L 1.36135,1.91783L 1.36135,1.81198e-005L 1.84646,1.81198e-005L 1.84646,1.91786L 2.56514,1.91793L 1.58468,3.20002 Z " />
+                                </DrawingGroup.Children>
+                            </DrawingGroup>
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger x:Uid="Trigger_1" Property="IsMouseOver" Value="True">
+                <Setter x:Uid="Setter_8" Property="BorderBrush" TargetName="border" Value="{DynamicResource WorkflowViewElementBorderBrush}"/>
+            </Trigger>
+            <Trigger x:Uid="Trigger_3" Property="IsEnabled" Value="False">
+                <Setter x:Uid="Setter_10" TargetName="arrow" Property="Fill">
+                    <Setter.Value>
+                        <DrawingBrush x:Uid="DrawingBrush_8" Stretch="Uniform">
+                            <DrawingBrush.Drawing>
+                                <DrawingGroup x:Uid="DrawingGroup_8">
+                                    <DrawingGroup.Children>
+                                        <GeometryDrawing x:Uid="GeometryDrawing_4" Brush="#FFA8A8A8" 
+                                                         Geometry="F1 M 1.58468,3.20002L 0.634746,1.91782L 1.36135,1.91783L 1.36135,1.81198e-005L 1.84646,1.81198e-005L 1.84646,1.91786L 2.56514,1.91793L 1.58468,3.20002 Z " />
+                                    </DrawingGroup.Children>
+                                </DrawingGroup>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+
+    <ControlTemplate x:Uid="ControlTemplate_3" x:Key="UpArrowButtonTemplate" TargetType="{x:Type Button}">
+        <Border x:Uid="Border_2" x:Name="border" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" CornerRadius="2" Margin="1">
+            <Rectangle x:Uid="Rectangle_3" x:Name="arrow" Margin="1">
+                <Rectangle.Fill>
+                    <DrawingBrush x:Uid="DrawingBrush_7" Stretch="Uniform">
+                        <DrawingBrush.Drawing>
+                            <DrawingGroup x:Uid="DrawingGroup_7">
+                                <DrawingGroup.Children>
+                                    <GeometryDrawing x:Uid="GeometryDrawing_3" Brush="{StaticResource ArrowBackgroundBrush}"
+                                                     Geometry="F1 M 1.62314,0.00830603L 2.5652,1.29054L 1.84646,1.29049L 1.84647,3.20831L 1.36135,3.20831L 1.36135,1.29046L 0.639805,1.29041L 1.62314,0.00830603 Z " />
+                                </DrawingGroup.Children>
+                            </DrawingGroup>
+                        </DrawingBrush.Drawing>
+                    </DrawingBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger x:Uid="Trigger_2" Property="IsMouseOver" Value="True">
+                <Setter x:Uid="Setter_9" Property="BorderBrush" TargetName="border" Value="{DynamicResource WorkflowViewElementBorderBrush}"/>
+            </Trigger>
+            <Trigger x:Uid="Trigger_4" Property="IsEnabled" Value="False">
+                <Setter x:Uid="Setter_11" TargetName="arrow" Property="Fill">
+                    <Setter.Value>
+                        <DrawingBrush x:Uid="DrawingBrush_9" Stretch="Uniform">
+                            <DrawingBrush.Drawing>
+                                <DrawingGroup x:Uid="DrawingGroup_9">
+                                    <DrawingGroup.Children>
+                                        <GeometryDrawing x:Uid="GeometryDrawing_5" Brush="#FFA8A8A8" 
+                                                         Geometry="F1 M 1.62314,0.00830603L 2.5652,1.29054L 1.84646,1.29049L 1.84647,3.20831L 1.36135,3.20831L 1.36135,1.29046L 0.639805,1.29041L 1.62314,0.00830603 Z " />
+                                    </DrawingGroup.Children>
+                                </DrawingGroup>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <DataTemplate x:Uid="DataTemplate_6" x:Key="CollapsedActivityViewTemplate">
+        <Label x:Uid="TextBlock_6" Padding="0,0,0,0" FontStyle="Italic" Foreground="{x:Static SystemColors.GrayTextBrush}" HorizontalAlignment="Center" VerticalAlignment="Center">Double-click to view</Label>
+    </DataTemplate>
+
+    <!-- public Sequence Style -->
+    <Style x:Uid="Style_5" x:Key="SequenceStyle" TargetType="{x:Type ContentPresenter}">
+        <Setter x:Uid="Setter_6" Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate x:Uid="DataTemplate_7">
+                    <TextBlock x:Uid="CollapsedActivityViewHint" FontStyle="Italic" Foreground="{x:Static SystemColors.GrayTextBrush}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center">Double-click to view</TextBlock>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowExpanded}" Value="true">
+                <Setter x:Uid="Setter_7" Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate x:Uid="DataTemplate_8">
+                            <sad:WorkflowItemsPresenter x:Uid="sad:WorkflowItemsPresenter_1" Margin="4, 4, 4, 4" HintText="{StaticResource dropActivityHint}" AllowedItemType="{x:Type sa:Activity}" Items="{Binding Path=ModelItem.Activities}" IsDefaultContainer="True">
+                                <sad:WorkflowItemsPresenter.SpacerTemplate>
+                                    <DataTemplate x:Uid="DataTemplate_9">
+                                        <sacd:VerticalConnector x:Uid="sacd:VerticalConnector_1" AllowedItemType="{x:Type sa:Activity}" Context="{Binding Path=Context}" Focusable="True"/>
+                                    </DataTemplate>
+                                </sad:WorkflowItemsPresenter.SpacerTemplate>
+                                <sad:WorkflowItemsPresenter.ItemsPanel>
+                                    <ItemsPanelTemplate x:Uid="ItemsPanelTemplate_1">
+                                        <StackPanel x:Uid="StackPanel_1" Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </sad:WorkflowItemsPresenter.ItemsPanel>
+                            </sad:WorkflowItemsPresenter>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <!-- end of public Sequence Style -->
+
+</ResourceDictionary>

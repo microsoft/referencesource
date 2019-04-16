@@ -28,7 +28,13 @@ namespace System.Threading
     [Serializable]
     public sealed class ThreadAbortException : SystemException 
     {
-        private ThreadAbortException() 
+        /**
+         * The constructor of ThreadAbortException is made internal only because we wanted to
+         * throw it in System.Diagnostics.Debugger.NotifyOfCrossThreadDependencySlow()
+         * 
+         * See the comments in System.Diagnostics.Debugger.s_triggerThreadAbortExceptionForDebugger for more details.
+         */
+        internal ThreadAbortException() 
             : base(GetMessageFromNativeResources(ExceptionMessageKind.ThreadAbort))
         {
             SetErrorCode(__HResults.COR_E_THREADABORTED);

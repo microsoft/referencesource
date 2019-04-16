@@ -384,10 +384,17 @@ namespace System.Runtime
 
             asyncResult.endCalled = true;
 
-            if (!asyncResult.isCompleted)
+            WaitHandle waitHandle = null;
+
+            lock (asyncResult.ThisLock)
             {
-                asyncResult.AsyncWaitHandle.WaitOne();
+                if (!asyncResult.isCompleted)
+                {
+                    waitHandle = asyncResult.AsyncWaitHandle;
+                }
             }
+
+            waitHandle?.WaitOne();
 
             if (asyncResult.manualResetEvent != null)
             {

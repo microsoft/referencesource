@@ -1,0 +1,88 @@
+﻿<ContentControl x:Uid="ContentControl_1" x:Class="System.ServiceModel.Activities.Presentation.ContentCorrelationTypeExpander"
+    x:ClassModifier="internal"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"                
+    xmlns:ssad="clr-namespace:System.ServiceModel.Activities.Presentation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+  <ContentControl.Resources>
+
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="sad:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_6" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/GenericTypeParameterConverter.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+
+      <sys:String x:Uid="nonSerializable" x:Key="nonSerializable">This entry is not serializable and cannot be used for correlation</sys:String>
+      <sys:String x:Uid="noTypesToExpand" x:Key="noTypesToExpand">No types to expand</sys:String>
+
+      <ssad:TypeToTreeConverter x:Uid="ssad:TypeToTreeConverter_1" x:Key="typeToTreeConverter"/>
+      
+
+      <Style x:Uid="Style_1" x:Key="stackPanelStyle" TargetType="{x:Type StackPanel}"> 
+        <Setter x:Uid="Setter_1" Property="Orientation" Value="Horizontal"/>
+        <Setter x:Uid="Setter_2" Property="Background" Value="Transparent"/>
+        <Style.Triggers>
+          <Trigger x:Uid="Trigger_1" Property="IsMouseOver" Value="True">
+            <Setter x:Uid="Setter_3" Property="Background" Value="{StaticResource WorkflowViewElementSelectedBackground}"/>
+          </Trigger>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeViewItem}}, Mode=OneWay}" Value="True">
+            <Setter x:Uid="Setter_4" Property="Background" Value="Transparent"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+
+      <HierarchicalDataTemplate x:Uid="HierarchicalDataTemplate_1" x:Key="propertyLevelTemplate"
+        ItemsSource="{Binding Converter={StaticResource typeToTreeConverter}}">
+
+        <StackPanel x:Uid="StackPanel_1" Style="{StaticResource stackPanelStyle}">
+          <TextBlock x:Uid="TextBlock_1" Text="{Binding Path=Name}"/>
+          <TextBlock x:Uid="TextBlock_2" Text=":" FontWeight="Bold" Margin="4,0"/>
+          <TextBlock x:Uid="TextBlock_7">
+            <TextBlock.Style>
+              <Style x:Uid="Style_3" TargetType="{x:Type TextBlock}">
+                <Style.Triggers>
+                  <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=MemberType}" Value="Property">
+                    <Setter x:Uid="Setter_8" Property="Text" Value="{Binding Path=PropertyType, Converter={StaticResource TypeParameterConverter}}"/>
+                  </DataTrigger>
+                  <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=MemberType}" Value="Field">
+                    <Setter x:Uid="Setter_9" Property="Text" Value="{Binding Path=FieldType, Converter={StaticResource TypeParameterConverter}}"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+        </StackPanel>
+      </HierarchicalDataTemplate>
+      
+      <HierarchicalDataTemplate x:Uid="HierarchicalDataTemplate_2" x:Key="topLevelTemplate"
+         ItemsSource="{Binding Path=TypeToExpandSource[0], Converter={StaticResource typeToTreeConverter}}"
+         ItemTemplate="{StaticResource propertyLevelTemplate}">
+        
+        <StackPanel x:Uid="StackPanel_2" Style="{StaticResource stackPanelStyle}">
+          <TextBlock x:Uid="TextBlock_4" Text="{Binding Path=Name}" />
+          <TextBlock x:Uid="TextBlock_5" Text=":" Margin="5,0"/>
+          <TextBlock x:Uid="TextBlock_6" Text="{Binding Path=TypeToExpandSource[0], Converter={StaticResource TypeParameterConverter}}"/>
+        </StackPanel>
+      </HierarchicalDataTemplate>
+
+      <Style x:Uid="Style_2" TargetType="{x:Type TreeViewItem}">
+        <EventSetter x:Uid="EventSetter_1" Event="Loaded" Handler="OnTreeViewItemLoaded"/>
+        <EventSetter x:Uid="EventSetter_2" Event="PreviewMouseDoubleClick" Handler="OnTreeViewItemMouseAccept"/>
+        <EventSetter x:Uid="EventSetter_3" Event="KeyDown" Handler="OnTreeViewItemKeyboardAccept"/>        
+        <Setter x:Uid="Setter_5" Property="ToolTipService.ShowOnDisabled" Value="True"/>
+        <Setter x:Uid="Setter_6" Property="AutomationProperties.AutomationId" Value="{Binding Path=Name, RelativeSource={RelativeSource Self}, Mode=OneTime}"/>
+        <Setter x:Uid="Setter_7" Property="Tag" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeViewItem}}, Mode=OneTime}"/>
+      </Style>
+
+    </ResourceDictionary>
+
+  </ContentControl.Resources>
+
+  <Grid x:Uid="Grid_1">
+    <TreeView x:Uid="typeExpander" ItemTemplate="{StaticResource topLevelTemplate}" x:Name="typeExpander" BorderThickness="0" Loaded="OnTypeExpanderLoaded"/>
+    <TextBlock x:Uid="emptyContent" Text="{StaticResource noTypesToExpand}" x:Name="emptyContent" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+  </Grid>
+  
+</ContentControl>

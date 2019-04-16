@@ -16,11 +16,37 @@ namespace System.Diagnostics
     using System.Security;
     using System.Security.Permissions;
     using System.Runtime.Versioning;
+    using System.Threading;
 
     // No data, does not need to be marked with the serializable attribute
     [System.Runtime.InteropServices.ComVisible(true)]
     public sealed class Debugger
     {
+        // If an expression evaluation hits a path that calls namespace System.Diagnostics.Debugger.NotifyOfCrossThreadDependency() - the VS 
+        // debugger will abort the evaluation by calling ICorDebugEval::Abort(). Eventually, it turns into a ThreadAbortException that will 
+        // help us unwind back to the original state and make sure finally blocks are executed. However, if the thread is currently holding 
+        // a lock (acquired by the FuncEval or otherwise), the runtime will not throw the ThreadAbortException and get stuck - the debugger 
+        // will wait longer and eventually give up by not doing any clean up, just setting the context back to what it was - if we do this, 
+        // the process is pretty much toasted. 
+
+        // The change here remedies the situation (of getting stuck failing to abort in NotifyOfCrossThreadDependency() because of lock held)
+        // by giving the debugger an opportunity to force throwing the ThreadAbortException. The debugger will decide if they wanted to force
+        // throw but setting the private static field, and then the debuggee will follow its order. 
+
+        // Calling Thread.Abort() will eventually lead to this call in ThreadNative::Abort defined in vm\comsynchronizable.cpp
+        //
+        // thread->UserAbort(Thread::TAR_Thread, EEPolicy::TA_V1Compatible, INFINITE, Thread::UAC_Normal);
+        //
+        // The various parameters to the Thread::UserAbort() lead to substantial differences in behavior as we can read from threadsuspend.cpp
+        //
+        // The parameters above, in particular, will throw an uncatchable ThreadAbortException that can escape the FuncEval frame, that means
+        // it will terminate the thread, and that's not what we want.
+        //
+        // throwing a new ThreadAbortException directly will not have the uncatchable semantics, which means if there is a matching catch clause
+        // it will get caught, the catch handler, and the code that logically follows after the handler, will execute. This is not ideal, but 
+        // it is better than getting stuck in that deadlock or having the thread terminated.
+        private static bool s_triggerThreadAbortExceptionForDebugger;
+
         // This should have been a static class, but wasn't as of v3.5.  Clearly, this is
         // broken.  We'll keep this in V4 for binary compat, but marked obsolete as error
         // so migrated source code gets fixed.
@@ -136,6 +162,7 @@ namespace System.Diagnostics
         {
             CrossThreadDependencyNotification notification = new CrossThreadDependencyNotification();
             CustomNotification(notification);
+            if (s_triggerThreadAbortExceptionForDebugger) { throw new ThreadAbortException(); }
         }
 
         // Sends a notification to the debugger to indicate that execution is about to enter a path 

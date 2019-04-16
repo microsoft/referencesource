@@ -1,0 +1,45 @@
+﻿<swd:WorkflowViewElement x:Uid="swd:WorkflowViewElement_1" x:Class="System.Activities.Core.Presentation.StartSymbol"
+x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:swdm="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:swdv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2006" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+>
+  <swd:WorkflowViewElement.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </swd:WorkflowViewElement.Resources>
+
+  <ContentControl x:Uid="startIcon" x:Name="startIcon" IsTabStop="false">
+    <Border x:Uid="Border_1" Width="60" Height="75" BorderThickness="1" CornerRadius="4" Padding="4">
+        <Border.Style>
+            <Style x:Uid="Style_1" TargetType="{x:Type Border}">
+                <Setter x:Uid="Setter_1" Property="BorderBrush" Value="{DynamicResource WorkflowViewElementBorderBrush}"/>
+                <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ModelItem.IsSelection}" Value="True">
+                        <Setter x:Uid="Setter_2" Property="BorderBrush" Value="{DynamicResource WorkflowViewElementSelectedBorder}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Grid x:Uid="Grid_1" Background="{DynamicResource DesignerViewBackground}">
+                <Rectangle x:Uid="Rectangle_1" HorizontalAlignment="Center" Width="40" Height="40" Margin="0,5,0,19" Fill="{x:Static swd:WorkflowDesignerIcons+Activities.StartNode}" />
+        <TextBlock x:Uid="TextBlock_1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type swd:WorkflowViewElement}}}" Localization.Attributes="Text(Unreadable Unmodifiable)"
+                   Foreground="{DynamicResource WorkflowViewElementCaptionBrush}"
+                   FontFamily="{DynamicResource {x:Static local:FlowchartDesigner.FlowNodeCaptionFontFamily}}"
+                   FontSize="{DynamicResource {x:Static local:FlowchartDesigner.FlowNodeCaptionFontSize}}"
+                   FontStyle="{DynamicResource {x:Static local:FlowchartDesigner.FlowNodeCaptionFontStyle}}" />
+      </Grid>
+    </Border>
+
+  </ContentControl>
+
+</swd:WorkflowViewElement>

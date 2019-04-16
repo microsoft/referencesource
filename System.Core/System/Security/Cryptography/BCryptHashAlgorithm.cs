@@ -186,13 +186,20 @@ namespace System.Security.Cryptography {
                 throw new ArgumentOutOfRangeException("cbSize");
             }
 
-            byte[] hashData = new byte[cbSize];
-            Buffer.BlockCopy(array, ibStart, hashData, 0, cbSize);
+            if (cbSize == 0) {
+                return;
+            }
 
-            BCryptNative.ErrorCode error = BCryptNative.UnsafeNativeMethods.BCryptHashData(m_hashHandle,
-                                                                                           hashData,
-                                                                                           hashData.Length,
-                                                                                           0);
+            BCryptNative.ErrorCode error;
+
+            unsafe {
+                fixed (byte* dataPtr = array) {
+                    error = BCryptNative.UnsafeNativeMethods.BCryptHashData(m_hashHandle,
+                                                                            dataPtr + ibStart,
+                                                                            cbSize,
+                                                                            0);
+                }
+            }
 
             if (error != BCryptNative.ErrorCode.Success) {
                 throw new CryptographicException((int)error);

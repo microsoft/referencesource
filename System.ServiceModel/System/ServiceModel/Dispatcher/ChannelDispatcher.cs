@@ -173,6 +173,8 @@ namespace System.ServiceModel.Dispatcher
             }
         }
 
+        internal bool IsServiceThrottleReplaced { get; set; } = false;
+
         internal bool Session
         {
             get { return this.session; }

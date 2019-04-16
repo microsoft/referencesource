@@ -173,6 +173,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			// Private data members, which store properties values
 			private Axis[]					_axisArray = new Axis[4];
 			private Color					_backColor = Color.Empty;
+#if Microsoft_CONTROL
+			private bool					_backColorIsSet = false;
+#endif
 			private ChartHatchStyle			_backHatchStyle = ChartHatchStyle.None;
 			private string					_backImage = "";
 			private ChartImageWrapMode		_backImageWrapMode = ChartImageWrapMode.Tile;
@@ -711,12 +714,23 @@ namespace System.Web.UI.DataVisualization.Charting
 			{
 				get
 				{
+#if Microsoft_CONTROL
+					if (SystemInformation.HighContrast && AccessibilityImprovements.Level3 &&
+					_backColor.IsEmpty && !_backColorIsSet)
+					{
+						return SystemColors.Control;
+					}
+#endif
+
 					return _backColor;
 				}
 				set
 				{
 					_backColor = value;
-					Invalidate();
+#if Microsoft_CONTROL
+					_backColorIsSet = true;
+#endif
+				Invalidate();
 				}
 			}
 
@@ -731,9 +745,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(ChartHatchStyle.None),
 			NotifyParentPropertyAttribute(true),
             SRDescription("DescriptionAttributeBackHatchStyle"),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute),
-		#endif
+#endif
             Editor(Editors.HatchStyleEditor.Editor, Editors.HatchStyleEditor.Base)
 
 			]
@@ -786,9 +800,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(ChartImageWrapMode.Tile),
 			NotifyParentPropertyAttribute(true),
             SRDescription("DescriptionAttributeImageWrapMode"),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public ChartImageWrapMode BackImageWrapMode
 			{
@@ -814,9 +828,9 @@ namespace System.Web.UI.DataVisualization.Charting
             SRDescription("DescriptionAttributeImageTransparentColor"),
             TypeConverter(typeof(ColorConverter)),
             Editor(Editors.ChartColorEditor.Editor, Editors.ChartColorEditor.Base),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public Color BackImageTransparentColor
 			{
@@ -840,9 +854,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(ChartImageAlignmentStyle.TopLeft),
 			NotifyParentPropertyAttribute(true),
             SRDescription("DescriptionAttributeBackImageAlign"),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public ChartImageAlignmentStyle BackImageAlignment
 			{
@@ -868,9 +882,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(GradientStyle.None),
 			NotifyParentPropertyAttribute(true),
             SRDescription("DescriptionAttributeBackGradientStyle"),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute),
-		#endif
+#endif
             Editor(Editors.GradientEditor.Editor, Editors.GradientEditor.Base)
 			]		
 			public GradientStyle BackGradientStyle
@@ -898,9 +912,9 @@ namespace System.Web.UI.DataVisualization.Charting
             SRDescription("DescriptionAttributeBackSecondaryColor"),
             TypeConverter(typeof(ColorConverter)),
             Editor(Editors.ChartColorEditor.Editor, Editors.ChartColorEditor.Base),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			] 
 			public Color BackSecondaryColor
 			{
@@ -926,9 +940,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			NotifyParentPropertyAttribute(true),
             TypeConverter(typeof(ColorConverter)),
             Editor(Editors.ChartColorEditor.Editor, Editors.ChartColorEditor.Base),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public Color ShadowColor
 			{
@@ -952,9 +966,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(0),
             SRDescription("DescriptionAttributeShadowOffset"),
 			NotifyParentPropertyAttribute(true),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public int ShadowOffset
 			{
@@ -981,9 +995,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			NotifyParentPropertyAttribute(true),
             TypeConverter(typeof(ColorConverter)),
             Editor(Editors.ChartColorEditor.Editor, Editors.ChartColorEditor.Base),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public Color BorderColor
 			{
@@ -1008,9 +1022,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(1),
             SRDescription("DescriptionAttributeBorderWidth"),
 			NotifyParentPropertyAttribute(true),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public int BorderWidth
 			{
@@ -1039,9 +1053,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(ChartDashStyle.NotSet),
             SRDescription("DescriptionAttributeBorderDashStyle"),
 			NotifyParentPropertyAttribute(true),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public ChartDashStyle BorderDashStyle
 			{
@@ -1065,9 +1079,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			Bindable(true),
 			SRDescription("DescriptionAttributeChartArea_Name"),
 			NotifyParentPropertyAttribute(true),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public override string Name
 			{
@@ -1091,9 +1105,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			DefaultValue(false),
 			SRDescription("DescriptionAttributeChartArea_EquallySizedAxesFont"),
 			NotifyParentPropertyAttribute(true),
-		#if !Microsoft_CONTROL
+#if !Microsoft_CONTROL
 		PersistenceMode(PersistenceMode.Attribute)
-		#endif
+#endif
 			]
 			public bool IsSameFontSizeForAllAxes
 			{
@@ -1109,9 +1123,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			}
 
 
-		#endregion
+#endregion
 
-            #region Constructors
+#region Constructors
             /// <summary>
 			/// ChartArea constructor.
 			/// </summary>
@@ -1128,9 +1142,9 @@ namespace System.Web.UI.DataVisualization.Charting
             {
                 Initialize();
             }
-            #endregion
+#endregion
 
-            #region Chart Area Methods
+#region Chart Area Methods
 			/// <summary>
 			/// Restores series order and X axis reversed mode for the 3D charts.
 			/// </summary>
@@ -1979,9 +1993,9 @@ namespace System.Web.UI.DataVisualization.Charting
 
 			}
 
-		    #endregion
+#endregion
 
-		    #region Painting and Selection Methods
+#region Painting and Selection Methods
 
 			/// <summary>
 			/// Draws chart area background and/or border.
@@ -2510,9 +2524,9 @@ namespace System.Web.UI.DataVisualization.Charting
 
         }
 
-		#endregion
+#endregion
 
-		    #region Circular chart area methods
+#region Circular chart area methods
 
         /// <summary>
         /// Gets a circular chart type interface that belongs to this chart area.
@@ -2932,9 +2946,9 @@ namespace System.Web.UI.DataVisualization.Charting
 			return (float)(position * scaleRatio + this.AxisX.Crossing);
 		}
 
-		#endregion
+#endregion
 
-            #region 2D Series drawing order methods
+#region 2D Series drawing order methods
 
             /// <summary>
             /// Helper method that returns a list of 'ChartTypeAndSeriesInfo' objects.
@@ -3089,9 +3103,9 @@ namespace System.Web.UI.DataVisualization.Charting
 
             }
 
-            #endregion // 2D Series drawing order methods
+#endregion // 2D Series drawing order methods
 
-            #region IDisposable Members
+#region IDisposable Members
 
             /// <summary>
             /// Releases unmanaged and - optionally - managed resources
@@ -3151,7 +3165,7 @@ namespace System.Web.UI.DataVisualization.Charting
             }
 
 
-            #endregion
+#endregion
 
         }
 }

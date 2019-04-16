@@ -493,7 +493,7 @@ namespace System.ServiceModel.Diagnostics
                 }
             }
 
-            if (string.IsNullOrEmpty(retval) && node.parent != null)
+            if (retval == null && node.parent != null)
             {
                 retval = LookupPrefix(ns, node.parent);
             }

@@ -2208,7 +2208,7 @@ namespace System.Workflow.Runtime.Tracking
             /// <returns></returns>
             private string BuildQualifiedNameVarName(string qId, Guid context, Guid parentContext)
             {
-                Guid hashed = HashHelper.HashServiceType(qId);
+                Guid hashed = HashHelper.HashStringToGuid(qId);
                 return hashed.ToString().Replace('-', '_') + "_" + context.ToString().Replace('-', '_') + "_" + parentContext.ToString().Replace('-', '_');
             }
 

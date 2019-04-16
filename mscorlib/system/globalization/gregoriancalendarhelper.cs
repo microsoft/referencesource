@@ -146,6 +146,9 @@ namespace System.Globalization {
         //                      Era Year = Gregorian Year - yearOffset
         // EraInfo.minEraYear:  Min year value in this era. Generally, this value is 1, but this may be affected by the DateTime.MinValue;
         // EraInfo.maxEraYear:  Max year value in this era. (== the year length of the era + 1)
+
+        // Returns the year offset that convert the year to Gregorian (i.e. Gregorian Year = Era Year + yearOffset)
+        // Returns negative number if failed.
         private int GetYearOffset(int year, int era, bool throwOnError)
         {
             if (year < 0)

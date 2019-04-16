@@ -971,6 +971,10 @@ namespace System.ServiceModel.Dispatcher
 
                 if (!this.TryAcquireCallThrottle(request))
                 {
+                    if (DS.ServiceThrottleIsEnabled())
+                    {
+                        DS.CallThrottleWaiting(request.RequestMessage);
+                    }
                     // this.ThrottleAcquiredForCall will be called to continue
                     return false;
                 }
@@ -1771,6 +1775,11 @@ namespace System.ServiceModel.Dispatcher
         internal void ThrottleAcquiredForCall()
         {
             RequestContext request = this.requestWaitingForThrottle;
+            if (DS.ServiceThrottleIsEnabled())
+            {
+                DS.CallThrottleAcquired(request.RequestMessage);
+            }
+
             this.requestWaitingForThrottle = null;
             if (this.requestInfo.ChannelHandlerOwnsCallThrottle)
             {
@@ -1920,6 +1929,11 @@ namespace System.ServiceModel.Dispatcher
         internal void ThrottleAcquired()
         {
             RequestContext request = this.requestWaitingForThrottle;
+            if (DS.ServiceThrottleIsEnabled())
+            {
+                DS.InstanceThrottleAcquired(request.RequestMessage);
+            }
+
             this.requestWaitingForThrottle = null;
             if (this.requestInfo.ChannelHandlerOwnsInstanceContextThrottle)
             {
@@ -1947,6 +1961,11 @@ namespace System.ServiceModel.Dispatcher
                 }
                 else
                 {
+                    if (DS.ServiceThrottleIsEnabled())
+                    {
+                        DS.InstanceThrottleWaiting(request.RequestMessage);
+                    }
+
                     return false;
                 }
             }

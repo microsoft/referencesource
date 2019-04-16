@@ -7,6 +7,7 @@
 namespace System.Configuration
 {
     using System.Configuration.Internal;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Xml;
     using System.Security.Permissions;
@@ -43,6 +44,7 @@ namespace System.Configuration
             get { return _filename; } 
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3054:DoNotAllowDtdOnXmlTextReader", Justification="Reading trusted input")]
         public override void Load(string filename) {
             _filename = filename;
             try {

@@ -6,11 +6,13 @@ namespace System.ServiceModel.Dispatcher
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Reflection;
     using System.Runtime;
     using System.Runtime.Remoting.Messaging;
     using System.ServiceModel;
     using System.ServiceModel.Channels;
+    using System.ServiceModel.Diagnostics;
     using System.ServiceModel.Diagnostics.Application;
     using System.Transactions;
 
@@ -92,11 +94,28 @@ namespace System.ServiceModel.Dispatcher
         internal void AfterReceiveReply(ref ProxyRpc rpc)
         {
             int offset = this.MessageInspectorCorrelationOffset;
+            bool outputTiming = DS.MessageInspectorIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = new Stopwatch();
+            }
+
             try
             {
                 for (int i = 0; i < this.messageInspectors.Length; i++)
                 {
+                    if (outputTiming)
+                    {
+                        sw.Restart();
+                    }
+
                     this.messageInspectors[i].AfterReceiveReply(ref rpc.Reply, rpc.Correlation[offset + i]);
+                    if (outputTiming)
+                    {
+                        DS.ClientMessageInspectorAfterReceive(this.messageInspectors[i].GetType(), sw.Elapsed);
+                    }
+
                     if (TD.ClientMessageInspectorAfterReceiveInvokedIsEnabled())
                     {
                         TD.ClientMessageInspectorAfterReceiveInvoked(rpc.EventTraceActivity, this.messageInspectors[i].GetType().FullName);
@@ -122,9 +141,26 @@ namespace System.ServiceModel.Dispatcher
             int offset = this.MessageInspectorCorrelationOffset;
             try
             {
+                bool outputTiming = DS.MessageInspectorIsEnabled();
+                Stopwatch sw = null;
+                if (outputTiming)
+                {
+                    sw = new Stopwatch();
+                }
+
                 for (int i = 0; i < this.messageInspectors.Length; i++)
                 {
+                    if (outputTiming)
+                    {
+                        sw.Restart();
+                    }
+
                     rpc.Correlation[offset + i] = this.messageInspectors[i].BeforeSendRequest(ref rpc.Request, (IClientChannel)rpc.Channel.Proxy);
+                    if (outputTiming)
+                    {
+                        DS.ClientMessageInspectorBeforeSend(this.messageInspectors[i].GetType(), sw.Elapsed);
+                    }
+
                     if (TD.ClientMessageInspectorBeforeSendInvokedIsEnabled())
                     {
                         TD.ClientMessageInspectorBeforeSendInvoked(rpc.EventTraceActivity, this.messageInspectors[i].GetType().FullName);
@@ -217,7 +253,21 @@ namespace System.ServiceModel.Dispatcher
                     args = null;
                     canCacheResult = true;
                 }
+
+                bool outputTiming = DS.OperationSelectorIsEnabled();
+                Stopwatch sw = null;
+                if (outputTiming)
+                {
+                    sw = Stopwatch.StartNew();
+                }
+
                 string operationName = operationSelector.SelectOperation(methodBase, args);
+
+                if (outputTiming)
+                {
+                    DS.ClientSelectOperation(operationSelector.GetType(), operationName, sw.Elapsed);
+                }
+
                 ProxyOperationRuntime operation;
                 if ((operationName != null) && this.operations.TryGetValue(operationName, out operation))
                 {

@@ -273,7 +273,19 @@ namespace System.ServiceModel.Dispatcher
                                 TD.DispatchFormatterDeserializeRequestStart(rpc.EventTraceActivity);
                             }
 
+                            bool outputTiming = DS.MessageFormatterIsEnabled();
+                            Stopwatch sw = null;
+                            if (outputTiming)
+                            {
+                                sw = Stopwatch.StartNew();
+                            }
+
                             this.Formatter.DeserializeRequest(rpc.Request, rpc.InputParameters);
+
+                            if (outputTiming)
+                            {
+                                DS.DispatchMessageFormatterDeserialize(this.Formatter.GetType(), sw.Elapsed);
+                            }
 
                             if (TD.DispatchFormatterDeserializeRequestStopIsEnabled())
                             {
@@ -386,14 +398,30 @@ namespace System.ServiceModel.Dispatcher
         void InspectInputsCore(ref MessageRpc rpc)
         {
             int offset = this.Parent.ParameterInspectorCorrelationOffset;
+            bool outputTiming = DS.ParameterInspectorIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = new Stopwatch();
+            }
 
             for (int i = 0; i < this.ParameterInspectors.Length; i++)
             {
                 IParameterInspector inspector = this.ParameterInspectors[i];
+                if (outputTiming)
+                {
+                    sw.Restart();
+                }
+
                 rpc.Correlation[offset + i] = inspector.BeforeCall(this.Name, rpc.InputParameters);
+                if (outputTiming)
+                {
+                    DS.ParameterInspectorBefore(inspector.GetType(), sw.Elapsed);
+                }
+
                 if (TD.ParameterInspectorBeforeCallInvokedIsEnabled())
                 {
-                    TD.ParameterInspectorBeforeCallInvoked(rpc.EventTraceActivity, this.ParameterInspectors[i].GetType().FullName);
+                    TD.ParameterInspectorBeforeCallInvoked(rpc.EventTraceActivity, inspector.GetType().FullName);
                 }
             }
         }
@@ -409,14 +437,30 @@ namespace System.ServiceModel.Dispatcher
         void InspectOutputsCore(ref MessageRpc rpc)
         {
             int offset = this.Parent.ParameterInspectorCorrelationOffset;
+            bool outputTiming = DS.ParameterInspectorIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = new Stopwatch();
+            }
 
             for (int i = this.ParameterInspectors.Length - 1; i >= 0; i--)
             {
                 IParameterInspector inspector = this.ParameterInspectors[i];
+                if (outputTiming)
+                {
+                    sw.Restart();
+                }
+
                 inspector.AfterCall(this.Name, rpc.OutputParameters, rpc.ReturnParameter, rpc.Correlation[offset + i]);
+                if (outputTiming)
+                {
+                    DS.ParameterInspectorAfter(inspector.GetType(), sw.Elapsed);
+                }
+
                 if (TD.ParameterInspectorAfterCallInvokedIsEnabled())
                 {
-                    TD.ParameterInspectorAfterCallInvoked(rpc.EventTraceActivity, this.ParameterInspectors[i].GetType().FullName);
+                    TD.ParameterInspectorAfterCallInvoked(rpc.EventTraceActivity, inspector.GetType().FullName);
                 }
             }
         }
@@ -456,6 +500,11 @@ namespace System.ServiceModel.Dispatcher
                             this.parent.SecurityImpersonation.StartImpersonation(ref rpc, out impersonationContext, out originalPrincipal, out isThreadPrincipalSet);
                         }
                         IManualConcurrencyOperationInvoker manualInvoker = this.Invoker as IManualConcurrencyOperationInvoker;
+
+                        if (DS.OperationInvokerIsEnabled())
+                        {
+                            DS.InvokeOperationStart(this.Invoker.GetType(), Stopwatch.GetTimestamp());
+                        }
 
                         if (this.isSynchronous)
                         {
@@ -533,6 +582,11 @@ namespace System.ServiceModel.Dispatcher
                             {
                                 DiagnosticUtility.FailFast(message);
                             }
+                        }
+
+                        if (this.isSynchronous && DS.OperationInvokerIsEnabled())
+                        {
+                            DS.InvokeOperationStop(Stopwatch.GetTimestamp());
                         }
                     }
 
@@ -669,6 +723,11 @@ namespace System.ServiceModel.Dispatcher
                                 DiagnosticUtility.FailFast(message);
                             }
                         }
+
+                        if (DS.OperationInvokerIsEnabled())
+                        {
+                            DS.InvokeOperationStop(Stopwatch.GetTimestamp());
+                        }
                     }
 
                     this.InspectOutputs(ref rpc);
@@ -697,8 +756,20 @@ namespace System.ServiceModel.Dispatcher
                         {
                             TD.DispatchFormatterSerializeReplyStart(rpc.EventTraceActivity);
                         }
-                        
+
+                        bool outputTiming = DS.MessageFormatterIsEnabled();
+                        Stopwatch sw = null;
+                        if (outputTiming)
+                        {
+                            sw = Stopwatch.StartNew();
+                        }
+
                         reply = this.Formatter.SerializeReply(rpc.RequestVersion, rpc.OutputParameters, rpc.ReturnParameter);
+
+                        if (outputTiming)
+                        {
+                            DS.DispatchMessageFormatterSerialize(this.Formatter.GetType(), sw.Elapsed);
+                        }
                         
                         if (TD.DispatchFormatterSerializeReplyStopIsEnabled())
                         {

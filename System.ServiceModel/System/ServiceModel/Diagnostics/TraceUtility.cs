@@ -355,6 +355,7 @@ namespace System.ServiceModel.Diagnostics
             { TraceCode.MetadataExchangeClientSendRequest, "MetadataExchangeClientSendRequest" },
             { TraceCode.MetadataExchangeClientReceiveReply, "MetadataExchangeClientReceiveReply" },
             { TraceCode.WarnHelpPageEnabledNoBaseAddress, "WarnHelpPageEnabledNoBaseAddress" },
+            { TraceCode.WarnServiceHealthEnabledNoBaseAddress, "WarnServiceHealthEnabledNoBaseAddress" },
             
             // PortSharingtrace codes (TraceCode.PortSharing)
             { TraceCode.PortSharingClosed, "PortSharingClosed" },

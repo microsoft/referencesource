@@ -1,0 +1,69 @@
+﻿<sad:ActivityDesigner x:Uid="sad:WorkflowElementDesigner_1" x:Class="System.Activities.Core.Presentation.PickDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sas="clr-namespace:System.Activities.Statements;assembly=System.Activities"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.Pick}"
+    x:ClassModifier="internal">
+
+  <sad:ActivityDesigner.CommandBindings>
+    <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static local:PickDesigner.CreateBranchCommand}" Executed="OnCreateBranchCommandExecute"/>
+  </sad:ActivityDesigner.CommandBindings>
+
+  <sad:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <DataTemplate x:Uid="DataTemplate_1" x:Key="ExpandedPickTemplate">
+        <StackPanel x:Uid="StackPanel_1">
+          <sad:WorkflowItemsPresenter x:Uid="sad:WorkflowItemsPresenter_1" Margin="10,5,10,5" AllowedItemType="{x:Type sas:PickBranch}" Items="{Binding Path=ModelItem.Branches}" IsDefaultContainer="True" Loaded="OnBranchesPresenterLoaded" Unloaded="OnBranchesPresenterUnloaded" HintText="{DynamicResource BranchHint}">
+            <sad:WorkflowItemsPresenter.SpacerTemplate>
+              <DataTemplate x:Uid="DataTemplate_2">
+                <local:ParallelSeparator x:Uid="local:ParallelSeparator_1" Height="{Binding ElementName=ItemsPanel, Path=Height}" AllowedItemType="{x:Type sas:PickBranch}"
+                       Context="{Binding Path=Context}" Focusable="True"/>
+              </DataTemplate>
+            </sad:WorkflowItemsPresenter.SpacerTemplate>
+            <sad:WorkflowItemsPresenter.ItemsPanel>
+              <ItemsPanelTemplate x:Uid="ItemsPanelTemplate_1">
+                <StackPanel x:Uid="ItemsPanel" Orientation="Horizontal" HorizontalAlignment="Center" x:Name="ItemsPanel"/>
+              </ItemsPanelTemplate>
+            </sad:WorkflowItemsPresenter.ItemsPanel>
+          </sad:WorkflowItemsPresenter>
+        </StackPanel>
+      </DataTemplate>
+      <Style x:Uid="Style_1" x:Key="PickStyle" TargetType="{x:Type ContentPresenter}">
+        <Setter x:Uid="Setter_1" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowExpanded}" Value="true">
+            <Setter x:Uid="Setter_2" Property="ContentTemplate" Value="{DynamicResource ExpandedPickTemplate}"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </sad:ActivityDesigner.Resources>
+
+  <sad:ActivityDesigner.ContextMenu>
+    <ContextMenu x:Uid="ContextMenu_1">
+      <MenuItem x:Uid="MenuItem_1" Header="{DynamicResource menuItemCreateBranch}" Command="{x:Static local:PickDesigner.CreateBranchCommand}" AutomationProperties.AutomationId="CreateBranchMenuItem">
+        <MenuItem.Style>
+          <Style x:Uid="Style_2" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource menuItemStyle}">
+            <Setter x:Uid="Setter_3" Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+              <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ShowExpanded}" Value="true">
+                <Setter x:Uid="Setter_4" Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </MenuItem.Style>
+      </MenuItem>
+    </ContextMenu>
+  </sad:ActivityDesigner.ContextMenu>
+
+  <ContentPresenter x:Uid="ContentPresenter_1" Style="{DynamicResource PickStyle}" Content="{Binding}" />
+
+</sad:ActivityDesigner>

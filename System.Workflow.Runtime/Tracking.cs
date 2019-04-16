@@ -1839,6 +1839,8 @@ namespace System.Workflow.Runtime
 
         [SuppressMessage("Microsoft.Cryptographic.Standard", "CA5350:MD5CannotBeUsed",
             Justification = "Design has been approved.  We are not using MD5 for any security or cryptography purposes but rather as a hash.")]
+        // Cannot modify this to use LocalAppContextSwitches.UseLegacyHashForSqlTrackingCacheKey because the Guids that are returned from this
+        // are used by the TrackingListenerBroker and are serialized with the cache Dictionary.
         internal static Guid HashServiceType(String serviceFullTypeName)
         {
             byte[] data;
@@ -1855,6 +1857,42 @@ namespace System.Workflow.Runtime
             {
                 MD5 md5 = new MD5CryptoServiceProvider();
                 result = md5.ComputeHash(data);
+            }
+
+            return new Guid(result);
+        }
+
+        [SuppressMessage("Microsoft.Cryptographic.Standard", "CA5350:MD5CannotBeUsed",
+            Justification = "Design has been approved.  We are not using MD5 for any security or cryptography purposes but rather as a hash.")]
+        // This is used by SqlTrackingService for its cache, but that cache is not serialized so we can move to the more secure SHA256 algorithm.
+        internal static Guid HashStringToGuid(String stringToHash)
+        {
+            byte[] data;
+            byte[] result;
+
+            UnicodeEncoding ue = new UnicodeEncoding();
+            data = ue.GetBytes(stringToHash);
+
+            if (LocalAppContextSwitches.UseLegacyHashForSqlTrackingCacheKey)
+            {
+                if (AppSettings.FIPSRequired)
+                {
+                    result = MD5PInvokeHelper.CalculateHash(data);
+                }
+                else
+                {
+                    MD5 md5 = new MD5CryptoServiceProvider();
+                    result = md5.ComputeHash(data);
+                }
+            }
+            else
+            {
+                SHA256 sha256Provider = new SHA256CryptoServiceProvider();
+                result = sha256Provider.ComputeHash(data);
+                // We need a byte[16] to create the Guid.
+                byte[] result16 = new byte[16];
+                Array.Copy(result, result16, Math.Min(result16.Length, result.Length));
+                result = result16;
             }
 
             return new Guid(result);

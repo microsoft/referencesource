@@ -758,7 +758,7 @@ namespace System.Net.Security {
                     // 3.  EncryptionPolicy doesn't allow any "No encryption" selection.
                     if (!ServicePointManager.DisableStrongCrypto
                         && ((m_ProtocolFlags == SchProtocols.Zero) ||
-                            ((m_ProtocolFlags & (SchProtocols.Tls10 | SchProtocols.Tls11 | SchProtocols.Tls12)) != 0))
+                            ((m_ProtocolFlags & (SchProtocols.Tls10 | SchProtocols.Tls11 | SchProtocols.Tls12 | SchProtocols.Tls13)) != 0))
                         && (m_EncryptionPolicy != EncryptionPolicy.AllowNoEncryption) && (m_EncryptionPolicy != EncryptionPolicy.NoEncryption))
                     {
                         flags |= SecureCredential.Flags.UseStrongCrypto;

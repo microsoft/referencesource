@@ -81,6 +81,10 @@ namespace System.Net {
         private static SslProtocols s_defaultSslProtocols;
         private static bool s_disableCertificateEKUs;
 
+        private static bool s_useHttpPipeliningAndBufferPooling;
+        private static bool s_useSafeSynchronousClose;
+        private static bool s_useStrictRfcInterimResponseHandling;
+        private static bool s_allowDangerousUnicodeDecompositions;
 #endif // !FEATURE_PAL
 
         private static volatile Hashtable s_ConfigTable = null;
@@ -262,13 +266,14 @@ namespace System.Net {
         {
             // Do not allow Ssl2 (and others) as explicit SSL version request.
             SecurityProtocolType allowed = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls
-                | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Tls13;
 
             Debug.Assert((int)SecurityProtocolType.SystemDefault == (int)SslProtocols.None);
             Debug.Assert((int)SecurityProtocolType.Ssl3 == (int)SslProtocols.Ssl3);
             Debug.Assert((int)SecurityProtocolType.Tls == (int)SslProtocols.Tls);
             Debug.Assert((int)SecurityProtocolType.Tls11 == (int)SslProtocols.Tls11);
             Debug.Assert((int)SecurityProtocolType.Tls12 == (int)SslProtocols.Tls12);
+            Debug.Assert((int)SecurityProtocolType.Tls13 == (int)SslProtocols.Tls13);
 
             if ((value & ~allowed) != 0)
             {
@@ -319,6 +324,42 @@ namespace System.Net {
             {
                 EnsureConfigurationLoaded();
                 return s_defaultSslProtocols;
+            }
+        }
+
+        internal static bool UseHttpPipeliningAndBufferPooling
+        {
+            get
+            {
+                EnsureConfigurationLoaded();
+                return s_useHttpPipeliningAndBufferPooling;
+            }
+        }
+
+        internal static bool UseSafeSynchronousClose
+        {
+            get
+            {
+                EnsureConfigurationLoaded();
+                return s_useSafeSynchronousClose;
+            }
+        }
+
+        internal static bool UseStrictRfcInterimResponseHandling
+        {
+            get
+            {
+                EnsureConfigurationLoaded();
+                return s_useStrictRfcInterimResponseHandling;
+            }
+        }
+
+        internal static bool AllowDangerousUnicodeDecompositions
+        {
+            get
+            {
+                EnsureConfigurationLoaded();
+                return s_allowDangerousUnicodeDecompositions;
             }
         }
 

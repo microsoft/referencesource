@@ -70,7 +70,7 @@ internal static class ZLibNative {
 
     #region Constants defined in zlib.h
 
-    public const string ZLibVersion = "1.2.3";        
+    public const string ZLibVersion = "1.2.11";        
 
     // This is the NULL pointer for using with ZLib pointers;
     // we prefer it to IntPtr.Zero to mimic the definition of Z_NULL in zlib.h:
@@ -180,7 +180,7 @@ internal static class ZLibNative {
 
 
     /// <summary>
-    /// In version 1.2.3, ZLib provides on the <code>Deflated</code>-<code>CompressionMethod</code>.
+    /// In version 1.2.3+, ZLib provides on the <code>Deflated</code>-<code>CompressionMethod</code>.
     /// </summary>
     public enum CompressionMethod : int {
         Deflated = 8
@@ -197,7 +197,7 @@ internal static class ZLibNative {
     /// It should be in the range 8..15 for this version of the library. Larger values of this parameter result in better compression
     /// at the expense of memory usage. The default value is 15 if deflateInit is used instead.<br />
     /// <strong>Note</strong>:
-    /// <code>windowBits</code> can also be –8..–15 for raw deflate. In this case, -windowBits determines the window size.
+    /// <code>windowBits</code> can also be â€“8..â€“15 for raw deflate. In this case, -windowBits determines the window size.
     /// <code>Deflate</code> will then generate raw deflate data with no ZLib header or trailer, and will not compute an adler32 check value.<br />
     /// <code>windowBits</code> can also be greater than 15 for optional gzip encoding. Add 16 to <code>windowBits</code> to write a simple
     /// GZip header and trailer around the compressed data instead of a ZLib wrapper. The GZip header will have no file name, no extra data,
@@ -258,37 +258,37 @@ internal static class ZLibNative {
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [SuppressUnmanagedCodeSecurity]
     [SecurityCritical]
-    private delegate ErrorCode DeflateInit2_Delegate(ref ZStream stream, CompressionLevel level, CompressionMethod method,
+    private unsafe delegate ErrorCode DeflateInit2_Delegate(ZStream* stream, CompressionLevel level, CompressionMethod method,
                                                      int windowBits, int memLevel, CompressionStrategy strategy,
                                                      [MarshalAs(UnmanagedType.LPStr)] string version, int streamSize);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [SuppressUnmanagedCodeSecurity]
     [SecurityCritical]
-    private delegate ErrorCode DeflateDelegate(ref ZStream stream, FlushCode flush);
+    private unsafe delegate ErrorCode DeflateDelegate(ZStream* stream, FlushCode flush);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [SuppressUnmanagedCodeSecurity]
     [SecurityCritical]
-    private delegate ErrorCode DeflateEndDelegate(ref ZStream stream);
+    private unsafe delegate ErrorCode DeflateEndDelegate(ZStream* stream);
 
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [SuppressUnmanagedCodeSecurity]
     [SecurityCritical]
-    private delegate ErrorCode InflateInit2_Delegate(ref ZStream stream,
+    private unsafe delegate ErrorCode InflateInit2_Delegate(ZStream* stream,
                                                      int windowBits,
                                                      [MarshalAs(UnmanagedType.LPStr)] string version, int streamSize);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [SuppressUnmanagedCodeSecurity]
     [SecurityCritical]
-    private delegate ErrorCode InflateDelegate(ref ZStream stream, FlushCode flush);
+    private unsafe delegate ErrorCode InflateDelegate(ZStream* stream, FlushCode flush);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [SuppressUnmanagedCodeSecurity]
     [SecurityCritical]
-    private delegate ErrorCode InflateEndDelegate(ref ZStream stream);
+    private unsafe delegate ErrorCode InflateEndDelegate(ZStream* stream);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     [SuppressUnmanagedCodeSecurity]
@@ -380,15 +380,15 @@ internal static class ZLibNative {
     /// The <code>ZLibStreamHandle</code> could be a <code>CriticalFinalizerObject</code> rather than a
     /// <code>SafeHandleMinusOneIsInvalid</code>. This would save an <code>IntPtr</code> field since
     /// <code>ZLibStreamHandle</code> does not actually use its <code>handle</code> field.
-    /// Instead it uses a <code>private ZStream zStream</code> field which is the actual handle data
-    /// structure requiring critical finalization.
+    /// Instead it uses a <code>private ZStream* zStreamPtr</code> field which is a pointer to the
+    /// actual handle data structure requiring critical finalization.
     /// However, we would like to take advantage if the better debugability offered by the fact that a
     /// <em>releaseHandleFailed MDA</em> is raised if the <code>ReleaseHandle</code> method returns
     /// <code>false</code>, which can for instance happen if the underlying ZLib <code>XxxxEnd</code>
     /// routines return an failure error code.
     /// </summary>
     [SecurityCritical]
-    public sealed class ZLibStreamHandle : SafeHandleMinusOneIsInvalid {
+    public sealed unsafe class ZLibStreamHandle : SafeHandleMinusOneIsInvalid {
 
 
         #region Library loading and initialisation
@@ -519,7 +519,8 @@ internal static class ZLibNative {
 
         public enum State { NotInitialized, InitializedForDeflate, InitializedForInflate, Disposed }
 
-        private ZStream zStream;
+        [SecurityCritical]
+        private ZStream* zStreamPtr;
 
         [SecurityCritical]
         private volatile State initializationState;
@@ -528,12 +529,7 @@ internal static class ZLibNative {
         public ZLibStreamHandle()
 
             : base(true) {
-
-            this.zStream = new ZStream();
-            this.zStream.zalloc = ZNullPtr;
-            this.zStream.zfree = ZNullPtr;
-            this.zStream.opaque = ZNullPtr;
-
+            zStreamPtr = (ZStream*)AllocWithZeroOut(sizeof(ZStream));
             this.initializationState = State.NotInitialized;
             this.handle = IntPtr.Zero;
         }
@@ -552,19 +548,29 @@ internal static class ZLibNative {
 #endif
         [SecurityCritical]
         protected override bool ReleaseHandle() {
-            
-            // We are in a finalizer thread at the end of the App and the finalization of the dynamically loaded ZLib happend
-            // to be scheduled first. In such case we have no hope of properly freeing zStream. If the process is dying - we
-            // do not care. In other cases somethign went badly wrong anyway:
-            if (zlibLibraryHandle == null || zlibLibraryHandle.IsInvalid)  
-                return false;
+            try
+            {
+                // We are in a finalizer thread at the end of the App and the finalization of the dynamically loaded ZLib happend
+                // to be scheduled first. In such case we have no hope of properly freeing zStream. If the process is dying - we
+                // do not care. In other cases somethign went badly wrong anyway:
+                if (zlibLibraryHandle == null || zlibLibraryHandle.IsInvalid)
+                    return false;
 
-            switch (InitializationState) {
-                case State.NotInitialized:        return true;
-                case State.InitializedForDeflate: return (DeflateEnd() == ZLibNative.ErrorCode.Ok);
-                case State.InitializedForInflate: return (InflateEnd() == ZLibNative.ErrorCode.Ok);
-                case State.Disposed:              return true;
-                default: return false;  // This should never happen. Did we forget one of the State enum values in the switch?
+                switch (InitializationState) {
+                    case State.NotInitialized:        return true;
+                    case State.InitializedForDeflate: return (DeflateEnd() == ZLibNative.ErrorCode.Ok);
+                    case State.InitializedForInflate: return (InflateEnd() == ZLibNative.ErrorCode.Ok);
+                    case State.Disposed:              return true;
+                    default: return false;  // This should never happen. Did we forget one of the State enum values in the switch?
+                }
+            }
+            finally
+            {
+                if (zStreamPtr != null)
+                {
+                    Marshal.FreeHGlobal((IntPtr)zStreamPtr);
+                    zStreamPtr = null;
+                }
             }
         }
 
@@ -573,25 +579,25 @@ internal static class ZLibNative {
 
         #region Expose fields on ZStream for use by user / Fx code (add more as required)
 
-        public IntPtr NextIn   { [SecurityCritical] get { return zStream.nextIn; }
-                                 [SecurityCritical] set { zStream.nextIn = value; } }
+        public IntPtr NextIn   { [SecurityCritical] get { return zStreamPtr->nextIn; }
+                                 [SecurityCritical] set { if (zStreamPtr != null) zStreamPtr->nextIn = value; } }
 
-        public UInt32 AvailIn  { [SecurityCritical] get { return zStream.availIn; }
-                                 [SecurityCritical] set { zStream.availIn = value; } }
+        public UInt32 AvailIn  { [SecurityCritical] get { return zStreamPtr->availIn; }
+                                 [SecurityCritical] set { if (zStreamPtr != null) zStreamPtr->availIn = value; } }
 
-        public UInt32 TotalIn  { [SecurityCritical] get { return zStream.totalIn; } }
+        public UInt32 TotalIn  { [SecurityCritical] get { return zStreamPtr->totalIn; } }
 
-        public IntPtr NextOut  { [SecurityCritical] get { return zStream.nextOut; }
-                                 [SecurityCritical] set { zStream.nextOut = value; } }
+        public IntPtr NextOut  { [SecurityCritical] get { return zStreamPtr->nextOut; }
+                                 [SecurityCritical] set { if (zStreamPtr != null) zStreamPtr->nextOut = value; } }
 
-        public UInt32 AvailOut { [SecurityCritical] get { return zStream.availOut; }
-                                 [SecurityCritical] set { zStream.availOut = value; } }
+        public UInt32 AvailOut { [SecurityCritical] get { return zStreamPtr->availOut; }
+                                 [SecurityCritical] set { if (zStreamPtr != null) zStreamPtr->availOut = value; } }
 
-        public UInt32 TotalOut { [SecurityCritical] get { return zStream.totalOut; } }
+        public UInt32 TotalOut { [SecurityCritical] get { return zStreamPtr->totalOut; } }
 
-        public Int32 DataType  { [SecurityCritical] get { return zStream.dataType; } }
+        public Int32 DataType  { [SecurityCritical] get { return zStreamPtr->dataType; } }
 
-        public UInt32 Adler    { [SecurityCritical] get { return zStream.adler; } }
+        public UInt32 Adler    { [SecurityCritical] get { return zStreamPtr->adler; } }
 
         #endregion  // Expose fields on ZStream for use by user / Fx code (add more as required)
 
@@ -630,8 +636,8 @@ internal static class ZLibNative {
 #endif
             try { } finally {
 
-                errC = NativeZLibDLLStub.deflateInit2_Delegate(ref zStream, level, CompressionMethod.Deflated, windowBits, memLevel,
-                                                               strategy, ZLibVersion, Marshal.SizeOf(zStream));
+                errC = NativeZLibDLLStub.deflateInit2_Delegate(zStreamPtr, level, CompressionMethod.Deflated, windowBits, memLevel,
+                                                               strategy, ZLibVersion, sizeof(ZStream));
                 initializationState = State.InitializedForDeflate;
                 zlibLibraryHandle.DangerousAddRef(ref addRefSuccess);
             }
@@ -648,7 +654,7 @@ internal static class ZLibNative {
             EnsureNotDisposed();
             EnsureState(State.InitializedForDeflate);
             
-            return NativeZLibDLLStub.deflateDelegate(ref zStream, flush);
+            return NativeZLibDLLStub.deflateDelegate(zStreamPtr, flush);
         }
 
 
@@ -665,7 +671,7 @@ internal static class ZLibNative {
 #endif
             try { } finally {
 
-                errC = NativeZLibDLLStub.deflateEndDelegate(ref zStream);
+                errC = NativeZLibDLLStub.deflateEndDelegate(zStreamPtr);
                 initializationState = State.Disposed;
                 zlibLibraryHandle.DangerousRelease();
             }
@@ -687,7 +693,7 @@ internal static class ZLibNative {
 #endif
             try { } finally {
 
-                errC = NativeZLibDLLStub.inflateInit2_Delegate(ref zStream, windowBits, ZLibVersion, Marshal.SizeOf(zStream));
+                errC = NativeZLibDLLStub.inflateInit2_Delegate(zStreamPtr, windowBits, ZLibVersion, sizeof(ZStream));
 
                 initializationState = State.InitializedForInflate;
                 zlibLibraryHandle.DangerousAddRef(ref addRefSuccess);
@@ -705,7 +711,7 @@ internal static class ZLibNative {
             EnsureNotDisposed();
             EnsureState(State.InitializedForInflate);
             
-            return NativeZLibDLLStub.inflateDelegate(ref zStream, flush);
+            return NativeZLibDLLStub.inflateDelegate(zStreamPtr, flush);
         }
 
 
@@ -722,7 +728,7 @@ internal static class ZLibNative {
 #endif
             try { } finally {
 
-                errC = NativeZLibDLLStub.inflateEndDelegate(ref zStream);
+                errC = NativeZLibDLLStub.inflateEndDelegate(zStreamPtr);
                 initializationState = State.Disposed;
                 zlibLibraryHandle.DangerousRelease();
             }
@@ -736,13 +742,11 @@ internal static class ZLibNative {
 
             // This can work even after XxflateEnd().
 
-            if (ZNullPtr.Equals(zStream.msg))
+            if (ZNullPtr.Equals(zStreamPtr->msg))
                 return String.Empty;
 
-            unsafe {
-                String msgStr = new String((SByte*) zStream.msg);
-                return msgStr;
-            }
+            String msgStr = new String((SByte*) zStreamPtr->msg);
+            return msgStr;
         }
 
         #endregion  // Expose ZLib functions for use by user / Fx code (add more as required)
@@ -751,6 +755,34 @@ internal static class ZLibNative {
         internal static Int32 ZLibCompileFlags() {
             
             return NativeZLibDLLStub.zlibCompileFlagsDelegate();
+        }
+
+        [SecurityCritical]
+        private static unsafe IntPtr AllocWithZeroOut(int byteCount)
+        {
+            IntPtr ptr = Marshal.AllocHGlobal(byteCount);
+
+            byte* pByte = (byte*)ptr;
+            int remaining = byteCount;
+
+            int size = remaining / sizeof(int);
+            int* pInt = (int*)pByte;
+
+            for (int i = 0; i < size; i++)
+            {
+                pInt[i] = 0;
+            }
+
+            size *= sizeof(int);
+            pByte += size;
+            remaining -= size;
+
+            for (int i = 0; i < remaining; i++)
+            {
+                pByte[i] = 0;
+            }
+
+            return ptr;
         }
 
     }  // class ZLibStreamHandle

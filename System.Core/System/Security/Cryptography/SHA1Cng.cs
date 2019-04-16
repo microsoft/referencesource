@@ -12,6 +12,7 @@ namespace System.Security.Cryptography {
     ///     Wrapper around the BCrypt implementation of the SHA-1 hashing algorithm
     /// </summary>
     [System.Security.Permissions.HostProtection(MayLeakOnAbort = true)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security.Cryptography", "CA5354:SHA1CannotBeUsed", Justification="Provides SHA-1 for applications that need it")]
     public sealed class SHA1Cng : SHA1 {
         private BCryptHashAlgorithm m_hashAlgorithm;
 

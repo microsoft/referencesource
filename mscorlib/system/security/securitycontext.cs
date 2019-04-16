@@ -31,6 +31,7 @@ namespace System.Security
     using System.Runtime.ConstrainedExecution;
     using System.Runtime.Versioning;
     using System.Diagnostics.Contracts;
+    using System.Diagnostics.CodeAnalysis;
 
     // This enum must be kept in sync with the SecurityContextSource enum in the VM
     public enum SecurityContextSource
@@ -76,6 +77,7 @@ namespace System.Security
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
+        [SuppressMessage("Microsoft.Security", "CA2153:DoNotCatchCorruptedStateExceptionsInGeneralHandlers", Justification = "Reviewed for security")]
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
         internal bool UndoNoThrow()
         {
@@ -83,8 +85,13 @@ namespace System.Security
             {
                 Undo();
             }
-            catch
+            catch (Exception ex)
             {
+                if (!AppContextSwitches.UseLegacyExecutionContextBehaviorUponUndoFailure)
+                {
+                    // Fail fast since we can't continue safely
+                    Environment.FailFast(Environment.GetResourceString("ExecutionContext_UndoFailed"), ex);
+                }
                 return false;
             }
             return true;
@@ -96,6 +103,7 @@ namespace System.Security
         [ResourceConsumption(ResourceScope.Process, ResourceScope.Process)]  // FailFast
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
+        [SuppressMessage("Microsoft.Security", "CA2153:DoNotCatchCorruptedStateExceptionsInGeneralHandlers", Justification = "Reviewed for security")]
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
         public void Undo()
         {        
@@ -439,6 +447,7 @@ namespace System.Security
         [System.Security.SecurityCritical]  // auto-generated
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
+        [SuppressMessage("Microsoft.Security", "CA2153:DoNotCatchCorruptedStateExceptionsInGeneralHandlers", Justification = "Reviewed for security")]
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
         internal static SecurityContextSwitcher SetSecurityContext(SecurityContext sc, SecurityContext.Reader prevSecurityContext, bool modifyCurrentExecutionContext, ref StackCrawlMark stackMark)
         {
@@ -482,11 +491,11 @@ namespace System.Security
 #endif
                     scsw.cssw = CompressedStack.SetCompressedStack(sc.CompressedStack, prevSecurityContext.CompressedStack);
                 }
-                catch 
+                catch
                 {
                     scsw.UndoNoThrow();
                     throw;
-                }      
+                }
             }
             return scsw;
         }

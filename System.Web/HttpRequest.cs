@@ -886,6 +886,8 @@ namespace System.Web {
                 for (j = i; j < l; j++) {
                     if (headerValue[j] == ' ' || headerValue[j] == ',')
                         break;
+                    if (!AppSettings.UseLegacyMultiValueHeaderHandling && headerValue[j] == ';')
+                        break;
                 }
 
                 if (j == i)

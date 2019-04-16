@@ -10,6 +10,7 @@ namespace System.Configuration {
     using System.Collections.Specialized;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Runtime.InteropServices;
@@ -73,6 +74,7 @@ namespace System.Configuration {
         internal XmlUtil(Stream stream, string name, bool readToFirstElement) :
             this(stream, name, readToFirstElement, new ConfigurationSchemaErrors()) {}
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3054:DoNotAllowDtdOnXmlTextReader", Justification="Reading trusted input")]
         internal XmlUtil(Stream stream, string name, bool readToFirstElement, ConfigurationSchemaErrors schemaErrors) {
             try {
                 _streamName = name;
@@ -1001,6 +1003,7 @@ namespace System.Configuration {
         //   indent          - indent for each depth
         //   skipFirstIndent - skip indent for the first element?
         //
+        [SuppressMessage("Microsoft.Security.Xml", "CA3054:DoNotAllowDtdOnXmlTextReader", Justification="Reading trusted input")]
         static internal string FormatXmlElement(string xmlElement, int linePosition, int indent, bool skipFirstIndent) {
 
             XmlParserContext context = new XmlParserContext(null, null, null, XmlSpace.Default, Encoding.Unicode);

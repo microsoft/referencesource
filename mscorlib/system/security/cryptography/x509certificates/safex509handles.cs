@@ -29,7 +29,14 @@ namespace System.Security.Cryptography.X509Certificates {
         }
 
         internal static SafeCertContextHandle InvalidHandle {
-            get { return new SafeCertContextHandle(IntPtr.Zero); }
+            get {
+                SafeCertContextHandle invalidHandle = new SafeCertContextHandle(IntPtr.Zero);
+                // There are no managed calls to replace the handle value on an instance of this type.
+                // There are some CLR internals which can do so, and the direct callers of those CLR
+                // methods should be aware of the possibility of needing to call ReRegisterForFinalize
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         internal IntPtr pCertContext {
@@ -65,7 +72,14 @@ namespace System.Security.Cryptography.X509Certificates {
         }
 
         internal static SafeCertStoreHandle InvalidHandle {
-            get { return new SafeCertStoreHandle(IntPtr.Zero); }
+            get {
+                SafeCertStoreHandle invalidHandle = new SafeCertStoreHandle(IntPtr.Zero);
+                // There are no managed calls to replace the handle value on an instance of this type.
+                // There are some CLR internals which can do so, and the direct callers of those CLR
+                // methods should be aware of the possibility of needing to call ReRegisterForFinalize
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         // This method handles the case where hCertStore == NULL

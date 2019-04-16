@@ -46,7 +46,7 @@ namespace System.ServiceModel.Dispatcher
             this.isActive = true;
         }
 
-        FlowThrottle Calls
+        internal FlowThrottle Calls
         {
             get
             {
@@ -70,7 +70,7 @@ namespace System.ServiceModel.Dispatcher
             }
         }
 
-        FlowThrottle Sessions
+        internal FlowThrottle Sessions
         {
             get
             {
@@ -94,7 +94,7 @@ namespace System.ServiceModel.Dispatcher
             }
         }
 
-        QuotaThrottle Dynamic
+        internal QuotaThrottle Dynamic
         {
             get
             {
@@ -174,7 +174,7 @@ namespace System.ServiceModel.Dispatcher
             }
         }
 
-        FlowThrottle InstanceContexts
+        internal FlowThrottle InstanceContexts
         {
             get
             {

@@ -1,0 +1,53 @@
+﻿<ComboBox x:Uid="ComboBox_1" x:Class="System.ServiceModel.Activities.Presentation.MessageQueryEditor"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swsmad="clr-namespace:System.ServiceModel.Activities.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"          
+    IsEditable="True" IsReadOnly="False"
+    SelectedValuePath="Items[0].Tag"
+    HorizontalAlignment="Left"
+    ScrollViewer.VerticalScrollBarVisibility="Hidden"
+    ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+    Width="{Binding Path=ViewportWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Mode=OneWay}"
+    AutomationProperties.AutomationId="MessageQueryEditor"
+    Loaded="OnLoaded">
+  
+  <ComboBox.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1" >
+
+      <sys:String x:Key="hint" x:Uid="hint">Select a property to create xpath</sys:String>
+      <sys:String x:Key="selectedDisplayText" x:Uid="selectedDisplayText">Properites: </sys:String>
+      <sys:String x:Key="parametersRequiredText" x:Uid="parametersRequiredText">ServiceContractName and OperationName properties of activity '{0}' must be set in order to generate XPath </sys:String>
+      <sys:String x:Key="MessageQueryEditorAutomationName" x:Uid="automation_name">Message Query Editor</sys:String>
+
+      <!-- default template for all items within this combo box -->
+      <Style x:Uid="Style_1" TargetType="{x:Type ComboBoxItem}" x:Key="comboBoxStyle">
+        <!-- restrict widht to parent -->
+        <Setter x:Uid="Setter_1" Property="MaxWidth" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ComboBox}}, Mode=OneWay}"/>
+        <Setter x:Uid="Setter_2" Property="Template">
+          <Setter.Value>
+            <!-- replace content template with ContentCorrelation type expander -->
+            <ControlTemplate x:Uid="ControlTemplate_1" TargetType="{x:Type ComboBoxItem}">
+              <!-- provide data context -->
+              <StackPanel x:Uid="StackPanel_1" DataContext="{Binding Path=Content, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ComboBoxItem}}, Mode=OneWay}">
+                <!-- display type expander tree view (all types to expand are always displayed in one tree view, there is only one combo box item -->
+                <swsmad:ContentCorrelationTypeExpander 
+                     MaxHeight="{Binding Path=MaxDropDownHeight, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type swsmad:MessageQueryEditor}}}"
+                     x:Uid="swsmad:ContentCorrelationTypeExpander_1" TypesToExpand="{Binding Path=Items, Mode=OneWay}"
+                     Tag="{Binding Path=Items[0], Mode=OneWay}"
+                     SelectionChanged="OnTypeSelectionChanged"/>
+              </StackPanel>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+      
+    </ResourceDictionary>
+  </ComboBox.Resources>
+
+  <ComboBox.ToolTip>
+    <StaticResource x:Uid="StaticResource_1" ResourceKey="hint"/>
+  </ComboBox.ToolTip>
+
+</ComboBox>

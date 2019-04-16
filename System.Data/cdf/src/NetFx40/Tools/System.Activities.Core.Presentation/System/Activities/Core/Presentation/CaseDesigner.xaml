@@ -1,0 +1,126 @@
+﻿<sad:WorkflowViewElement
+    x:Uid="caseDesigner" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:proj="clr-namespace:System.Activities.Core.Presentation"
+    x:Class="System.Activities.Core.Presentation.CaseDesigner"
+    x:Name="controlRoot" IsTabStop="True" Margin="0,0,0,3"
+    x:ClassModifier="internal"
+    >
+  <sad:WorkflowViewElement.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/WorkflowViewElementDefaultTemplate.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/StringResourceDictionary.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Uid="BooleanToVisibilityConverter_1" x:Key="BooleanToVisibilityConverter" />
+      <proj:GenericTypeArgumentConverter x:Uid="proj:GenericTypeArgumentConverter_1" x:Key="genericTypeArgumentConverter" />
+      <proj:CaseKeyBoxIsEnabledConverter x:Uid="NotConverter_1" x:Key="CaseKeyBoxIsEnabledConverter" />
+      <proj:HintTextMaxWidthConverter x:Uid="HintTextMaxWidthConverter_1" x:Key="HintTextMaxWidthConverter" />
+      <proj:HintTextConverter x:Uid="HintTextConverter_1" x:Key="HintTextConverter" />
+    </ResourceDictionary>
+  </sad:WorkflowViewElement.Resources>
+  <sad:WorkflowViewElement.CommandBindings>
+    <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static sadv:DesignerView.AddAnnotationCommand}" CanExecute="OnAddAnnotationCommandCanExecute" Executed="OnAddAnnotationCommandExecuted"/>
+    <CommandBinding x:Uid="CommandBinding_2" Command="{x:Static sadv:DesignerView.EditAnnotationCommand}" CanExecute="OnEditAnnotationCommandCanExecute" Executed="OnEditAnnotationCommandExecuted"/>
+    <CommandBinding x:Uid="CommandBinding_3" Command="{x:Static sadv:DesignerView.DeleteAnnotationCommand}" CanExecute="OnDeleteAnnotationCommandCanExecute" Executed="OnDeleteAnnotationCommandExecuted"/>
+  </sad:WorkflowViewElement.CommandBindings>
+
+      <Grid x:Uid="Grid_1" Background="Transparent">
+    <Grid.RowDefinitions>
+      <RowDefinition x:Uid="RowDefinition_1" />
+      <RowDefinition x:Uid="RowDefinition_2" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition x:Uid="ColumnDefinition_1" />
+      <ColumnDefinition x:Uid="ColumnDefinition_2" />
+    </Grid.ColumnDefinitions>
+    <Rectangle x:Uid="Rectangle_1" Grid.RowSpan="2" Grid.ColumnSpan="2">
+      <Rectangle.Style>
+        <Style x:Uid="Style_1">
+          <Setter x:Uid="Setter_1" Property="Rectangle.Fill" Value="{StaticResource DesignerViewBackground}" />
+          <Setter x:Uid="Setter_2" Property="Rectangle.Stroke" Value="{StaticResource DesignerViewBackground}" />
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ShowExpanded}" Value="true">
+              <Setter x:Uid="Setter_3" Property="Rectangle.Stroke">
+                <Setter.Value>
+                  <LinearGradientBrush x:Uid="LinearGradientBrush_1" EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                    <GradientStop x:Uid="GradientStop_1" Color="{x:Static sad:WorkflowDesignerColors.DesignerViewBackgroundColor}" Offset="0.5"/>
+                    <GradientStop x:Uid="GradientStop_2" Color="{x:Static sad:WorkflowDesignerColors.WorkflowViewElementBorderColor}" Offset="0"/>
+                  </LinearGradientBrush>
+                </Setter.Value>
+              </Setter>
+              <Setter x:Uid="Setter_4" Property="Rectangle.Margin" Value="0,-3,0,0" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Rectangle.Style>
+    </Rectangle>
+
+    <StackPanel x:Uid="StackPanel_1" Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+      <TextBlock x:Uid="TextBlock_1" Foreground="{x:Static SystemColors.GrayTextBrush}" VerticalAlignment="Center" Margin="1,3,5,0" Localization.Attributes="$Content(Unreadable Unmodifiable)">Case</TextBlock>
+      <proj:CaseKeyBox x:Uid="caseKey"
+                       x:Name="caseKey"
+                       AutomationProperties.AutomationId="Key"
+                       AutomationProperties.Name="Case"
+                       LabelText="{StaticResource addCaseLabel}" 
+                       MinWidth="100"
+                       Margin="1,3,0,0"
+                       VerticalAlignment="Center"
+                       Value="{Binding ModelItem.Key, ElementName=controlRoot, Mode=TwoWay}"
+                       ValueType="{Binding ModelItem.ItemType, ElementName=controlRoot, Converter={StaticResource genericTypeArgumentConverter}, ConverterParameter=0}"
+                       CaseKeyValidationCallback="{Binding Mode=OneWay, Path=CheckDuplicateCaseKey, RelativeSource={RelativeSource AncestorType={x:Type proj:SwitchDesigner}, AncestorLevel=1}}"
+                       ErrorCallback="{Binding FocusSelf, ElementName=controlRoot, Mode=OneWay}"
+                       >
+        <proj:CaseKeyBox.IsEnabled>
+          <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource CaseKeyBoxIsEnabledConverter}">
+            <Binding x:Uid="Binding_1" Mode="OneWay" Path="IsReadOnly">
+              <Binding.RelativeSource>
+                <RelativeSource x:Uid="RelativeSource_1" Mode="FindAncestor" AncestorType="{x:Type sadv:DesignerView}" />
+              </Binding.RelativeSource>
+            </Binding>
+            <Binding x:Uid="Binding_2" Mode="OneWay" Path="ShowExpanded" ElementName="controlRoot" />
+          </MultiBinding>
+        </proj:CaseKeyBox.IsEnabled>
+      </proj:CaseKeyBox>
+    </StackPanel>
+    <TextBlock x:Uid="TextBlock_2" Grid.Row="0" Grid.Column="1" Foreground="{x:Static SystemColors.GrayTextBrush}"
+        FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,3,3,0"
+        TextTrimming="CharacterEllipsis"
+        MaxWidth="{Binding Path=ModelItem.Value, ElementName=controlRoot, Converter={StaticResource HintTextMaxWidthConverter}, ConverterParameter=150}"
+        ToolTip="{Binding Text, RelativeSource={x:Static RelativeSource.Self}}">
+      <TextBlock.Text>
+        <MultiBinding x:Uid="MultiBinding_2" Converter="{StaticResource HintTextConverter}">
+          <Binding x:Uid="Binding_3" Path="ModelItem.Value" />
+          <Binding x:Uid="Binding_4" Path="ModelItem.Value.DisplayName" />
+        </MultiBinding>
+      </TextBlock.Text>
+      <TextBlock.Style>
+        <Style x:Uid="Style_2" TargetType="{x:Type TextBlock}">
+          <Setter x:Uid="Setter_5" Property="Visibility" Value="Visible" />
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=ShowExpanded}" Value="true">
+              <Setter x:Uid="Setter_6" Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </TextBlock.Style>
+    </TextBlock>
+
+    <sad:WorkflowItemPresenter Grid.Row="1" Grid.ColumnSpan="2"
+        x:Uid="sad:WorkflowItemPresenter_1" 
+        IsDefaultContainer="True"
+        AutomationProperties.AutomationId="Activity"
+        Item="{Binding Path=ModelItem.Value, Mode=TwoWay}"
+        AllowedItemType="{x:Type sa:Activity}"
+        HintText="{DynamicResource dropActivityHint}"
+        MinWidth="200"
+        MinHeight="100"
+        Margin="3,3,3,3"
+        Visibility="{Binding Path=ShowExpanded, Converter={StaticResource BooleanToVisibilityConverter}}" >
+    </sad:WorkflowItemPresenter>
+  </Grid>
+</sad:WorkflowViewElement>

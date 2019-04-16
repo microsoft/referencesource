@@ -159,6 +159,7 @@ namespace System.ServiceModel.Configuration
         internal const string HttpGetUrl = "httpGetUrl";
         internal const string HttpsGetEnabled = "httpsGetEnabled";
         internal const string HttpsGetUrl = "httpsGetUrl";
+        internal const string HealthDetailsEnabled = "healthDetailsEnabled";        
         internal const string HttpHelpPageEnabled = "httpHelpPageEnabled";
         internal const string HttpHelpPageUrl = "httpHelpPageUrl";
         internal const string HttpsHelpPageEnabled = "httpsHelpPageEnabled";
@@ -383,6 +384,7 @@ namespace System.ServiceModel.Configuration
         internal const string ServiceCertificate = "serviceCertificate";
         internal const string ServiceCredentials = "serviceCredentials";
         internal const string ServiceDebugSectionName = "serviceDebug";
+        internal const string ServiceHealthSectionName = "serviceHealth";
         internal const string ServiceHostingEnvironmentSectionName = "serviceHostingEnvironment";
         internal const string ServiceMetadataPublishingSectionName = "serviceMetadata";
         internal const string ServicePrincipalName = "servicePrincipalName";

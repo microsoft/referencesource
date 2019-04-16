@@ -8,6 +8,7 @@ namespace System.ServiceModel.Description
     using System.Globalization;
     using System.Net;
     using System.Reflection;
+    using System.Resources;
     using System.Runtime;
     using System.ServiceModel;
     using System.ServiceModel.Activation;
@@ -24,7 +25,6 @@ namespace System.ServiceModel.Description
     {
         const string BaseAddressPattern = "{%BaseAddress%}";
         static readonly Uri EmptyUri = new Uri(String.Empty, UriKind.Relative);
-
         static readonly Type[] httpGetSupportedChannels = new Type[] { typeof(IReplyChannel), };
 
         ServiceMetadataBehavior.MetadataExtensionInitializer initializer;
@@ -368,7 +368,7 @@ namespace System.ServiceModel.Description
             return channelDispatcher;
         }
 
-        ChannelDispatcher FindGetDispatcher(Uri listenUri)
+        internal ChannelDispatcher FindGetDispatcher(Uri listenUri)
         {
             foreach (ChannelDispatcherBase channelDispatcherBase in owner.ChannelDispatchers)
             {
@@ -386,7 +386,7 @@ namespace System.ServiceModel.Description
             return null;
         }
 
-        ChannelDispatcher CreateGetDispatcher(Uri listenUri)
+        internal ChannelDispatcher CreateGetDispatcher(Uri listenUri)
         {
             if (listenUri.Scheme == Uri.UriSchemeHttp)
             {
@@ -402,7 +402,12 @@ namespace System.ServiceModel.Description
             }
         }
 
-        ChannelDispatcher CreateGetDispatcher(Uri listenUri, Binding binding)
+        internal ChannelDispatcher CreateGetDispatcher(Uri listenUri, Binding binding)
+        {
+            return CreateGetDispatcher(listenUri, binding, HttpGetImpl.MetadataHttpGetBinding);
+        }
+
+        internal ChannelDispatcher CreateGetDispatcher(Uri listenUri, Binding binding, string bindingName)
         {
             EndpointAddress address = new EndpointAddress(listenUri);
             Uri listenUriBaseAddress = listenUri;
@@ -424,7 +429,7 @@ namespace System.ServiceModel.Description
             }
 
             //create dispatchers
-            ChannelDispatcher channelDispatcher = new ChannelDispatcher(listener, HttpGetImpl.MetadataHttpGetBinding, binding);
+            ChannelDispatcher channelDispatcher = new ChannelDispatcher(listener, bindingName, binding);
             channelDispatcher.MessageVersion = binding.MessageVersion;
             EndpointDispatcher dispatcher = new EndpointDispatcher(address, HttpGetImpl.ContractName, HttpGetImpl.ContractNamespace, true);
 
@@ -588,7 +593,7 @@ namespace System.ServiceModel.Description
                             (identifier == null || identifier == document.Identifier))
                             metadataSet.MetadataSections.Add(document);
                     }
-                    
+
                     return metadataSet;
                 }
             }
@@ -632,6 +637,7 @@ namespace System.ServiceModel.Description
             const string WsdlQueryString = "wsdl";
             const string XsdQueryString = "xsd";
             const string SingleWsdlQueryString = "singleWsdl";
+            const string HealthQueryString = "health";
 
             const string HtmlContentType = "text/html; charset=UTF-8";
             const string XmlContentType = "text/xml; charset=UTF-8";
@@ -647,7 +653,6 @@ namespace System.ServiceModel.Description
             internal const string ReplyAction = MessageHeaders.WildcardAction;
             internal const string HtmlBreak = "<BR/>";
 
-
             static string[] NoQueries = new string[0];
 
             ServiceMetadataExtension parent;
@@ -662,6 +667,8 @@ namespace System.ServiceModel.Description
                 this.parent = parent;
                 this.listenUri = listenUri;
             }
+
+            public ServiceHealthBehaviorBase HealthBehavior { get; set; }
 
             public bool HelpPageEnabled
             {
@@ -804,6 +811,27 @@ namespace System.ServiceModel.Description
                 }
 
                 return null;
+            }
+
+            bool TryHandleHealthRequest(Message httpGetRequest, string[] queries, out Message replyMessage)
+            {
+                replyMessage = null;
+
+                if (this.HealthBehavior == null)
+                {
+                    return false;
+                }
+
+                string query = FindQuery(queries);
+
+                if (String.Compare(query, HealthQueryString, StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    return false;
+                }
+
+                this.HealthBehavior.HandleHealthRequest(this.parent.owner, httpGetRequest, queries, out replyMessage);
+
+                return true;
             }
 
             bool TryHandleMetadataRequest(Message httpGetRequest, string[] queries, out Message replyMessage)
@@ -968,6 +996,8 @@ namespace System.ServiceModel.Description
                         query = q;
                     else if (String.Compare(q, start, SingleWsdlQueryString, 0, SingleWsdlQueryString.Length, StringComparison.OrdinalIgnoreCase) == 0)
                         query = q;
+                    else if (String.Compare(q, start, HealthQueryString, 0, HealthQueryString.Length, StringComparison.OrdinalIgnoreCase) == 0)
+                        query = q;
                     else if (parent.HelpPageEnabled && (String.Compare(q, start, DiscoQueryString, 0, DiscoQueryString.Length, StringComparison.OrdinalIgnoreCase) == 0))
                         query = q;
                 }
@@ -987,12 +1017,15 @@ namespace System.ServiceModel.Description
                 string[] queries = queryString.Length > 0 ? queryString.Split('&') : NoQueries;
 
                 Message replyMessage = null;
+
                 if (TryHandleMetadataRequest(httpGetRequest, queries, out replyMessage))
                     return replyMessage;
 
-                if (TryHandleDocumentationRequest(httpGetRequest, queries, out replyMessage))
+                if (TryHandleHealthRequest(httpGetRequest, queries, out replyMessage))
                     return replyMessage;
 
+                if (TryHandleDocumentationRequest(httpGetRequest, queries, out replyMessage))
+                    return replyMessage;               
 
                 return CreateHttpResponseMessage(HttpStatusCode.MethodNotAllowed);
             }
@@ -1341,6 +1374,7 @@ namespace System.ServiceModel.Description
                     HelpPageWriter page = new HelpPageWriter(writer);
 
                     writer.WriteStartElement("HTML");
+                    writer.WriteAttributeString("lang", GetISOLanguageNameFromResourceManager(SR.Resources));
                     writer.WriteStartElement("HEAD");
 
                     if (!String.IsNullOrEmpty(this.discoUrl))
@@ -1371,6 +1405,25 @@ namespace System.ServiceModel.Description
                     writer.WriteEndElement(); // HTML
                 }
 
+                private string GetISOLanguageNameFromResourceManager(ResourceManager rm)
+                {
+                    try
+                    {
+                        CultureInfo ci = CultureInfo.CurrentCulture;
+                        while (ci.Name.Length > 0)
+                        {
+                            if (rm.GetResourceSet(ci, false, false) != null)
+                                return ci.TwoLetterISOLanguageName;
+
+                            ci = ci.Parent;
+                        }
+                    }
+                    // catch all exceptions to prevent any breaks
+                    catch (Exception) { }
+
+                    return "en";
+                }
+
                 struct HelpPageWriter
                 {
                     XmlWriter writer;
@@ -1382,7 +1435,7 @@ namespace System.ServiceModel.Description
                     internal void WriteClass(string className)
                     {
                         writer.WriteStartElement("font");
-                        writer.WriteAttributeString("color", "teal");
+                        writer.WriteAttributeString("color", "black");
                         writer.WriteString(className);
                         writer.WriteEndElement(); // font
                     }
@@ -1390,7 +1443,7 @@ namespace System.ServiceModel.Description
                     internal void WriteComment(string comment)
                     {
                         writer.WriteStartElement("font");
-                        writer.WriteAttributeString("color", "green");
+                        writer.WriteAttributeString("color", "darkgreen");
                         writer.WriteString(comment);
                         writer.WriteEndElement(); // font
                     }
@@ -1425,13 +1478,12 @@ namespace System.ServiceModel.Description
                     {
                         writer.WriteStartElement("P");
                         writer.WriteAttributeString("class", "intro");
-                        writer.WriteEndElement(); // P
 
                         writer.WriteRaw(SR.GetString(SR.SFxDocExt_MainPageIntro2));
-
+                        writer.WriteEndElement(); // P
 
                         // C#
-                        writer.WriteRaw(SR.GetString(SR.SFxDocExt_CS));
+                        writer.WriteRaw("<h2 class='intro'>C#</h2><br />");
                         writer.WriteStartElement("PRE");
                         WriteKeyword("class ");
                         WriteClass("Test\n");
@@ -1455,7 +1507,7 @@ namespace System.ServiceModel.Description
 
 
                         // VB
-                        writer.WriteRaw(SR.GetString(SR.SFxDocExt_VB));
+                        writer.WriteRaw("<h2 class='intro'>Visual Basic</h2><br />");
                         writer.WriteStartElement("PRE");
                         WriteKeyword("Class ");
                         WriteClass("Test\n");
@@ -1492,7 +1544,7 @@ namespace System.ServiceModel.Description
                         writer.WriteString("P{MARGIN-TOP: 0px; MARGIN-BOTTOM: 12px; COLOR: #000000; FONT-FAMILY: Verdana}");
                         writer.WriteString("PRE{BORDER-RIGHT: #f0f0e0 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #f0f0e0 1px solid; MARGIN-TOP: -5px; PADDING-LEFT: 5px; FONT-SIZE: 1.2em; PADDING-BOTTOM: 5px; BORDER-LEFT: #f0f0e0 1px solid; PADDING-TOP: 5px; BORDER-BOTTOM: #f0f0e0 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #e5e5cc}");
                         writer.WriteString(".heading1{MARGIN-TOP: 0px; PADDING-LEFT: 15px; FONT-WEIGHT: normal; FONT-SIZE: 26px; MARGIN-BOTTOM: 0px; PADDING-BOTTOM: 3px; MARGIN-LEFT: -30px; WIDTH: 100%; COLOR: #ffffff; PADDING-TOP: 10px; FONT-FAMILY: Tahoma; BACKGROUND-COLOR: #003366}");
-                        writer.WriteString(".intro{MARGIN-LEFT: -15px}");
+                        writer.WriteString(".intro{display: block; font-size: 1em;}");
                         writer.WriteEndElement(); // STYLE
                     }
 
@@ -1503,12 +1555,12 @@ namespace System.ServiceModel.Description
                         writer.WriteStartElement("BODY");
                         writer.WriteStartElement("DIV");
                         writer.WriteAttributeString("id", "content");
-                        writer.WriteStartElement("P");
+                        writer.WriteAttributeString("role", "main");
+                        writer.WriteStartElement("h1");
                         writer.WriteAttributeString("class", "heading1");
                         writer.WriteString(title);
-                        writer.WriteEndElement(); // P
+                        writer.WriteEndElement(); // h1
                         writer.WriteRaw(HttpGetImpl.HtmlBreak);
-
                     }
 
                     internal void WriteToolUsage(string wsdlUrl, string singleWsdlUrl, bool linkMetadata)

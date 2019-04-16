@@ -7,6 +7,7 @@ namespace System.IdentityModel
     using System.Collections.Generic;
     using System.IdentityModel.Tokens;
     using System.Reflection;
+    using System.Runtime.CompilerServices;
     using System.Security.Cryptography;
     using System.Security.Cryptography.X509Certificates;
     using System.Security.Cryptography.Xml;
@@ -1099,6 +1100,14 @@ namespace System.IdentityModel
             }
         }
 
+        /// <summary>
+        /// Compares two byte arrays of arbitrary length for equality.
+        /// FixedTimeEquals method should be used for crypto-sensitive byte array comparison
+        /// i.e. when it's important NOT to leak timing information.
+        /// </summary>
+        /// <param name="a">One set of bytes to compare.</param>
+        /// <param name="b">The other set of bytes to compare with.</param>
+        /// <returns>true if the bytes are equal, false otherwise.</returns>
         internal static bool IsEqual(byte[] a, byte[] b)
         {
             if (ReferenceEquals(a, b))
@@ -1119,6 +1128,40 @@ namespace System.IdentityModel
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Compares two byte arrays of arbitrary length for equality.
+        /// The attempt here is to take the same (constant) time if an attacker changes some of the contents.
+        /// </summary>
+        /// <param name="a">One set of bytes to compare.</param>
+        /// <param name="b">The other set of bytes to compare with.</param>
+        /// <returns>true if the bytes are equal, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.NoOptimization | MethodImplOptions.NoInlining)]
+        public static bool FixedTimeEquals(byte[] a, byte[] b)
+        {
+            if (a == null && b == null)
+            {
+                return true;
+            }
+            else if (a == null || b == null)
+            {
+                return false;
+            }
+            else if (a.Length != b.Length)
+            {
+                return false;
+            }
+
+            var result = 0;
+            var length = a.Length;
+
+            for (int i = 0; i < length; i++)
+            {
+                result |= a[i] ^ b[i];
+            }
+
+            return result == 0;
         }
 
         private static object GetDefaultAlgorithm(string algorithm)

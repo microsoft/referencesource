@@ -21,6 +21,7 @@ namespace System.Security.Cryptography.X509Certificates
         public static ECDsa GetECDsaPrivateKey(this X509Certificate2 certificate)
         {
             if (certificate == null) { throw new ArgumentNullException("certificate"); }
+
             //Check cert for private key and confirm it is ECDSA cert
             if (!certificate.HasPrivateKey || !IsECDsa(certificate)) { return null; }
 
@@ -34,11 +35,79 @@ namespace System.Security.Cryptography.X509Certificates
             }
         }
 
+        [SecuritySafeCritical]
+        private static SafeBCryptKeyHandle ImportPublicKeyInfo(SafeCertContextHandle certContext)
+        {
+            IntPtr certHandle = certContext.DangerousGetHandle();
+
+            //Read the public key blob from the certificate 
+            X509Native.CERT_CONTEXT pCertContext = (X509Native.CERT_CONTEXT)Marshal.PtrToStructure(certHandle, typeof(X509Native.CERT_CONTEXT));
+
+            IntPtr pSubjectPublicKeyInfo = new IntPtr((long)pCertContext.pCertInfo +
+                (long)Marshal.OffsetOf(typeof(X509Native.CERT_INFO), "SubjectPublicKeyInfo"));
+
+            X509Native.CERT_PUBLIC_KEY_INFO certPublicKeyInfo =
+                (X509Native.CERT_PUBLIC_KEY_INFO)Marshal.PtrToStructure(pSubjectPublicKeyInfo, typeof(X509Native.CERT_PUBLIC_KEY_INFO));
+
+            SafeBCryptKeyHandle publicKeyInfo = BCryptNative.ImportAsymmetricPublicKey(certPublicKeyInfo, 0);
+
+            // certContext needs to be valid through the call to BCryptNative.ImportAsymmetricPublicKey
+            // because certPublicKeyInfo structure contains pointers.
+            GC.KeepAlive(certContext);
+            return publicKeyInfo;
+        }
+
         /// <summary>
         /// Gets the <see cref="ECDsa" /> public key from the certificate or null if the certificate does not have an ECDsa public key.
         /// </summary>
         [SecuritySafeCritical]
         public static ECDsa GetECDsaPublicKey(this X509Certificate2 certificate)
+        {
+            if (LocalAppContextSwitches.UseLegacyPublicKeyBehavior)
+                return LegacyGetECDsaPublicKey(certificate);
+
+            if (certificate == null) { throw new ArgumentNullException("certificate"); }
+            if (!IsECDsa(certificate)) { return null; }
+
+            using (SafeCertContextHandle safeCertContext = X509Native.GetCertificateContext(certificate))
+            using (SafeBCryptKeyHandle bcryptKeyHandle = ImportPublicKeyInfo(safeCertContext))
+            {
+                if (bcryptKeyHandle.IsInvalid)
+                {
+                    throw new CryptographicException("SR.GetString(SR.Cryptography_OpenInvalidHandle)");
+                }
+
+                string curveName = GetCurveName(bcryptKeyHandle);
+
+                if (curveName == null)
+                {
+                    CngKeyBlobFormat blobFormat = HasExplicitParameters(bcryptKeyHandle) ?
+                        CngKeyBlobFormat.EccFullPublicBlob : CngKeyBlobFormat.EccPublicBlob;
+
+                    byte[] keyBlob = BCryptNative.ExportBCryptKey(bcryptKeyHandle, blobFormat.Format);
+                    using (CngKey key = CngKey.Import(keyBlob, blobFormat))
+                    {
+                        return new ECDsaCng(key);
+                    }
+                }
+                else
+                {
+                    CngKeyBlobFormat blobFormat = CngKeyBlobFormat.EccPublicBlob;
+                    byte[] keyBlob = BCryptNative.ExportBCryptKey(bcryptKeyHandle, blobFormat.Format);
+                    ECParameters ecparams = new ECParameters();
+                    ExportNamedCurveParameters(ref ecparams, keyBlob, false);
+                    ecparams.Curve = ECCurve.CreateFromFriendlyName(curveName);
+                    ECDsaCng ecdsa = new ECDsaCng();
+                    ecdsa.ImportParameters(ecparams);
+
+                    return ecdsa;
+                }
+            }
+        }
+
+        // Old behavior
+        [SecuritySafeCritical]
+        private static ECDsa LegacyGetECDsaPublicKey(X509Certificate2 certificate)
         {
             if (certificate == null) { throw new ArgumentNullException("certificate"); }
             if (!IsECDsa(certificate)) { return null; }
@@ -61,7 +130,7 @@ namespace System.Security.Cryptography.X509Certificates
                 {
                     throw new CryptographicException("SR.GetString(SR.Cryptography_OpenInvalidHandle)");
                 }
-                key = BCryptHandleToNCryptHandle(bcryptKeyHandle);
+                key = LegacyBCryptHandleToNCryptHandle(bcryptKeyHandle);
             }
             GC.KeepAlive(safeCertContext);
             return new ECDsaCng(key);
@@ -173,12 +242,109 @@ namespace System.Security.Cryptography.X509Certificates
             return false;
         }
 
+        private static bool HasExplicitParameters(SafeBCryptKeyHandle bcryptHandle)
+        {
+            const string BCRYPT_ECC_PARAMETERS_PROPERTY = "ECCParameters";
+            return HasProperty(bcryptHandle, BCRYPT_ECC_PARAMETERS_PROPERTY);
+        }
+
+        private static string GetCurveName(SafeBCryptKeyHandle bcryptHandle)
+        {
+            const string BCRYPT_ECC_CURVE_NAME_PROPERTY = "ECCCurveName";
+            return GetPropertyAsString(bcryptHandle, BCRYPT_ECC_CURVE_NAME_PROPERTY);
+        }
+
+        [SecuritySafeCritical]
+        private static string GetPropertyAsString(SafeBCryptKeyHandle cryptHandle, string propertyName)
+        {
+            Debug.Assert(!cryptHandle.IsInvalid);
+            byte[] value = GetProperty(cryptHandle, propertyName);
+            if (value == null || value.Length == 0)
+                return null;
+
+            unsafe
+            {
+                fixed (byte* pValue = &value[0])
+                {
+                    string valueAsString = Marshal.PtrToStringUni((IntPtr)pValue);
+                    return valueAsString;
+                }
+            }
+        }
+
+        [SecuritySafeCritical]
+        private static void ExportNamedCurveParameters(ref ECParameters ecParams, byte[] ecBlob, bool includePrivateParameters)
+        {
+            // We now have a buffer laid out as follows:
+            //     BCRYPT_ECCKEY_BLOB   header
+            //     byte[cbKey]          Q.X
+            //     byte[cbKey]          Q.Y
+            //     -- Private only --
+            //     byte[cbKey]          D
+
+            unsafe
+            {
+                Debug.Assert(ecBlob.Length >= sizeof(Interop.BCrypt.BCRYPT_ECCKEY_BLOB));
+
+                fixed (byte* pEcBlob = &ecBlob[0])
+                {
+                    Interop.BCrypt.BCRYPT_ECCKEY_BLOB* pBcryptBlob = (Interop.BCrypt.BCRYPT_ECCKEY_BLOB*)pEcBlob;
+
+                    int offset = sizeof(Interop.BCrypt.BCRYPT_ECCKEY_BLOB);
+
+                    ecParams.Q = new ECPoint
+                    {
+                        X = Interop.BCrypt.Consume(ecBlob, ref offset, pBcryptBlob->cbKey),
+                        Y = Interop.BCrypt.Consume(ecBlob, ref offset, pBcryptBlob->cbKey)
+                    };
+
+                    if (includePrivateParameters)
+                    {
+                        ecParams.D = Interop.BCrypt.Consume(ecBlob, ref offset, pBcryptBlob->cbKey);
+                    }
+                }
+            }
+        }
+
+        [SecuritySafeCritical]
+        private static byte[] GetProperty(SafeBCryptKeyHandle cryptHandle, string propertyName)
+        {
+            Debug.Assert(!cryptHandle.IsInvalid);
+            unsafe
+            {
+                int numBytesNeeded;
+                BCryptNative.ErrorCode errorCode = BCryptNative.UnsafeNativeMethods.BCryptGetProperty(cryptHandle, propertyName, null, 0, out numBytesNeeded, 0);
+                if (errorCode != BCryptNative.ErrorCode.Success)
+                    return null;
+
+                byte[] propertyValue = new byte[numBytesNeeded];
+                errorCode = BCryptNative.UnsafeNativeMethods.BCryptGetProperty(cryptHandle, propertyName, propertyValue, propertyValue.Length, out numBytesNeeded, 0);
+                if (errorCode != BCryptNative.ErrorCode.Success)
+                    return null;
+
+                Array.Resize(ref propertyValue, numBytesNeeded);
+                return propertyValue;
+            }
+        }
+
+        [SecuritySafeCritical]
+        private static bool HasProperty(SafeBCryptKeyHandle cryptHandle, string propertyName)
+        {
+            Debug.Assert(!cryptHandle.IsInvalid);
+            unsafe
+            {
+                int numBytesNeeded;
+                BCryptNative.ErrorCode errorCode = BCryptNative.UnsafeNativeMethods.BCryptGetProperty(cryptHandle, propertyName, null, 0, out numBytesNeeded, 0);
+                return errorCode == BCryptNative.ErrorCode.Success && numBytesNeeded > 0;
+            }
+        }
+
         /// <summary>
         /// Method take BCrypt handle as input and returns the CNGKey
         /// </summary>
         /// <param name="bcryptKeyHandle">Accepts BCrypt Handle</param>
         /// <returns>Returns CNG key with NCrypt Handle</returns>
-        private static CngKey BCryptHandleToNCryptHandle(SafeBCryptKeyHandle bcryptKeyHandle)
+        private static CngKey LegacyBCryptHandleToNCryptHandle(SafeBCryptKeyHandle bcryptKeyHandle)
         {            
             byte[] keyBlob = BCryptNative.ExportBCryptKey(bcryptKeyHandle, BCryptNative.BCRYPT_ECCPUBLIC_BLOB);
             //Now Import the key blob as NCRYPT_KEY_HANDLE            

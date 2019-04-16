@@ -10,6 +10,7 @@ namespace System.Configuration {
     using System.Collections.Specialized;
     using System.Collections.Generic;
     using System.Configuration;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Runtime.InteropServices;
@@ -28,10 +29,12 @@ namespace System.Configuration {
         // the line where the ecnrypted section begins.
         bool    _lineNumberIsConstant;
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         internal ConfigXmlReader(string rawXml, string filename, int lineOffset) : 
                 this(rawXml, filename, lineOffset, false) {
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3054:DoNotAllowDtdOnXmlTextReader", Justification="Reading trusted input")]
         internal ConfigXmlReader(string rawXml, string filename, int lineOffset, bool lineNumberIsConstant) : 
                 base(new StringReader(rawXml)) {
 
@@ -46,6 +49,7 @@ namespace System.Configuration {
                         "!_lineNumberIsConstant || _lineOffset > 0");
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         internal ConfigXmlReader Clone() {
             return new ConfigXmlReader(_rawXml, _filename, _lineOffset, _lineNumberIsConstant);
         }

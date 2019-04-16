@@ -245,6 +245,17 @@ namespace System.Security.Cryptography {
             /// <summary>
             ///     Get a property from a BCrypt algorithm object
             /// </summary>
+            [DllImport("bcrypt.dll", CharSet = CharSet.Unicode)]
+            internal static extern ErrorCode BCryptGetProperty(SafeBCryptKeyHandle hObject,
+                                                               string pszProperty,
+                                                               [MarshalAs(UnmanagedType.LPArray), In, Out] byte[] pbOutput,
+                                                               int cbOutput,
+                                                               [Out] out int pcbResult,
+                                                               int flags);
+
+            /// <summary>
+            ///     Get a property from a BCrypt algorithm object
+            /// </summary>
             [DllImport("bcrypt.dll", EntryPoint = "BCryptGetProperty", CharSet = CharSet.Unicode)]
             internal static extern ErrorCode BCryptGetAlgorithmProperty(SafeBCryptAlgorithmHandle hObject,
                                                                         string pszProperty,
@@ -277,8 +288,8 @@ namespace System.Security.Cryptography {
             ///     Hash a block of data
             /// </summary>
             [DllImport("bcrypt.dll")]
-            internal static extern ErrorCode BCryptHashData(SafeBCryptHashHandle hHash,
-                                                            [MarshalAs(UnmanagedType.LPArray), In] byte[] pbInput,
+            internal static extern unsafe ErrorCode BCryptHashData(SafeBCryptHashHandle hHash,
+                                                            byte* pbInput,
                                                             int cbInput,
                                                             int dwFlags);
 
@@ -297,7 +308,7 @@ namespace System.Security.Cryptography {
                                                              [In][MarshalAs(UnmanagedType.LPWStr)] string pszBlobType,
                                                              [Out, MarshalAs(UnmanagedType.LPArray)] byte[] pbOutput,
                                                              [In]int cbOutput,
-                                                             [In]ref int pcbResult,
+                                                             [Out]out int pcbResult,
                                                              [In] int dwFlags);
 
             [DllImport("Crypt32.dll", SetLastError = true)]
@@ -602,9 +613,9 @@ namespace System.Security.Cryptography {
         [SecuritySafeCritical]
         internal static byte[] ExportBCryptKey(SafeBCryptKeyHandle hKey, string blobType) {
             byte[] keyBlob = null;
-            int length = 0;
+            int length;
 
-            ErrorCode error = UnsafeNativeMethods.BCryptExportKey(hKey, IntPtr.Zero, blobType, null, 0, ref length, 0);
+            ErrorCode error = UnsafeNativeMethods.BCryptExportKey(hKey, IntPtr.Zero, blobType, null, 0, out length, 0);
 
             if (error != ErrorCode.BufferToSmall && error != ErrorCode.Success)
             {
@@ -612,7 +623,7 @@ namespace System.Security.Cryptography {
             }
 
             keyBlob = new byte[length];
-            error = UnsafeNativeMethods.BCryptExportKey(hKey, IntPtr.Zero, blobType, keyBlob, length, ref length, 0);
+            error = UnsafeNativeMethods.BCryptExportKey(hKey, IntPtr.Zero, blobType, keyBlob, length, out length, 0);
             if (error != ErrorCode.Success) {
                 throw new CryptographicException(Marshal.GetLastWin32Error());
             }

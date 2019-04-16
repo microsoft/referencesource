@@ -51,6 +51,10 @@ namespace System.Configuration {
             //
             ConfigurationErrorsException ce = e as ConfigurationErrorsException;
             if (ce != null) {
+                // Well... mostly preserve. Add file/line info if it's missing.
+                if ((filename != null) && (ce.Filename == null)) {
+                    ce.SetFileAndLine(filename, line);
+                }
                 return ce;
             }
 

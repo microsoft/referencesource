@@ -14,8 +14,13 @@ namespace System.Activities.Debugger.Symbol
 
     internal static class SymbolHelper
     {
+        // These Guid values come from the VS source - VSCodeDebugAdpapterHost - src\product\VSCodeDebuggerHost\AD7\Definition\AD7Guids.cs
         static readonly Guid Md5IdentifierGuid = new Guid("406ea660-64cf-4c82-b6f0-42d48172a799");
+        static readonly int Md5HashLength = 16;
         static readonly Guid Sha1IdentifierGuid = new Guid("ff1816ec-aa5e-4d10-87f7-6f4963833460");
+        static readonly int Sha1HashLength = 20;
+        static readonly Guid Sha256IdentifierGuid = new Guid("8829d00f-11b8-4213-878b-770e8597ac16");
+        static readonly int Sha256HashLength = 32;
 
         public static Guid ChecksumProviderId
         {
@@ -25,9 +30,13 @@ namespace System.Activities.Debugger.Symbol
                 {
                     return Md5IdentifierGuid;
                 }
-                else
+                else if (LocalAppContextSwitches.UseSHA1HashForDebuggerSymbols)
                 {
                     return Sha1IdentifierGuid;
+                }
+                else
+                {
+                    return Sha256IdentifierGuid;
                 }
             }
         }
@@ -128,25 +137,35 @@ namespace System.Activities.Debugger.Symbol
             // We are using MD5.ComputeHash, which will return a 16 byte array.
             if (LocalAppContextSwitches.UseMD5ForWFDebugger)
             {
-                return checksumToValidate.Length == 16;
+                return checksumToValidate.Length == Md5HashLength;
+            }
+            else if (LocalAppContextSwitches.UseSHA1HashForDebuggerSymbols)
+            {
+                return checksumToValidate.Length == Sha1HashLength;
             }
             else
             {
-                return checksumToValidate.Length == 20;
+                return checksumToValidate.Length == Sha256HashLength;
             }
         }
 
         [SuppressMessage("Microsoft.Cryptographic.Standard", "CA5350:MD5CannotBeUsed",
             Justification = "Design has been approved.  We are not using MD5 for any security or cryptography purposes but rather as a hash.")]
+        [SuppressMessage("Microsoft.Cryptographic.Standard", "CA5354:SHA1CannotBeUsed",
+            Justification = "Design has been approved.  We are not using SHA1 for any security or cryptography purposes but rather as a hash.")]
         static HashAlgorithm CreateHashProvider()
         {
             if (LocalAppContextSwitches.UseMD5ForWFDebugger)
             {
                 return new MD5CryptoServiceProvider();
             }
-            else
+            else if (LocalAppContextSwitches.UseSHA1HashForDebuggerSymbols)
             {
                 return new SHA1CryptoServiceProvider();
+            }
+            else
+            {
+                return new SHA256CryptoServiceProvider();
             }
         }
     }

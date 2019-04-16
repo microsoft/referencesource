@@ -11,11 +11,13 @@ namespace System.Workflow.ComponentModel.Serialization
     using System.Xml.Serialization;
     using System.Reflection;
     using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics;
     using System.Text;
     using System.Globalization;
     using System.Workflow.ComponentModel.Compiler;
     using System.Workflow.ComponentModel.Design;
+    using System.Workflow.ComponentModel.Serialization;
     using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Collections.ObjectModel;
@@ -23,6 +25,7 @@ namespace System.Workflow.ComponentModel.Serialization
     using System.Diagnostics.CodeAnalysis;
 
     #region Class WorkflowMarkupSerializer
+
     //Main serialization class for persisting the XOML
     [DefaultSerializationProvider(typeof(WorkflowMarkupSerializationProvider))]
     public class WorkflowMarkupSerializer
@@ -33,6 +36,10 @@ namespace System.Workflow.ComponentModel.Serialization
 
         public static readonly DependencyProperty EventsProperty = DependencyProperty.RegisterAttached("Events", typeof(Hashtable), typeof(WorkflowMarkupSerializer), new PropertyMetadata(null, new Attribute[] { new DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden) }));
         public static readonly DependencyProperty ClrNamespacesProperty = DependencyProperty.RegisterAttached("ClrNamespaces", typeof(List<String>), typeof(WorkflowMarkupSerializer), new PropertyMetadata(null, new Attribute[] { new DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden) }));
+
+        // This collection is populated from config under System.Workflow.Compiler section and then
+        // a few "hard coded" UNauthorized types are added to it
+        private ReadOnlyCollection<AuthorizedType> authorizedTypes;
 
         #region Public Methods
         public object Deserialize(XmlReader reader)
@@ -53,6 +60,14 @@ namespace System.Workflow.ComponentModel.Serialization
                 throw new ArgumentNullException("serializationManager");
             if (reader == null)
                 throw new ArgumentNullException("reader");
+
+            // If SerializerTypeChecking is enabled, initialize it.
+            if (!AppSettings.DisableXOMLSerializerTypeChecking)
+            {
+                this.GetAuthorizedTypes();
+                SerializerTypeAuthorizerClass typeAuthorizer = new SerializerTypeAuthorizerClass(this.authorizedTypes);
+                WorkflowMarkupSerializationHelpers.SerializationTypeAuthorizer = typeAuthorizer;
+            }
 
             WorkflowMarkupSerializationManager markupSerializationManager = serializationManager as WorkflowMarkupSerializationManager;
             if (markupSerializationManager == null)
@@ -226,7 +241,7 @@ namespace System.Workflow.ComponentModel.Serialization
                         reader.MoveToElement();
                         if (obj != null)
                         {
-                            serializationManager.Context.Push(obj);
+                            serializationManager.ContextPush(obj);
                             try
                             {
                                 DeserializeContents(serializationManager, obj, reader);
@@ -234,7 +249,7 @@ namespace System.Workflow.ComponentModel.Serialization
                             finally
                             {
                                 Debug.Assert(serializationManager.Context.Current == obj, "Serializer did not remove an object it pushed into stack.");
-                                serializationManager.Context.Pop();
+                                serializationManager.ContextPop();
                             }
                         }
                     }
@@ -329,7 +344,7 @@ namespace System.Workflow.ComponentModel.Serialization
                     DependencyProperty dependencyProperty = ResolveDependencyProperty(serializationManager, reader, obj, propName);
                     if (dependencyProperty != null)
                     {
-                        serializationManager.Context.Push(dependencyProperty);
+                        serializationManager.ContextPush(dependencyProperty);
                         try
                         {
                             if (dependencyProperty.IsEvent)
@@ -340,7 +355,7 @@ namespace System.Workflow.ComponentModel.Serialization
                         finally
                         {
                             Debug.Assert(serializationManager.Context.Current == dependencyProperty, "Serializer did not remove an object it pushed into stack.");
-                            serializationManager.Context.Pop();
+                            serializationManager.ContextPop();
                         }
                     }
                     else
@@ -348,7 +363,7 @@ namespace System.Workflow.ComponentModel.Serialization
                         PropertyInfo property = WorkflowMarkupSerializer.LookupProperty(props, propName);
                         if (property != null)
                         {
-                            serializationManager.Context.Push(property);
+                            serializationManager.ContextPush(property);
                             try
                             {
                                 DeserializeSimpleProperty(serializationManager, reader, obj, propVal);
@@ -356,7 +371,7 @@ namespace System.Workflow.ComponentModel.Serialization
                             finally
                             {
                                 Debug.Assert((PropertyInfo)serializationManager.Context.Current == property, "Serializer did not remove an object it pushed into stack.");
-                                serializationManager.Context.Pop();
+                                serializationManager.ContextPop();
                             }
                         }
                         else
@@ -364,7 +379,7 @@ namespace System.Workflow.ComponentModel.Serialization
                             EventInfo evt = WorkflowMarkupSerializer.LookupEvent(events, propName);
                             if (events != null && evt != null)
                             {
-                                serializationManager.Context.Push(evt);
+                                serializationManager.ContextPush(evt);
                                 try
                                 {
                                     DeserializeEvent(serializationManager, reader, obj, propVal);
@@ -372,7 +387,7 @@ namespace System.Workflow.ComponentModel.Serialization
                                 finally
                                 {
                                     Debug.Assert((EventInfo)serializationManager.Context.Current == evt, "Serializer did not remove an object it pushed into stack.");
-                                    serializationManager.Context.Pop();
+                                    serializationManager.ContextPop();
                                 }
                             }
                             else
@@ -453,7 +468,7 @@ namespace System.Workflow.ComponentModel.Serialization
                                 {
                                     PropertyInfo prop = WorkflowMarkupSerializer.LookupProperty(props, dependencyProperty.Name);
                                     //Deserialize the dynamic property
-                                    serializationManager.Context.Push(dependencyProperty);
+                                    serializationManager.ContextPush(dependencyProperty);
                                     try
                                     {
                                         DeserializeCompoundProperty(serializationManager, reader, obj);
@@ -461,13 +476,13 @@ namespace System.Workflow.ComponentModel.Serialization
                                     finally
                                     {
                                         Debug.Assert(serializationManager.Context.Current == dependencyProperty, "Serializer did not remove an object it pushed into stack.");
-                                        serializationManager.Context.Pop();
+                                        serializationManager.ContextPop();
                                     }
                                 }
                                 else if (property != null)
                                 {
                                     //Deserialize the compound property
-                                    serializationManager.Context.Push(property);
+                                    serializationManager.ContextPush(property);
                                     try
                                     {
                                         DeserializeCompoundProperty(serializationManager, reader, obj);
@@ -475,7 +490,7 @@ namespace System.Workflow.ComponentModel.Serialization
                                     finally
                                     {
                                         Debug.Assert((PropertyInfo)serializationManager.Context.Current == property, "Serializer did not remove an object it pushed into stack.");
-                                        serializationManager.Context.Pop();
+                                        serializationManager.ContextPop();
                                     }
                                 }
                             }
@@ -550,7 +565,7 @@ namespace System.Workflow.ComponentModel.Serialization
                                                     serializationManager.SerializationStack.Contains(obj);
                     if (key || !serializationManager.SerializationStack.Contains(obj))
                     {
-                        serializationManager.Context.Push(obj);
+                        serializationManager.ContextPush(obj);
                         serializationManager.SerializationStack.Push(obj);
                         try
                         {
@@ -559,7 +574,7 @@ namespace System.Workflow.ComponentModel.Serialization
                         finally
                         {
                             Debug.Assert(serializationManager.Context.Current == obj, "Serializer did not remove an object it pushed into stack.");
-                            serializationManager.Context.Pop();
+                            serializationManager.ContextPop();
                             serializationManager.SerializationStack.Pop();
                         }
                     }
@@ -856,7 +871,7 @@ namespace System.Workflow.ComponentModel.Serialization
                         propertyValueType = propertyValue.GetType();
 
                     //Now get the serializer to persist the properties, if the serializer is not found then we dont serialize the properties
-                    serializationManager.Context.Push(propertyObj);
+                    serializationManager.ContextPush(propertyObj);
                     WorkflowMarkupSerializer propValueSerializer = null;
                     try
                     {
@@ -865,13 +880,13 @@ namespace System.Workflow.ComponentModel.Serialization
                     catch (Exception e)
                     {
                         serializationManager.ReportError(new WorkflowMarkupSerializationException(SR.GetString(SR.Error_SerializerThrewException, obj.GetType().FullName, e.Message), e));
-                        serializationManager.Context.Pop();
+                        serializationManager.ContextPop();
                         continue;
                     }
                     if (propValueSerializer == null)
                     {
                         serializationManager.ReportError(new WorkflowMarkupSerializationException(SR.GetString(SR.Error_SerializerNotAvailableForSerialize, propertyValueType.FullName)));
-                        serializationManager.Context.Pop();
+                        serializationManager.ContextPop();
                         continue;
                     }
 
@@ -919,7 +934,7 @@ namespace System.Workflow.ComponentModel.Serialization
                     finally
                     {
                         Debug.Assert(serializationManager.Context.Current == propertyObj, "Serializer did not remove an object it pushed into stack.");
-                        serializationManager.Context.Pop();
+                        serializationManager.ContextPop();
                     }
                 }
 
@@ -1319,6 +1334,25 @@ namespace System.Workflow.ComponentModel.Serialization
             if (type == null)
                 throw new ArgumentNullException("type");
 
+            // Check the serializationTypeAuthorizer if there is one.
+            ITypeAuthorizer serializationTypeAuthorizer = WorkflowMarkupSerializationHelpers.SerializationTypeAuthorizer;
+            if (serializationTypeAuthorizer != null)
+            {
+                if (!serializationTypeAuthorizer.IsTypeAuthorized(type))
+                {
+                    throw new InvalidOperationException(SR.GetString(SR.Error_TypeNotAuthorized, type));
+                }
+            }
+
+            ITypeAuthorizer localTypeAuthorizer = WorkflowMarkupSerializationHelpers.TypeAuthorizer;
+            if (localTypeAuthorizer != null)
+            {
+                // The TypeAuthorizer should add the appropriate error to the errors collection.
+                if (!localTypeAuthorizer.IsTypeAuthorized(type))
+                {
+                    return null;
+                }
+            }
             return Activator.CreateInstance(type);
         }
 
@@ -2064,6 +2098,158 @@ namespace System.Workflow.ComponentModel.Serialization
         }
         #endregion
 
+        #region GetAuthorizedTypes
+        void AddUnauthorizedTypes(IList<AuthorizedType> authorizedTypes)
+        {
+            AuthorizedType authType = new AuthorizedType();
+            authType.Assembly = "System.Activities.Presentation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Activities.Presentation";
+            authType.TypeName = "WorkflowDesigner";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Activities.Presentation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Activities.Presentation.Internal.PropertyEditing";
+            authType.TypeName = "PropertyInspectorFontAndColorDictionary";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Windows.Data";
+            authType.TypeName = "ObjectDataProvider";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Windows.Data";
+            authType.TypeName = "ObjectDataProvider";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Windows";
+            authType.TypeName = "ResourceDictionary";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "PresentationFramework, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Windows";
+            authType.TypeName = "ResourceDictionary";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Configuration.Install, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
+            authType.Namespace = "System.Configuration.Install";
+            authType.TypeName = "AssemblyInstaller";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType.Assembly = "System.Configuration.Install, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
+            authType.Namespace = "System.Configuration.Install";
+            authType.TypeName = "AssemblyInstaller";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType.Assembly = "System.Configuration.Install, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a";
+            authType.Namespace = "System.Configuration.Install";
+            authType.TypeName = "AssemblyInstaller";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            authType.Namespace = "System.Windows.Forms";
+            authType.TypeName = "BindingSource";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            authType.Namespace = "System.Windows.Forms";
+            authType.TypeName = "BindingSource";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+        }
+
+        IList<AuthorizedType> GetAuthorizedTypes()
+        {
+            if (this.authorizedTypes == null)
+            {
+                try
+                {
+                    IList<AuthorizedType> authorizedTypes;
+
+                    IDictionary<string, IList<AuthorizedType>> authorizedTypesDictionary =
+                        ConfigurationManager.GetSection("System.Workflow.ComponentModel.WorkflowCompiler/authorizedTypes") as IDictionary<string, IList<AuthorizedType>>;
+                    // The WorkflowMarkupSerializer will only look for AuthorizedType entries under the 4.0 section.
+                    Version targetVersion = new Version("4.0");
+
+                    string normalizedVersionString = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}", targetVersion.Major, targetVersion.Minor);
+
+                    // If there was nothing in config, we still need to create an "authorizedTypes" collection with the hard coded UNauthorized types.
+                    if ((authorizedTypesDictionary == null) || !authorizedTypesDictionary.TryGetValue(normalizedVersionString, out authorizedTypes))
+                    {
+                        authorizedTypes = new List<AuthorizedType>();
+                    }
+
+                    // Now add the types that we don't ever want to be authorized.
+                    if (!AppSettings.DisableXOMLSerializerDefaultUnauthorizedTypes)
+                    {
+                        AddUnauthorizedTypes(authorizedTypes);
+                    }
+
+                    this.authorizedTypes = new ReadOnlyCollection<AuthorizedType>(authorizedTypes);
+                }
+                catch
+                {
+                }
+            }
+            return this.authorizedTypes;
+        }
+        #endregion
+
+        #region SerializerTypeAuthorizerClass
+        private sealed class SerializerTypeAuthorizerClass : ITypeAuthorizer
+        {
+            private IList<AuthorizedType> authorizedTypes;
+            public SerializerTypeAuthorizerClass(IList<AuthorizedType> authorizedTypes)
+            {
+                this.authorizedTypes = authorizedTypes;
+            }
+
+            public bool IsTypeAuthorized(Type typeToAuthorize)
+            {
+                if (typeToAuthorize == null)
+                {
+                    throw new ArgumentNullException("typeToAuthorize");
+                }
+
+                // For deserialization, assume all types are authorized unless the are SPECIFICALLY
+                // not authorized.
+                bool authorized = true;
+                if (this.authorizedTypes != null)
+                {
+                    foreach (AuthorizedType authorizedType in this.authorizedTypes)
+                    {
+                        if (authorizedType.RegularExpression.IsMatch(typeToAuthorize.AssemblyQualifiedName))
+                        {
+                            authorized = (String.Compare(bool.TrueString, authorizedType.Authorized, StringComparison.OrdinalIgnoreCase) == 0);
+                            if (!authorized)
+                                break;
+                        }
+                    }
+                }
+                return authorized;
+            }
+        }
+        #endregion
+
         #region SafeXmlNodeWriter
         private sealed class SafeXmlNodeWriter : IDisposable
         {
@@ -2349,7 +2535,7 @@ namespace System.Workflow.ComponentModel.Serialization
                     PropertyInfo property = WorkflowMarkupSerializer.LookupProperty(properties, argName);
                     if (property != null)
                     {
-                        serializationManager.Context.Push(property);
+                        serializationManager.ContextPush(property);
                         try
                         {
                             DeserializeSimpleProperty(serializationManager, reader, obj, argVal);
@@ -2357,7 +2543,7 @@ namespace System.Workflow.ComponentModel.Serialization
                         finally
                         {
                             Debug.Assert((PropertyInfo)serializationManager.Context.Current == property, "Serializer did not remove an object it pushed into stack.");
-                            serializationManager.Context.Pop();
+                            serializationManager.ContextPop();
                         }
                     }
                     else

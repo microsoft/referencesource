@@ -6,6 +6,7 @@ namespace System.ServiceModel.Dispatcher
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Diagnostics;
     using System.Reflection;
     using System.Runtime;
     using System.Runtime.Remoting.Messaging;
@@ -169,7 +170,19 @@ namespace System.ServiceModel.Dispatcher
                         TD.ClientFormatterDeserializeReplyStart(rpc.EventTraceActivity);
                     }
 
+                    bool outputTiming = DS.MessageFormatterIsEnabled();
+                    Stopwatch sw = null;
+                    if (outputTiming)
+                    {
+                        sw = Stopwatch.StartNew();
+                    }
+
                     rpc.ReturnValue = this.formatter.DeserializeReply(reply, rpc.OutputParameters);
+
+                    if (outputTiming)
+                    {
+                        DS.ClientMessageFormatterDeserialize(this.formatter.GetType(), sw.Elapsed);
+                    }
 
                     if (TD.ClientFormatterDeserializeReplyStopIsEnabled())
                     {
@@ -185,12 +198,29 @@ namespace System.ServiceModel.Dispatcher
                 int offset = this.parent.ParameterInspectorCorrelationOffset;
                 try
                 {
+                    bool outputTiming = DS.ParameterInspectorIsEnabled();
+                    Stopwatch sw = null;
+                    if (outputTiming)
+                    {
+                        sw = new Stopwatch();
+                    }
+
                     for (int i = parameterInspectors.Length - 1; i >= 0; i--)
                     {
+                        if (outputTiming)
+                        {
+                            sw.Restart();
+                        }
+
                         this.parameterInspectors[i].AfterCall(this.name,
                                                               rpc.OutputParameters,
                                                               rpc.ReturnValue,
                                                               rpc.Correlation[offset + i]);
+                        if (outputTiming)
+                        {
+                            DS.ParameterInspectorAfter(this.parameterInspectors[i].GetType(), sw.Elapsed);
+                        }
+
                         if (TD.ClientParameterInspectorAfterCallInvokedIsEnabled())
                         {
                             TD.ClientParameterInspectorAfterCallInvoked(rpc.EventTraceActivity, this.parameterInspectors[i].GetType().FullName);
@@ -226,9 +256,26 @@ namespace System.ServiceModel.Dispatcher
             int offset = this.parent.ParameterInspectorCorrelationOffset;
             try
             {
+                bool outputTiming = DS.ParameterInspectorIsEnabled();
+                Stopwatch sw = null;
+                if (outputTiming)
+                {
+                    sw = new Stopwatch();
+                }
+
                 for (int i = 0; i < parameterInspectors.Length; i++)
                 {
+                    if (outputTiming)
+                    {
+                        sw.Restart();
+                    }
+
                     rpc.Correlation[offset + i] = this.parameterInspectors[i].BeforeCall(this.name, rpc.InputParameters);
+                    if (outputTiming)
+                    {
+                        DS.ParameterInspectorBefore(this.parameterInspectors[i].GetType(), sw.Elapsed);
+                    }
+
                     if (TD.ClientParameterInspectorBeforeCallInvokedIsEnabled())
                     {
                         TD.ClientParameterInspectorBeforeCallInvoked(rpc.EventTraceActivity, this.parameterInspectors[i].GetType().FullName);
@@ -255,9 +302,19 @@ namespace System.ServiceModel.Dispatcher
                     TD.ClientFormatterSerializeRequestStart(rpc.EventTraceActivity);
                 }
 
+                bool outputTiming = DS.MessageFormatterIsEnabled();
+                Stopwatch sw = null;
+                if (outputTiming)
+                {
+                    sw = Stopwatch.StartNew();
+                }
+
                 rpc.Request = this.formatter.SerializeRequest(rpc.MessageVersion, rpc.InputParameters);
 
-
+                if (outputTiming)
+                {
+                    DS.ClientMessageFormatterSerialize(this.formatter.GetType(), sw.Elapsed);
+                }
 
                 if (TD.ClientFormatterSerializeRequestStopIsEnabled())
                 {

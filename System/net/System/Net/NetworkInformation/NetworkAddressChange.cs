@@ -7,6 +7,7 @@ namespace System.Net.NetworkInformation {
     using System.Collections;
     using System.Collections.Specialized;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Threading;
     using System.Runtime.InteropServices;
 
@@ -62,7 +63,8 @@ namespace System.Net.NetworkInformation {
 
         }
 
-        static private object globalLock = new object();
+        private static readonly object s_globalLock = new object();
+        private static readonly object s_protectCallbackLock = new object();
 
 
         static internal bool CanListenForNetworkChanges {
@@ -72,7 +74,6 @@ namespace System.Net.NetworkInformation {
         }
 
         internal static class AvailabilityChangeListener{
-
             static private ListDictionary s_availabilityCallerArray = new ListDictionary();
             static NetworkAddressChangedEventHandler addressChange = ChangedAddress;
             static volatile bool isAvailable = false;
@@ -86,20 +87,32 @@ namespace System.Net.NetworkInformation {
 
 
             private static void ChangedAddress(object sender, EventArgs eventArgs) {
+                DictionaryEntry[] callerArray = null;
 
-                lock(globalLock) {
+                lock (s_globalLock) {
                     bool isAvailableNow = SystemNetworkInterface.InternalGetIsNetworkAvailable();
 
                     if (isAvailableNow != isAvailable) {
                         isAvailable = isAvailableNow;
 
-                        DictionaryEntry[] callerArray = new DictionaryEntry[s_availabilityCallerArray.Count];
+                        callerArray = new DictionaryEntry[s_availabilityCallerArray.Count];
                         s_availabilityCallerArray.CopyTo(callerArray, 0);
+                    }
+                }
 
-                        for (int i = 0; i < callerArray.Length; i++)
+                // Release the s_globalLock before calling into user callback.
+                if (callerArray != null)
+                {
+                    // Synchronization dedicated just to the invocation of the callback,
+                    // for back compat reason.
+                    lock (s_protectCallbackLock)
+                    {
+                        Debug.Assert(!Monitor.IsEntered(s_globalLock), "Should not invoke user callback while holding globalLock");
+
+                        foreach (var entry in callerArray)
                         {
-                            NetworkAvailabilityChangedEventHandler handler = (NetworkAvailabilityChangedEventHandler) callerArray[i].Key;
-                            ExecutionContext context = (ExecutionContext) callerArray[i].Value;
+                            NetworkAvailabilityChangedEventHandler handler = (NetworkAvailabilityChangedEventHandler) entry.Key;
+                            ExecutionContext context = (ExecutionContext) entry.Value;
                             if (context == null)
                             {
                                 handler(null, new NetworkAvailabilityEventArgs(isAvailable));
@@ -116,7 +129,7 @@ namespace System.Net.NetworkInformation {
 
 
             internal static void Start(NetworkAvailabilityChangedEventHandler caller){
-                lock(globalLock) {
+                lock(s_globalLock) {
 
                     if (s_availabilityCallerArray.Count == 0) {
                         isAvailable = NetworkInterface.GetIsNetworkAvailable();
@@ -132,7 +145,7 @@ namespace System.Net.NetworkInformation {
 
             internal static void Stop(NetworkAvailabilityChangedEventHandler caller)
             {
-               lock (globalLock) {
+               lock (s_globalLock) {
                     s_availabilityCallerArray.Remove(caller);
                     if (s_availabilityCallerArray.Count == 0){
                         AddressChangeListener.Stop(addressChange);
@@ -144,7 +157,6 @@ namespace System.Net.NetworkInformation {
 
         //helper class for detecting address change events.
         internal unsafe static class AddressChangeListener{
-
             static private ListDictionary s_callerArray = new ListDictionary();
             static private ContextCallback s_runHandlerCallback = new ContextCallback(RunHandlerCallback);
             static private RegisteredWaitHandle s_registeredWait;
@@ -159,7 +171,9 @@ namespace System.Net.NetworkInformation {
 
             //callback fired when an address change occurs
             private static void AddressChangedCallback(object stateObject, bool signaled) {
-                lock (globalLock) {
+                DictionaryEntry[] callerArray = null;
+
+                lock (s_globalLock) {
                     //the listener was cancelled, which would only happen if we aren't listening
                     //for more events.
                     s_isPending = false;
@@ -170,9 +184,12 @@ namespace System.Net.NetworkInformation {
 
                     s_isListening = false;
 
-                    // Need to copy the array so the callback can call start and stop
-                    DictionaryEntry[] callerArray = new DictionaryEntry[s_callerArray.Count];
-                    s_callerArray.CopyTo(callerArray, 0);
+                    if (s_callerArray.Count > 0)
+                    {
+                        // Need to copy the array so the callback can call start and stop
+                        callerArray = new DictionaryEntry[s_callerArray.Count];
+                        s_callerArray.CopyTo(callerArray, 0);
+                    }
 
                     try
                     {
@@ -183,18 +200,29 @@ namespace System.Net.NetworkInformation {
                     {
                         if (Logging.On) Logging.Exception(Logging.Web, "AddressChangeListener", "AddressChangedCallback", nie);
                     }
+                }
 
-                    for (int i = 0; i < callerArray.Length; i++)
+                // Release the s_globalLock before calling into user callback.
+                if (callerArray != null)
+                {
+                    // Synchronization dedicated just to the invocation of the callback,
+                    // for back compat reason.
+                    lock (s_protectCallbackLock)
                     {
-                        NetworkAddressChangedEventHandler handler = (NetworkAddressChangedEventHandler) callerArray[i].Key;
-                        ExecutionContext context = (ExecutionContext) callerArray[i].Value;
-                        if (context == null)
+                        Debug.Assert(!Monitor.IsEntered(s_globalLock), "Should not invoke user callback while holding globalLock");
+
+                        foreach (var entry in callerArray)
                         {
-                            handler(null, EventArgs.Empty);
-                        }
-                        else
-                        {
-                            ExecutionContext.Run(context.CreateCopy(), s_runHandlerCallback, handler);
+                            NetworkAddressChangedEventHandler handler = (NetworkAddressChangedEventHandler) entry.Key;
+                            ExecutionContext context = (ExecutionContext) entry.Value;
+                            if (context == null)
+                            {
+                                handler(null, EventArgs.Empty);
+                            }
+                            else
+                            {
+                                ExecutionContext.Run(context.CreateCopy(), s_runHandlerCallback, handler);
+                            }
                         }
                     }
                 }
@@ -219,7 +247,7 @@ namespace System.Net.NetworkInformation {
 
             private static void StartHelper(NetworkAddressChangedEventHandler caller, bool captureContext, StartIPOptions startIPOptions)
             {
-                lock (globalLock) {
+                lock (s_globalLock) {
                     // setup changedEvent and native overlapped struct.
                     if(s_ipv4Socket == null){
                         Socket.InitializeSockets();
@@ -322,7 +350,7 @@ namespace System.Net.NetworkInformation {
             //stop listening
             internal static void Stop(object caller)
             {
-                lock(globalLock) {
+                lock(s_globalLock) {
                     s_callerArray.Remove(caller);
                     if (s_callerArray.Count == 0 && s_isListening) {
                         s_isListening = false;

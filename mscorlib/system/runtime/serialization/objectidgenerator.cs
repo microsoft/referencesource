@@ -35,6 +35,10 @@ namespace System.Runtime.Serialization {
         private static readonly int[] sizes = {
             5, 11, 29, 47, 97, 197, 397, 797, 1597, 3203, 6421, 12853, 25717, 51437,
             102877, 205759, 411527, 823117, 1646237, 3292489, 6584983};
+        private static readonly int[] sizesWithMaxArraySwitch = {
+            5, 11, 29, 47, 97, 197, 397, 797, 1597, 3203, 6421, 12853, 25717, 51437,
+            102877, 205759, 411527, 823117, 1646237, 3292489, 6584983, 13169977, 26339969,
+            52679969, 105359939, 210719881, 421439783 };
     
         // Constructs a new ObjectID generator, initializing all of the necessary variables.
         public ObjectIDGenerator() {
@@ -150,14 +154,17 @@ namespace System.Runtime.Serialization {
             Object[] oldObjs;
             bool found;
             int currSize;
+            
+            // Use the array with more pre-computed prime numbers if the max array switch is on.
+            int[] arr = AppContextSwitches.UseNewMaxArraySize ? sizesWithMaxArraySwitch : sizes;
     
-            for (i=0, currSize=m_currentSize; i<sizes.Length && sizes[i]<=currSize; i++);
-            if (i==sizes.Length) {
+            for (i=0, currSize=m_currentSize; i<arr.Length && arr[i]<=currSize; i++);
+            if (i==arr.Length) {
                 //We just walked off the end of the array, what would you like to do now?
                 //We're pretty much hosed at this point, so just keep going.
                 throw new SerializationException(Environment.GetResourceString("Serialization_TooManyElements"));
             }
-            m_currentSize = sizes[i];
+            m_currentSize = arr[i];
     
             newIds = new long[m_currentSize*numbins];
             newObjs = new Object[m_currentSize*numbins];

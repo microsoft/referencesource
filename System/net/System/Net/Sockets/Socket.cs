@@ -2744,38 +2744,46 @@ namespace System.Net.Sockets {
                 throw new InvalidOperationException(SR.GetString(SR.net_sockets_no_duplicate_async));
             }
 
-            DnsEndPoint dnsEP = remoteEP as DnsEndPoint;
-            if (dnsEP != null) 
+            try
             {
-                if (dnsEP.AddressFamily != AddressFamily.Unspecified && !CanTryAddressFamily(dnsEP.AddressFamily)) 
+                DnsEndPoint dnsEP = remoteEP as DnsEndPoint;
+                if (dnsEP != null)
                 {
-                    throw new NotSupportedException(SR.GetString(SR.net_invalidversion));
+                    if (dnsEP.AddressFamily != AddressFamily.Unspecified && !CanTryAddressFamily(dnsEP.AddressFamily))
+                    {
+                        throw new NotSupportedException(SR.GetString(SR.net_invalidversion));
+                    }
+
+                    return InternalBeginConnectHostName(dnsEP.Host, dnsEP.Port, callback, state);
                 }
-                
-                return InternalBeginConnectHostName(dnsEP.Host, dnsEP.Port, callback, state);
-            }
 
-            if (CanUseConnectEx(remoteEP))
+                if (CanUseConnectEx(remoteEP))
+                {
+                    return BeginConnectEx(remoteEP, true, callback, state);
+                }
+
+                // This will check the permissions for connect.
+                EndPoint endPointSnapshot = remoteEP;
+                SocketAddress socketAddress = CheckCacheRemote(ref endPointSnapshot, true);
+
+                // Flow the context.  No need to lock it since we don't use it until the callback.
+                ConnectAsyncResult asyncResult = new ConnectAsyncResult(this, endPointSnapshot, state, callback);
+                asyncResult.StartPostingAsyncOp(false);
+
+                // Post the connect.
+                DoBeginConnect(endPointSnapshot, socketAddress, asyncResult);
+
+                // We didn't throw, so finish the posting op.  This will call the callback if the operation already completed.
+                asyncResult.FinishPostingAsyncOp(ref Caches.ConnectClosureCache);
+
+                if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", asyncResult);
+                return asyncResult;
+            }
+            catch
             {
-                return BeginConnectEx(remoteEP, true, callback, state);
+                Interlocked.Exchange(ref asyncConnectOperationLock, 0);
+                throw;
             }
-
-            // This will check the permissions for connect.
-            EndPoint endPointSnapshot = remoteEP;
-            SocketAddress socketAddress = CheckCacheRemote(ref endPointSnapshot, true);
-
-            // Flow the context.  No need to lock it since we don't use it until the callback.
-            ConnectAsyncResult asyncResult = new ConnectAsyncResult(this, endPointSnapshot, state, callback);
-            asyncResult.StartPostingAsyncOp(false);
-
-            // Post the connect.
-            DoBeginConnect(endPointSnapshot, socketAddress, asyncResult);
-
-            // We didn't throw, so finish the posting op.  This will call the callback if the operation already completed.
-            asyncResult.FinishPostingAsyncOp(ref Caches.ConnectClosureCache);
-
-            if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", asyncResult);
-            return asyncResult;
         }
 
 
@@ -3094,10 +3102,18 @@ namespace System.Net.Sockets {
                 throw new InvalidOperationException(SR.GetString(SR.net_sockets_no_duplicate_async));
             }
 
-            MultipleAddressConnectAsyncResult result = InternalBeginConnectHostName(host, port, requestCallback, state);
-            
-            if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", result);
-            return result;
+            try
+            {
+                MultipleAddressConnectAsyncResult result = InternalBeginConnectHostName(host, port, requestCallback, state);
+
+                if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", result);
+                return result;
+            }
+            catch
+            {
+                Interlocked.Exchange(ref asyncConnectOperationLock, 0);
+                throw;
+            }
         }
 
         [HostProtection(ExternalThreading=true)]
@@ -3155,21 +3171,29 @@ namespace System.Net.Sockets {
                 throw new InvalidOperationException(SR.GetString(SR.net_sockets_no_duplicate_async));
             }
 
-            // Set up the result to capture the context.  No need for a lock.
-            MultipleAddressConnectAsyncResult result = new MultipleAddressConnectAsyncResult(addresses, port, this, state, requestCallback);
-            result.StartPostingAsyncOp(false);
-
-            if (DoMultipleAddressConnectCallback(PostOneBeginConnect(result), result))
+            try
             {
-                // if it completes synchronously, invoke the callback from here
-                result.InvokeCallback();
+                // Set up the result to capture the context.  No need for a lock.
+                MultipleAddressConnectAsyncResult result = new MultipleAddressConnectAsyncResult(addresses, port, this, state, requestCallback);
+                result.StartPostingAsyncOp(false);
+
+                if (DoMultipleAddressConnectCallback(PostOneBeginConnect(result), result))
+                {
+                    // if it completes synchronously, invoke the callback from here
+                    result.InvokeCallback();
+                }
+
+                // Finished posting async op.  Possibly will call callback.
+                result.FinishPostingAsyncOp(ref Caches.ConnectClosureCache);
+
+                if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", result);
+                return result;
             }
-
-            // Finished posting async op.  Possibly will call callback.
-            result.FinishPostingAsyncOp(ref Caches.ConnectClosureCache);
-
-            if(s_LoggingEnabled)Logging.Exit(Logging.Sockets, this, "BeginConnect", result);
-            return result;
+            catch
+            {
+                Interlocked.Exchange(ref asyncConnectOperationLock, 0);
+                throw;
+            }
         }
 
         // Supports DisconnectEx - this provides completion port IO and support for

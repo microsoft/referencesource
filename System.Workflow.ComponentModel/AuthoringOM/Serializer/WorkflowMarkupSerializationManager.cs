@@ -41,6 +41,8 @@ namespace System.Workflow.ComponentModel.Serialization
         private List<WorkflowMarkupSerializer> extendedPropertiesProviders;
         private Dictionary<XmlQualifiedName, Type> cachedXmlQualifiedNameTypes = new Dictionary<XmlQualifiedName, Type>();
 
+        private int currentContextStackDepth = 0;
+
         public WorkflowMarkupSerializationManager(IDesignerSerializationManager manager)
         {
             if (manager == null)
@@ -65,6 +67,24 @@ namespace System.Workflow.ComponentModel.Serialization
             get
             {
                 return this.serializationManager.Context;
+            }
+        }
+
+        internal void ContextPush(object objectToPush)
+        {
+            if (this.currentContextStackDepth >= AppSettings.XOMLMaximumNestedObjectDepth)
+            {
+                throw new WorkflowMarkupSerializationException(SR.GetString(SR.Error_WorkflowLoadDeserializationFailed));
+            }
+            this.Context.Push(objectToPush);
+            this.currentContextStackDepth++;
+        }
+
+        internal void ContextPop()
+        {
+            if (this.Context.Pop() != null)
+            {
+                this.currentContextStackDepth--;
             }
         }
 

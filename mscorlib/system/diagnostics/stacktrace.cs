@@ -109,12 +109,13 @@ namespace System.Diagnostics {
             if (!fNeedFileInfo)
                 return;
 
-            // For back compat we opt-out of using Portable PDBs before 4.7.2. This will prevent searching for them
-            // on disk, loading them, and adding their source information to diagnostic stack traces. When we first
-            // implemented this in 4.7.1 RTM we regressed microbenchmark performance significantly and did not include
-            // this opt-out. A later fix added this opt-out and brought the performance back much closer to the original
-            // pre 4.7.1 performance.
-            if (AppContextSwitches.IgnorePortablePDBsInStackTraces)
+            // For back compat we opt-out of using Portable PDBs before 4.7.2. See the comments in
+            // RuntimeFeature for more details.
+            // 
+            // Even if our compat policy for enabling the feature changes, make sure that
+            // RuntimeFeature.IsSupported accurately encapsulates that policy. Our API contract with
+            // tools is that we will accurately tell them whether or not Portable PDB is supported.
+            if(!RuntimeFeature.IsSupported(RuntimeFeature.PortablePdb))
                 return;
 
             // Check if this function is being reentered because of an exception in the code below

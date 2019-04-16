@@ -245,8 +245,12 @@ namespace System.Xml {
                 if (prefix == null) {
                     throw new ArgumentException(Res.GetString(Res.Xml_UndefNamespace, ns));
                 }
-                WriteString(prefix);
-                WriteString(":");
+
+                if (prefix.Length > 0)
+                {
+                    WriteString(prefix);
+                    WriteString(":");
+                }
             }
             WriteString(localName);
         }

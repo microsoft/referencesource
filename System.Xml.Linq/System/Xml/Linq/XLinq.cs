@@ -1983,9 +1983,11 @@ namespace System.Xml.Linq
         // entity resolution disabled. The processing of the internal subset is 
         // enabled by default. In order to prevent DoS attacks, the expanded 
         // size of the internal subset is limited to 10 million characters.
+        [SuppressMessage("Microsoft.Security.Xml", "CA3069:ReviewDtdProcessingAssignment", Justification="XmlResolver set to null, entities have expansion limit - additional compat concern")]
         internal static XmlReaderSettings GetXmlReaderSettings(LoadOptions o) {
             XmlReaderSettings rs = new XmlReaderSettings();
-            if ((o & LoadOptions.PreserveWhitespace) == 0) rs.IgnoreWhitespace = true;
+            if ((o & LoadOptions.PreserveWhitespace) == 0)
+                rs.IgnoreWhitespace = true;
             rs.DtdProcessing = DtdProcessing.Parse;
             rs.MaxCharactersFromEntities = (long)1e7;
             rs.XmlResolver = null;

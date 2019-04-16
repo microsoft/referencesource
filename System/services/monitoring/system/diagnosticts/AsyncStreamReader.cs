@@ -238,8 +238,10 @@ namespace System.Diagnostics {
                     }
                 }
                 currentIndex++;
-            }             
-            if (sb[len - 1] == '\r') {
+            }
+            // Protect length as IndexOutOfRangeException was being thrown when less than a
+            // character's worth of bytes was read at the beginning of a line.
+            if (len > 0 && sb[len - 1] == '\r') {
                 bLastCarriageReturn = true;
             }
             // Keep the rest characaters which can't form a new line in string builder.

@@ -1,0 +1,388 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CannotConstructConnectionSegment" xml:space="preserve">
+    <value>Cannot construct line segment between point {0} and point {1}.</value>
+  </data>
+  <data name="CorrelationInitializerNotSupported" xml:space="preserve">
+    <value>Cannot use a query correlation initializer when a message is XmlSerializable.</value>
+  </data>
+  <data name="CreateParameter" xml:space="preserve">
+    <value>Add parameter</value>
+  </data>
+  <data name="DuplicateKeyName" xml:space="preserve">
+    <value>The collection already contains the key '{0}'. Please choose a different key.</value>
+  </data>
+  <data name="EditParametersUndoUnitName" xml:space="preserve">
+    <value>Edit Parameters</value>
+  </data>
+  <data name="ExpressionDefaultText" xml:space="preserve">
+    <value>&lt;Enter an expression&gt;</value>
+  </data>
+  <data name="FCCreateLink" xml:space="preserve">
+    <value>Create Link(s)</value>
+  </data>
+  <data name="FCDeleteLink" xml:space="preserve">
+    <value>Delete Link(s)</value>
+  </data>
+  <data name="FCDeleteShape" xml:space="preserve">
+    <value>Delete Flowchart node</value>
+  </data>
+  <data name="FCFalseBranchExists" xml:space="preserve">
+    <value>False branch already exists.</value>
+  </data>
+  <data name="FCFlowConditionLinkError" xml:space="preserve">
+    <value>Connection can only be from True or False branch.</value>
+  </data>
+  <data name="FCFlowConditionLinksExist" xml:space="preserve">
+    <value>The True and False branches have already been defined.</value>
+  </data>
+  <data name="FCFlowDecisionFalseMarker" xml:space="preserve">
+    <value>False</value>
+  </data>
+  <data name="FCFlowDecisionTrueMarker" xml:space="preserve">
+    <value>True</value>
+  </data>
+  <data name="FCInvalidLink" xml:space="preserve">
+    <value>Cannot connect to the connection point.</value>
+  </data>
+  <data name="FCLinkMove" xml:space="preserve">
+    <value>Move Flowchart Link</value>
+  </data>
+  <data name="FCNextLinkDefined" xml:space="preserve">
+    <value>Cannot create more than one outgoing connection for this activity.</value>
+  </data>
+  <data name="FCTrueBranchExists" xml:space="preserve">
+    <value>True branch already exists.</value>
+  </data>
+  <data name="FlowSwitchCaseRenameEditingScopeDesc" xml:space="preserve">
+    <value>FlowSwitch case rename</value>
+  </data>
+  <data name="FlowSwitchDefaultCaseDisplayNameEditingScopeDesc" xml:space="preserve">
+    <value>FlowSwitch DefaultCaseDisplayName change</value>
+  </data>
+  <data name="InvalidFlowSwitchCaseMessage" xml:space="preserve">
+    <value>FlowSwitch cases must be unique.</value>
+  </data>
+  <data name="NewCaseHint" xml:space="preserve">
+    <value>&lt;Input case here&gt;</value>
+  </data>
+  <data name="NullOrEmptyKeyName" xml:space="preserve">
+    <value>The entered key is invalid</value>
+  </data>
+  <data name="DuplicateCaseKey" xml:space="preserve">
+    <value>A switch case with the key '{0}' already exists. Choose a different key.</value>
+  </data>
+  <data name="ChangeTypeCollectionEditingScopeDesc" xml:space="preserve">
+    <value>Change type collection</value>
+  </data>
+  <data name="UnrootedRequestInReceiveReply" xml:space="preserve">
+    <value>Request in ReceiveReply '{0}' does not belong to the workflow.</value>
+  </data>
+  <data name="UnrootedRequestInSendReply" xml:space="preserve">
+    <value>Request in SendReply '{0}' does not belong to the workflow.</value>
+  </data>
+  <data name="CaseFormat" xml:space="preserve">
+    <value>Case{0}</value>
+  </data>
+  <data name="CannotPasteSendReplyOrReceiveReply" xml:space="preserve">
+    <value>{0} activity is copied to the clipboard. Please paste it in your workflow as appropriate.</value>
+  </data>
+  <data name="FCResizeUndoUnitName" xml:space="preserve">
+    <value>Resize Flowchart</value>
+  </data>
+  <data name="AddNewCase" xml:space="preserve">
+    <value>Add new case</value>
+  </data>
+  <data name="NotSupportedCaseKeyStringConversion" xml:space="preserve">
+    <value>Case key value cannot be converted from/to type string.</value>
+  </data>
+  <data name="DefaultCaseExists" xml:space="preserve">
+    <value>Default case already exists.</value>
+  </data>
+  <data name="EqualityError" xml:space="preserve">
+    <value>Equals() and/or GetHashCode() on type '{0}' were not overridden correctly.</value>
+  </data>
+  <data name="DefineContent" xml:space="preserve">
+    <value>Define...</value>
+  </data>
+  <data name="ViewMessageContent" xml:space="preserve">
+    <value>View message...</value>
+  </data>
+  <data name="ViewParameterContent" xml:space="preserve">
+    <value>View parameter...</value>
+  </data>
+  <data name="ChangeCaseValue" xml:space="preserve">
+    <value>Change Case Value</value>
+  </data>
+  <data name="DelegateArgumentMissing" xml:space="preserve">
+    <value>Expected argument named '{0}' was not found.
+</value>
+  </data>
+  <data name="DelegateArgumentsDirectionalityMismatch" xml:space="preserve">
+    <value>The directionality of activity delegate argument '{0}' in DelegateArguments dictionary is '{1}'. The expected directionality is '{2}'.
+</value>
+  </data>
+  <data name="DelegateInArgumentTypeMismatch" xml:space="preserve">
+    <value>The argument provided for the delegate input named '{0}' had an invalid type.  The delegate input is of type '{1}' and the argument is of type '{2}'.  The argument's type must be coercible to the delegate input's type.
+</value>
+  </data>
+  <data name="DelegateOutArgumentTypeMismatch" xml:space="preserve">
+    <value>The argument provided for the delegate output named '{0}' had an invalid type.  The delegate output is of type '{1}' and the argument is of type '{2}'.  The delegate output's type must be coercible to the argument's type.
+</value>
+  </data>
+  <data name="PropertyReferenceNotResolved" xml:space="preserve">
+    <value>'{0}' cannot be resolved.</value>
+  </data>
+  <data name="PropertyIsNotAnActivityDelegate" xml:space="preserve">
+    <value>'{0}' is not an ActivityDelegate.</value>
+  </data>
+  <data name="WrongNumberOfArgumentsForActivityDelegate" xml:space="preserve">
+    <value>ActivityDelegate arguments don't match. Check your activity configuration to make sure it is in sync with the declared ActivityDelegate.</value>
+  </data>
+  <data name="PropertyReferenceChange" xml:space="preserve">
+    <value>Property Reference Change</value>
+  </data>
+  <data name="CannotCreateLink" xml:space="preserve">
+    <value>Cannot create link.</value>
+  </data>
+  <data name="CannotCreateTransitionFromAncestorToDescendant" xml:space="preserve">
+    <value>Cannot create transition from a state to its descendant.</value>
+  </data>
+  <data name="CannotCreateTransitionToCompositeState" xml:space="preserve">
+    <value>Cannot create transition to a composite state.</value>
+  </data>
+  <data name="CannotSetCompositeStateAsInitialState" xml:space="preserve">
+    <value>Cannot set a composite state as the initial state.</value>
+  </data>
+  <data name="CannotSetFinalStateAsInitialState" xml:space="preserve">
+    <value>Cannot set a final state as the initial state.</value>
+  </data>
+  <data name="ClearInitialState" xml:space="preserve">
+    <value>Clear initial state</value>
+  </data>
+  <data name="TransitionConnectionPointTooltip" xml:space="preserve">
+    <value>Drag a line to create a transition</value>
+  </data>
+  <data name="CreateTransition" xml:space="preserve">
+    <value>Create transition</value>
+  </data>
+  <data name="EditTransitionTooltip" xml:space="preserve">
+    <value>Double-click to edit transition details</value>
+  </data>
+  <data name="ErrorMessageBoxTitle" xml:space="preserve">
+    <value>Workflow Designer</value>
+  </data>
+  <data name="ItemMove" xml:space="preserve">
+    <value>Item Move</value>
+  </data>
+  <data name="MoveLink" xml:space="preserve">
+    <value>Move link</value>
+  </data>
+  <data name="StateMachineResize" xml:space="preserve">
+    <value>Resize StateMachine</value>
+  </data>
+  <data name="SetInitialState" xml:space="preserve">
+    <value>Set initial state</value>
+  </data>
+  <data name="SharedTriggerToolTip" xml:space="preserve">
+    <value>Drag a line to create a new transition that shares the same trigger</value>
+  </data>
+  <data name="NotSupportedEncoding" xml:space="preserve">
+    <value>The Encoding with code page '{0}' is not supported.</value>
+  </data>
+  <data name="ConnectionNotFoundInConfig" xml:space="preserve">
+    <value>ConnectionConfigurationName '{0}' does not exist in configuration file.</value>
+  </data>
+  <data name="CustomConnectionStringLabel" xml:space="preserve">
+    <value>(Custom)</value>
+  </data>
+  <data name="EditingCommand" xml:space="preserve">
+    <value>Editing Command</value>
+  </data>
+  <data name="EditingConnectionSettings" xml:space="preserve">
+    <value>Editing Connection Settings</value>
+  </data>
+  <data name="EditingParameters" xml:space="preserve">
+    <value>Editing Parameters</value>
+  </data>
+  <data name="ParameterDialogTitle" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="StateResize" xml:space="preserve">
+    <value>Resize State</value>
+  </data>
+  <data name="AutoConnect" xml:space="preserve">
+    <value>Connect items automatically</value>
+  </data>
+  <data name="FillDelegateArguments" xml:space="preserve">
+    <value>Fill Delegate Arguments</value>
+  </data>
+  <data name="AutoSplit" xml:space="preserve">
+    <value>Split connector automatically</value>
+  </data>
+  <data name="ReorderItems" xml:space="preserve">
+    <value>Reorder items</value>
+  </data>
+  <data name="StateLinkButtonToolTip" xml:space="preserve">
+    <value>Go to {0}</value>
+  </data>
+  <data name="EmptyName" xml:space="preserve">
+    <value>(empty)</value>
+  </data>
+  <data name="NullName" xml:space="preserve">
+    <value>(null)</value>
+  </data>
+  <data name="InitialStateConnectionPointTooltip" xml:space="preserve">
+    <value>Drag a line to connect to the initial state</value>
+  </data>
+  <data name="PropertyIsNotAConcreteActivityDelegate" xml:space="preserve">
+    <value>'{0}' is not a concrete type of ActivityDelegate.</value>
+  </data>
+  <data name="ConnectionAutomationPropertiesName" xml:space="preserve">
+    <value>Transition</value>
+  </data>
+  <data name="EditStateToolTip" xml:space="preserve">
+    <value>Double-click to edit state details.</value>
+  </data>
+  <data name="PasteTransitionToolTip" xml:space="preserve">
+    <value>Select and press Ctrl-V to paste the transition.</value>
+  </data>
+  <data name="CopyTransitionToolTip" xml:space="preserve">
+    <value>Select and press Ctrl-C to copy the transition.</value>
+  </data>
+  <data name="AddActivityHintText" xml:space="preserve">
+    <value>Add an activity</value>
+  </data>
+  <data name="PasteTransitionOnFinalState" xml:space="preserve">
+    <value>Cannot paste the transition if one of the selected source states is a Final state.</value>
+  </data>
+  <data name="PasteTransitionOnNonStateItem" xml:space="preserve">
+    <value>Cannot paste the transition if the selection contains any item that is not a State.</value>
+  </data>
+  <data name="PasteTransitionWithoutAvailableConnectionPoints" xml:space="preserve">
+    <value>Cannot paste the transition because '{0}' has all connection points occupied.</value>
+  </data>
+  <data name="PasteTransitionWithoutDestinationState" xml:space="preserve">
+    <value>Cannot paste the transition if the destination state of the copied transition is removed or not in the StateMachine.</value>
+  </data>
+  <data name="ParallelSeparatorAutomationName" xml:space="preserve">
+    <value>Parallel Separator</value>
+  </data>
+</root>

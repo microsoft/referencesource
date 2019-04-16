@@ -103,7 +103,7 @@ namespace System.Threading
         // We use a SafeHandle to ensure that the native timer is destroyed when the AppDomain is unloaded.
         //
         [SecurityCritical]
-        class AppDomainTimerSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
+        internal class AppDomainTimerSafeHandle : SafeHandleZeroOrMinusOneIsInvalid
         {
             public AppDomainTimerSafeHandle()
                 : base(true)
@@ -163,7 +163,7 @@ namespace System.Threading
             {
                 Contract.Assert(!m_isAppDomainTimerScheduled);
 
-                m_appDomainTimer = CreateAppDomainTimer(actualDuration);
+                m_appDomainTimer = CreateAppDomainTimer(actualDuration, 0);
                 if (!m_appDomainTimer.IsInvalid)
                 {
                     m_isAppDomainTimerScheduled = true;
@@ -196,29 +196,37 @@ namespace System.Threading
         // The VM calls this when the native timer fires.
         //
         [SecuritySafeCritical]
-        internal static void AppDomainTimerCallback()
+        internal static void AppDomainTimerCallback(int id)
         {
-            Instance.FireNextTimers();
+            if (Timer.UseNetCoreTimer)
+            {
+                NetCore.TimerQueue.AppDomainTimerCallback(id);
+            }
+            else
+            {
+                Contract.Assert(id == 0);
+                Instance.FireNextTimers();
+            }
         }
 
         [System.Security.SecurityCritical]
         [ResourceExposure(ResourceScope.None)]
         [DllImport(JitHelpers.QCall, CharSet = CharSet.Unicode)]
         [SuppressUnmanagedCodeSecurity]
-        static extern AppDomainTimerSafeHandle CreateAppDomainTimer(uint dueTime);
+        internal static extern AppDomainTimerSafeHandle CreateAppDomainTimer(uint dueTime, int id);
 
         [System.Security.SecurityCritical]
         [ResourceExposure(ResourceScope.None)]
         [DllImport(JitHelpers.QCall, CharSet = CharSet.Unicode)]
         [SuppressUnmanagedCodeSecurity]
-        static extern bool ChangeAppDomainTimer(AppDomainTimerSafeHandle handle, uint dueTime);
+        internal static extern bool ChangeAppDomainTimer(AppDomainTimerSafeHandle handle, uint dueTime);
 
         [System.Security.SecurityCritical]
         [ResourceExposure(ResourceScope.None)]
         [DllImport(JitHelpers.QCall, CharSet = CharSet.Unicode)]
         [SuppressUnmanagedCodeSecurity]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
-        static extern bool DeleteAppDomainTimer(IntPtr handle);
+        internal static extern bool DeleteAppDomainTimer(IntPtr handle);
 
         #endregion
 
@@ -734,11 +742,14 @@ namespace System.Threading
     //
     sealed class TimerHolder
     {
-        internal TimerQueueTimer m_timer;
+        private object m_timer;
         
-        public TimerHolder(TimerQueueTimer timer) 
-        { 
-            m_timer = timer; 
+        public TimerHolder(object timer)
+        {
+            Contract.Assert(timer is TimerQueueTimer || timer is NetCore.TimerQueueTimer);
+            Contract.Assert((timer is NetCore.TimerQueueTimer) == Timer.UseNetCoreTimer);
+
+            m_timer = timer;
         }
 
         ~TimerHolder() 
@@ -756,22 +767,64 @@ namespace System.Threading
             if (Environment.HasShutdownStarted || AppDomain.CurrentDomain.IsFinalizingForUnload())
                 return;
 
-            m_timer.Close(); 
+            if (Timer.UseNetCoreTimer)
+            {
+                NetCoreTimer.Close();
+            }
+            else
+            {
+                NetFxTimer.Close();
+            }
         }
+
+        private TimerQueueTimer NetFxTimer
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                Contract.Assert(!Timer.UseNetCoreTimer);
+                Contract.Assert(m_timer is TimerQueueTimer);
+
+                return (TimerQueueTimer)m_timer;
+            }
+        }
+
+        private NetCore.TimerQueueTimer NetCoreTimer
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                Contract.Assert(Timer.UseNetCoreTimer);
+                Contract.Assert(m_timer is NetCore.TimerQueueTimer);
+
+                return (NetCore.TimerQueueTimer)m_timer;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Change(uint dueTime, uint period) =>
+            Timer.UseNetCoreTimer ? NetCoreTimer.Change(dueTime, period) : NetFxTimer.Change(dueTime, period);
 
         public void Close()
         {
-            m_timer.Close();
+            if (Timer.UseNetCoreTimer)
+            {
+                NetCoreTimer.Close();
+            }
+            else
+            {
+                NetFxTimer.Close();
+            }
+
             GC.SuppressFinalize(this);
         }
 
         public bool Close(WaitHandle notifyObject)
         {
-            bool result = m_timer.Close(notifyObject);
+            bool result = Timer.UseNetCoreTimer ? NetCoreTimer.Close(notifyObject) : NetFxTimer.Close(notifyObject);
             GC.SuppressFinalize(this);
             return result;
         }
-
     }
 
 
@@ -783,6 +836,8 @@ namespace System.Threading
     public sealed class Timer : IDisposable
 #endif // FEATURE_REMOTING
     {
+        internal static readonly bool UseNetCoreTimer = AppContextSwitches.UseNetCoreTimer;
+
         private const UInt32 MAX_SUPPORTED_TIMEOUT = (uint)0xfffffffe;
 
         private TimerHolder m_timer;
@@ -883,19 +938,44 @@ namespace System.Threading
                 throw new ArgumentNullException("TimerCallback");
             Contract.EndContractBlock();
 
-            m_timer = new TimerHolder(new TimerQueueTimer(callback, state, dueTime, period, ref stackMark));
+            object timer;
+            if (UseNetCoreTimer)
+            {
+                // As of https://github.com/dotnet/coreclr/pull/18670, NetCore allows the caller to specify the value of
+                // 'flowExecutionContext' and that change has not been ported to NetFx. The old behavior is preserved here.
+                timer = new NetCore.TimerQueueTimer(callback, state, dueTime, period, flowExecutionContext: true, stackMark: ref stackMark);
+            }
+            else
+            {
+                timer = new TimerQueueTimer(callback, state, dueTime, period, ref stackMark);
+            }
+            m_timer = new TimerHolder(timer);
         }
 
         [SecurityCritical]
         internal static void Pause()
         {
-            TimerQueue.Instance.Pause();
+            if (UseNetCoreTimer)
+            {
+                NetCore.TimerQueue.PauseAll();
+            }
+            else
+            {
+                TimerQueue.Instance.Pause();
+            }
         }
 
         [SecurityCritical]
         internal static void Resume()
         {
-            TimerQueue.Instance.Resume();
+            if (UseNetCoreTimer)
+            {
+                NetCore.TimerQueue.ResumeAll();
+            }
+            else
+            {
+                TimerQueue.Instance.Resume();
+            }
         }
      
         public bool Change(int dueTime, int period)
@@ -906,7 +986,7 @@ namespace System.Threading
                 throw new ArgumentOutOfRangeException("period",Environment.GetResourceString("ArgumentOutOfRange_NeedNonNegOrNegative1"));
             Contract.EndContractBlock();
 
-            return m_timer.m_timer.Change((UInt32)dueTime, (UInt32)period);
+            return m_timer.Change((UInt32)dueTime, (UInt32)period);
         }
 
         public bool Change(TimeSpan dueTime, TimeSpan period)
@@ -917,7 +997,7 @@ namespace System.Threading
         [CLSCompliant(false)]
         public bool Change(UInt32 dueTime, UInt32 period)
         {
-            return m_timer.m_timer.Change(dueTime, period);
+            return m_timer.Change(dueTime, period);
         }
 
         public bool Change(long dueTime, long period)
@@ -932,7 +1012,7 @@ namespace System.Threading
                 throw new ArgumentOutOfRangeException("period", Environment.GetResourceString("ArgumentOutOfRange_PeriodTooLarge"));
             Contract.EndContractBlock();
 
-            return m_timer.m_timer.Change((UInt32)dueTime, (UInt32)period);
+            return m_timer.Change((UInt32)dueTime, (UInt32)period);
         }
     
         public bool Dispose(WaitHandle notifyObject)

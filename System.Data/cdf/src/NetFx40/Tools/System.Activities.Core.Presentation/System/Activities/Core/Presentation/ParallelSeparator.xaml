@@ -1,0 +1,36 @@
+﻿<UserControl x:Uid="ParallelSeparatorControl" x:Class="System.Activities.Core.Presentation.ParallelSeparator"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Name="ParallelSeparatorControl"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    HorizontalAlignment="Stretch" Background="Transparent" MinWidth="40" MinHeight="40">
+
+    <UserControl.Resources>
+        <Storyboard x:Uid="Storyboard_1" x:Key="Expand">
+            <DoubleAnimationUsingKeyFrames x:Uid="DoubleAnimationUsingKeyFrames_1" BeginTime="00:00:00" Storyboard.TargetName="grid" Storyboard.TargetProperty="(FrameworkElement.Width)">
+                <SplineDoubleKeyFrame x:Uid="SplineDoubleKeyFrame_1" KeyTime="00:00:00.1200000" Value="80"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Uid="Storyboard_2" x:Key="Collapse">
+            <DoubleAnimationUsingKeyFrames x:Uid="DoubleAnimationUsingKeyFrames_2" BeginTime="00:00:00" Storyboard.TargetName="grid" Storyboard.TargetProperty="(FrameworkElement.Width)">
+                <SplineDoubleKeyFrame x:Uid="SplineDoubleKeyFrame_2" KeyTime="00:00:00" Value="80"/>
+                <SplineDoubleKeyFrame x:Uid="SplineDoubleKeyFrame_3" KeyTime="00:00:00.1200000" Value="40"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </UserControl.Resources>
+    <UserControl.Triggers>
+        <EventTrigger x:Uid="EventTrigger_3" RoutedEvent="DragDrop.Drop">
+            <BeginStoryboard x:Uid="Collapse_BeginStoryboardOnDrop" x:Name="Collapse_BeginStoryboardOnDrop" Storyboard="{StaticResource Collapse}"/>
+        </EventTrigger>
+        <EventTrigger x:Uid="EventTrigger_4" RoutedEvent="FrameworkElement.Loaded"/>
+    </UserControl.Triggers>
+  <Grid x:Uid="grid" Width="40" Name="grid">
+    <Path   x:Uid="Path_1" HorizontalAlignment="Left"  Margin="12,0,0,0" Stretch="Fill" StrokeMiterLimit="2.75" Stroke="#FFA8B3C2" Fill="#FFFFFFFF" Data="F1 M 675.738,744.979L 665.7,758.492L 655.66,744.979L 675.738,744.979 Z " Width="16" Height="10" />
+    <Path   x:Uid="Path_2" HorizontalAlignment="Right" Margin="0,0,12,0" Stretch="Fill" StrokeMiterLimit="2.75" Stroke="#FFA8B3C2" Fill="#FFFFFFFF" Data="F1 M 675.738,744.979L 665.7,758.492L 655.66,744.979L 675.738,744.979 Z " Width="16" Height="10" />
+    <Rectangle x:Uid="dropTarget" x:Name="dropTarget" Fill="#FFE9ECEE" Width="10" Visibility="Hidden"/>
+  </Grid>
+</UserControl>

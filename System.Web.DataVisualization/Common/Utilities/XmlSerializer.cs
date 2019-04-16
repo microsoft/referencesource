@@ -695,7 +695,10 @@ using System.Security;
 			// Create XML text reader
 			byte[]	buffer = new byte[1000];
 			MemoryStream imageStream = new MemoryStream();
-			XmlTextReader textReader = new XmlTextReader(new StringReader("<base64>" + data + "</base64>"));
+			XmlTextReader textReader = new XmlTextReader(new StringReader("<base64>" + data + "</base64>"))
+            {
+                DtdProcessing = DtdProcessing.Ignore
+            };
 
 			// Read tags and BASE64 encoded data
 			textReader.Read();

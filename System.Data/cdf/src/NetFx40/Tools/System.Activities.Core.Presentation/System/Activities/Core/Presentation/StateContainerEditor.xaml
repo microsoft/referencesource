@@ -1,0 +1,48 @@
+﻿<UserControl x:Uid="stateContainerEditor" x:Class="System.Activities.Core.Presentation.StateContainerEditor"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:sap="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    x:Name="stateContainerEditor" 
+    SnapsToDevicePixels="True">
+    <UserControl.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid x:Uid="stateContainerGrid" x:Name="stateContainerGrid" Width="{Binding Path=StateContainerWidth}" Height="{Binding Path=StateContainerHeight}"
+          Background="Transparent" MouseLeave="OnStateContainerGridMouseLeave" MouseMove="OnStateContainerGridMouseMove" PreviewMouseMove="OnStateContainerGridPreviewMouseMove"
+          PreviewMouseUp="OnStateContainerGridPreviewMouseUp" KeyDown="OnStateContainerGridKeyDown" PreviewMouseDown="OnStateContainerGridPreviewMouseDown"
+          DragOver="OnStateContainerGridDragOver" DragEnter="OnStateContainerGridDragEnter" Drop="OnStateContainerGridDrop" AllowDrop="True" >
+        <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_1" Height="*"/>
+            <RowDefinition x:Uid="RowDefinition_2" Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Uid="ColumnDefinition_1" Width="*"/>
+            <ColumnDefinition x:Uid="ColumnDefinition_2" Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <local:StateMachineFreeFormPanel x:Uid="panel" x:Name="panel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding Path=StateContainerWidth}" Height="{Binding Path=StateContainerHeight}" Background="transparent" Disabled="{Binding IsReadOnly}" MinWidth="{Binding Path=PanelMinWidth}" MinHeight="{Binding Path=PanelMinHeight}" AutoConnectContainer="{Binding ElementName=stateContainerEditor}"/>
+        <local:StateContainerResizeGrip x:Uid="local:ResizeGrip_1" Visibility="Visible" Grid.Row="1" Grid.Column="1" Template="{StaticResource ResizeGripDefaultTemplate}" ParentStateContainerEditor="{Binding ElementName=stateContainerEditor}" Icon="{x:Static sap:WorkflowDesignerIcons+DesignerItems.ResizeGrip}" Focusable="false" Disabled="{Binding Path=IsReadOnly}" AutomationProperties.AutomationId="ResizeGrip">
+            <local:StateContainerResizeGrip.Style>
+                <Style x:Uid="Style_1" TargetType="{x:Type local:StateContainerResizeGrip}">
+                    <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=IsStateMachineContainer}" Value="False">
+                               <Setter x:Uid="Setter_4" Property="Opacity" Value="0.5"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>    
+            </local:StateContainerResizeGrip.Style>
+        </local:StateContainerResizeGrip>
+    </Grid>
+</UserControl>
+
+

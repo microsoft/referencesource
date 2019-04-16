@@ -245,9 +245,26 @@ namespace System.ServiceModel.Dispatcher
             int offset = this.MessageInspectorCorrelationOffset;
             try
             {
+                bool outputTiming = DS.MessageInspectorIsEnabled();
+                Stopwatch sw = null;
+                if (outputTiming)
+                {
+                    sw = new Stopwatch();
+                }
+
                 for (int i = 0; i < this.messageInspectors.Length; i++)
                 {
+                    if (outputTiming)
+                    {
+                        sw.Restart();
+                    }
+
                     rpc.Correlation[offset + i] = this.messageInspectors[i].AfterReceiveRequest(ref rpc.Request, (IClientChannel)rpc.Channel.Proxy, rpc.InstanceContext);
+                    if (outputTiming)
+                    {
+                        DS.DispatchMessageInspectorAfterReceive(this.messageInspectors[i].GetType(), sw.Elapsed);
+                    }
+
                     if (TD.MessageInspectorAfterReceiveInvokedIsEnabled())
                     {
                         TD.MessageInspectorAfterReceiveInvoked(rpc.EventTraceActivity, this.messageInspectors[i].GetType().FullName);
@@ -279,6 +296,13 @@ namespace System.ServiceModel.Dispatcher
         internal void BeforeSendReplyCore(ref MessageRpc rpc, ref Exception exception, ref bool thereIsAnUnhandledException)
         {
             int offset = this.MessageInspectorCorrelationOffset;
+            bool outputTiming = DS.MessageInspectorIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = new Stopwatch();
+            }
+
             for (int i = 0; i < this.messageInspectors.Length; i++)
             {
                 try
@@ -286,7 +310,17 @@ namespace System.ServiceModel.Dispatcher
                     Message originalReply = rpc.Reply;
                     Message reply = originalReply;
 
+                    if (outputTiming)
+                    {
+                        sw.Restart();
+                    }
+
                     this.messageInspectors[i].BeforeSendReply(ref reply, rpc.Correlation[offset + i]);
+                    if (outputTiming)
+                    {
+                        DS.DispatchMessageInspectorBeforeSend(this.messageInspectors[i].GetType(), sw.Elapsed);
+                    }
+
                     if (TD.MessageInspectorBeforeSendInvokedIsEnabled())
                     {
                         TD.MessageInspectorBeforeSendInvoked(rpc.EventTraceActivity, this.messageInspectors[i].GetType().FullName);
@@ -847,6 +881,13 @@ namespace System.ServiceModel.Dispatcher
         internal void ProcessMessage1(ref MessageRpc rpc)
         {
             rpc.NextProcessor = this.processMessage11;
+
+            // Throttling events must be emitted in dispatch runtime otherwise the
+            // receiver of the event won't have the OperationContext set.
+            if (DS.ServiceThrottleIsEnabled())
+            {
+                DS.Throttled(rpc.Request);
+            }
 
             if (this.receiveContextEnabledChannel)
             {
@@ -1760,7 +1801,20 @@ namespace System.ServiceModel.Dispatcher
 
             public DispatchOperationRuntime GetOperation(ref Message request)
             {
+                bool outputTiming = DS.OperationSelectorIsEnabled();
+                Stopwatch sw = null;
+                if (outputTiming)
+                {
+                    sw = Stopwatch.StartNew();
+                }
+
                 string operationName = this.selector.SelectOperation(ref request);
+
+                if (outputTiming)
+                {
+                    DS.DispatchSelectOperation(this.selector.GetType(), operationName, sw.Elapsed);
+                }
+
                 DispatchOperationRuntime operation = null;
                 if (this.map.TryGetValue(operationName, out operation))
                 {

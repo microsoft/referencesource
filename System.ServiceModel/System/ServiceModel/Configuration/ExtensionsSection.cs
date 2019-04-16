@@ -48,6 +48,7 @@ namespace System.ServiceModel.Configuration
             this.BehaviorExtensions.Add(new ExtensionElement(ConfigurationStrings.DispatcherSynchronizationSectionName, typeof(DispatcherSynchronizationElement).AssemblyQualifiedName));
             this.BehaviorExtensions.Add(new ExtensionElement(ConfigurationStrings.ServiceMetadataPublishingSectionName, typeof(ServiceMetadataPublishingElement).AssemblyQualifiedName));
             this.BehaviorExtensions.Add(new ExtensionElement(ConfigurationStrings.ServiceDebugSectionName, typeof(ServiceDebugElement).AssemblyQualifiedName));
+            this.BehaviorExtensions.Add(new ExtensionElement(ConfigurationStrings.ServiceHealthSectionName, typeof(ServiceHealthElement).AssemblyQualifiedName));
             this.BehaviorExtensions.Add(new ExtensionElement(ConfigurationStrings.ServiceAuthenticationManagerSectionName, typeof(ServiceAuthenticationElement).AssemblyQualifiedName));
             this.BehaviorExtensions.Add(new ExtensionElement(ConfigurationStrings.ServiceAuthorizationSectionName, typeof(ServiceAuthorizationElement).AssemblyQualifiedName));
             this.BehaviorExtensions.Add(new ExtensionElement(ConfigurationStrings.ServiceSecurityAuditSectionName, typeof(ServiceSecurityAuditElement).AssemblyQualifiedName));

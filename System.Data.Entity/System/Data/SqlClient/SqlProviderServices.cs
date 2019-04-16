@@ -19,6 +19,7 @@ namespace System.Data.SqlClient {
     using System.Diagnostics;
     using System.IO;
     using System.Globalization;
+    using Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// The DbProviderServices implementation for the SqlClient provider for SQL Server.
@@ -80,6 +81,7 @@ namespace System.Data.SqlClient {
         /// <param name="providerManifest">provider manifest</param>
         /// <param name="commandTree">command tree for the statement</param>
         /// <returns>a command object</returns>
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="By design, it is up to the caller to pass safe code")]
         private DbCommand CreateCommand(DbProviderManifest providerManifest, DbCommandTree commandTree) {
             EntityUtil.CheckArgumentNull(providerManifest, "providerManifest");
             EntityUtil.CheckArgumentNull(commandTree, "commandTree");
@@ -1036,6 +1038,7 @@ namespace System.Data.SqlClient {
             return SqlDdlBuilder.CreateObjectsScript(storeItemCollection, createSchemas: version != SqlVersion.Sql8);
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="By design, it is up to the caller to pass safe code")]
         private static SqlCommand CreateCommand(SqlConnection sqlConnection, string commandText, int? commandTimeout)
         {
             Debug.Assert(sqlConnection != null);

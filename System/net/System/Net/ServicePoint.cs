@@ -62,6 +62,8 @@ namespace System.Net {
 
         private readonly TimerThread.Callback m_IdleConnectionGroupTimeoutDelegate;
 
+        private readonly object m_ExpiringTimerLock = new object();
+
 #if !FEATURE_PAL
         private object m_ServerCertificateOrBytes;
         private object m_ClientCertificateOrBytes;
@@ -511,7 +513,7 @@ namespace System.Net {
                 if (value == m_IdlingQueue.Duration)
                     return;
 
-                lock(this) {
+                lock (m_ExpiringTimerLock) {
                     // Make sure we can cancel the existing one.  If not, we already idled out.
                     if (m_ExpiringTimer == null || m_ExpiringTimer.Cancel())
                     {
@@ -976,8 +978,11 @@ namespace System.Net {
 
         internal void IncrementConnection() {
             GlobalLog.Enter("ServicePoint#" + ValidationHelper.HashString(this) + "::IncrementConnection()", m_CurrentConnections.ToString());
-            // we need these to be atomic operations
-            lock(this) {
+
+            // We need these to be atomic operations.
+            lock (m_ExpiringTimerLock) {
+                // The private m_CurrentConnections can only be modified at two places, IncrementConnection() and DecrementConnection().
+                // Both critical sections are protected by lock (m_ExpiringTimerLock), so there will not be a ---- on changing m_CurrentConnections.
                 m_CurrentConnections++;
                 if (m_CurrentConnections==1) {
                     GlobalLog.Assert(m_ExpiringTimer != null, "ServicePoint#{0}::IncrementConnection|First connection active, but ServicePoint wasn't idle.", ValidationHelper.HashString(this));
@@ -1006,8 +1011,10 @@ namespace System.Net {
             GlobalLog.ThreadContract(ThreadKinds.Unknown, ThreadKinds.SafeSources | ThreadKinds.Timer, "ServicePoint#" + ValidationHelper.HashString(this) + "::DecrementConnection");
             GlobalLog.Enter("ServicePoint#" + ValidationHelper.HashString(this) + "::DecrementConnection()", m_CurrentConnections.ToString());
 
-            // we need these to be atomic operations
-            lock(this) {
+            // We need these to be atomic operations.
+            lock (m_ExpiringTimerLock) {
+                // The private m_CurrentConnections can only be modified at two places, IncrementConnection() and DecrementConnection().
+                // Both critical sections are protected by lock (m_ExpiringTimerLock), so there will not be a ---- on changing m_CurrentConnections.
                 m_CurrentConnections--;
                 if (m_CurrentConnections==0) {
                     GlobalLog.Assert(m_ExpiringTimer == null, "ServicePoint#{0}::DecrementConnection|Expiring timer set on non-idle ServicePoint.", ValidationHelper.HashString(this));
@@ -1452,8 +1459,18 @@ namespace System.Net {
                                     BindUsingDelegate(attemptSocket, remoteIPEndPoint);
                                 }
                             }
-
-                            attemptSocket.InternalConnect(remoteIPEndPoint);
+                            bool result = false;
+                            SafeCloseSocket safeHandle = attemptSocket.SafeHandle;
+                            try {
+                                // prevent socket from being disposed while connecting
+                                if (ServicePointManager.UseSafeSynchronousClose) {
+                                    safeHandle.DangerousAddRef(ref result);
+                                }
+                                attemptSocket.InternalConnect(remoteIPEndPoint);
+                            }
+                            finally {
+                                if (result) safeHandle.DangerousRelease();
+                            }
                         }
                         socket  = attemptSocket;
                         address = ipAddressInfo;

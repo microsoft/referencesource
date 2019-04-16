@@ -1,0 +1,38 @@
+﻿<swd:WorkflowViewElement x:Uid="swd:WorkflowViewElement_1" x:Class="System.ServiceModel.Presentation.ServiceDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sw="clr-namespace:System.Activities;assembly=System.Activities"
+    MinHeight="50" 
+    MinWidth="150"	
+    Margin="5"
+    x:ClassModifier="internal" >
+
+  <swd:WorkflowViewElement.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1" >
+      <ResourceDictionary.MergedDictionaries>
+        <swd:CachedResourceDictionaryExtension x:Uid="swd:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/StringResourceDictionary.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </swd:WorkflowViewElement.Resources>
+
+    <Grid x:Uid="Grid_1" Background="{DynamicResource DesignerViewBackground}">
+      <Border x:Uid="Border_1" BorderBrush="LightGray" BorderThickness="0" Padding="10" CornerRadius="1">
+        <swd:WorkflowItemPresenter Grid.Row="0" x:Uid="swd:WorkflowItemPresenter_1" Item="{Binding Path=ModelItem.Body, Mode=TwoWay}" Background="Transparent" HintText="{DynamicResource dropActivityHint}" AllowedItemType="{x:Type sw:Activity}"
+                                   IsDefaultContainer="True">
+          <swd:WorkflowItemPresenter.Style>
+            <Style x:Uid="Style_1" TargetType="{x:Type swd:WorkflowItemPresenter}">
+              <Style.Triggers>
+                <Trigger x:Uid="Trigger_1" Property="Item" Value="{x:Null}">
+                  <Setter x:Uid="Setter_2" Property="MinHeight" Value="400" />
+                  <Setter x:Uid="Setter_3" Property="MinWidth" Value="400" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </swd:WorkflowItemPresenter.Style>        
+        </swd:WorkflowItemPresenter>
+         
+      </Border>
+    </Grid>
+
+</swd:WorkflowViewElement>

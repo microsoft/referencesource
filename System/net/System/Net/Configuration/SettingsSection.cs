@@ -47,6 +47,7 @@ namespace System.Net.Configuration
             this.properties.Add(this.performanceCounters);
             this.properties.Add(this.httpListener);
             this.properties.Add(this.webUtility);
+            this.properties.Add(this.windowsAuthentication);
         }
 
 
@@ -99,6 +100,12 @@ namespace System.Net.Configuration
             get { return (WebUtilityElement)this[this.webUtility]; }
         }
 
+        [ConfigurationProperty(ConfigurationStrings.WindowsAuthentication)]
+        public WindowsAuthenticationElement WindowsAuthentication
+        {
+            get { return (WindowsAuthenticationElement)this[this.windowsAuthentication]; }
+        }
+
         protected override ConfigurationPropertyCollection Properties
         {
             get { return this.properties; }
@@ -137,6 +144,10 @@ namespace System.Net.Configuration
         readonly ConfigurationProperty webUtility =
             new ConfigurationProperty(ConfigurationStrings.WebUtility, typeof(WebUtilityElement), null,
                 ConfigurationPropertyOptions.None);
+
+        readonly ConfigurationProperty windowsAuthentication =
+            new ConfigurationProperty(ConfigurationStrings.WindowsAuthentication, typeof(WindowsAuthenticationElement), null,
+                ConfigurationPropertyOptions.None);
     }
 
     internal sealed class SettingsSectionInternal
@@ -164,11 +175,13 @@ namespace System.Net.Configuration
             this.maximumErrorResponseLength = section.HttpWebRequest.MaximumErrorResponseLength;
             this.useUnsafeHeaderParsing = section.HttpWebRequest.UseUnsafeHeaderParsing;
             this.useNagleAlgorithm = section.ServicePointManager.UseNagleAlgorithm;
+            this.autoConfigUrlRetryInterval = section.WebProxyScript.AutoConfigUrlRetryInterval;
             ts = section.WebProxyScript.DownloadTimeout;
             this.downloadTimeout = (ts == TimeSpan.MaxValue || ts == TimeSpan.Zero) ? Timeout.Infinite : (int) ts.TotalMilliseconds;
             this.performanceCountersEnabled = section.PerformanceCounters.Enabled;
             this.httpListenerUnescapeRequestUrl = section.HttpListener.UnescapeRequestUrl;
             this.httpListenerTimeouts = section.HttpListener.Timeouts.GetTimeouts();
+            this.defaultCredentialsHandleCacheSize = section.WindowsAuthentication.DefaultCredentialsHandleCacheSize;
 
             // <webUtility> element
             WebUtilityElement webUtilityElement = section.WebUtility;
@@ -223,6 +236,11 @@ namespace System.Net.Configuration
             get { return this.alwaysUseCompletionPortsForConnect; }
         }
 
+        internal int AutoConfigUrlRetryInterval
+        {
+            get { return this.autoConfigUrlRetryInterval; }
+        }
+
         internal bool CheckCertificateName
         {
             get { return this.checkCertificateName; }
@@ -232,6 +250,12 @@ namespace System.Net.Configuration
         {
             get { return this.checkCertificateRevocationList; }
             set { this.checkCertificateRevocationList = value; }
+        }
+
+        internal int DefaultCredentialsHandleCacheSize
+        {
+            get { return this.defaultCredentialsHandleCacheSize; }
+            set { this.defaultCredentialsHandleCacheSize = value; }
         }
 
         internal int DnsRefreshTimeout
@@ -332,6 +356,8 @@ namespace System.Net.Configuration
         bool alwaysUseCompletionPortsForConnect;
         bool checkCertificateName;
         bool checkCertificateRevocationList;
+        int defaultCredentialsHandleCacheSize;
+        int autoConfigUrlRetryInterval;
         int downloadTimeout;
         int dnsRefreshTimeout;
         bool enableDnsRoundRobin;

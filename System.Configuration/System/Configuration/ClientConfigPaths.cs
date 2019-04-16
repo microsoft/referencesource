@@ -19,6 +19,7 @@ namespace System.Configuration {
     using System.Text;
     using System.Globalization;
     using Microsoft.Win32;
+    using Diagnostics.CodeAnalysis;
 
     class ClientConfigPaths {
         internal const string       UserConfigFilename = "user.config";
@@ -409,6 +410,8 @@ namespace System.Configuration {
             return o;
         }
 
+        [SuppressMessage("Microsoft.Security.Cryptography", "CA5354:SHA1CannotBeUsed",
+            Justification = "Input for the SHA1 hash computation is safe, it is a Strong Name, a Url or an Exe Path, and comes from Assembly.GetEntryAssembly(); or from AppDomain.CurrentDomain.Evidence. This hash is used to persist application settings between application runs, if we change algorithm, applications that rely on this feature will loose user settings.")]
         private static String GetHash(Stream s) {
             byte[] hash;
 

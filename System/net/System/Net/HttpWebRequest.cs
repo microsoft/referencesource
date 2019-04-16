@@ -145,6 +145,8 @@ namespace System.Net {
         // Holds a WriteStream result to be processed by GetResponse.
         private object                  m_PendingReturnResult;
 
+        private Connection              m_TunnelConnection;
+
         // Read and Write async results - corspond to BeginGetResponse(read), and BeginGetRequestStream(write)
         private LazyAsyncResult         _WriteAResult;
         private LazyAsyncResult         _ReadAResult;
@@ -330,6 +332,17 @@ namespace System.Net {
             }
         }
 
+        internal Connection TunnelConnection
+        {
+            get
+            {
+                return m_TunnelConnection;
+            }
+            set
+            {
+                m_TunnelConnection = value;
+            }
+        }
 
         /// <devdoc>
         ///    <para>
@@ -3032,36 +3045,38 @@ namespace System.Net {
             }
         }
 
-        // Return the buffer to the pinnable cache if it came from there.   
         internal void FreeWriteBuffer()
         {
+            Debug.Assert(_WriteBuffer != null);
+
             if (_WriteBufferFromPinnableCache)
             {
+                // Return the buffer to the pinnable cache if it came from there.
                 _WriteBufferCache.FreeBuffer(_WriteBuffer);
                 _WriteBufferFromPinnableCache = false;
             }
+
             _WriteBufferLength = 0;
             _WriteBuffer = null;
         }
 
-        // Get the buffer from the pinnable cache if the necessary space is small enough
         private void SetWriteBuffer(int bufferSize)
         {
-            Debug.Assert(_WriteBuffer == null);
-
-            if (bufferSize <= CachedWriteBufferSize)
+            // We don't Assert that we have a null write buffer. There are some cases with HttpWebRequest.Abort
+            // that we abandon the LazyAsyncResult callback for doing writes. Thus, we never know when the
+            // I/O is done and when it is safe to call FreeWriteBuffer. So, it's possible that we will not return
+            // the buffer back to the pool. When this request is resubmitted, we will get a new buffer.
+            if (ServicePointManager.UseHttpPipeliningAndBufferPooling && bufferSize <= CachedWriteBufferSize)
             {
-                if (!_WriteBufferFromPinnableCache) 
-                {
-                    _WriteBuffer = _WriteBufferCache.AllocateBuffer();
-                    _WriteBufferFromPinnableCache = true;
-                }
+                // Get the buffer from the pinnable cache if the necessary space is small enough.
+                _WriteBuffer = _WriteBufferCache.AllocateBuffer();
+                _WriteBufferFromPinnableCache = true;
             }
             else
             {
-                FreeWriteBuffer();
                 _WriteBuffer = new byte[bufferSize];
             }
+
             _WriteBufferLength = bufferSize;
         }
 

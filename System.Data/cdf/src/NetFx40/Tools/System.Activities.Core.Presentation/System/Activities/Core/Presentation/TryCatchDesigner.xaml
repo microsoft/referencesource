@@ -1,0 +1,324 @@
+﻿<sad:ActivityDesigner x:Uid="sad:WorkflowElementDesigner_1" x:Class="System.Activities.Core.Presentation.TryCatchDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:sas="clr-namespace:System.Activities.Statements;assembly=System.Activities"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:system='clr-namespace:System;assembly=mscorlib'
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.TryCatch}"
+    x:ClassModifier="internal"
+    x:Name="controlRoot">
+
+  <sad:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="sad:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="sad:CachedResourceDictionaryExtension_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="sad:CachedResourceDictionaryExtension_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+
+      <local:NotConverter x:Uid="NotConverter_1" x:Key="NotConverter"/>
+      <local:HintTextMaxWidthConverter x:Uid="HintTextMaxWidthConverter_1" x:Key="HintTextMaxWidthConverter" />
+      <local:HintTextConverter x:Uid="HintTextConverter_1" x:Key="HintTextConverter" />
+
+      <system:String x:Uid="String_1" x:Key="ExpressionTypePresenterLabel">Exception type</system:String>
+      <DataTemplate x:Uid="DataTemplate_1" x:Key="TryTemplate">
+        <StackPanel x:Uid="StackPanel_1">
+          <Border x:Uid="Border_1" BorderThickness="1" Margin="0,15,0,2" Padding="0">
+            <Border.Style>
+              <Style x:Uid="Style_1">
+                <Setter x:Uid="Setter_1" Property="Border.BorderBrush" Value="{StaticResource DesignerViewBackground}" />
+                <Style.Triggers>
+                  <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowTryExpanded}" Value="true">
+                    <Setter x:Uid="Setter_2" Property="Border.BorderBrush">
+                      <Setter.Value>
+                        <LinearGradientBrush x:Uid="LinearGradientBrush_1" EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                          <GradientStop x:Uid="GradientStop_1" Color="{x:Static sad:WorkflowDesignerColors.DesignerViewBackgroundColor}" Offset="0.5"/>
+                          <GradientStop x:Uid="GradientStop_2" Color="{x:Static sad:WorkflowDesignerColors.WorkflowViewElementBorderColor}" Offset="0"/>
+                        </LinearGradientBrush>
+                      </Setter.Value>
+                    </Setter>
+                    <Setter x:Uid="Setter_3" Property="Border.Margin" Value="-3,-3,-3,0" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+            <StackPanel x:Uid="StackPanel_2" Background="Transparent" IsHitTestVisible="True" Focusable="True" 
+                        MouseDown="OnTryViewMouseDown" 
+                        MouseUp="OnTryViewMouseUp"
+                        KeyDown="OnTryViewKeyDown">
+              <Grid x:Uid="Grid_2">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition x:Uid="ColumnDefinition_1" />
+                  <ColumnDefinition x:Uid="ColumnDefinition_2" />
+                </Grid.ColumnDefinitions>
+                <Label x:Uid="Label_1" Grid.Column="0"
+                    AutomationProperties.AutomationId="TryLabel" AutomationProperties.Name="Try" VerticalAlignment="Center"
+                    Margin="0,3,7,1" Focusable="True" BorderThickness="0" Padding="0" FontWeight="Bold" Localization.Attributes="$Content(Unreadable Unmodifiable)">Try</Label>
+                <local:TextBlockWrapper x:Uid="TextBlock_1" Grid.Column="1" Foreground="{x:Static SystemColors.GrayTextBrush}"
+                    FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,3,3,0"
+                    TextTrimming="CharacterEllipsis"
+                    MaxWidth="{Binding Path=ModelItem.Try, ElementName=controlRoot, Converter={StaticResource HintTextMaxWidthConverter}, ConverterParameter=150}"
+                    ToolTip="{Binding Text, RelativeSource={x:Static RelativeSource.Self}}"
+                    KeyDown="OnTryAddActivityKeyDown">
+                  <local:TextBlockWrapper.Text>
+                    <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource HintTextConverter}">
+                      <Binding x:Uid="Binding_1" Path="ModelItem.Try" />
+                      <Binding x:Uid="Binding_2" Path="ModelItem.Try.DisplayName" />
+                    </MultiBinding>
+                  </local:TextBlockWrapper.Text>
+                  <local:TextBlockWrapper.Style>
+                    <Style x:Uid="Style_8" TargetType="{x:Type local:TextBlockWrapper}">
+                      <Setter x:Uid="Setter_21" Property="Visibility" Value="Visible" />
+                      <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_11" Binding="{Binding Path=ShowTryExpanded}" Value="true">
+                          <Setter x:Uid="Setter_22" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger x:Uid="DataTrigger_12" Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Path=ShouldExpandAll}" Value="true">
+                          <Setter x:Uid="Setter_23" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger x:Uid="DataTrigger_16" Binding="{Binding Source={x:Static local:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                          <Setter x:Uid="Setter_28" Property="Focusable" Value="True" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </local:TextBlockWrapper.Style>
+                </local:TextBlockWrapper>
+              </Grid>
+              <sad:WorkflowItemPresenter
+                  x:Uid="tryPresenter" x:Name="tryPresenter"
+                  IsDefaultContainer="True"
+                  AutomationProperties.AutomationId="Try"
+                  Item="{Binding Path=ModelItem.Try, Mode=TwoWay}"
+                  AllowedItemType="{x:Type sa:Activity}"
+                  HintText="{DynamicResource dropActivityHint}"
+                  MinWidth="400"
+                  MinHeight="100"
+                  Margin="1,1,1,3"
+                  AutomationProperties.Name="Try: Drop Try activity here">
+                <sad:WorkflowItemPresenter.Style>
+                  <Style x:Uid="Style_2" TargetType="{x:Type sad:WorkflowItemPresenter}">
+                    <Setter x:Uid="Setter_4" Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                      <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ShowTryExpanded}" Value="true">
+                        <Setter x:Uid="Setter_5" Property="Visibility" Value="Visible"/>
+                      </DataTrigger>
+                      <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Path=ShouldExpandAll}" Value="true">
+                        <Setter x:Uid="Setter_6" Property="Visibility" Value="Visible"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </sad:WorkflowItemPresenter.Style>
+              </sad:WorkflowItemPresenter>
+            </StackPanel>
+          </Border>
+          <Rectangle x:Uid="Rectangle_1" Height="1" SnapsToDevicePixels="True" Fill="Transparent" Stroke="{StaticResource WorkflowViewElementBorderBrush}"/>
+        </StackPanel>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_2" x:Key="CatchesTemplate">
+        <StackPanel x:Uid="StackPanel_3">
+          <Label x:Uid="Label_2" Margin="1,4,0,4" BorderThickness="0" Padding="0" FontWeight="Bold" Localization.Attributes="$Content(Unreadable Unmodifiable)">Catches</Label>
+          <sad:WorkflowItemsPresenter
+              x:Uid="catchesPresenter" x:Name="catchesPresenter"
+              AutomationProperties.AutomationId="Catches"
+              AllowedItemType="{x:Type sas:Catch}"
+              AutomationProperties.Name="Catches: Add catches here"
+              MinWidth="400"
+              IsTabStop="False">
+            <sad:WorkflowItemsPresenter.SpacerTemplate>
+              <DataTemplate x:Uid="DataTemplate_3">
+                <Rectangle x:Uid="Rectangle_2" Height="1" SnapsToDevicePixels="True" Fill="Transparent" Stroke="{StaticResource WorkflowViewElementBorderBrush}"/>
+              </DataTemplate>
+            </sad:WorkflowItemsPresenter.SpacerTemplate>
+            <sad:WorkflowItemsPresenter.Items>
+                <Binding x:Uid="Binding_Uid2_stuff" Path="ModelItem.Catches"/>
+            </sad:WorkflowItemsPresenter.Items>
+         </sad:WorkflowItemsPresenter>
+
+          <Grid x:Uid="Grid_1">
+            <Label x:Uid="Label_3" AutomationProperties.AutomationId="AddCatchLabel" FontStyle="Italic" Foreground="{x:Static SystemColors.GrayTextBrush}"
+                BorderThickness="0"
+                Content="Add new catch"
+                AutomationProperties.Name="Add new catch"
+                Focusable="True" IsTabStop="True"
+                Margin="1,4,0,4"
+                Padding="0"
+                MouseDown="OnAddCatchMouseDown"
+                GotFocus="OnAddCatchGotFocus"
+                Loaded="OnAddCatchHintLabelLoaded"
+                Unloaded="OnAddCatchHintLabelUnloaded"
+                IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Converter={StaticResource NotConverter}}">
+              <Label.Style>
+                <Style x:Uid="Style_7" TargetType="{x:Type Label}">
+                  <Setter x:Uid="Setter_19" Property="Visibility" Value="Visible"/>
+                  <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_10" Binding="{Binding Path=ShowTypePresenterExpanded}" Value="true">
+                      <Setter x:Uid="Setter_20" Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Label.Style>
+            </Label>
+
+            <StackPanel x:Uid="StackPanel_7" Orientation="Horizontal">
+              <StackPanel.Style>
+                <Style x:Uid="Style_3" TargetType="{x:Type StackPanel}">
+                  <Setter x:Uid="Setter_8" Property="Visibility" Value="Collapsed"/>
+                  <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Path=ShowTypePresenterExpanded}" Value="true">
+                      <Setter x:Uid="Setter_9" Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </StackPanel.Style>
+
+              <Label x:Uid="Label_5" BorderThickness="0" Margin="1,4,7,4" Padding="0" VerticalAlignment="Center" Localization.Attributes="$Content(Unreadable Unmodifiable)">Exception </Label>
+              <sadv:TypePresenter x:Uid="sadv:TypePresenter_1"
+                  AutomationProperties.AutomationId="ExceptionTypePresenter"
+                  AutomationProperties.Name="Choose an Exception type"
+                  CenterActivityTypeResolverDialog="false"
+                  Width="200" Focusable="True"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="4"
+                  Context="{Binding Path=Context}"
+                  Loaded="OnTypePresenterLoaded"
+                  Unloaded="OnTypePresenterUnloaded"
+                  KeyDown="OnTypePresenterKeyDown"
+                  LostFocus="OnTypePresenterLostFocus"
+                  IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Converter={StaticResource NotConverter}}">
+                <sadv:TypePresenter.Style>
+                  <Style x:Uid="Style_10">
+                    <Style.Triggers>
+                      <DataTrigger x:Uid="DataTrigger_15" Binding="{Binding Source={x:Static local:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                        <Setter x:Uid="Setter_27" Property="sadv:TypePresenter.Label" Value="{StaticResource ExpressionTypePresenterLabel}"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </sadv:TypePresenter.Style>
+              </sadv:TypePresenter>
+            </StackPanel>
+          </Grid>
+          <Rectangle x:Uid="Rectangle_3" Height="1" SnapsToDevicePixels="True" Fill="Transparent" Stroke="{StaticResource WorkflowViewElementBorderBrush}"/>
+        </StackPanel>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_4" x:Key="FinallyTemplate">
+        <Border x:Uid="Border_2" BorderThickness="1" Margin="0,15,0,2" Padding="0">
+          <Border.Style>
+            <Style x:Uid="Style_4">
+              <Setter x:Uid="Setter_10" Property="Border.BorderBrush" Value="{StaticResource DesignerViewBackground}" />
+              <Style.Triggers>
+                <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Path=ShowFinallyExpanded}" Value="true">
+                  <Setter x:Uid="Setter_11" Property="Border.BorderBrush">
+                    <Setter.Value>
+                      <LinearGradientBrush x:Uid="LinearGradientBrush_2" EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                        <GradientStop x:Uid="GradientStop_3" Color="{x:Static sad:WorkflowDesignerColors.DesignerViewBackgroundColor}" Offset="0.5"/>
+                        <GradientStop x:Uid="GradientStop_4" Color="{x:Static sad:WorkflowDesignerColors.WorkflowViewElementBorderColor}" Offset="0"/>
+                      </LinearGradientBrush>
+                    </Setter.Value>
+                  </Setter>
+                  <Setter x:Uid="Setter_12" Property="Border.Margin" Value="-3,-3,-3,0" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Border.Style>
+          <StackPanel x:Uid="StackPanel_5" Background="Transparent" IsHitTestVisible="True" Focusable="True" 
+                      MouseDown="OnFinallyViewMouseDown" 
+                      MouseUp="OnFinallyViewMouseUp"
+                      KeyDown="OnFinallyViewKeyDown">
+            <Grid x:Uid="Grid_3">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Uid="ColumnDefinition_3" />
+                <ColumnDefinition x:Uid="ColumnDefinition_4" />
+              </Grid.ColumnDefinitions>
+
+              <Label x:Uid="Label_4" Grid.Column="0"
+                  AutomationProperties.AutomationId="FinallyLabel" AutomationProperties.Name="Finally"
+                  Margin="0,3,7,1" Focusable="True" BorderThickness="0" Padding="0" FontWeight="Bold" Localization.Attributes="$Content(Unreadable Unmodifiable)">Finally</Label>
+              <local:TextBlockWrapper x:Uid="TextBlock_2" Grid.Column="1" Foreground="{x:Static SystemColors.GrayTextBrush}"
+                  FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,3,3,0"
+                  TextTrimming="CharacterEllipsis"
+                  MaxWidth="{Binding Path=ModelItem.Finally, ElementName=controlRoot, Converter={StaticResource HintTextMaxWidthConverter}, ConverterParameter=150}"
+                  ToolTip="{Binding Text, RelativeSource={x:Static RelativeSource.Self}}"
+                  KeyDown="OnFinallyAddActivityKeyDown">
+                <local:TextBlockWrapper.Text>
+                  <MultiBinding x:Uid="MultiBinding_2" Converter="{StaticResource HintTextConverter}">
+                    <Binding x:Uid="Binding_3" Path="ModelItem.Finally" />
+                    <Binding x:Uid="Binding_4" Path="ModelItem.Finally.DisplayName" />
+                  </MultiBinding>
+                </local:TextBlockWrapper.Text>
+                <local:TextBlockWrapper.Style>
+                  <Style x:Uid="Style_9" TargetType="{x:Type local:TextBlockWrapper}">
+                    <Setter x:Uid="Setter_24" Property="Visibility" Value="Visible" />
+                    <Style.Triggers>
+                      <DataTrigger x:Uid="DataTrigger_13" Binding="{Binding Path=ShowFinallyExpanded}" Value="true">
+                        <Setter x:Uid="Setter_25" Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                      <DataTrigger x:Uid="DataTrigger_14" Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Path=ShouldExpandAll}" Value="true">
+                        <Setter x:Uid="Setter_26" Property="Visibility" Value="Collapsed" />
+                      </DataTrigger>
+                      <DataTrigger x:Uid="DataTrigger_19" Binding="{Binding Source={x:Static local:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                        <Setter x:Uid="Setter_30" Property="Focusable" Value="True" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </local:TextBlockWrapper.Style>
+              </local:TextBlockWrapper>
+            </Grid>
+            
+            <sad:WorkflowItemPresenter
+                x:Uid="finallyPresenter" x:Name="finallyPresenter"
+                AutomationProperties.AutomationId="Finally"
+                Item="{Binding Path=ModelItem.Finally, Mode=TwoWay}"
+                AllowedItemType="{x:Type sa:Activity}"
+                HintText="{DynamicResource dropActivityHint}"
+                MinWidth="400"
+                MinHeight="100"
+                Margin="1,1,1,3"
+                AutomationProperties.Name="Finally: Drop Finally activity here">
+              <sad:WorkflowItemPresenter.Style>
+                <Style x:Uid="Style_5" TargetType="{x:Type sad:WorkflowItemPresenter}">
+                  <Setter x:Uid="Setter_13" Property="Visibility" Value="Collapsed"/>
+                  <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Path=ShowFinallyExpanded}" Value="true">
+                      <Setter x:Uid="Setter_14" Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                    <DataTrigger x:Uid="DataTrigger_7" Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Path=ShouldExpandAll}" Value="true">
+                      <Setter x:Uid="Setter_15" Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </sad:WorkflowItemPresenter.Style>
+            </sad:WorkflowItemPresenter>
+          </StackPanel>
+        </Border>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_5" x:Key="ExpandedTryCatchTemplate">
+        <StackPanel x:Uid="StackPanel_6">
+          <ContentPresenter x:Uid="ContentPresenter_1" ContentTemplate="{StaticResource TryTemplate}" Content="{Binding}" />
+          <ContentPresenter x:Uid="ContentPresenter_2" ContentTemplate="{StaticResource CatchesTemplate}" Content="{Binding}" />
+          <ContentPresenter x:Uid="ContentPresenter_3" ContentTemplate="{StaticResource FinallyTemplate}" Content="{Binding}" />
+        </StackPanel>
+      </DataTemplate>
+
+      <Style x:Uid="Style_6" x:Key="TryCatchStyle" TargetType="{x:Type ContentPresenter}">
+        <Setter x:Uid="Setter_16" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}" />
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_8" Binding="{Binding Path=ShowExpanded}" Value="true">
+            <Setter x:Uid="Setter_17" Property="ContentTemplate" Value="{DynamicResource ExpandedTryCatchTemplate}" />
+          </DataTrigger>
+          <DataTrigger x:Uid="DataTrigger_9" Binding="{Binding Path=IsRootDesigner}" Value="true">
+            <Setter x:Uid="Setter_18" Property="VerticalAlignment" Value="Top"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </sad:ActivityDesigner.Resources>
+
+  <ContentPresenter x:Uid="ContentPresenter_4" Style="{DynamicResource TryCatchStyle}" Content="{Binding}" />
+</sad:ActivityDesigner>

@@ -30,7 +30,7 @@ namespace System.Threading
     using System.Threading;    
     using System.Runtime.Serialization;
     using System.Diagnostics.Contracts;
-
+    using System.Diagnostics.CodeAnalysis;
 
     internal struct CompressedStackSwitcher: IDisposable 
     {
@@ -72,6 +72,7 @@ namespace System.Threading
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
+        [SuppressMessage("Microsoft.Security", "CA2153:DoNotCatchCorruptedStateExceptionsInGeneralHandlers", Justification = "Reviewed for security")]
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
         internal bool UndoNoThrow()
         {
@@ -79,8 +80,13 @@ namespace System.Threading
             {
                 Undo();
             }
-            catch
+            catch (Exception ex)
             {
+                if (!AppContextSwitches.UseLegacyExecutionContextBehaviorUponUndoFailure)
+                {
+                    // Fail fast since we can't continue safely
+                    Environment.FailFast(Environment.GetResourceString("ExecutionContext_UndoFailed"), ex);
+                }
                 return false;
             }
             return true;
@@ -327,6 +333,7 @@ namespace System.Threading
         [System.Security.SecurityCritical]  // auto-generated
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
+        [SuppressMessage("Microsoft.Security", "CA2153:DoNotCatchCorruptedStateExceptionsInGeneralHandlers", Justification = "Reviewed for security")]
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
         internal static CompressedStackSwitcher SetCompressedStack(CompressedStack cs, CompressedStack prevCS)
         {

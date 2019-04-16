@@ -786,6 +786,7 @@ namespace System.Data.Linq.SqlClient {
             this.conManager.ClearConnection();
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="Only execute internal commands")]
         private void ExecuteCommand(string command) {
             if (this.log != null) {
                 this.log.WriteLine(command);
@@ -1023,6 +1024,7 @@ namespace System.Data.Linq.SqlClient {
         }
 
         [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification="Unknown reason.")]
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="The query is converted from developer's LINQ expression")]
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private IExecuteResult Execute(Expression query, QueryInfo queryInfo, IObjectReaderFactory factory, object[] parentArgs, object[] userArgs, ICompiledSubQuery[] subQueries, object lastResult) {
             this.InitializeProviderMode();
@@ -1236,6 +1238,7 @@ namespace System.Data.Linq.SqlClient {
             return new MultipleResults(this, null, session, null);
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="The query is converted from developer's LINQ expression")]
          string IProvider.GetQueryText(Expression query) {
             this.CheckDispose();
             this.CheckInitialized();
@@ -1264,6 +1267,7 @@ namespace System.Data.Linq.SqlClient {
             return sb.ToString();
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="The query is converted from developer's LINQ expression")]
         DbCommand IProvider.GetCommand(Expression query) {
             this.CheckDispose();
             this.CheckInitialized();

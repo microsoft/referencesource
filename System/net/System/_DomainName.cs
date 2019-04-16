@@ -5,6 +5,7 @@
 //------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Net;
 
 namespace System {
 
@@ -325,6 +326,9 @@ namespace System {
                 bidiStrippedHost = Uri.StripBidiControlCharacter(hostname, start, end - start);
                 try{
                     asciiForm = map.GetAscii(bidiStrippedHost);
+                    if (!ServicePointManager.AllowDangerousUnicodeDecompositions && ContainsCharactersUnsafeForNormalizedHost(asciiForm)){
+                        throw new UriFormatException(SR.net_uri_BadUnicodeHostForIdn);
+                    }
                 }catch(ArgumentException){
                     throw new UriFormatException(SR.GetString(SR.net_uri_BadUnicodeHostForIdn));
                 }
@@ -506,6 +510,21 @@ namespace System {
                 return true;
             }
             return false;
+        }
+
+        // The Unicode specification allows certain code points to be normalized not to 
+        // punycode, but to ASCII representations that retain the same meaning. For example,
+        // the codepoint U+00BC "Vulgar Fraction One Quarter" is normalized to '1/4' rather
+        // than being punycoded.
+        //
+        // This means that a host containing Unicode characters can be normalized to contain
+        // URI reserved characters, changing the meaning of a URI only when certain properties
+        // such as IdnHost are accessed. To be safe, disallow control characters in normalized hosts.
+        private static readonly char[] s_UnsafeForNormalizedHost = { '\\', '/', '?', '@', '#', ':', '[', ']' };
+
+        internal static bool ContainsCharactersUnsafeForNormalizedHost(string host)
+        {
+            return host.IndexOfAny(s_UnsafeForNormalizedHost) != -1;
         }
     }
 }

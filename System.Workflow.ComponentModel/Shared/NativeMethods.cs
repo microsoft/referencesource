@@ -163,6 +163,20 @@ namespace System.Workflow.Interop
         private const int TTM_GETCURRENTTOOLA = (0x0400 + 15);
         private const int TTM_GETCURRENTTOOLW = (0x0400 + 59);
 
+        private const int S_OK = 0x00000000;
+        // If this value is used, %windows%\system32 is searched for the DLL 
+        // and its dependencies. Directories in the standard search path are not searched.
+        // Windows7, Windows Server 2008 R2, Windows Vista and Windows Server 2008:
+        // This value requires KB2533623 to be installed.
+        // Windows Server 2003 and Windows XP: This value is not supported.
+        private const int LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
+
+        // A cached value for IsDynamicCodePolicyEnabled so we only need to do the check once.
+        // -1 => we haven't checked it yet.
+        // 0 => DynamicCodePolicy is NOT enabled.
+        // > 0 => DynamicCodePolicy IS enabled.
+        private static int cachedIsDynamicCodePolicyEnabled = -1;
+
         static NativeMethods()
         {
             if (Marshal.SystemDefaultCharSize == 1)
@@ -297,6 +311,102 @@ namespace System.Workflow.Interop
 
         [DllImport("user32.dll")]
         internal static extern int SetWindowPos(IntPtr hWnd, IntPtr hwndInsertAfter, int x, int y, int width, int height, int flags);
+
+
+        /// <summary>
+        /// Retrieves a value that describes the Device Guard policy enforcement status for .NET dynamic code.
+        /// introduced in RS4 (Win10 1803)
+        /// </summary>
+        /// <param name="enabled">On success, returns true if the Device Guard policy enforces .NET Dynamic Code policy; otherwise, returns false.</param>
+        /// <returns>This method returns S_OK if successful or a failure code otherwise.</returns>
+        [DllImport("wldp.dll", ExactSpelling = true)]
+        internal static extern int WldpIsDynamicCodePolicyEnabled([Out] out int enabled);
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern IntPtr GetModuleHandle(string modName);
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true, CharSet = CharSet.Ansi)]
+        public static extern IntPtr GetProcAddress(HandleRef hModule, string lpProcName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true, BestFitMapping = false)]
+        private static extern IntPtr LoadLibraryEx(string lpModuleName, IntPtr hFile, uint dwFlags);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr LoadLibrary(string libname);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool FreeLibrary(HandleRef hModule);
+
+        /// <summary>
+        /// Loads library from system path only.
+        /// </summary>
+        /// <param name="libraryName"> Library name</param>
+        /// <returns>module handle to the specified library if available. Otherwise, returns Intptr.Zero.</returns>
+        private static IntPtr LoadLibraryFromSystemPathIfAvailable(string libraryName)
+        {
+            IntPtr module = IntPtr.Zero;
+
+            // KB2533623 introduced the LOAD_LIBRARY_SEARCH_SYSTEM32 flag. It also introduced
+            // the AddDllDirectory function. We test for presence of AddDllDirectory as an 
+            // indirect evidence for the support of LOAD_LIBRARY_SEARCH_SYSTEM32 flag. 
+            IntPtr kernel32 = GetModuleHandle("kernel32.dll");
+            if (kernel32 != IntPtr.Zero)
+            {
+                if (GetProcAddress(new HandleRef(null, kernel32), "AddDllDirectory") != IntPtr.Zero)
+                {
+                    module = LoadLibraryEx(libraryName, IntPtr.Zero, LOAD_LIBRARY_SEARCH_SYSTEM32);
+                }
+                else
+                {
+                    // LOAD_LIBRARY_SEARCH_SYSTEM32 is not supported on this OS. 
+                    // Fall back to using plain ol' LoadLibrary
+                    // There is risk that this call might fail, or that it might be
+                    // susceptible to DLL hijacking. 
+                    module = LoadLibrary(libraryName);
+                }
+            }
+            return module;
+        }
+
+        private static bool IsApiAvailable(string libName, string procName)
+        {
+            bool isAvailable = false;
+
+            if (!string.IsNullOrEmpty(libName) && !string.IsNullOrEmpty(procName))
+            {
+                //load library from system path.
+                IntPtr hmod = NativeMethods.LoadLibraryFromSystemPathIfAvailable(libName);
+                if (hmod != IntPtr.Zero)
+                {
+                    IntPtr pfnProc = NativeMethods.GetProcAddress(new HandleRef(isAvailable, hmod), procName);
+                    if (pfnProc != IntPtr.Zero)
+                    {
+                        isAvailable = true;
+                    }
+                }
+
+                NativeMethods.FreeLibrary(new HandleRef(isAvailable, hmod));
+            }
+
+            return isAvailable;
+        }
+
+        internal static bool IsDynamicCodePolicyEnabled()
+        {
+            if (cachedIsDynamicCodePolicyEnabled == -1)
+            {
+                int result = 0;
+                if (IsApiAvailable("wldp.dll", "WldpIsDynamicCodePolicyEnabled"))
+                {
+                    // Default to a compatible case
+                    int isEnabled = 0;
+                    int status = NativeMethods.WldpIsDynamicCodePolicyEnabled(out isEnabled);
+                    result = (((status == NativeMethods.S_OK) && (isEnabled != 0)) ? 1 : 0);
+                }
+                cachedIsDynamicCodePolicyEnabled = result;
+            }
+            return (cachedIsDynamicCodePolicyEnabled > 0);
+        }
 
         [System.Runtime.InteropServices.ComVisible(false), StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         internal class HDITEM

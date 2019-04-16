@@ -1,0 +1,205 @@
+﻿<sap:ActivityDesigner x:Uid="stateDesigner" x:Class="System.Activities.Core.Presentation.StateDesigner"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sap="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    x:Name="stateDesigner" 
+    SnapsToDevicePixels="True" 
+    x:ClassModifier="internal">
+
+    <sap:ActivityDesigner.CommandBindings>
+        <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static local:StateDesigner.SetAsInitialCommand}" CanExecute="OnSetAsInitialCanExecute" Executed="OnSetAsInitialExecute"/>
+    </sap:ActivityDesigner.CommandBindings>
+
+    <sap:ActivityDesigner.ContextMenu>
+        <ContextMenu x:Uid="ContextMenu_1">
+            <MenuItem x:Uid="MenuItem_1" Header="S_et as Initial State" Command="{x:Static local:StateDesigner.SetAsInitialCommand}" Loaded="OnStateSpecificMenuItemLoaded" AutomationProperties.AutomationId="SetAsInitial"/>
+        </ContextMenu>
+    </sap:ActivityDesigner.ContextMenu>
+
+    <sap:ActivityDesigner.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_5" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/StringResourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:DisplayNameConverter x:Uid="local:DisplayNameConverter_1" x:Key="displayNameConverter" />
+            <local:StateLinkButtonToolTipConverter x:Uid="StateLinkButtonToolTipConverter_1" x:Key="StateLinkButtonToolTipConverter"/>
+            <local:IsStateRootDesignerConverter x:Uid="IsStateRootDesignerConverter_1" x:Key="IsStateRootDesignerConverter"/>
+            <DataTemplate x:Uid="DataTemplate_4" x:Key="EmptyTransitionTemplate">
+                <TextBlock x:Uid="TextBlock_14" Text="No transition configured for this state" FontStyle="Italic" Foreground="{x:Static SystemColors.GrayTextBrush}"/>
+            </DataTemplate>
+
+            <DataTemplate x:Uid="DataTemplate_5" x:Key="TransitionButtonTemplate">
+                <StackPanel x:Uid="StackPanel_6" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <Button x:Uid="Button_1" Margin="2,4,4,4" MaxWidth="120" Style="{StaticResource LinkButtonStyle}" 
+                            Content="{Binding Path=DisplayName, Mode=OneWay, Converter={StaticResource displayNameConverter}}" 
+                            Tag="{Binding}" Click="OnTransitionClicked" 
+                            ToolTip="{Binding Path=Content, Mode=OneWay, RelativeSource={RelativeSource Self}, Converter={StaticResource StateLinkButtonToolTipConverter}}"
+                            AutomationProperties.AutomationId="Transition" AutomationProperties.Name="Transition" />
+                    <Rectangle x:Uid="Rectangle_3" Width="15" Height="1" VerticalAlignment="Center" Stroke="#FFAAAAAA" />
+                    <Rectangle x:Uid="Rectangle_4" Width="8" Height="8"  VerticalAlignment="Center" Fill="{StaticResource ArrowEndPoint}" />
+                    <TextBlock x:Uid="TextBlock_15" Margin="4,4,2,4" Text="Destination:"/>
+                    <Button x:Uid="Button_2" Margin="2,4,4,4" MaxWidth="120" Style="{StaticResource LinkButtonStyle}" 
+                                Content="{Binding Path=To.DisplayName, Mode=OneWay, Converter={StaticResource displayNameConverter}}" 
+                                Tag="{Binding To}" Click="OnToStateClicked" 
+                                ToolTip="{Binding Path=Content, Mode=OneWay, RelativeSource={RelativeSource Self}, Converter={StaticResource StateLinkButtonToolTipConverter}}"
+                                AutomationProperties.AutomationId="ToState" AutomationProperties.Name="Destination State" />
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Uid="DataTemplate_6" x:Key="TransitionsTemplate">
+                <Border x:Uid="Border_4" BorderThickness="1" Margin="0,2,0,2" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}">
+                    <ListBox x:Uid="ListBox_1" BorderThickness="0" Margin="0,2,0,2" ItemsSource="{Binding Path=ModelItem.Transitions}" ItemTemplate="{StaticResource TransitionButtonTemplate}" Background="{DynamicResource WorkflowViewElementBackgroundBrush}" 
+                         AutomationProperties.AutomationId="TransitionListBox">
+                        <ListBox.Resources>
+                            <Style x:Uid="Style_7" TargetType="{x:Type ListBoxItem}">
+                                <Style.Resources>
+                                    <SolidColorBrush x:Uid="SolidColorBrush_1" x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{DynamicResource WorkflowViewElementBackgroundBrush}"/>
+                                    <SolidColorBrush x:Uid="SolidColorBrush_2" x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{DynamicResource WorkflowViewElementBackgroundBrush}"/>
+                                    <SolidColorBrush x:Uid="SolidColorBrush_3" x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{x:Static SystemColors.ControlTextColor}"/>
+                                </Style.Resources>
+                            </Style>
+                        </ListBox.Resources>
+                    </ListBox>
+                </Border>
+            </DataTemplate>
+
+            <Style x:Uid="Style_8" x:Key="TransitionStyle" TargetType="{x:Type ContentPresenter}">
+                <Setter x:Uid="Setter_16" Property="ContentTemplate" Value="{StaticResource TransitionsTemplate}"/>
+                <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Path=ModelItem.Transitions.Count}" Value="0">
+                        <Setter x:Uid="Setter_17" Property="ContentTemplate" Value="{StaticResource EmptyTransitionTemplate}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <DataTemplate x:Uid="DataTemplate_1" x:Key="EditEntryExitTemplate">
+                <StackPanel x:Uid="StackPanel_1">
+                    <StackPanel x:Uid="StackPanel_7" Orientation="Horizontal" Margin="0,4,0,4" >
+                        <Rectangle x:Uid="Rectangle_5" Width="14" Height="14" Fill="{x:Static sap:WorkflowDesignerIcons+Activities.StateEntry}"/>
+                        <TextBlock x:Uid="TextBlock_1" Margin="5,0,0,0" VerticalAlignment="Bottom" Text="Entry" Localization.Attributes="Text(Unreadable Unmodifiable)"/>
+                    </StackPanel>
+                    <Border x:Uid="Border_1" BorderThickness="1" Margin="0,0,0,2" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}">
+                        <sap:WorkflowItemPresenter
+                            x:Uid="entryPresenter_1" x:Name="entryPresenter_1"
+                            IsDefaultContainer="True"
+                            AutomationProperties.AutomationId="Entry"
+                            Item="{Binding Path=ModelItem.Entry, Mode=TwoWay}"
+                            AllowedItemType="{x:Type sa:Activity}"
+                            HintText="{DynamicResource dropActivityHint}"
+                            MinWidth="300"
+                            MinHeight="150"
+                            Margin="5"
+                            AutomationProperties.Name="Entry: Drop activity here"/>
+                    </Border>
+
+                    <StackPanel x:Uid="StackPanel_11" Orientation="Vertical">
+                        <StackPanel.Style>
+                            <Style x:Uid="Style_9" TargetType="{x:Type StackPanel}">
+                                <Setter x:Uid="Setter_18" Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Path=ModelItem.IsFinal}" Value="True">
+                                        <Setter x:Uid="Setter_19" Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <StackPanel x:Uid="StackPanel_8" Orientation="Horizontal" Margin="0,4,0,4" >
+                            <Rectangle x:Uid="Rectangle_6" Width="14" Height="14" VerticalAlignment="Bottom" Fill="{x:Static sap:WorkflowDesignerIcons+Activities.StateExit}"/>
+                            <TextBlock x:Uid="TextBlock_2" Margin="5,0,0,0" VerticalAlignment="Bottom" Text="Exit" Localization.Attributes="Text(Unreadable Unmodifiable)" />
+                        </StackPanel>
+
+                        <Border x:Uid="Border_2" BorderThickness="1" Margin="0,0,0,2" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}">
+                            <sap:WorkflowItemPresenter
+                                x:Uid="exitPresenter" x:Name="exitPresenter"
+                                AutomationProperties.AutomationId="Exit"
+                                Item="{Binding Path=ModelItem.Exit, Mode=TwoWay}"
+                                AllowedItemType="{x:Type sa:Activity}"
+                                HintText="{DynamicResource dropActivityHint}"
+                                MinWidth="300"
+                                MinHeight="150"
+                                Margin="5"
+                                AutomationProperties.Name="Exit: Drop activity here" />
+                        </Border>
+                        <StackPanel x:Uid="StackPanel_9" Orientation="Horizontal" Margin="0,4,0,4">
+                            <Rectangle x:Uid="Rectangle_7" Width="14" Height="14" Fill="{x:Static sap:WorkflowDesignerIcons+Activities.StateTransition}"/>
+                            <TextBlock x:Uid="TextBlock_16" Margin="5,0,0,0" VerticalAlignment="Bottom" Text="Transition(s)" Localization.Attributes="Text(Unreadable Unmodifiable)"/>
+                        </StackPanel>
+                        <ContentPresenter x:Uid="transitionContentPresenter" Style="{StaticResource TransitionStyle}" Content="{Binding}" x:Name="transitionContentPresenter" />
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Uid="DataTemplate_3" x:Key="StateContainerTemplate">
+                <Grid x:Uid="Grid_1">
+                    <local:StateContainerEditor ToolTipOpening="StateDesignerToolTipOpening" ToolTip="" x:Uid="stateContainerEditor" x:Name="stateContainerEditor" PanelMinWidth="100" PanelMinHeight="25" />
+                    <StackPanel x:Uid="StackPanel_2" Margin="-4,0,0,-4" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                        <UserControl x:Uid="Button_3" Width="20" Height="20" Margin="2,0,0,2" BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Static sap:WorkflowDesignerIcons+Activities.StateEntry}"
+                                    AutomationProperties.AutomationId="EntryButton" AutomationProperties.Name="Entry Indicator">
+
+                            <UserControl.ToolTip>
+                                <StackPanel x:Uid="StackPanel_3" Orientation="Horizontal">
+                                    <TextBlock x:Uid="TextBlock_4" Text="Entry: " Localization.Attributes="Text(Unreadable Unmodifiable)" />
+                                    <TextBlock x:Uid="TextBlock_5" Text="{Binding Path=ModelItem.Entry.DisplayName}"/>
+                                </StackPanel>
+                            </UserControl.ToolTip>
+                            <UserControl.Style>
+                                <Style x:Uid="Style_1" TargetType="{x:Type UserControl}">
+                                    <Setter x:Uid="Setter_1" Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ModelItem.Entry}" Value="{x:Null}">
+                                            <Setter x:Uid="Setter_2" Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UserControl.Style>
+                        </UserControl>
+                        <UserControl x:Uid="Button_4" Width="20" Height="20" Margin="6,0,0,2" BorderBrush="{x:Null}" BorderThickness="0" Background="{x:Static sap:WorkflowDesignerIcons+Activities.StateExit}"
+                                AutomationProperties.AutomationId="ExitButton" AutomationProperties.Name="Exit Indicator">
+                            <UserControl.ToolTip>
+                                <StackPanel x:Uid="StackPanel_4" Orientation="Horizontal">
+                                    <TextBlock x:Uid="TextBlock_6" Text="Exit: " Localization.Attributes="Text(Unreadable Unmodifiable)"/>
+                                    <TextBlock x:Uid="TextBlock_7" Text="{Binding Path=ModelItem.Exit.DisplayName}"/>
+                                </StackPanel>
+                            </UserControl.ToolTip>
+                            <UserControl.Style>
+                                <Style x:Uid="Style_2" TargetType="{x:Type UserControl}">
+                                    <Setter x:Uid="Setter_3" Property="Visibility" Value="Visible"/>
+                                    <Style.Triggers>
+                                        <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ModelItem.Exit}" Value="{x:Null}">
+                                            <Setter x:Uid="Setter_4" Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UserControl.Style>
+                        </UserControl>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+            <Style x:Uid="Style_4" x:Key="StateStyle" TargetType="{x:Type ContentPresenter}">
+                <Setter x:Uid="Setter_7" Property="ContentTemplate" Value="{StaticResource StateContainerTemplate}"/>
+                <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Converter={StaticResource IsStateRootDesignerConverter}}" Value="True" >
+                        <Setter x:Uid="Setter_8" Property="ContentTemplate" Value="{StaticResource EditEntryExitTemplate}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </sap:ActivityDesigner.Resources>
+    <ContentPresenter x:Uid="stateContentPresenter" Style="{StaticResource StateStyle}" Content="{Binding}" x:Name="stateContentPresenter" />
+    <sap:ActivityDesigner.Style>
+        <Style x:Uid="Style_5" TargetType="{x:Type sap:ActivityDesigner}">
+            <Setter x:Uid="Setter_10" Property="Icon" Value="{x:Static sap:WorkflowDesignerIcons+Activities.State}"/>
+            <Style.Triggers>
+                <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=ModelItem.IsFinal}" Value="True">
+                    <Setter x:Uid="Setter_11" Property="Icon" Value="{x:Static sap:WorkflowDesignerIcons+Activities.FinalState}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </sap:ActivityDesigner.Style>
+</sap:ActivityDesigner>

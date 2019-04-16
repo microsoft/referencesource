@@ -1538,9 +1538,15 @@ namespace System.ServiceModel.Channels
                 {
                     if (!this.hasCleanedUpChannelCollections)
                     {
-                        if (this.InstanceContext != null)
+                        if (this.InstanceContext != null && this.InstanceContext.State != CommunicationState.Closed && this.InstanceContext.State != CommunicationState.Faulted)
                         {
-                            this.InstanceContext.OutgoingChannels.Remove((IChannel)this.proxy);
+                            //Only attempt to remove the channel if the state is not closed or faulted.
+                            try
+                            {
+                                this.InstanceContext.OutgoingChannels.Remove((IChannel)this.proxy);
+                            }
+                            catch (CommunicationException) { }  // Race condition if InstanceContext was faulted since the state check. Ignoring Exception                                
+                            catch (ObjectDisposedException) { } // Race condition if InstanceContext was closed since the state check. Ignoring Exception
                         }
 
                         if (this.WmiInstanceContext != null)

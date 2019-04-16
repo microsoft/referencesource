@@ -178,7 +178,7 @@ namespace System.IdentityModel
         void VerifySignature(KeyedHashAlgorithm hash)
         {
             this.Signature.SignedInfo.ComputeHash(hash);
-            if (!CryptoHelper.IsEqual(hash.Hash, GetSignatureValue()))
+            if (!CryptoHelper.FixedTimeEquals(hash.Hash, GetSignatureValue()))
             {
                 throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new CryptographicException(SR.GetString(SR.SignatureVerificationFailed)));
             }
@@ -1092,7 +1092,7 @@ namespace System.IdentityModel
             {
                 return false;
             }
-            if (!CryptoHelper.IsEqual(computedDigest, GetDigestValue()))
+            if (!CryptoHelper.FixedTimeEquals(computedDigest, GetDigestValue()))
             {
                 throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(
                     new CryptographicException(SR.GetString(SR.DigestVerificationFailedForReference, this.uri)));
@@ -1184,7 +1184,7 @@ namespace System.IdentityModel
         public bool CheckDigest()
         {
             byte[] computedDigest = ComputeDigest();
-            bool result = CryptoHelper.IsEqual(computedDigest, GetDigestValue());
+            bool result = CryptoHelper.FixedTimeEquals(computedDigest, GetDigestValue());
 #if LOG_DIGESTS
             Console.WriteLine(">>> Checking digest for reference '{0}', result {1}", uri, result);
             Console.WriteLine("    Computed digest {0}", Convert.ToBase64String(computedDigest));

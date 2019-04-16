@@ -2632,6 +2632,7 @@ namespace System.Data.Objects
             }
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="By design, it is up to the caller to pass safe code")]
         private EntityCommand CreateEntityCommandForFunctionImport(string functionName, out EdmFunction functionImport, params ObjectParameter[] parameters)
         {
             for (int i = 0; i < parameters.Length; i++)
@@ -3190,6 +3191,7 @@ namespace System.Data.Objects
             return new ObjectResult<TElement>(shaper, entitySet, MetadataHelper.GetElementType(columnMap.Type), readerOwned);
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification="By design, it is up to the caller to pass safe code")]
         private DbCommand CreateStoreCommand(string commandText, params object[] parameters)
         {
             DbCommand command = this._connection.StoreConnection.CreateCommand();
