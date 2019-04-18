@@ -587,6 +587,76 @@ namespace System.Workflow.ComponentModel.Compiler
 
     #endregion
 
+    #region Class TypeAuthorizerClass
+    internal sealed class TypeAuthorizerClass : ITypeAuthorizer
+    {
+        public TypeAuthorizerClass(IList<AuthorizedType> authorizedTypes, WorkflowCompilerResults results, string filename)
+        {
+            if (results == null)
+            {
+                throw new ArgumentNullException("results");
+            }
+            if (string.IsNullOrWhiteSpace(filename))
+            {
+                throw new ArgumentException("filename");
+            }
+            // It is okay for authorizedTypes to be null. Nothing may have been specified in the config.
+
+            this.AuthorizedTypes = authorizedTypes;
+            this.Results = results;
+            this.Filename = filename;
+        }
+
+        public IList<AuthorizedType> AuthorizedTypes
+        {
+            get;
+            private set;
+        }
+
+        public WorkflowCompilerResults Results
+        {
+            get;
+            private set;
+        }
+
+        public string Filename
+        {
+            get;
+            private set;
+        }
+
+        public bool IsTypeAuthorized(Type typeToAuthorize)
+        {
+            if (typeToAuthorize == null)
+            {
+                Results.Errors.Add(new WorkflowCompilerError(this.Filename, -1, -1, ErrorNumbers.Error_TypeNotAuthorized.ToString(CultureInfo.InvariantCulture), SR.GetString(SR.Error_TypeNotAuthorized, SR.GetString(SR.NullConditionExpression))));
+                return false;
+            }
+
+            bool authorized = false;
+            if (AuthorizedTypes != null)
+            {
+                foreach (AuthorizedType authorizedType in AuthorizedTypes)
+                {
+                    if (authorizedType.RegularExpression.IsMatch(typeToAuthorize.AssemblyQualifiedName))
+                    {
+                        authorized = (String.Compare(bool.TrueString, authorizedType.Authorized, StringComparison.OrdinalIgnoreCase) == 0);
+                        if (!authorized)
+                            break;
+                    }
+                }
+            }
+
+            if (!authorized)
+            {
+                Results.Errors.Add(new WorkflowCompilerError(this.Filename, -1, -1, ErrorNumbers.Error_TypeNotAuthorized.ToString(CultureInfo.InvariantCulture), SR.GetString(SR.Error_TypeNotAuthorized, typeToAuthorize)));
+            }
+
+            return authorized;
+        }
+    }
+    #endregion
+
     #region Class WorkflowCompilerInternal
 
     internal sealed class WorkflowCompilerInternal : MarshalByRefObject
@@ -951,6 +1021,13 @@ namespace System.Workflow.ComponentModel.Compiler
             CodeCompileUnit codeCompileUnit = new CodeCompileUnit();
             foreach (string fileName in files)
             {
+                TypeAuthorizerClass typeAuthorizer = null;
+                // Only set up a TypeAuthorizerClass if CheckTypes is specified.
+                if (parameters.CheckTypes)
+                {
+                    typeAuthorizer = new TypeAuthorizerClass(context.GetAuthorizedTypes(), results, fileName);
+                }
+
                 Activity rootActivity = null;
                 try
                 {
@@ -961,7 +1038,16 @@ namespace System.Workflow.ComponentModel.Compiler
                         xomlSerializationManager.WorkflowMarkupStack.Push(parameters);
                         xomlSerializationManager.LocalAssembly = parameters.LocalAssembly;
                         using (XmlReader reader = XmlReader.Create(fileName))
-                            rootActivity = WorkflowMarkupSerializationHelpers.LoadXomlDocument(xomlSerializationManager, reader, fileName);
+                        {
+                            if (typeAuthorizer == null)
+                            {
+                                rootActivity = WorkflowMarkupSerializationHelpers.LoadXomlDocument(xomlSerializationManager, reader, fileName);
+                            }
+                            else
+                            {
+                                rootActivity = WorkflowMarkupSerializationHelpers.LoadXomlDocument(xomlSerializationManager, reader, fileName, typeAuthorizer);
+                            }
+                        }
 
                         if (parameters.LocalAssembly != null)
                         {

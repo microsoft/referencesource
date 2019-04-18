@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Schema;
@@ -78,6 +79,7 @@ namespace System.Xml.Xsl.Runtime {
         /// <summary>
         /// Start construction of a new Xml tree (document or fragment).
         /// </summary>
+        [SuppressMessage("Microsoft.Security.Xml", "CA3059:UseXmlReaderForXPathDocument", Justification="Use internal constructor of XPathDocument to build a document and not to read it")]
         public override XmlRawWriter StartTree(XPathNodeType rootType, IXmlNamespaceResolver nsResolver, XmlNameTable nameTable) {
             // Build XPathDocument
             // If rootType != XPathNodeType.Root, then build an XQuery fragment

@@ -294,10 +294,13 @@ namespace System.ServiceModel.Channels
 
         void CleanupServerCertificate()
         {
-            if (this.serverCertificate != null)
+            if (!ServiceModelAppSettings.DeferSslStreamServerCertificateCleanup)
             {
-                SecurityUtils.ResetCertificate(this.serverCertificate);
-                this.serverCertificate = null;
+                if (this.serverCertificate != null)
+                {
+                    SecurityUtils.ResetCertificate(this.serverCertificate);
+                    this.serverCertificate = null;
+                }
             }
         }
 

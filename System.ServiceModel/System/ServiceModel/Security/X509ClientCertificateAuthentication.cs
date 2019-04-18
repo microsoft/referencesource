@@ -250,8 +250,9 @@ namespace System.ServiceModel.Security
             internal bool TryValidate(X509Certificate2 certificate, out Exception exception)
             {
                 using (X509Chain chain = new X509Chain(this.useMachineContext))
-                {
+                {                    
                     chain.ChainPolicy = this.chainPolicy;
+                    chain.ChainPolicy.VerificationTime = DateTime.Now;
 
                     if (!chain.Build(certificate))
                     {
@@ -263,6 +264,7 @@ namespace System.ServiceModel.Security
                     if (chain.ChainElements.Count > 1)  //is not self-signed
                     {
                         chain.ChainPolicy = OidChainPolicy;
+                        chain.ChainPolicy.VerificationTime = DateTime.Now;
 
                         X509Certificate2 cert = chain.ChainElements[1].Certificate;
 

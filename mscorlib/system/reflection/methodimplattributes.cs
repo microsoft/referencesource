@@ -41,6 +41,7 @@ namespace System.Reflection
         [System.Runtime.InteropServices.ComVisible(false)]
         AggressiveInlining =   0x0100,   // Method should be inlined if possible.
         NoOptimization     =   0x0040,   // Method may not be optimized.
+        SecurityMitigations =  0x0400,   // Method may have security mitigation attributes
 
         MaxMethodImplVal   =   0xFFFF,   // Range check value
     }

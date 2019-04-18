@@ -25,6 +25,7 @@ namespace System.Runtime.CompilerServices {
         [System.Runtime.InteropServices.ComVisible(false)]
         AggressiveInlining =   System.Reflection.MethodImplAttributes.AggressiveInlining,
         NoOptimization     =   System.Reflection.MethodImplAttributes.NoOptimization,
+        SecurityMitigations =  System.Reflection.MethodImplAttributes.SecurityMitigations,
         // **** If you add something, update internal MethodImplAttribute(MethodImplAttributes methodImplAttributes)! ****
     }
 
@@ -54,7 +55,7 @@ namespace System.Runtime.CompilerServices {
                 MethodImplOptions.Unmanaged | MethodImplOptions.ForwardRef | MethodImplOptions.PreserveSig | 
                 MethodImplOptions.InternalCall | MethodImplOptions.Synchronized |
                 MethodImplOptions.NoInlining | MethodImplOptions.AggressiveInlining |
-                MethodImplOptions.NoOptimization;
+                MethodImplOptions.NoOptimization | MethodImplOptions.SecurityMitigations;
             _val = ((MethodImplOptions)methodImplAttributes) & all;
         }
         

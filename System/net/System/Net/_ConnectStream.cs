@@ -2109,7 +2109,12 @@ namespace System.Net {
 
             GlobalLog.Enter("ConnectStream#" + ValidationHelper.HashString(stream) + "::WriteHeadersCallback", "Connection#" + ValidationHelper.HashString(stream.m_Connection) + ", " + request.WriteBufferLength.ToString()); 
             try{
-                stream.m_Connection.EndWrite(ar);
+                try{
+                    stream.m_Connection.EndWrite(ar);
+                }
+                finally{
+                    request.FreeWriteBuffer();
+                }
                 if (stream.m_Connection.m_InnerException != null)
                     throw stream.m_Connection.m_InnerException;
                 else
@@ -2120,13 +2125,6 @@ namespace System.Net {
             }
 
             stream.ExchangeCallNesting(Nesting.Idle, Nesting.InternalIO);
-
-            // Free the buffer now since we have finished writing it to the wire.
-            // Also, it must be freed before we call CheckStartReceive() since
-            // that can read the response and possibly resubmit the request
-            // due to auth challenges. If that happened and the buffer wasn't
-            // already freed, it would cause race conditions with SetWriteBuffer().
-            request.FreeWriteBuffer();
 
             if (error == WebExceptionStatus.Success && !stream.ErrorInStream) {
                 error = WebExceptionStatus.ReceiveFailure;
@@ -2190,7 +2188,15 @@ namespace System.Net {
                         WriteHeadersCallbackState state = new WriteHeadersCallbackState(m_Request, this);
                         IAsyncResult ar = m_Connection.UnsafeBeginWrite(writeBuffer,0,writeBufferLength, m_WriteHeadersCallback, state);
                         if (ar.CompletedSynchronously) {
-                            m_Connection.EndWrite(ar);
+                            try
+                            {
+                                m_Connection.EndWrite(ar);
+                            }
+                            finally
+                            {
+                                m_Request.FreeWriteBuffer();
+                            }
+
                             error = WebExceptionStatus.Success;
                         }
                         else {
@@ -2203,7 +2209,15 @@ namespace System.Net {
                     else
                     {
                         SafeSetSocketTimeout(SocketShutdown.Send);
-                        m_Connection.Write(writeBuffer, 0, writeBufferLength);
+                        try
+                        {
+                            m_Connection.Write(writeBuffer, 0, writeBufferLength);
+                        }
+                        finally
+                        {
+                            m_Request.FreeWriteBuffer();
+                        }
+
                         error = WebExceptionStatus.Success;
                     }
                 }
@@ -2226,13 +2240,6 @@ namespace System.Net {
             {
                 return; // WriteHeadersCallback will finish this async
             }
-
-            // Free the buffer now since we have finished writing it to the wire.
-            // Also, it must be freed before we call CheckStartReceive() since
-            // that can read the response and possibly resubmit the request
-            // due to auth challenges. If that happened and the buffer wasn't
-            // already freed, it would cause race conditions with SetWriteBuffer().
-            m_Request.FreeWriteBuffer();
 
             if (error == WebExceptionStatus.Success && !ErrorInStream)
             {

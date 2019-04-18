@@ -82,6 +82,9 @@ namespace System {
         // system.data.oracleclient specific
         internal const string OciDll    = "oci.dll";
         internal const string OraMtsDll = "oramts.dll";
+
+        // UI Automation
+        internal const string UiaCore = "UIAutomationCore.dll";
 #endif //!FEATURE_PAL
     }
 }

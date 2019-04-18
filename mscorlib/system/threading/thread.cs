@@ -734,6 +734,52 @@ namespace System.Threading {
             Sleep((int)tm);
         }
 
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        private static extern int GetCurrentProcessorNumber();
+
+        // The upper bits of t_currentProcessorIdCache are the currentProcessorId. The lower bits of
+        // the t_currentProcessorIdCache are counting down to get it periodically refreshed.
+        // 
+
+        [ThreadStatic]
+        private static int t_currentProcessorIdCache;
+
+        private const int ProcessorIdCacheShift = 16;
+        private const int ProcessorIdCacheCountDownMask = (1 << ProcessorIdCacheShift) - 1;
+        private const int ProcessorIdRefreshRate = 5000;
+
+        private static int RefreshCurrentProcessorId()
+        {
+            int currentProcessorId = GetCurrentProcessorNumber();
+
+            // On Unix, GetCurrentProcessorNumber() is implemented in terms of sched_getcpu, which
+            // doesn't exist on all platforms.  On those it doesn't exist on, GetCurrentProcessorNumber()
+            // returns -1.  As a fallback in that case and to spread the threads across the buckets
+            // by default, we use the current managed thread ID as a proxy.
+            if (currentProcessorId < 0)
+                currentProcessorId = Environment.CurrentManagedThreadId;
+
+            // Add offset to make it clear that it is not guaranteed to be 0-based processor number
+            currentProcessorId += 100;
+
+            Contract.Assert(ProcessorIdRefreshRate <= ProcessorIdCacheCountDownMask);
+
+            // Mask with Int32.MaxValue to ensure the execution Id is not negative
+            t_currentProcessorIdCache = ((currentProcessorId << ProcessorIdCacheShift) & Int32.MaxValue) | ProcessorIdRefreshRate;
+
+            return currentProcessorId;
+        }
+
+        // Cached processor id used as a hint for which per-core stack to access. It is periodically
+        // refreshed to trail the actual thread core affinity.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static int GetCurrentProcessorId()
+        {
+            int currentProcessorIdCache = t_currentProcessorIdCache--;
+            if ((currentProcessorIdCache & ProcessorIdCacheCountDownMask) == 0)
+                return RefreshCurrentProcessorId();
+            return (currentProcessorIdCache >> ProcessorIdCacheShift);
+        }
 
         /* wait for a length of time proportial to 'iterations'.  Each iteration is should
            only take a few machine instructions.  Calling this API is preferable to coding

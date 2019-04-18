@@ -18,7 +18,7 @@ namespace System.Security.Cryptography {
         public MD5Cng() {
             Contract.Ensures(m_hashAlgorithm != null);
 
-            if (CryptoConfig.AllowOnlyFipsAlgorithms) {
+            if (CryptoConfig.AllowOnlyFipsAlgorithms && LocalAppContextSwitches.UseLegacyFipsThrow) {
                 throw new InvalidOperationException(SR.GetString(SR.Cryptography_NonCompliantFIPSAlgorithm));
             }
 

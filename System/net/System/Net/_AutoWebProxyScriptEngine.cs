@@ -6,22 +6,15 @@
 
 namespace System.Net
 {
-    using System.IO;
-    using System.Collections;
-    using System.Collections.Specialized;
-    using System.Threading;
-    using System.Text;
-    using System.Net.Cache;
 #if !FEATURE_PAL
     using System.Net.NetworkInformation;
     using System.Security.Principal;
 #endif
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Net.Configuration;
     using System.Security.Permissions;
-    using System.Collections.Generic;
-    using System.Runtime.InteropServices;
-    using Microsoft.Win32;
+    using System.Threading;
 
     // This class (and its helper classes implementing IWebRequestFinder interface) are responsible for
     // determining the location of the PAC file, download and execute it, in order to retrieve proxy 
@@ -35,6 +28,9 @@ namespace System.Net
 
         private WebProxy webProxy;
         private IWebProxyFinder webProxyFinder;
+
+        private bool executeWinHttpGetProxyForUrl = false;
+        private Timer retryWinHttpGetProxyForUrlTimer;
 
         // Used by abortable lock.
         private bool m_LockHeld;
@@ -227,13 +223,44 @@ namespace System.Net
 
             if (!webProxyFinder.IsValid)
             {
-                // This is to improve performance on e.g. home networks, where auto-detect will always
-                // fail, but IE settings turn auto-detect ON by default. I.e. in home networks on each
-                // call we would try to retrieve the PAC location.
-                // The downside of this approach is that if after some time the PAC file can be downloaded,
-                // we don't do it. An application restart, changes in the proxy Registry settings, or a
-                // connection change (e.g. dial-up/VPN) are required in order to retry to retrieve the PAC file.
-                return false;
+                // If a zero value is specified in the configuration setting for AutoConfigUrlRetryInterval, the retry feature will be opted-out.
+                if (retryWinHttpGetProxyForUrlTimer == null && SettingsSectionInternal.Section.AutoConfigUrlRetryInterval != 0)
+                {
+                    long retryIntervalInMilliseconds = SettingsSectionInternal.Section.AutoConfigUrlRetryInterval * 1000;
+
+                    retryWinHttpGetProxyForUrlTimer = new Timer(s =>
+                    {
+                        var wr = (WeakReference<AutoWebProxyScriptEngine>)s;
+                        AutoWebProxyScriptEngine thisRef;
+                        if (wr.TryGetTarget(out thisRef))
+                        {
+                            thisRef.executeWinHttpGetProxyForUrl = true;
+                        }
+                    }, new WeakReference<AutoWebProxyScriptEngine>(this),
+                    retryIntervalInMilliseconds, retryIntervalInMilliseconds);
+                }
+                
+                if (executeWinHttpGetProxyForUrl)
+                {
+                    // Reset the value and continue execution.
+                    executeWinHttpGetProxyForUrl = false;
+                }
+                else
+                {
+                    // This is to improve performance on e.g. home networks, where auto-detect will always
+                    // fail, but IE settings turn auto-detect ON by default. I.e. in home networks on each
+                    // call we would try to retrieve the PAC location.
+                    // To retry retrieving the PAC file, need to wait for the next signal from retryWinHttpGetProxyForUrlTimer.
+                    return false;
+                }
+            }
+            else
+            {
+                if (retryWinHttpGetProxyForUrlTimer != null)
+                {
+                    retryWinHttpGetProxyForUrlTimer.Dispose();
+                    retryWinHttpGetProxyForUrlTimer = null;
+                }
             }
 
             // This whole thing has to be locked, both to prevent simultaneous downloading / compilation, and

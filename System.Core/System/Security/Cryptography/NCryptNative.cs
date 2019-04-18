@@ -575,8 +575,18 @@ namespace System.Security.Cryptography {
             }
 
             // Sometimes decryptedSize can be less than the allocated buffer size
-            // So resize the array to the actual returned plaintext 
-            Array.Resize(ref decrypted, decryptedSize);
+            // So resize the array to the actual returned plaintext
+            //
+            // After the Resize call the array into which the data was originally
+            // decrypted should be cleared to reduce the number of copies of the
+            // decrypted data (which is presumably a secret) in memory, and also
+            // reduces the likelihood that the value would be present in a heap dump.
+            if (decrypted.Length != decryptedSize)
+            {
+                byte[] clear = decrypted;
+                Array.Resize(ref decrypted, decryptedSize);
+                Array.Clear(clear, 0, clear.Length);
+            }
 
             return decrypted;
         }

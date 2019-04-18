@@ -152,6 +152,15 @@ namespace System.Runtime.InteropServices {
                 return;
             }
 
+            // the quirk specifies that this should only fire when run on the latest version
+            if (!AppContextSwitches.DoNotMarshalOutByrefSafeArrayOnInvoke && (vt & VarEnum.VT_ARRAY) != 0)
+            {
+                Variant vArray;
+                Marshal.GetNativeVariantForObject(value, (IntPtr)(void*)&vArray);
+                *(IntPtr*)this._typeUnion._unionTypes._byref = vArray._typeUnion._unionTypes._byref;
+                return;
+            }
+
             switch (vt) {
                 case VarEnum.VT_I1:
                     *(sbyte*)this._typeUnion._unionTypes._byref = (sbyte)value;

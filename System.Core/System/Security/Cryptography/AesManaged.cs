@@ -16,50 +16,55 @@ namespace System.Security.Cryptography {
     ///     be used.
     /// </summary>
     public sealed class AesManaged : Aes {
-        private RijndaelManaged m_rijndael;
+        private SymmetricAlgorithm m_impl;
 
         public AesManaged() {
 #if !SILVERLIGHT
-            Contract.Ensures(m_rijndael != null);
+            Contract.Ensures(m_impl != null);
 
             if (CryptoConfig.AllowOnlyFipsAlgorithms) {
-                throw new InvalidOperationException(SR.GetString(SR.Cryptography_NonCompliantFIPSAlgorithm));
+                if (LocalAppContextSwitches.UseLegacyFipsThrow) {
+                    throw new InvalidOperationException(SR.GetString(SR.Cryptography_NonCompliantFIPSAlgorithm));
+                }
+
+                m_impl = new AesCryptoServiceProvider();
+            } else {
+                m_impl = new RijndaelManaged();
             }
 #endif // !SILVERLIGHT
 
-            m_rijndael = new RijndaelManaged();
-            m_rijndael.BlockSize = BlockSize;
-            m_rijndael.KeySize = KeySize;
+            m_impl.BlockSize = BlockSize;
+            m_impl.KeySize = KeySize;
         }
 
 #if !SILVERLIGHT
         public override int FeedbackSize {
-            get { return m_rijndael.FeedbackSize; }
-            set { m_rijndael.FeedbackSize = value; }
+            get { return m_impl.FeedbackSize; }
+            set { m_impl.FeedbackSize = value; }
         }
 #endif // !SILVERLIGHT
 
         public override byte[] IV {
-            get { return m_rijndael.IV; }
-            set { m_rijndael.IV = value; }
+            get { return m_impl.IV; }
+            set { m_impl.IV = value; }
         }
 
         public override byte[] Key {
-            get { return m_rijndael.Key; }
-            set { m_rijndael.Key = value; }
+            get { return m_impl.Key; }
+            set { m_impl.Key = value; }
         }
 
         public override int KeySize {
-            get { return m_rijndael.KeySize; }
-            set { m_rijndael.KeySize = value; }
+            get { return m_impl.KeySize; }
+            set { m_impl.KeySize = value; }
         }
 
 #if !SILVERLIGHT
         public override CipherMode Mode {
-            get { return m_rijndael.Mode; }
+            get { return m_impl.Mode; }
 
             set {
-                Contract.Ensures(m_rijndael.Mode != CipherMode.CFB && m_rijndael.Mode != CipherMode.OFB);
+                Contract.Ensures(m_impl.Mode != CipherMode.CFB && m_impl.Mode != CipherMode.OFB);
 
                 // RijndaelManaged will implicitly change the block size of an algorithm to match the number
                 // of feedback bits being used. Since AES requires a block size of 128 bits, we cannot allow
@@ -68,18 +73,18 @@ namespace System.Security.Cryptography {
                     throw new CryptographicException(SR.GetString(SR.Cryptography_InvalidCipherMode));
                 }
 
-                m_rijndael.Mode = value;
+                m_impl.Mode = value;
             }
         }
 
         public override PaddingMode Padding {
-            get { return m_rijndael.Padding; }
-            set { m_rijndael.Padding = value; }
+            get { return m_impl.Padding; }
+            set { m_impl.Padding = value; }
         }
 #endif // !SILVERLIGHT
 
         public override ICryptoTransform CreateDecryptor() {
-            return m_rijndael.CreateDecryptor();
+            return m_impl.CreateDecryptor();
         }
 
         public override ICryptoTransform CreateDecryptor(byte[] key, byte[] iv) {
@@ -95,12 +100,12 @@ namespace System.Security.Cryptography {
             }
 #endif
 
-            return m_rijndael.CreateDecryptor(key, iv);
+            return m_impl.CreateDecryptor(key, iv);
         }
 
 
         public override ICryptoTransform CreateEncryptor() {
-            return m_rijndael.CreateEncryptor();
+            return m_impl.CreateEncryptor();
         }
 
         public override ICryptoTransform CreateEncryptor(byte[] key, byte[] iv) {
@@ -116,13 +121,13 @@ namespace System.Security.Cryptography {
             }
 #endif // SILVERLIGHT
 
-            return m_rijndael.CreateEncryptor(key, iv);
+            return m_impl.CreateEncryptor(key, iv);
         }
 
         protected override void Dispose(bool disposing) {
             try {
                 if (disposing) {
-                    (m_rijndael as IDisposable).Dispose();
+                    (m_impl as IDisposable).Dispose();
                 }
             }
             finally {
@@ -131,11 +136,11 @@ namespace System.Security.Cryptography {
         }
 
         public override void GenerateIV() {
-            m_rijndael.GenerateIV();
+            m_impl.GenerateIV();
         }
 
         public override void GenerateKey() {
-            m_rijndael.GenerateKey();
+            m_impl.GenerateKey();
         }
     }
 }

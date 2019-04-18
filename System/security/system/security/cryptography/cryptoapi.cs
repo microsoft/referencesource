@@ -3951,7 +3951,12 @@ namespace System.Security.Cryptography {
         }
 
         internal static SafeLocalAllocHandle InvalidHandle {
-            get { return new SafeLocalAllocHandle(IntPtr.Zero); }
+            get {
+                SafeLocalAllocHandle invalidHandle = new SafeLocalAllocHandle(IntPtr.Zero);
+                // This is valid since we don't expose any way to replace the handle value
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         [DllImport(CAPI.KERNEL32, SetLastError=true),
@@ -3980,7 +3985,12 @@ namespace System.Security.Cryptography {
         }
 
         internal static SafeCryptProvHandle InvalidHandle {
-            get { return new SafeCryptProvHandle(IntPtr.Zero); }
+            get {
+                SafeCryptProvHandle invalidHandle = new SafeCryptProvHandle(IntPtr.Zero);
+                // This is valid since we don't expose any way to replace the handle value
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         [DllImport(CAPI.ADVAPI32, SetLastError=true),
@@ -4009,7 +4019,12 @@ namespace System.Security.Cryptography {
         }
 
         internal static SafeCertContextHandle InvalidHandle {
-            get { return new SafeCertContextHandle(IntPtr.Zero); }
+            get {
+                SafeCertContextHandle invalidHandle = new SafeCertContextHandle(IntPtr.Zero);
+                // This is valid since we don't expose any way to replace the handle value
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         [DllImport(CAPI.CRYPT32, SetLastError=true),
@@ -4041,7 +4056,12 @@ namespace System.Security.Cryptography {
         }
 
         internal static SafeCertStoreHandle InvalidHandle {
-            get { return new SafeCertStoreHandle(IntPtr.Zero); }
+            get {
+                SafeCertStoreHandle invalidHandle = new SafeCertStoreHandle(IntPtr.Zero);
+                // This is valid since we don't expose any way to replace the handle value
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         [DllImport(CAPI.CRYPT32, SetLastError=true),
@@ -4069,7 +4089,12 @@ namespace System.Security.Cryptography {
         }
 
         internal static SafeCryptMsgHandle InvalidHandle {
-            get { return new SafeCryptMsgHandle(IntPtr.Zero); }
+            get {
+                SafeCryptMsgHandle invalidHandle = new SafeCryptMsgHandle(IntPtr.Zero);
+                // This is valid since we don't expose any way to replace the handle value
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         [DllImport(CAPI.CRYPT32, SetLastError=true),
@@ -4107,7 +4132,12 @@ namespace Microsoft.Win32.SafeHandles {
         }
 
         internal static SafeX509ChainHandle InvalidHandle {
-            get { return new SafeX509ChainHandle(IntPtr.Zero); }
+            get {
+                SafeX509ChainHandle invalidHandle = new SafeX509ChainHandle(IntPtr.Zero);
+                // This is valid since we don't expose any way to replace the handle value
+                GC.SuppressFinalize(invalidHandle);
+                return invalidHandle;
+            }
         }
 
         [DllImport(CAPI.CRYPT32, SetLastError=true),

@@ -232,6 +232,12 @@ namespace System.Configuration {
             info.AddValue(SERIALIZATION_PARAM_ERROR_COUNT, subErrors);
         }
 
+        internal void SetFileAndLine(string filename, int line)
+        {
+            _firstFilename = filename;
+            _firstLine = Math.Max(line, 0);    // BaseConfigurationRecord uses -1 as uninitialized value.
+        }
+
         // The message includes the file/line number information.  
         // To get the message without the extra information, use BareMessage.
         public override string Message {

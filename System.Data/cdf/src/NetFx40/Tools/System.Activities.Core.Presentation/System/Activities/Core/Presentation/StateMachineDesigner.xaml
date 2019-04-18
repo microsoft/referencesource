@@ -1,0 +1,40 @@
+﻿<sap:ActivityDesigner x:Uid="stateMachineDesigner" x:Class="System.Activities.Core.Presentation.StateMachineDesigner"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sap="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    SnapsToDevicePixels="True" 
+    x:ClassModifier="internal"
+    Icon="{x:Static sap:WorkflowDesignerIcons+Activities.StateMachine}"
+    KeyDown="StateMachineDesignerKeyDown"
+    PreviewKeyDown="StateMachineDesignerPreviewKeyDown">
+
+    <sap:ActivityDesigner.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Uid="DataTemplate_1" x:Key="StateContainerTemplate">
+                <AdornerDecorator x:Uid="AdornerDecorator_1" GotFocus="OnAdornerLayerGotFocus">
+                    <local:StateContainerEditor x:Uid="stateContainerEditor" PanelMinWidth="600" PanelMinHeight="600" Loaded="OnStateContainerLoaded" Unloaded="OnStateContainerUnloaded" />
+                </AdornerDecorator>
+            </DataTemplate>
+
+            <Style x:Uid="Style_1" x:Key="StateMachineStyle" TargetType="{x:Type ContentPresenter}">
+                <Setter x:Uid="Setter_1" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}"/>
+                <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowExpanded}" Value="true">
+                        <Setter x:Uid="Setter_2" Property="ContentTemplate" Value="{DynamicResource StateContainerTemplate}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+        </ResourceDictionary>
+    </sap:ActivityDesigner.Resources>
+    <ContentPresenter x:Uid="stateMachineContentPresenter" Style="{StaticResource StateMachineStyle}" Content="{Binding}" />
+</sap:ActivityDesigner>

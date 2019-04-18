@@ -14,13 +14,14 @@ using System.Data.Entity.Design.Common;
 using System.Text;
 using System.Diagnostics;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Data.Entity.Design.SsdlGenerator
 {
     /// <summary>
     /// Responsible for Loading Database Schema Information
     /// </summary>
-    internal class EntityStoreSchemaGeneratorDatabaseSchemaLoader 
+    internal class EntityStoreSchemaGeneratorDatabaseSchemaLoader
     {
         private readonly EntityConnection _connection;
         private readonly Version _storeSchemaModelVersion;
@@ -78,7 +79,7 @@ namespace System.Data.Entity.Design.SsdlGenerator
         {
             get { return _storeSchemaModelVersion; }
         }
-        
+
         public FunctionDetailsReader LoadFunctionDetails(IEnumerable<EntityStoreSchemaFilterEntry> filters)
         {
             return FunctionDetailsReader.Create(_connection, filters, _storeSchemaModelVersion);
@@ -88,15 +89,15 @@ namespace System.Data.Entity.Design.SsdlGenerator
         {
             TableDetailsCollection views = new TableDetailsCollection();
             return LoadDataTable(
-                ViewDetailSql, 
-                rows => 
+                ViewDetailSql,
+                rows =>
                     rows
                     .OrderBy(r => r.Field<string>("SchemaName"))
                     .ThenBy(r=>r.Field<string>("TableName"))
-                    .ThenBy(r=>r.Field<int>("Ordinal")), 
-                views, 
-                EntityStoreSchemaFilterObjectTypes.View, 
-                filters, 
+                    .ThenBy(r=>r.Field<int>("Ordinal")),
+                views,
+                EntityStoreSchemaFilterObjectTypes.View,
+                filters,
                 ViewDetailAlias);
         }
 
@@ -142,11 +143,11 @@ namespace System.Data.Entity.Design.SsdlGenerator
                     rows
                     .OrderBy(r => r.Field<string>("RelationshipName"))
                     .ThenBy(r => r.Field<string>("RelationshipId"))
-                    .ThenBy(r => r.Field<int>("Ordinal")), 
-                table, 
-                EntityStoreSchemaFilterObjectTypes.Table, 
-                filters, 
-                RelationshipDetailFromTableAlias, 
+                    .ThenBy(r => r.Field<int>("Ordinal")),
+                table,
+                EntityStoreSchemaFilterObjectTypes.Table,
+                filters,
+                RelationshipDetailFromTableAlias,
                 RelationshipDetailToTableAlias);
         }
 
@@ -182,6 +183,7 @@ namespace System.Data.Entity.Design.SsdlGenerator
             }
         }
 
+        [SuppressMessage("Microsoft.Security", "CA2100:Review SQL queries for security vulnerabilities", Justification = "Command does not contain user input")]
         internal static EntityCommand CreateFilteredCommand(EntityConnection connection, string sql, string orderByClause, EntityStoreSchemaFilterObjectTypes queryTypes, List<EntityStoreSchemaFilterEntry> filters, string[] filterAliases)
         {
             EntityCommand command = connection.CreateCommand();
@@ -277,7 +279,7 @@ namespace System.Data.Entity.Design.SsdlGenerator
 
         private static void AddFilterEntry(EntityCommand command, StringBuilder segment, string alias, EntityStoreSchemaFilterEntry entry)
         {
-            
+
             StringBuilder filterText = new StringBuilder();
             AddComparison(command, filterText, alias, "CatalogName", entry.Catalog);
             AddComparison(command, filterText, alias, "SchemaName", entry.Schema);
@@ -367,7 +369,7 @@ namespace System.Data.Entity.Design.SsdlGenerator
                   CROSS APPLY pk.Columns as pkc) as pk
             ON v.ColumnId = pk.Id                   
              ";
-        
+
         private static readonly string TableDetailAlias = "t";
         private static readonly string TableDetailSql = @"
               SELECT 

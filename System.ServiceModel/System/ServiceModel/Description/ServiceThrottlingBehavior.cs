@@ -102,7 +102,20 @@ namespace System.ServiceModel.Description
                 ChannelDispatcher channelDispatcher = serviceHostBase.ChannelDispatchers[i] as ChannelDispatcher;
                 if (channelDispatcher != null)
                 {
-                    channelDispatcher.ServiceThrottle = serviceThrottle;
+                    if (serviceThrottle != channelDispatcher.ServiceThrottle && channelDispatcher.IsServiceThrottleReplaced)
+                    {
+                        ServiceThrottle throttle = new ServiceThrottle(serviceHostBase);
+
+                        throttle.MaxConcurrentCalls = this.calls;
+                        throttle.MaxConcurrentSessions = this.sessions;
+                        throttle.MaxConcurrentInstances = this.MaxConcurrentInstances;
+
+                        channelDispatcher.ServiceThrottle = throttle;
+                    }
+                    else
+                    {
+                        channelDispatcher.ServiceThrottle = serviceThrottle;
+                    }
                 }
             }
         }

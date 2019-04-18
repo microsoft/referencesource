@@ -39,11 +39,23 @@ namespace System.ServiceModel.Dispatcher
             security.ExternalAuthorizationPolicies = this.externalAuthorizationPolicies;
 
             ServiceAuthorizationManager serviceAuthorizationManager = this.serviceAuthorizationManager ?? DefaultServiceAuthorizationManager;
+            bool outputTiming = DS.AuthorizationIsEnabled();
+            Stopwatch sw = null;
+            if (outputTiming)
+            {
+                sw = Stopwatch.StartNew();
+            }
+
             try
             {
                 if (!serviceAuthorizationManager.CheckAccess(rpc.OperationContext, ref rpc.Request))
                 {
                     throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(CreateAccessDeniedFaultException());
+                }
+
+                if (outputTiming)
+                {
+                    DS.Authorization(this.serviceAuthorizationManager.GetType(), true, sw.Elapsed);
                 }
             }
             catch (Exception ex)
@@ -52,10 +64,17 @@ namespace System.ServiceModel.Dispatcher
                 {
                     throw;
                 }
+
+                if (outputTiming)
+                {
+                    DS.Authorization(this.serviceAuthorizationManager.GetType(), false, sw.Elapsed);
+                }
+
                 if (PerformanceCounters.PerformanceCountersEnabled)
                 {
                     PerformanceCounters.AuthorizationFailed(rpc.Operation.Name);
                 }
+
                 if (AuditLevel.Failure == (this.serviceAuthorizationAuditLevel & AuditLevel.Failure))
                 {
                     try

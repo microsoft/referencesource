@@ -9,6 +9,7 @@ namespace System.Xml.Xsl.XsltOld {
     using Res = System.Xml.Utils.Res;
     using System;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.Xml;
     using System.Xml.XPath;
@@ -513,6 +514,7 @@ namespace System.Xml.Xsl.XsltOld {
             return uri;
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3068:TextReaderImplNeedsSettingsAndResolver", Justification="XmlResolver is set on XmlTextReaderImpl after it is constructed. Entities have expansion limit - exception granted on Feb 6 2018")]
         internal NavigatorInput ResolveDocument(Uri absoluteUri) {
             Debug.Assert(this.xmlResolver != null);
             object input = this.xmlResolver.GetEntity(absoluteUri, null, null);

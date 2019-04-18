@@ -1,0 +1,67 @@
+﻿<sad:ActivityDesigner
+	x:Uid="sad:WorkflowElementDesigner_1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"    
+  	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sadc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    x:Class="System.Activities.Core.Presentation.AssignDesigner"
+    x:ClassModifier="internal"
+    Collapsible="False"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.Assign}">
+
+  <sad:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <sadc:ArgumentToExpressionConverter x:Uid="sadc:ArgumentToExpressionConverter_1" x:Key="ArgumentToExpressionConverter" />
+      <sadc:ModelToObjectValueConverter x:Uid="sadc:ModelToObjectValueConverter_1" x:Key="ModelToObjectConverter" />
+    </ResourceDictionary>
+  </sad:ActivityDesigner.Resources>
+  
+  <Grid x:Uid="Grid_1"  >
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition x:Uid="ColumnDefinition_1" />
+      <ColumnDefinition x:Uid="ColumnDefinition_2" />
+      <ColumnDefinition x:Uid="ColumnDefinition_3" />
+    </Grid.ColumnDefinitions>
+    <sadv:ExpressionTextBox x:Uid="assignToExpression"
+          AutomationProperties.Name="To expression"
+          HintText="To"
+          AutomationProperties.AutomationId="assignToExpression"
+          Expression="{Binding Path=ModelItem.To, Mode=TwoWay, Converter={StaticResource ArgumentToExpressionConverter}, ConverterParameter=Out }"
+          OwnerActivity="{Binding Path=ModelItem}"
+          UseLocationExpression="True"
+          Name="assignToExpression"
+          Width="110"
+          Margin="0"
+          Grid.Column="0"
+          MaxLines="1"
+          VerticalScrollBarVisibility="Auto"/>
+    <TextBlock x:Uid="TextBlock_1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="=" Grid.Column="1"/>
+    <sadv:ExpressionTextBox x:Uid="assignValueExpression"
+        AutomationProperties.Name="Value expression"
+        AutomationProperties.AutomationId="assignValueExpression"
+        Expression="{Binding Path=ModelItem.Value, Mode=TwoWay, Converter={StaticResource ArgumentToExpressionConverter}, ConverterParameter=In }"
+        OwnerActivity="{Binding Path=ModelItem}"
+        Name="assignValueExpression"
+        Width="110"
+        Margin="0"
+        Grid.Column="2"
+        MaxLines="1"
+        VerticalScrollBarVisibility="Auto">
+      <sadv:ExpressionTextBox.Style>
+        <Style x:Uid="Style_1" TargetType="sadv:ExpressionTextBox">
+          <Setter x:Uid="Setter_1" Property="ExpressionType" Value="{Binding Path=ModelItem.To.ArgumentType, Converter={StaticResource ModelToObjectConverter}}" />
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ModelItem.To}" Value="{x:Null}">
+              <Setter x:Uid="Setter_2" Property="ExpressionType" Value="{x:Null}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </sadv:ExpressionTextBox.Style>
+    </sadv:ExpressionTextBox>
+  </Grid>
+</sad:ActivityDesigner>

@@ -128,15 +128,15 @@ namespace System {
     }
 
     [Serializable]
-    internal sealed class CultureAwareComparer : StringComparer, ISerializable
+    internal sealed class CultureAwareComparer : StringComparer
 #if FEATURE_RANDOMIZED_STRING_HASHING
         , IWellKnownStringEqualityComparer
 #endif
     {
         private CompareInfo _compareInfo;
         private bool        _ignoreCase;
-        [OptionalField]
-        private CompareOptions _options;
+        [OptionalField] private CompareOptions _options;
+        [NonSerialized] private bool _initializing;
 
         internal CultureAwareComparer(CultureInfo culture, bool ignoreCase) {
                _compareInfo = culture.CompareInfo;
@@ -160,35 +160,8 @@ namespace System {
                               (options & CompareOptions.OrdinalIgnoreCase ) == CompareOptions.OrdinalIgnoreCase);
         }
 
-        // In 4.7.1 we have added the _options field.
-        // If we are deserializing old object created from 4.7 and earlier, then we need to initialize the _options according to _ignoreCase
-        // to do that we have implemented the ISerializable interface to ensure keeping _ignoreCase and _options in sync.
-        // We chose to implement ISerializable rather than using a method marked with OnDeserialized attribute because if any other object (e.g. ConcurrentDictionary)
-        // is using the CultureAwareComparer and in same time has a method marked with OnDeserialized attribute, then serialization is not guaranteeing to call the
-        // CultureAwareComparer OnDeserialization method before the other object OnDeserialization method which lead to wrong behavior.
-
-        public CultureAwareComparer(SerializationInfo info, StreamingContext context)
-        {
-            _compareInfo = (CompareInfo) info.GetValue("_compareInfo", typeof(CompareInfo));
-            _ignoreCase = info.GetBoolean("_ignoreCase");
-
-            var obj = info.GetValueNoThrow("_options", typeof(CompareOptions));
-            if (obj != null)
-                _options = (CompareOptions) obj;
-
-            // fix up the _options value in case we are getting old serialized object not having _options
-            _options |= _ignoreCase ? CompareOptions.IgnoreCase : CompareOptions.None;
-        }
-
-        [System.Security.SecurityCritical]
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue("_compareInfo", _compareInfo);
-            info.AddValue("_options", _options);
-            info.AddValue("_ignoreCase", _ignoreCase);
-        }
-
         public override int Compare(string x, string y) {
+            EnsureInitialization();
             if (Object.ReferenceEquals(x, y)) return 0;
             if (x == null) return -1;
             if (y == null) return 1;
@@ -196,6 +169,7 @@ namespace System {
         }
 
         public override bool Equals(string x, string y) {
+            EnsureInitialization();
             if (Object.ReferenceEquals(x ,y)) return true;
             if (x == null || y == null) return false;
 
@@ -203,6 +177,7 @@ namespace System {
         }
 
         public override int GetHashCode(string obj) {
+            EnsureInitialization();
             if( obj == null) {
                 throw new ArgumentNullException("obj");
             }
@@ -213,6 +188,7 @@ namespace System {
 
         // Equals method for the comparer itself.
         public override bool Equals(Object obj){
+            EnsureInitialization();
             CultureAwareComparer comparer = obj as CultureAwareComparer;
             if( comparer == null) {
                 return false;
@@ -222,10 +198,41 @@ namespace System {
         }
 
         public override int GetHashCode() {
+            EnsureInitialization();
             int hashCode = _compareInfo.GetHashCode() ;
             return _ignoreCase ? (~hashCode) : hashCode;
         }
 
+        // During the deserialization we want to ensure the _options field is initialized as we can deserialize from old object which
+        // didn't include the _options field. We use OnDeserialized method to ensure this initialization.
+        // There are some classes (e.g. ConcurrentDictionary) which include CultureAwareComparer object and provide OnDeserialized method too
+        // and as the order of calling the OnDeserialized methods is not guaranteed, the OnDeserialized method of ConcurrentDictionary can be called
+        // before calling OnDeserialized method of CultureAwareComparer and in same time it uses the CultureAwareComparer object there which didn't
+        // initialize _options yet. To avoid this problem we implement OnDeserializing method and mark the object as not fully initialized there and then
+        // in every operation we perform on CultureAwareComparer, we'll check to ensure the initialization by the method EnsureInitialization()
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void EnsureInitialization()
+        {
+            if (_initializing)
+            {
+                // fix up the _options value in case we are getting old serialized object not having _options
+                _options |= _ignoreCase ? CompareOptions.IgnoreCase : CompareOptions.None;
+                _initializing = false;
+            }
+        }
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext ctx)
+        {
+            _initializing = true;
+        }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext ctx)
+        {
+            EnsureInitialization();
+        }
 #if FEATURE_RANDOMIZED_STRING_HASHING
         IEqualityComparer IWellKnownStringEqualityComparer.GetRandomizedEqualityComparer() {
             return new CultureAwareRandomizedComparer(_compareInfo, _ignoreCase);

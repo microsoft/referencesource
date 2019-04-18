@@ -18,6 +18,7 @@ namespace System.Security.Cryptography {
     [System.Runtime.InteropServices.ComVisible(true)]
     public class SHA1Managed : SHA1
     {
+        private SHA1   _impl;
         private byte[] _buffer;
         private long   _count; // Number of bytes in the hashed message
         private uint[] _stateSHA1;
@@ -30,16 +31,28 @@ namespace System.Security.Cryptography {
         public SHA1Managed()
         {
 #if FEATURE_CRYPTO
-            if (CryptoConfig.AllowOnlyFipsAlgorithms)
+            // .NET Framework 2.0 - 4.7.2 rejected all managed implementations when in FIPS mode
+            // because the implementations are not certified. This causes problems for users who
+            // need to run in FIPS mode when applications or libraries were written on systems
+            // which did not.
+            //
+            // Rather than throw an Exception that an uncertified implementation is in use, the
+            // behavior now is to shim into a wrapper over the Windows implementation in the
+            // managed types.
+            if (CryptoConfig.AllowOnlyFipsAlgorithms && AppContextSwitches.UseLegacyFipsThrow)
                 throw new InvalidOperationException(Environment.GetResourceString("Cryptography_NonCompliantFIPSAlgorithm"));
             Contract.EndContractBlock();
 #endif // FEATURE_CRYPTO
 
-            _stateSHA1 = new uint[5];
-            _buffer = new byte[64];
-            _expandedBuffer = new uint[80];
+            if (CryptoConfig.AllowOnlyFipsAlgorithms) {
+                _impl = new SHA1CryptoServiceProvider();
+            } else {
+                _stateSHA1 = new uint[5];
+                _buffer = new byte[64];
+                _expandedBuffer = new uint[80];
 
-            InitializeState();
+                InitializeState();
+            }
         }
 
         //
@@ -47,19 +60,43 @@ namespace System.Security.Cryptography {
         //
 
         public override void Initialize() {
-            InitializeState();
+            if (_impl != null) {
+                _impl.Initialize();
+            } else {
+                InitializeState();
 
-            // Zeroize potentially sensitive information.
-            Array.Clear(_buffer, 0, _buffer.Length);
-            Array.Clear(_expandedBuffer, 0, _expandedBuffer.Length);
+                // Zeroize potentially sensitive information.
+                Array.Clear(_buffer, 0, _buffer.Length);
+                Array.Clear(_expandedBuffer, 0, _expandedBuffer.Length);
+            }
         }
 
         protected override void HashCore(byte[] rgb, int ibStart, int cbSize) {
-            _HashData(rgb, ibStart, cbSize);
+            if (_impl != null) {
+                _impl.TransformBlock(rgb, ibStart, cbSize, null, 0);
+            } else {
+                _HashData(rgb, ibStart, cbSize);
+            }
         }
 
         protected override byte[] HashFinal() {
+            if (_impl != null) {
+                _impl.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+                return _impl.Hash;
+            }
+
             return _EndHash();
+        }
+
+        protected override void Dispose(bool disposing) {
+            if (disposing) {
+                if (_impl != null) {
+                    _impl.Dispose();
+                    // Don't null this out, or we exit "shimming mode".
+                }
+            }
+
+            base.Dispose(disposing);
         }
 
         //

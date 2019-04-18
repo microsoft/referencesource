@@ -1,0 +1,48 @@
+﻿<sad:ActivityDesigner x:Uid="sad:WorkflowElementDesigner_1" x:Class="System.Activities.Core.Presentation.ParallelDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.Parallel}"
+    x:ClassModifier="internal">
+
+  <sad:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <DataTemplate x:Uid="DataTemplate_1" x:Key="ExpandedParallelTemplate">
+        <StackPanel x:Uid="StackPanel_1">
+          <sad:WorkflowItemsPresenter x:Uid="sad:WorkflowItemsPresenter_1" Margin="10,5,10,5" AllowedItemType="{x:Type sa:Activity}" Items="{Binding Path=ModelItem.Branches}" IsDefaultContainer="True" HintText="{DynamicResource dropActivityHint}">
+            <sad:WorkflowItemsPresenter.SpacerTemplate>
+              <DataTemplate x:Uid="DataTemplate_2">
+                <local:ParallelSeparator x:Uid="local:ParallelSeparator_1" Height="{Binding ElementName=ItemsPanel, Path=Height}"  AllowedItemType="{x:Type sa:Activity}"
+                     Context="{Binding Path=Context}" Focusable="True"/>
+              </DataTemplate>
+            </sad:WorkflowItemsPresenter.SpacerTemplate>
+            <sad:WorkflowItemsPresenter.ItemsPanel>
+              <ItemsPanelTemplate x:Uid="ItemsPanelTemplate_1">
+                <StackPanel x:Uid="ItemsPanel" Orientation="Horizontal" HorizontalAlignment="Center" x:Name="ItemsPanel"/>
+              </ItemsPanelTemplate>
+            </sad:WorkflowItemsPresenter.ItemsPanel>
+          </sad:WorkflowItemsPresenter>
+        </StackPanel>
+      </DataTemplate>
+      <Style x:Uid="Style_1" x:Key="ParallelStyle" TargetType="{x:Type ContentPresenter}">
+        <Setter x:Uid="Setter_1" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowExpanded}" Value="true">
+            <Setter x:Uid="Setter_2" Property="ContentTemplate" Value="{DynamicResource ExpandedParallelTemplate}"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </sad:ActivityDesigner.Resources>
+
+  <ContentPresenter x:Uid="ContentPresenter_1" Style="{DynamicResource ParallelStyle}" Content="{Binding}" />
+
+</sad:ActivityDesigner>

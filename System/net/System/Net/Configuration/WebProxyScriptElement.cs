@@ -7,6 +7,7 @@
 namespace System.Net.Configuration
 {
     using System;
+    using System.ComponentModel;
     using System.Configuration;
     using System.Security.Permissions;
 
@@ -14,6 +15,7 @@ namespace System.Net.Configuration
     {
         public WebProxyScriptElement()
         {
+            this.properties.Add(this.autoConfigUrlRetryInterval);
             this.properties.Add(this.downloadTimeout);
             /* Not used with Managed JScript
             this.properties.Add(this.executionTimeout);
@@ -36,6 +38,17 @@ namespace System.Net.Configuration
                                            ConfigurationStrings.WebProxyScript),
                               exception);
             }
+        }
+
+        // After failing to download AutoConfigUrl script, WinHttpAutoProxySvc service will create a background thread and
+        // keep retrying download attempts. Retry intervals are 15 seconds, 60 seconds and if that also fails, every 10 minutes.
+        // We set the retry interval in .NET layer to 10 minutes after failing to download the script,
+        // to reduce the overhead calling into WinHttpGetProxyForUrl.
+        [ConfigurationProperty(ConfigurationStrings.AutoConfigUrlRetryInterval, DefaultValue = 600)] // 600 seconds, 10 minutes.
+        public int AutoConfigUrlRetryInterval
+        {
+            get { return (int) this[this.autoConfigUrlRetryInterval]; }
+            set { this[this.autoConfigUrlRetryInterval] = value; }
         }
 
         [ConfigurationProperty(ConfigurationStrings.DownloadTimeout, DefaultValue = "00:01:00")]
@@ -64,6 +77,14 @@ namespace System.Net.Configuration
 
         ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection();
 
+        readonly ConfigurationProperty autoConfigUrlRetryInterval =
+            new ConfigurationProperty(ConfigurationStrings.AutoConfigUrlRetryInterval,
+                                      typeof(int),
+                                      600,
+                                      null,
+                                      new RetryIntervalValidator(),
+                                      ConfigurationPropertyOptions.None);
+
         readonly ConfigurationProperty downloadTimeout =
             new ConfigurationProperty(ConfigurationStrings.DownloadTimeout,
                                       typeof(TimeSpan),
@@ -72,12 +93,29 @@ namespace System.Net.Configuration
                                       new TimeSpanValidator(new TimeSpan(0, 0, 0), TimeSpan.MaxValue, false),
                                       ConfigurationPropertyOptions.None);
 
-/* Not used with Managed JScript
-        readonly ConfigurationProperty executionTimeout =
-            new ConfigurationProperty(ConfigurationStrings.ExecutionTimeout,
-                                      typeof(TimeSpan),
-                                      TimeSpan.FromSeconds(5),
-                                      ConfigurationPropertyOptions.None);
-*/
+        /* Not used with Managed JScript
+                readonly ConfigurationProperty executionTimeout =
+                    new ConfigurationProperty(ConfigurationStrings.ExecutionTimeout,
+                                              typeof(TimeSpan),
+                                              TimeSpan.FromSeconds(5),
+                                              ConfigurationPropertyOptions.None);
+        */
+
+        private class RetryIntervalValidator : ConfigurationValidatorBase
+        {
+            public override bool CanValidate(Type type)
+            {
+                return type == typeof(int);
+            }
+            public override void Validate(object value)
+            {
+                int size = (int)value;
+                if (size < 0)
+                {
+                    throw new ArgumentOutOfRangeException("value", size,
+                        SR.GetString(SR.ArgumentOutOfRange_Bounds_Lower_Upper, 0, Int32.MaxValue));
+                }
+            }
+        }
     }
 }

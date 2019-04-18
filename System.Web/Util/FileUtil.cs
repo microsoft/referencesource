@@ -593,9 +593,12 @@ sealed class FileAttributesData {
 
     FileAttributesData() {
         FileSize = -1;
+        UtcCreationTime = new DateTime(0, DateTimeKind.Utc);
+        UtcLastAccessTime = new DateTime(0, DateTimeKind.Utc);
+        UtcLastWriteTime = new DateTime(0, DateTimeKind.Utc);
     }
 
-    FileAttributesData(ref UnsafeNativeMethods.WIN32_FILE_ATTRIBUTE_DATA data) {
+        FileAttributesData(ref UnsafeNativeMethods.WIN32_FILE_ATTRIBUTE_DATA data) {
         FileAttributes    = (FileAttributes) data.fileAttributes;
         UtcCreationTime   = DateTimeUtil.FromFileTimeToUtc(((long)data.ftCreationTimeHigh)   << 32 | (long)data.ftCreationTimeLow);
         UtcLastAccessTime = DateTimeUtil.FromFileTimeToUtc(((long)data.ftLastAccessTimeHigh) << 32 | (long)data.ftLastAccessTimeLow);

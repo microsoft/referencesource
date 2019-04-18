@@ -334,7 +334,8 @@ namespace System.ServiceModel.Diagnostics
         public const int MetadataExchangeClientSendRequest = TraceCode.ServiceModel | 0X005B;
         public const int MetadataExchangeClientReceiveReply = TraceCode.ServiceModel | 0X005C;
         public const int WarnHelpPageEnabledNoBaseAddress = TraceCode.ServiceModel | 0X005D;
-        
+        public const int WarnServiceHealthEnabledNoBaseAddress = TraceCode.ServiceModel | 0X005E;
+
         // PortSharingtrace codes
         public const int PortSharing = 0xA0000;
         public const int PortSharingClosed = TraceCode.PortSharing | 0X0001;

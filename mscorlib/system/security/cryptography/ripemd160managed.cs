@@ -30,7 +30,14 @@ namespace System.Security.Cryptography {
         //
 
         public RIPEMD160Managed() {
-            if (CryptoConfig.AllowOnlyFipsAlgorithms)
+            // .NET Framework 2.0 - 4.7.2 rejected all managed implementations when in FIPS mode
+            // because the implementations are not certified. For applications which needed to
+            // have FIPS mode enabled but also process RIPEMD160 (where there is not native Windows
+            // crypto support), there was no good option, and the throw is no longer done.
+            //
+            // Since RIPEMD160 is not a FIPS-Approved algorithm anyway, this just means that an
+            // application or library needs to determine on its own if RIPEMD160 is prohibited in context.
+            if (CryptoConfig.AllowOnlyFipsAlgorithms && AppContextSwitches.UseLegacyFipsThrow)
                 throw new InvalidOperationException(Environment.GetResourceString("Cryptography_NonCompliantFIPSAlgorithm"));
             Contract.EndContractBlock();
 

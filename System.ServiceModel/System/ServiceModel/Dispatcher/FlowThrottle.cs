@@ -53,6 +53,11 @@ namespace System.ServiceModel.Dispatcher
             }
         }
 
+        internal int Count
+        {
+            get { return this.count; }
+        }
+
         internal bool Acquire(object o)
         {
             bool acquiredThrottle = true;

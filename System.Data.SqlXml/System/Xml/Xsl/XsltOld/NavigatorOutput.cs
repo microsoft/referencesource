@@ -9,6 +9,7 @@ namespace System.Xml.Xsl.XsltOld {
     using Res = System.Xml.Utils.Res;
     using System;
     using System.Diagnostics; 
+    using System.Diagnostics.CodeAnalysis;
     using System.Xml;
     using System.Xml.XPath;
     using MS.Internal.Xml.Cache;
@@ -22,6 +23,7 @@ namespace System.Xml.Xsl.XsltOld {
             get { return ((IXPathNavigable)doc).CreateNavigator(); }
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3059:UseXmlReaderForXPathDocument", Justification="Use internal API of XPathDocument to build a document and not to read it")]
         internal NavigatorOutput(string baseUri) {
             doc = new XPathDocument();
             this.wr = doc.LoadFromWriter(XPathDocument.LoadFlags.AtomizeNames, baseUri);

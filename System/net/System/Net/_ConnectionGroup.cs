@@ -502,8 +502,6 @@ namespace System.Net {
 
                         if (!foundLiveConnection) {
                             foundLiveConnection = !currentConnection.NonKeepAliveRequestPipelined;
-                        } else {
-                            GlobalLog.Assert(!currentConnection.NonKeepAliveRequestPipelined, "Connection.NonKeepAliveRequestPipelined == false|Non keep-alive request has been pipelined on this connection.");
                         }
 
                         if (foundLiveConnection && minBusyCount == 0) {

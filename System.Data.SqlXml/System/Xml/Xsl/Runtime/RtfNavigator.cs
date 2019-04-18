@@ -11,6 +11,7 @@ using System.Collections;
 using System.Globalization;
 using System.Text;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Schema;
@@ -389,6 +390,7 @@ namespace System.Xml.Xsl.Runtime {
         /// This method is thread-safe, and is always guaranteed to return the exact same document, no matter how many
         /// threads have called it concurrently.
         /// </summary>
+        [SuppressMessage("Microsoft.Security.Xml", "CA3059:UseXmlReaderForXPathDocument", Justification="Use internal constructor of XPathDocument to build a document and not to read it")]
         public XPathNavigator GetNavigator(XmlEventCache events, XmlNameTable nameTable) {
             if (this.cache == null) {
                 // Create XPathDocument from event cache
@@ -409,6 +411,7 @@ namespace System.Xml.Xsl.Runtime {
         /// This method is thread-safe, and is always guaranteed to return the exact same document, no matter how many
         /// threads have called it concurrently.
         /// </summary>
+        [SuppressMessage("Microsoft.Security.Xml", "CA3059:UseXmlReaderForXPathDocument", Justification="Use internal constructor of XPathDocument to build a document and not to read it")]
         public XPathNavigator GetNavigator(string text, string baseUri, XmlNameTable nameTable) {
             if (this.cache == null) {
                 // Create XPathDocument

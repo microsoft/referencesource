@@ -227,6 +227,34 @@ namespace System.IdentityModel
             return fipsAlgorithmPolicy;
         }
 
+        /// <summary>
+        /// Checks if an <see cref="X509Certificate2Collection"/> object contains a given <see cref="X509Certificate2"/> 
+        /// by comparing <see cref="X509Certificate2.RawData"/>, byte-by-byte.
+        /// </summary>
+        /// <param name="collection">An <see cref="X509Certificate2Collection"/> object.</param>
+        /// <param name="certificate">A <see cref="X509Certificate2"/> object.</param>
+        /// <returns>true if <paramref name="collection"/> contains <paramref name="collection"/>, false otherwise.</returns>
+        internal static bool CollectionContainsCertificate(X509Certificate2Collection collection, X509Certificate2 certificate)
+        {
+            if (collection == null || certificate == null || certificate.Handle == IntPtr.Zero)
+            	return false;
+
+            var certificateRawData = certificate.RawData;
+
+            for (int i = 0; i < collection.Count; i++)
+            {
+                if (collection[i].Handle == IntPtr.Zero)
+                    continue;
+
+                var memberCertificateRawData = collection[i].RawData;
+
+                if (CryptoHelper.IsEqual(memberCertificateRawData, certificateRawData))
+                    return true;
+            }
+
+            return false;
+        }
+
         class SimpleAuthorizationContext : AuthorizationContext
         {
             SecurityUniqueId id;

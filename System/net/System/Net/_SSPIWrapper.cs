@@ -5,13 +5,17 @@
 //------------------------------------------------------------------------------
 
 namespace System.Net {
-    using System.Runtime.InteropServices;
-    using System.Diagnostics;
+    using System.Collections.Concurrent;
     using System.ComponentModel;
-    using System.Net.Sockets;
-    using System.Security.Permissions;
+    using System.Configuration;
+    using System.Diagnostics;
     using System.Globalization;
+    using System.Net.Configuration;
     using System.Net.Security;
+    using System.Net.Sockets;
+    using System.Runtime.InteropServices;
+    using System.Security.Permissions;
+    using System.Security.Principal;
 
     internal static class SSPIWrapper {
 
@@ -73,24 +77,77 @@ namespace System.Net {
             return null;
         }
 
+        private static int s_DefaultCredentialsHandleCacheSize = SettingsSectionInternal.Section.DefaultCredentialsHandleCacheSize;
+        private static bool s_DefaultCredentialsHandleCacheEnabled = (s_DefaultCredentialsHandleCacheSize > 0);
+        private static readonly Lazy<ConcurrentDictionary<string, SafeFreeCredentials>> s_DefaultCredentialsHandleCache =
+            new Lazy<ConcurrentDictionary<string, SafeFreeCredentials>>(InitDefaultCredentialsHandleCache);
+        private static ConcurrentDictionary<string, SafeFreeCredentials> InitDefaultCredentialsHandleCache() {
+            if (Logging.On) Logging.PrintInfo(
+                Logging.Web,
+                $"{nameof(InitDefaultCredentialsHandleCache)}: {System.Net.Configuration.ConfigurationStrings.DefaultCredentialsHandleCacheSize} = {s_DefaultCredentialsHandleCacheSize}");
+
+            Debug.Assert(s_DefaultCredentialsHandleCacheSize > 0);
+
+            return new ConcurrentDictionary<string, SafeFreeCredentials>(Environment.ProcessorCount, s_DefaultCredentialsHandleCacheSize);
+        }
+
         public static SafeFreeCredentials AcquireDefaultCredential(SSPIInterface SecModule, string package, CredentialUse intent) {
-            GlobalLog.Print("SSPIWrapper::AcquireDefaultCredential(): using " + package);
-            if (Logging.On) Logging.PrintInfo(Logging.Web, 
-                "AcquireDefaultCredential(" +
-                "package = " + package + ", " +
-                "intent  = " + intent + ")");
-
-
             SafeFreeCredentials outCredential = null;
-            int errorCode = SecModule.AcquireDefaultCredential(package, intent, out outCredential );
+            string currentIdentityKey = null;
+            bool isIdentityCached;
 
-            if (errorCode != 0) {
-#if TRAVE
-                GlobalLog.Print("SSPIWrapper::AcquireDefaultCredential(): error " + SecureChannel.MapSecurityStatus((uint)errorCode));
-#endif
-                if (Logging.On) Logging.PrintError(Logging.Web, SR.GetString(SR.net_log_operation_failed_with_error, "AcquireDefaultCredential()", String.Format(CultureInfo.CurrentCulture, "0X{0:X}", errorCode)));
-                throw new Win32Exception(errorCode);
+            if (s_DefaultCredentialsHandleCacheEnabled)
+            {
+                currentIdentityKey = string.Format("{0}_{1}_{2}", package, intent.ToString(), WindowsIdentity.GetCurrent().Name);
+                isIdentityCached = s_DefaultCredentialsHandleCache.Value.TryGetValue(currentIdentityKey, out outCredential);
             }
+            else
+            {
+                isIdentityCached = false;
+            }
+
+            GlobalLog.Print("SSPIWrapper::AcquireDefaultCredential(): using " + package);
+            if (Logging.On)
+            {
+                if (currentIdentityKey == null)
+                {
+                    // We aren't using the cache but it's still useful to log the current identity for diagnostics.
+                    currentIdentityKey = string.Format("{0}_{1}_{2}", package, intent.ToString(), WindowsIdentity.GetCurrent().Name);
+                }
+
+                Logging.PrintInfo(Logging.Web,
+                    "AcquireDefaultCredential(" +
+                    "package = " + package + ", " +
+                    "intent = " + intent + ", " +
+                    "identity = " + currentIdentityKey + ", " +
+                    "cached = " + isIdentityCached + ")");
+            }
+
+            if (!isIdentityCached) {
+
+                int errorCode = SecModule.AcquireDefaultCredential(package, intent, out outCredential);
+
+                if (errorCode != 0) {
+#if TRAVE
+                    GlobalLog.Print("SSPIWrapper::AcquireDefaultCredential(): error " + SecureChannel.MapSecurityStatus((uint)errorCode));
+#endif
+                    if (Logging.On) Logging.PrintError(Logging.Web, SR.GetString(SR.net_log_operation_failed_with_error, "AcquireDefaultCredential()", String.Format(CultureInfo.CurrentCulture, "0X{0:X}", errorCode)));
+                    throw new Win32Exception(errorCode);
+                }
+
+                if (s_DefaultCredentialsHandleCacheEnabled &&
+                    s_DefaultCredentialsHandleCache.Value.Count < s_DefaultCredentialsHandleCacheSize) {
+                    try {
+                        s_DefaultCredentialsHandleCache.Value.TryAdd(currentIdentityKey, outCredential);
+                    }
+                    catch (OverflowException) {
+                        // Unlikely to be thrown since it requires Int32.MaxValue items to already be in the cache.
+                        // But we don't want to throw a new exception. So, we'll ignore this error and accept that
+                        // the handle won't be cached.
+                    }
+                }
+            }
+
             return outCredential;
         }
 
@@ -733,12 +790,15 @@ namespace System.Net {
         Tls12Client         = 0x00000800,
         Tls12Server         = 0x00000400,
         Tls12               = (Tls12Client | Tls12Server),
+        Tls13Client         = 0x00002000,
+        Tls13Server         = 0x00001000,
+        Tls13               = (Tls13Client | Tls13Server),
         Ssl3Tls             = (Ssl3 | Tls10),
         UniClient           = unchecked((int)0x80000000),
         UniServer           = 0x40000000,
         Unified             = (UniClient | UniServer),
-        ClientMask          = (PctClient | Ssl2Client | Ssl3Client | Tls10Client | Tls11Client | Tls12Client | UniClient),
-        ServerMask          = (PctServer | Ssl2Server | Ssl3Server | Tls10Server | Tls11Server | Tls12Server | UniServer)
+        ClientMask          = (PctClient | Ssl2Client | Ssl3Client | Tls10Client | Tls11Client | Tls12Client | Tls13Client | UniClient),
+        ServerMask          = (PctServer | Ssl2Server | Ssl3Server | Tls10Server | Tls11Server | Tls12Server | Tls13Server | UniServer)
     };
 
     //From WinCrypt.h

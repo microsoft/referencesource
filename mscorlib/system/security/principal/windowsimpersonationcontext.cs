@@ -24,6 +24,7 @@ namespace System.Security.Principal
     using System.Runtime.ConstrainedExecution;
     using System.Runtime.Versioning;
     using System.Diagnostics.Contracts;
+    using System.Diagnostics.CodeAnalysis;
 
     [System.Runtime.InteropServices.ComVisible(true)]
     public class WindowsImpersonationContext : IDisposable {
@@ -87,11 +88,13 @@ namespace System.Security.Principal
         [ResourceConsumption(ResourceScope.Process, ResourceScope.Process)]
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
+        [SuppressMessage("Microsoft.Security", "CA2153:DoNotCatchCorruptedStateExceptionsInGeneralHandlers", Justification = "Reviewed for security")]
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
         internal bool UndoNoThrow()
         {
             bool bRet = false;
-            try{
+            try
+            {
                 int hr = 0;
                 if (m_safeTokenHandle.IsInvalid) 
                 { // the thread was not initially impersonating
@@ -115,8 +118,13 @@ namespace System.Security.Principal
                 if (m_fsd != null)
                     m_fsd.SetTokenHandles(null,null);
             }
-            catch
+            catch (Exception ex)
             {
+                if (!AppContextSwitches.UseLegacyExecutionContextBehaviorUponUndoFailure)
+                {
+                    // Fail fast since we can't continue safely
+                    Environment.FailFast(Environment.GetResourceString("ExecutionContext_UndoFailed"), ex);
+                }
                 bRet = false;
             }
             return bRet;

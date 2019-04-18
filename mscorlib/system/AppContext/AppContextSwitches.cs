@@ -31,6 +31,26 @@ namespace System
             }
         }
 
+        private static int _formatJapaneseFirstYearAsANumber;
+        public static bool FormatJapaneseFirstYearAsANumber
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchFormatJapaneseFirstYearAsANumber, ref _formatJapaneseFirstYearAsANumber);
+            }
+        }
+
+        private static int _enforceLegacyJapaneseDateParsing;
+        public static bool EnforceLegacyJapaneseDateParsing
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchEnforceLegacyJapaneseDateParsing, ref _enforceLegacyJapaneseDateParsing);
+            }
+        }
+
         private static int _throwExceptionIfDisposedCancellationTokenSource;
         public static bool ThrowExceptionIfDisposedCancellationTokenSource
         {
@@ -120,6 +140,46 @@ namespace System
             get
             {
                 return GetCachedSwitchValue(AppContextDefaultValues.SwitchUseNewMaxArraySize, ref _useNewMaxArraySize);
+            }
+        }
+
+        private static int _useLegacyExecutionContextBehaviorUponUndoFailure;
+        public static bool UseLegacyExecutionContextBehaviorUponUndoFailure
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchUseLegacyExecutionContextBehaviorUponUndoFailure, ref _useLegacyExecutionContextBehaviorUponUndoFailure);
+            }
+        }
+
+        private static int _useLegacyFipsThrow;
+        public static bool UseLegacyFipsThrow
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchCryptographyUseLegacyFipsThrow, ref _useLegacyFipsThrow);
+            }
+        }
+
+        private static int _doNotMarshalOutByrefSafeArrayOnInvoke;
+        public static bool DoNotMarshalOutByrefSafeArrayOnInvoke
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchDoNotMarshalOutByrefSafeArrayOnInvoke, ref _doNotMarshalOutByrefSafeArrayOnInvoke);
+            }
+        }
+
+        private static int _useNetCoreTimer;
+        public static bool UseNetCoreTimer
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchUseNetCoreTimer, ref _useNetCoreTimer);
             }
         }
 

@@ -397,8 +397,8 @@ namespace System.Security.Cryptography {
 #if FEATURE_CORESYSTEM
             [SecurityCritical]
 #endif
-            public static extern bool CryptHashData(SafeCapiHashHandle hHash,
-                                                    [MarshalAs(UnmanagedType.LPArray)] byte[] pbData,
+            public static extern unsafe bool CryptHashData(SafeCapiHashHandle hHash,
+                                                    byte* pbData,
                                                     int dwDataLen,
                                                     int dwFlags);
 

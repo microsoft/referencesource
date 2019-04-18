@@ -395,16 +395,18 @@ namespace System.Runtime.Serialization
         protected class DataContractCriticalHelper
 #endif
         {
-            static Dictionary<TypeHandleRef, IntRef> typeToIDCache;
+            static Hashtable typeToIDCache;
             static DataContract[] dataContractCache;
             static int dataContractID;
             static Dictionary<Type, DataContract> typeToBuiltInContract;
             static Dictionary<XmlQualifiedName, DataContract> nameToBuiltInContract;
             static Dictionary<string, DataContract> typeNameToBuiltInContract;
-            static Dictionary<string, string> namespaces;
+            static Hashtable namespaces;
             static Dictionary<string, XmlDictionaryString> clrTypeStrings;
             static XmlDictionary clrTypeStringsDictionary;
-            static TypeHandleRef typeHandleRef = new TypeHandleRef();
+
+            [ThreadStatic]
+            static TypeHandleRef typeHandleRef;
 
             static object cacheLock = new object();
             static object createDataContractLock = new object();
@@ -429,7 +431,8 @@ namespace System.Runtime.Serialization
 
             static DataContractCriticalHelper()
             {
-                typeToIDCache = new Dictionary<TypeHandleRef, IntRef>(new TypeHandleRefEqualityComparer());
+                typeToIDCache = new Hashtable(new HashTableEqualityComparer());
+                namespaces = new Hashtable();
                 dataContractCache = new DataContract[32];
                 dataContractID = 0;
             }
@@ -497,28 +500,42 @@ namespace System.Runtime.Serialization
 
             internal static int GetId(RuntimeTypeHandle typeHandle)
             {
-                lock (cacheLock)
+                typeHandle = GetDataContractAdapterTypeHandle(typeHandle);
+                if (typeHandleRef == null)
                 {
-                    IntRef id;
-                    typeHandle = GetDataContractAdapterTypeHandle(typeHandle);
-                    typeHandleRef.Value = typeHandle;
-                    if (!typeToIDCache.TryGetValue(typeHandleRef, out id))
+                    typeHandleRef = new TypeHandleRef();
+                }
+
+                typeHandleRef.Value = typeHandle;
+                object value = typeToIDCache[typeHandleRef];
+                if (value != null)
+                {
+                    return ((IntRef)value).Value;
+                }
+                
+                try
+                {
+                    lock (cacheLock)
                     {
-                        id = GetNextId();
-                        try
+                        object val = typeToIDCache[typeHandleRef];
+                        if (val != null)
                         {
-                            typeToIDCache.Add(new TypeHandleRef(typeHandle), id);
+                            return ((IntRef)val).Value;
                         }
-                        catch (Exception ex)
-                        {
-                            if (Fx.IsFatal(ex))
-                            {
-                                throw;
-                            }
-                            throw DiagnosticUtility.ExceptionUtility.ThrowHelperFatal(ex.Message, ex);
-                        }
+
+                        IntRef id = GetNextId();
+                        typeToIDCache.Add(new TypeHandleRef(typeHandle), id);                       
+                        return id.Value;
                     }
-                    return id.Value;
+                }
+                catch (Exception ex)
+                {
+                    if (Fx.IsFatal(ex))
+                        {
+                            throw;
+                        }
+
+                     throw DiagnosticUtility.ExceptionUtility.ThrowHelperFatal(ex.Message, ex);
                 }
             }
 
@@ -982,26 +999,34 @@ namespace System.Runtime.Serialization
 
             internal static string GetNamespace(string key)
             {
-                lock (namespacesLock)
+                object value = namespaces[key];
+                if (value != null)
                 {
-                    if (namespaces == null)
-                        namespaces = new Dictionary<string, string>();
-                    string value;
-                    if (namespaces.TryGetValue(key, out value))
-                        return value;
-                    try
+                    return (string)value;
+                }
+
+                try
+                {
+                    lock (namespacesLock)
                     {
-                        namespaces.Add(key, key);
-                    }
-                    catch (Exception ex)
-                    {
-                        if (Fx.IsFatal(ex))
+                        object val = namespaces[key];
+                        if (val != null)
                         {
-                            throw;
+                            return (string)val;
                         }
-                        throw DiagnosticUtility.ExceptionUtility.ThrowHelperFatal(ex.Message, ex);
+
+                        namespaces.Add(key, key);
+                        return key;
                     }
-                    return key;
+                }
+                catch (Exception ex)
+                {
+                    if (Fx.IsFatal(ex))
+                    {
+                        throw;
+                    }
+
+                    throw DiagnosticUtility.ExceptionUtility.ThrowHelperFatal(ex.Message, ex);
                 }
             }
 
@@ -1050,20 +1075,17 @@ namespace System.Runtime.Serialization
             {
                 if (type != null)
                 {
-                    lock (cacheLock)
+                    if (typeHandleRef == null)
                     {
-                        typeHandleRef.Value = GetDataContractAdapterTypeHandle(type.TypeHandle);
-                        try
+                        typeHandleRef = new TypeHandleRef();
+                    }
+
+                    typeHandleRef.Value = GetDataContractAdapterTypeHandle(type.TypeHandle);
+                    if (typeToIDCache.ContainsKey(typeHandleRef))
+                    {
+                        lock (cacheLock)
                         {
                             typeToIDCache.Remove(typeHandleRef);
-                        }
-                        catch (Exception ex)
-                        {
-                            if (Fx.IsFatal(ex))
-                            {
-                                throw;
-                            }
-                            throw DiagnosticUtility.ExceptionUtility.ThrowHelperFatal(ex.Message, ex);
                         }
                     }
                 }
@@ -2638,6 +2660,19 @@ namespace System.Runtime.Serialization
         public override int GetHashCode()
         {
             return object1.GetHashCode() ^ object2.GetHashCode();
+        }
+    }
+    
+    class HashTableEqualityComparer : IEqualityComparer
+    {
+        bool IEqualityComparer.Equals(object x, object y)
+        {
+            return ((TypeHandleRef)x).Value.Equals(((TypeHandleRef)y).Value);
+        }
+
+        public int GetHashCode(object obj)
+        {
+            return ((TypeHandleRef)obj).Value.GetHashCode();
         }
     }
 

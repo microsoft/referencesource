@@ -191,7 +191,7 @@ namespace System.Security.Cryptography.X509Certificates {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidHandle"), "handle");
             Contract.EndContractBlock();
 
-            X509Utils._DuplicateCertContext(handle, ref m_safeCertContext);
+            X509Utils.DuplicateCertContext(handle, m_safeCertContext);
         }
 
         [System.Security.SecuritySafeCritical]  // auto-generated
@@ -322,9 +322,45 @@ namespace System.Security.Cryptography.X509Certificates {
             return (byte[]) m_thumbprint.Clone();
         }
 
+        [System.Security.SecuritySafeCritical]  // auto-generated
+        public virtual byte[] GetCertHash(HashAlgorithmName hashAlgorithm) {
+            ThrowIfContextInvalid();
+
+            if (string.IsNullOrEmpty(hashAlgorithm.Name)) {
+                throw new ArgumentException(
+                    Environment.GetResourceString("Cryptography_HashAlgorithmNameNullOrEmpty"),
+                    "hashAlgorithm");
+            }
+
+            using (HashAlgorithm hash = CryptoConfig.CreateFromName(hashAlgorithm.Name) as HashAlgorithm) {
+                if (hash == null || hash is KeyedHashAlgorithm) {
+                    // Throw the same exception as .NET Core on Windows.
+                    const int STATUS_NOT_FOUND = unchecked((int)0xc0000225);
+                    throw new CryptographicException(STATUS_NOT_FOUND);
+                }
+
+                // The property lazy-loads the field (then clones it).
+                // Since we're not mutating the value, read the field directly,
+                // or let the property lazy-load it if it's not available.
+                byte[] rawData = m_rawData;
+
+                if (rawData == null) {
+                    rawData = RawData;
+                }
+
+                return hash.ComputeHash(rawData);
+            }
+        }
+
         public virtual string GetCertHashString() {
             SetThumbprint();
             return Hex.EncodeHexString(m_thumbprint);
+        }
+
+        public virtual string GetCertHashString(HashAlgorithmName hashAlgorithm)
+        {
+            byte[] hash = GetCertHash(hashAlgorithm);
+            return Hex.EncodeHexString(hash);
         }
 
         public virtual string GetEffectiveDateString() {
@@ -764,15 +800,15 @@ namespace System.Security.Cryptography.X509Certificates {
             RuntimeHelpers.PrepareConstrainedRegions();
             try {
                 szPassword = X509Utils.PasswordToHGlobalUni(password);
-                X509Utils._LoadCertFromBlob(rawData,
-                                            szPassword,
-                                            dwFlags,
+                X509Utils.LoadCertFromBlob(rawData,
+                                           szPassword,
+                                           dwFlags,
 #if FEATURE_CORECLR
-                                            false,
+                                           false,
 #else // FEATURE_CORECLR
-                                            (keyStorageFlags & X509KeyStorageFlags.PersistKeySet) == 0 ? false : true,
+                                           (keyStorageFlags & X509KeyStorageFlags.PersistKeySet) == 0 ? false : true,
 #endif // FEATURE_CORECLR else
-                                            ref m_safeCertContext);
+                                           m_safeCertContext);
             }
             finally {
                 if (szPassword != IntPtr.Zero)
@@ -804,15 +840,15 @@ namespace System.Security.Cryptography.X509Certificates {
             RuntimeHelpers.PrepareConstrainedRegions();
             try {
                 szPassword = X509Utils.PasswordToHGlobalUni(password);
-                X509Utils._LoadCertFromFile(fileName,
-                                            szPassword,
-                                            dwFlags,
+                X509Utils.LoadCertFromFile(fileName,
+                                           szPassword,
+                                           dwFlags,
 #if FEATURE_CORECLR
-                                            false,
+                                           false,
 #else // FEATURE_CORECLR
-                                            (keyStorageFlags & X509KeyStorageFlags.PersistKeySet) == 0 ? false : true,
+                                           (keyStorageFlags & X509KeyStorageFlags.PersistKeySet) == 0 ? false : true,
 #endif // FEATURE_CORECLR else
-                                            ref m_safeCertContext);
+                                           m_safeCertContext);
             }
             finally {
                 if (szPassword != IntPtr.Zero)

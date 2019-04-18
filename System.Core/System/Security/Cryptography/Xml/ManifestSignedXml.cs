@@ -345,6 +345,7 @@ namespace System.Security.Cryptography.Xml {
         ///     Verify the hash of the manifest without any signature attached is what the Authenticode
         ///     signature expects it to be
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5354", Justification = "[MS-OSCO] requires SHA-1")]
         private SignatureVerificationResult VerifyAuthenticodeExpectedHash(XmlElement licenseNode) {
             Debug.Assert(licenseNode != null, "licenseNode != null");
 

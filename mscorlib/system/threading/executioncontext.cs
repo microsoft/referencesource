@@ -302,6 +302,7 @@ namespace System.Threading
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
 #if FEATURE_CORRUPTING_EXCEPTIONS
         [HandleProcessCorruptedStateExceptions] // 
+        [SuppressMessage("Microsoft.Security", "CA2153:DoNotCatchCorruptedStateExceptionsInGeneralHandlers", Justification = "Reviewed for security")]
 #endif // FEATURE_CORRUPTING_EXCEPTIONS
         internal bool UndoNoThrow()
         {
@@ -309,8 +310,13 @@ namespace System.Threading
             {
                 Undo();
             }
-            catch
+            catch (Exception ex)
             {
+                if (!AppContextSwitches.UseLegacyExecutionContextBehaviorUponUndoFailure)
+                {
+                    // Fail fast since we can't continue safely
+                    Environment.FailFast(Environment.GetResourceString("ExecutionContext_UndoFailed"), ex);
+                }
                 return false;
             }
             return true;
@@ -512,8 +518,8 @@ namespace System.Threading
         }
         private Flags _flags;
 
-        private Dictionary<IAsyncLocal, object> _localValues;
-        private List<IAsyncLocal> _localChangeNotifications;
+        private IAsyncLocalValueMap _localValues;
+        private IAsyncLocal[] _localChangeNotifications;
 
         internal bool isNewCapture 
         { 
@@ -677,28 +683,48 @@ namespace System.Threading
             if (previousValue == newValue)
                 return;
 
-            if (current._localValues == null)
-                current._localValues = new Dictionary<IAsyncLocal, object>();
+            // Regarding 'treatNullValueAsNonexistent: !needChangeNotifications' below:
+            // - When change notifications are not necessary for this IAsyncLocal, there is no observable difference between
+            //   storing a null value and removing the IAsyncLocal from 'm_localValues'
+            // - When change notifications are necessary for this IAsyncLocal, the IAsyncLocal's absence in 'm_localValues'
+            //   indicates that this is the first value change for the IAsyncLocal and it needs to be registered for change
+            //   notifications. So in this case, a null value must be stored in 'm_localValues' to indicate that the IAsyncLocal
+            //   is already registered for change notifications.
+            IAsyncLocalValueMap newValues = current._localValues;
+            if (newValues == null)
+            {
+                newValues = AsyncLocalValueMap.Create(local, newValue, treatNullValueAsNonexistent: !needChangeNotifications);
+            }
             else
-                current._localValues = new Dictionary<IAsyncLocal, object>(current._localValues);
-
-            current._localValues[local] = newValue;
+            {
+                newValues = newValues.Set(local, newValue, treatNullValueAsNonexistent: !needChangeNotifications);
+            }
+            current._localValues = newValues;
 
             if (needChangeNotifications)
             {
+                //
+                // Either copy the change notification array, or create a new one, depending on whether we need to add a new item.
+                //
                 if (hadPreviousValue)
                 {
                     Contract.Assert(current._localChangeNotifications != null);
-                    Contract.Assert(current._localChangeNotifications.Contains(local));
+                    Contract.Assert(Array.IndexOf(current._localChangeNotifications, local) >= 0);
                 }
                 else
                 {
-                    if (current._localChangeNotifications == null)
-                        current._localChangeNotifications = new List<IAsyncLocal>();
+                    IAsyncLocal[] newChangeNotifications = current._localChangeNotifications;
+                    if (newChangeNotifications == null)
+                    {
+                        newChangeNotifications = new IAsyncLocal[1] { local };
+                    }
                     else
-                        current._localChangeNotifications = new List<IAsyncLocal>(current._localChangeNotifications);
-
-                    current._localChangeNotifications.Add(local);
+                    {
+                        int newNotificationIndex = newChangeNotifications.Length;
+                        Array.Resize(ref newChangeNotifications, newNotificationIndex + 1);
+                        newChangeNotifications[newNotificationIndex] = local;
+                    }
+                    current._localChangeNotifications = newChangeNotifications;
                 }
 
                 local.OnValueChanged(previousValue, newValue, false);
@@ -709,7 +735,7 @@ namespace System.Threading
         [HandleProcessCorruptedStateExceptions]
         internal static void OnAsyncLocalContextChanged(ExecutionContext previous, ExecutionContext current)
         {
-            List<IAsyncLocal> previousLocalChangeNotifications = (previous == null) ? null : previous._localChangeNotifications;
+            IAsyncLocal[] previousLocalChangeNotifications = (previous == null) ? null : previous._localChangeNotifications;
             if (previousLocalChangeNotifications != null)
             {
                 foreach (IAsyncLocal local in previousLocalChangeNotifications)
@@ -727,7 +753,7 @@ namespace System.Threading
                 }
             }
 
-            List<IAsyncLocal> currentLocalChangeNotifications = (current == null) ? null : current._localChangeNotifications;
+            IAsyncLocal[] currentLocalChangeNotifications = (current == null) ? null : current._localChangeNotifications;
             if (currentLocalChangeNotifications != null && currentLocalChangeNotifications != previousLocalChangeNotifications)
             {
                 try
@@ -1245,8 +1271,8 @@ namespace System.Threading
 #endif // #if FEATURE_REMOTING
             }
 
-            Dictionary<IAsyncLocal, object> localValues = null;
-            List<IAsyncLocal> localChangeNotifications = null;
+            IAsyncLocalValueMap localValues = null;
+            IAsyncLocal[] localChangeNotifications = null;
             if (!ecCurrent.IsNull)
             {
                 localValues = ecCurrent.DangerousGetRawExecutionContext()._localValues;

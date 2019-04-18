@@ -38,6 +38,11 @@ namespace System.Workflow.ComponentModel.Serialization
         internal const string Definitions_Type_LocalName = "Type";
     }
 
+    internal interface ITypeAuthorizer
+    {
+        bool IsTypeAuthorized(Type typeToAuthorize);
+    }
+
     internal static class WorkflowMarkupSerializationHelpers
     {
         internal static string[] standardNamespaces = {
@@ -51,6 +56,14 @@ namespace System.Workflow.ComponentModel.Serialization
                 "System.Workflow.Activities"
         };
 
+        // This type authorizer is created by the WorkflowCompiler to check for allowed types during deserialization.
+        internal static ITypeAuthorizer TypeAuthorizer;
+
+        // This type authorizer is created by the WorkflowMarkupSerializer to check for disallowed types during deserialization.
+        // This is separate from TypeAuthorizer so that it applies to situations where the WorkflowCompiler is not involved, such
+        // as when the workflow designer is deserializing the XOML.
+        internal static ITypeAuthorizer SerializationTypeAuthorizer;
+
         public static Activity LoadXomlDocument(WorkflowMarkupSerializationManager xomlSerializationManager, XmlReader textReader, string fileName)
         {
             if (xomlSerializationManager == null)
@@ -60,6 +73,27 @@ namespace System.Workflow.ComponentModel.Serialization
             try
             {
                 xomlSerializationManager.Context.Push(fileName);
+                WorkflowMarkupSerializationHelpers.TypeAuthorizer = null;
+                rootActivity = new WorkflowMarkupSerializer().Deserialize(xomlSerializationManager, textReader) as Activity;
+            }
+            finally
+            {
+                xomlSerializationManager.Context.Pop();
+            }
+
+            return rootActivity;
+        }
+
+        internal static Activity LoadXomlDocument(WorkflowMarkupSerializationManager xomlSerializationManager, XmlReader textReader, string fileName, ITypeAuthorizer typeAuthorizer)
+        {
+            if (xomlSerializationManager == null)
+                throw new ArgumentNullException("xomlSerializationManager");
+
+            Activity rootActivity = null;
+            try
+            {
+                xomlSerializationManager.Context.Push(fileName);
+                WorkflowMarkupSerializationHelpers.TypeAuthorizer = typeAuthorizer;
                 rootActivity = new WorkflowMarkupSerializer().Deserialize(xomlSerializationManager, textReader) as Activity;
             }
             finally
@@ -238,10 +272,19 @@ namespace System.Workflow.ComponentModel.Serialization
                             // add checksum attribute
                             if (filePath != null && filePath.Length > 0)
                             {
-                                MD5 md5 = new MD5CryptoServiceProvider();
                                 byte[] checksumBytes = null;
+                                HashAlgorithm hashAlgorithm = null;
+                                if (System.Workflow.ComponentModel.LocalAppContextSwitches.UseLegacyHashForXomlFileChecksum)
+                                {
+                                    hashAlgorithm = new MD5CryptoServiceProvider();
+                                }
+                                else
+                                {
+                                    hashAlgorithm = new SHA256CryptoServiceProvider();
+                                }
                                 using (StreamReader streamReader = new StreamReader(filePath))
-                                    checksumBytes = md5.ComputeHash(streamReader.BaseStream);
+                                    checksumBytes = hashAlgorithm.ComputeHash(streamReader.BaseStream);
+                                // Only use the first 16 bytes of the resulting hash byte[];
                                 string checksum = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}{4}{5}{6}{7}{8}{9}{10}{11}{12}{13}{14}{15}", new object[] { checksumBytes[0].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[1].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[2].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[3].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[4].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[5].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[6].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[7].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[8].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[9].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[10].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[11].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[12].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[13].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[14].ToString("X2", CultureInfo.InvariantCulture), checksumBytes[15].ToString("X2", CultureInfo.InvariantCulture) });
                                 CodeAttributeDeclaration xomlSourceAttribute = new CodeAttributeDeclaration(typeof(WorkflowMarkupSourceAttribute).FullName);
                                 xomlSourceAttribute.Arguments.Add(new CodeAttributeArgument(new CodePrimitiveExpression(filePath)));

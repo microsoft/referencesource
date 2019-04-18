@@ -2997,13 +2997,13 @@ namespace System.Web.UI.DataVisualization.Charting
 			}
 		}
 
-		/// <summary>
-		/// Returns an attribute object of the Data Point. If required attribute is not set
-		/// in the Data Point the default attribute of the Data series is returned.
-		/// </summary>
+        /// <summary>
+        /// Returns an attribute object of the Data Point. If required attribute is not set
+        /// in the Data Point the default attribute of the Data series is returned.
+        /// </summary>
         /// <param name="attrib">Attribute name ID.</param>
-		/// <returns>Attribute value.</returns>
-		internal object GetAttributeObject(CommonCustomProperties attrib)
+        /// <returns>Attribute value.</returns>
+        internal object GetAttributeObject(CommonCustomProperties attrib)
 		{
 			// Get series properties
 			if(!this.pointCustomProperties || series == null)
@@ -3506,7 +3506,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.Color);
 						}
 
-						return series.color;
+                        return series.color;
 					}
 				}
 				else
@@ -3568,7 +3568,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.BorderColor);
 						}
 
-						return series.borderColor;
+                        return series.borderColor;
 					}
 				}
 				else
@@ -3842,7 +3842,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.BackImageTransparentColor);
 						}
 
-						return series.backImageTransparentColor;
+                        return series.backImageTransparentColor;
 
 					}
 				}
@@ -3999,7 +3999,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.BackSecondaryColor);
 						}
 
-						return series.backSecondaryColor;
+                        return series.backSecondaryColor;
 
 					}
 				}
@@ -4155,6 +4155,12 @@ namespace System.Web.UI.DataVisualization.Charting
 						{
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.LabelForeColor);
 						}
+#if Microsoft_CONTROL
+						if(SystemInformation.HighContrast && AccessibilityImprovements.Level3)
+						{
+							return SystemColors.WindowText;
+						}
+#endif
 
 						return series.fontColor;
 
@@ -4435,7 +4441,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.MarkerImageTransparentColor);
 						}
 
-						return series.markerImageTransparentColor;
+                        return series.markerImageTransparentColor;
 
 					}
 				}
@@ -4489,7 +4495,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.MarkerColor);
 						}
 
-						return series.markerColor;
+                        return series.markerColor;
 
 					}
 				}
@@ -4543,7 +4549,7 @@ namespace System.Web.UI.DataVisualization.Charting
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.MarkerBorderColor);
 						}
 
-						return series.markerBorderColor;
+                        return series.markerBorderColor;
 
 					}
 				}
@@ -5205,6 +5211,12 @@ namespace System.Web.UI.DataVisualization.Charting
 						{
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.LabelBackColor);
 						}
+#if Microsoft_CONTROL
+						if(SystemInformation.HighContrast && AccessibilityImprovements.Level3)
+						{
+							return SystemColors.Window;
+						}
+#endif
 
 						return series.labelBackColor;
 					}
@@ -5258,6 +5270,12 @@ namespace System.Web.UI.DataVisualization.Charting
 						{
 							return (Color)series.EmptyPointStyle.GetAttributeObject(CommonCustomProperties.LabelBorderColor);
 						}
+#if Microsoft_CONTROL
+						if(SystemInformation.HighContrast && AccessibilityImprovements.Level3)
+						{
+							return SystemColors.ActiveBorder;
+						}
+#endif
 
 						return series.labelBorderColor;
 					}

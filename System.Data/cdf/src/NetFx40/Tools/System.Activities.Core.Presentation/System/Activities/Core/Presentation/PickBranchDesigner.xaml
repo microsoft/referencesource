@@ -1,0 +1,60 @@
+﻿<swd:ActivityDesigner x:Uid="swd:WorkflowViewElement_1" x:Class="System.Activities.Core.Presentation.PickBranchDesigner"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:swdv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sw="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:swa="clr-namespace:System.Activities.Statements;assembly=System.Activities"
+    xmlns:proj="clr-namespace:System.Activities.Core.Presentation"
+    Icon="{x:Static swd:WorkflowDesignerIcons+Activities.PickBranch}"
+    xmlns:s="clr-namespace:System;assembly=mscorlib">
+  <swd:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <DataTemplate x:Uid="DataTemplate_1" x:Key="ExpandedPickBranchTemplate">
+        <Grid x:Uid="Grid_1">
+          <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_2" />
+            <RowDefinition x:Uid="RowDefinition_4" />
+          </Grid.RowDefinitions>
+
+          <StackPanel x:Uid="StackPanel_1" Grid.Row="0" >
+            <Label x:Uid="Label_1" Content="Trigger" />
+            <Border x:Uid="Border_2" BorderThickness ="1" CornerRadius="2" BorderBrush="{StaticResource WorkflowViewElementBorderBrush}">
+              <swd:WorkflowItemPresenter x:Uid="swd:WorkflowItemPresenter_1" AllowedItemType="{x:Type sw:Activity}"
+                                         HintText="{DynamicResource dropActivityHint}"
+                                         Item="{Binding Path=ModelItem.Trigger, Mode=TwoWay}"
+                                         MinWidth="182" MinHeight="100" Margin="7"
+                                         AutomationProperties.AutomationId="Trigger" />
+            </Border>
+          </StackPanel>
+          <StackPanel x:Uid="StackPanel_2" Grid.Row="1" >
+            <Label x:Uid="Label_2" Content="Action" />
+            <Border x:Uid="Border_3" BorderThickness ="1" CornerRadius="2" BorderBrush="{StaticResource WorkflowViewElementBorderBrush}">
+              <swd:WorkflowItemPresenter x:Uid="swd:WorkflowItemPresenter_2" AllowedItemType="{x:Type sw:Activity}"
+                                         HintText="{DynamicResource dropActivityHint}"
+                                         Item="{Binding Path=ModelItem.Action, Mode=TwoWay}"
+                                         MinWidth="182" MinHeight="100" Margin="7"
+                                         AutomationProperties.AutomationId="Action" />
+            </Border>
+          </StackPanel>
+        </Grid>
+      </DataTemplate>
+      <Style x:Uid="Style_1" x:Key="PickBranchStyle" TargetType="{x:Type ContentPresenter}">
+        <Setter x:Uid="Setter_1" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowExpanded}" Value="true">
+            <Setter x:Uid="Setter_2" Property="ContentTemplate" Value="{DynamicResource ExpandedPickBranchTemplate}"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </swd:ActivityDesigner.Resources>
+
+  <ContentPresenter x:Uid="ContentPresenter_1" Style="{DynamicResource PickBranchStyle}" Content="{Binding}" />
+</swd:ActivityDesigner>

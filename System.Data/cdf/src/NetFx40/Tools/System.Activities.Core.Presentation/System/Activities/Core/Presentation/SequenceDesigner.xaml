@@ -1,0 +1,18 @@
+﻿<sad:ActivityDesigner x:Uid="sequenceDesigner" x:Class="System.Activities.Core.Presentation.SequenceDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sacdt="clr-namespace:System.Activities.Core.Presentation.Themes"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.Sequence}"
+    x:ClassModifier="internal">
+  <sad:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="IconsDictionary" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </sad:ActivityDesigner.Resources>
+
+  <ContentPresenter x:Uid="ContentPresenter_1" Style="{x:Static sacdt:DesignerStylesDictionary.SequenceStyle}" Content="{Binding}" />
+
+</sad:ActivityDesigner>

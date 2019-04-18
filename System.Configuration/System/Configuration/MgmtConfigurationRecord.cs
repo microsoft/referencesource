@@ -10,6 +10,7 @@ namespace System.Configuration {
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Configuration.Internal;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Reflection;
@@ -529,6 +530,7 @@ namespace System.Configuration {
         //
         // If xmlElement is null or empty, it is equivalent to calling RevertToParent
         //
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         internal void SetRawXml(ConfigurationSection configSection, string xmlElement) {
 
             // Null or empty is equivalent to RevertToParent().
@@ -685,6 +687,7 @@ namespace System.Configuration {
         //
         // Throws a ConfigurationErrorsException if there is an error.
         //
+        [SuppressMessage("Microsoft.Security.Xml", "CA3054:DoNotAllowDtdOnXmlTextReader", Justification="Reading trusted input")]
         private void ValidateSectionXml(string xmlElement, string configKey) {
             if (string.IsNullOrEmpty(xmlElement))
                 return;

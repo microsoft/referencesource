@@ -551,3 +551,6 @@ using System.Diagnostics.CodeAnalysis;
 #region CA910:AlwaysSetViewStateUserKeyToUniqueValue
 [module: SuppressMessage("Microsoft.MSInternal", "CA910:AlwaysSetViewStateUserKeyToUniqueValue", Scope = "type", Target = "System.Web.UI.DataVisualization.Charting.ChartHttpHandler", Justification = "This page is actually http image handler and doesn't emit any viewstate")]
 #endregion //CA910:AlwaysSetViewStateUserKeyToUniqueValue
+
+[module: SuppressMessage("Microsoft.Security.Web", "CA3002:ReviewCodeForXssVulnerabilities", Scope = "member", Target = "System.Web.UI.DataVisualization.Charting.ChartHttpHandler.#ProcessSavedChartImage(System.Web.HttpContext)", Justification = "The code is inspected. It delivers binary stream of an image (.png) stored on the file system, based on key in the request. The relation is 1:1 and the wrong key will return 404.")]
+[module: SuppressMessage("SDL.AntiXSS", "CA5600:PlatformEncodingShouldNotBeUsed", Scope = "member", Target = "System.Web.UI.DataVisualization.Charting.MapArea.#RenderTag(System.Web.UI.HtmlTextWriter,System.Web.UI.DataVisualization.Charting.Chart)", Justification = "By design chart allows javascript: protocol in events and href for custom handling of clicks. Attributes are not data bound and only the dev user can control it. Fixing it will be breaking change.")]

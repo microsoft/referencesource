@@ -133,6 +133,18 @@ namespace System
                 return LocalAppContext.GetCachedSwitchValue(DontCheckCertificateEKUsName, ref _dontCheckCertificateEKUs);
             }
         }
+
+        private static int _dontCheckCertificateRevocation;
+        internal const string DontCheckCertificateRevocationName = @"System.Net.Security.SslStream.AuthenticateAsClient.DontCheckCertificateRevocation";
+
+        public static bool DontCheckCertificateRevocation
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(DontCheckCertificateRevocationName, ref _dontCheckCertificateRevocation);
+            }
+        }
         #endregion
 
         private static int _doNotCatchSerialStreamThreadExceptions;

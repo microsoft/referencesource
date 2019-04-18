@@ -1,0 +1,67 @@
+﻿<proj:ActivityDesigner x:Uid="flowchartDesigner" x:Class="System.Activities.Core.Presentation.FlowchartDesigner"
+    x:ClassModifier="internal"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:proj="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    Icon="{x:Static proj:WorkflowDesignerIcons+Activities.Flowchart}"
+    x:Name="flowchartDesigner" SnapsToDevicePixels="True" KeyDown="FlowchartDesignerKeyDown" PreviewKeyDown="FlowchartDesignerPreviewKeyDown">
+
+    <proj:ActivityDesigner.CommandBindings>
+      <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static local:FlowchartDesigner.SetAsStartNodeCommand}" Executed="OnSetAsStartNodeCommandExecuted" CanExecute="OnSetAsStartNodeCommandCanExecute"/>
+      <CommandBinding x:Uid="CommandBinding_2" Command="{x:Static local:FlowchartDesignerCommands.ConnectNodesCommand}" Executed="OnConnectNodesCommandExecuted" CanExecute="OnConnectNodesCommandCanExecute"/>
+      <CommandBinding x:Uid="CommandBinding_3" Command="{x:Static local:FlowchartDesigner.ShowAllConditionsCommand}" Executed="OnShowAllConditionsCommandExecuted" CanExecute="OnShowAllConditionsCommandCanExecute"/>
+      <CommandBinding x:Uid="CommandBinding_4" Command="{x:Static local:FlowchartDesigner.HideAllConditionsCommand}" Executed="OnHideAllConditionsCommandExecuted" CanExecute="OnHideAllConditionsCommandCanExecute"/>
+    </proj:ActivityDesigner.CommandBindings>
+
+    <proj:ActivityDesigner.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+              <proj:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+              <proj:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+              <proj:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+          <s:String x:Uid="String_1" x:Key="SetAsStartNodeMenuItemHeader">Set _as Start Node</s:String>
+          <local:MaxValueConverter x:Uid="local:MaxValueConverter_1" x:Key="MaxValueConverter"/>
+          <DataTemplate x:Uid="DataTemplate_1" x:Key="ExpandedFlowchartTemplate">
+            <AdornerDecorator x:Uid="AdornerDecorator_1" Loaded="OnAdornerDecoratorLoaded" GotFocus="OnAdornerLayerGotFocus">
+              <Grid x:Uid="flowchartGrid" x:Name="flowchartGrid" Width="{Binding Path=FlowchartWidth}" Height="{Binding Path=FlowchartHeight}" Background="Transparent" MouseLeave="OnFlowchartGridMouseLeave" MouseMove="OnFlowchartGridMouseMove" MouseUp="OnFlowchartGridMouseUp" KeyDown="OnFlowchartGridKeyDown" PreviewMouseDown="OnFlowchartGridPreviewMouseDown" PreviewMouseUp="OnFlowchartGridPreviewMouseUp" DragOver="OnFlowchartGridDragOver" DragEnter="OnFlowchartGridDragEnter" Drop="OnFlowchartGridDrop" AllowDrop="True" >
+                <Grid.RowDefinitions>
+                  <RowDefinition x:Uid="RowDefinition_1" Height="*"/>
+                  <RowDefinition x:Uid="RowDefinition_2" Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition x:Uid="ColumnDefinition_1" Width="*"/>
+                  <ColumnDefinition x:Uid="ColumnDefinition_2" Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <local:FlowchartFreeFormPanel x:Uid="panel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2"  x:Name="flowchartPanel" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding Path=FlowchartWidth}" Height="{Binding Path=FlowchartHeight}" MinWidth="600" MinHeight="600" Background="transparent" Disabled="{Binding IsReadOnly}" Loaded="OnFreeFormPanelLoaded" Unloaded="OnFreeFormPanelUnLoaded" AutoConnectContainer="{Binding ElementName=flowchartDesigner}"/>
+                <local:FlowchartResizeGrip x:Uid="local:ResizeGrip_1" Visibility="Visible" Grid.Row="1" Grid.Column="1" Template="{StaticResource ResizeGripDefaultTemplate}" ParentFlowchartDesigner="{Binding ElementName=flowchartDesigner}" ParentGrid="{Binding ElementName=flowchartGrid}" Icon="{x:Static proj:WorkflowDesignerIcons+DesignerItems.ResizeGrip}" Focusable="false" Disabled="{Binding IsReadOnly}" />
+              </Grid>
+            </AdornerDecorator>
+          </DataTemplate>
+
+          <Style x:Uid="Style_1" x:Key="FlowchartStyle" TargetType="{x:Type ContentPresenter}">
+            <Setter x:Uid="Setter_1" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}"/>
+            <Style.Triggers>
+              <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ShowExpanded}" Value="true">
+                <Setter x:Uid="Setter_2" Property="ContentTemplate" Value="{DynamicResource ExpandedFlowchartTemplate}"/>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+          
+        </ResourceDictionary>
+    </proj:ActivityDesigner.Resources>
+
+  <proj:ActivityDesigner.ContextMenu>
+    <ContextMenu x:Uid="ContextMenu_1">
+      <MenuItem x:Uid="MenuItem_1" Header="Sh_ow All Conditions" Command="{x:Static local:FlowchartDesigner.ShowAllConditionsCommand}" AutomationProperties.AutomationId="ShowAllConditionsMenuItem" Loaded="OnShowAllConditionsMenuLoaded" />
+      <MenuItem x:Uid="MenuItem_2" Header="Hid_e All Conditions" Command="{x:Static local:FlowchartDesigner.HideAllConditionsCommand}" AutomationProperties.AutomationId="HideAllConditionsMenuItem" Loaded="OnHideAllConditionsMenuLoaded" />
+    </ContextMenu>
+  </proj:ActivityDesigner.ContextMenu>
+
+  <ContentPresenter x:Uid="ContentPresenter_1" Style="{DynamicResource FlowchartStyle}" Content="{Binding}" x:Name="flowchartContentPresenter" />
+</proj:ActivityDesigner>
+
+

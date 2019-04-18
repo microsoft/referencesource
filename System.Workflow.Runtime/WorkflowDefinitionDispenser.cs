@@ -153,7 +153,18 @@ namespace System.Workflow.Runtime
                 streamWriter.Flush();
                 xomlBytesStream.Position = 0;
 
-                xomlHashCode = MD5HashHelper.ComputeHash(xomlBytesStream.GetBuffer());
+                if (LocalAppContextSwitches.UseLegacyHashForWorkflowDefinitionDispenserCacheKey)
+                {
+                    xomlHashCode = MD5HashHelper.ComputeHash(xomlBytesStream.GetBuffer());
+                }
+                else
+                {
+                    SHA256 sha256Provider = new SHA256CryptoServiceProvider();
+                    byte[] xomlHashCode256 = sha256Provider.ComputeHash(xomlBytesStream.GetBuffer());
+                    // The debugger "DigestComparer" expects 16 bytes.
+                    xomlHashCode = new byte[16];
+                    Array.Copy(xomlHashCode256, xomlHashCode, Math.Min(xomlHashCode.Length, xomlHashCode256.Length));
+                }
             }
 
             if (createNew)

@@ -139,6 +139,15 @@ namespace System.Web.Util {
                             if (settings == null || !Boolean.TryParse(settings["aspnet:AvoidDuplicatedSetCookie"], out _avoidDuplicatedSetCookie))
                                 _avoidDuplicatedSetCookie = false;
 
+                            if (settings == null || !Boolean.TryParse(settings["aspnet:GetValidationMemberName"], out _getValidationMemberName))
+                                _getValidationMemberName = false;
+
+                            if (settings == null || !Boolean.TryParse(settings["aspnet:UseLegacyClientServicesJsonHandling"], out _useLegacyClientServicesJsonHandling))
+                                _useLegacyClientServicesJsonHandling = false;
+
+                            if (settings == null || !Boolean.TryParse(settings["aspnet:UseLegacyMultiValueHeaderHandling"], out _useLegacyMultiValueHeaderHandling))
+                                _useLegacyMultiValueHeaderHandling = !BinaryCompatibility.Current.TargetsAtLeastFramework48; // Opt in for 4.7.2 and earlier. Opt out for 4.8.
+
                             _settingsInitialized = true;
                         }
                     }
@@ -530,6 +539,41 @@ namespace System.Web.Util {
             get {
                 EnsureSettingsLoaded();
                 return _avoidDuplicatedSetCookie;
+            }
+        }
+
+        // false [Default]
+        // true - new behavior to retrive MemberName
+        private static bool _getValidationMemberName;
+        internal static bool GetValidationMemberName
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+                return _getValidationMemberName;
+            }
+        }
+
+        // false [default] 
+        // true - adopt new behavior to avoid trusting json from compromised client web services.
+        private static bool _useLegacyClientServicesJsonHandling;
+        internal static bool UseLegacyClientServicesJsonHandling {
+            get
+            {
+                EnsureSettingsLoaded();
+                return _useLegacyClientServicesJsonHandling;
+            }
+        }
+
+        // false [default] 
+        // true - adopt new behavior to avoid trusting json from compromised client web services.
+        private static bool _useLegacyMultiValueHeaderHandling;
+        internal static bool UseLegacyMultiValueHeaderHandling
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+                return _useLegacyMultiValueHeaderHandling;
             }
         }
     }

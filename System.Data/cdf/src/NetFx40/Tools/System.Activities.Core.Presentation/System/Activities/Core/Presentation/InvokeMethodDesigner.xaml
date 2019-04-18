@@ -1,0 +1,57 @@
+﻿<sad:ActivityDesigner x:Uid="swd:WorkflowElementDesigner_1" x:Class="System.Activities.Core.Presentation.InvokeMethodDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:sadm="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    x:ClassModifier="internal"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.InvokeMethod}"
+    Collapsible="False">
+    <sad:ActivityDesigner.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+              <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <sadc:ModelToObjectValueConverter x:Uid="sadm:ModelToObjectValueConverter_1" x:Key="modelItemConverter" />
+            <sadc:ArgumentToExpressionConverter x:Uid="sadv:ArgumentToExpressionConverter_1" x:Key="argumentToExpressionConverter" />
+
+            <DataTemplate x:Uid="DataTemplate_1" x:Key="InvokeMethodTemplate">
+                <Grid x:Uid="Grid_1" x:Name="contentGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Uid="ColumnDefinition_1" Width="Auto" />
+                        <ColumnDefinition x:Uid="ColumnDefinition_2" Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Uid="RowDefinition_1" />
+                        <RowDefinition x:Uid="RowDefinition_2" />
+                        <RowDefinition x:Uid="RowDefinition_3" />
+                    </Grid.RowDefinitions>
+                    <TextBlock x:Uid="TextBlock_1" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Localization.Attributes="$Content(Unreadable Unmodifiable)">TargetType</TextBlock>
+                    <TextBlock x:Uid="TextBlock_2" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Localization.Attributes="$Content(Unreadable Unmodifiable)">TargetObject</TextBlock>
+                    <TextBlock x:Uid="TextBlock_3" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Localization.Attributes="$Content(Unreadable Unmodifiable)">MethodName</TextBlock>
+                    <sadv:TypePresenter x:Uid="TypePresenter_1" Grid.Row="0" Grid.Column="1" Width="120"
+                        AutomationProperties.AutomationId="TargetType" Margin="5" AllowNull="True"
+                        Type="{Binding Path=ModelItem.TargetType, Mode=TwoWay, Converter={StaticResource modelItemConverter}}"
+                        BrowseTypeDirectly="False"
+                        Context="{Binding Context}" 
+                        Label="Target type"/>
+                    <sadv:ExpressionTextBox x:Uid="ExpressionTextBox_1" Grid.Row="1" Grid.Column="1" Width="120"
+                        AutomationProperties.AutomationId="TargetObject"
+                        Margin="5" MinLines="1" MaxLines="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" 
+                        Expression="{Binding Path=ModelItem.TargetObject, Mode=TwoWay, Converter={StaticResource argumentToExpressionConverter}, ConverterParameter=In}"
+                        OwnerActivity="{Binding Path=ModelItem, Mode=OneWay}" 
+                        AutomationProperties.Name="Target object expression"/>
+                    <TextBox x:Uid="TextBox_1" Grid.Row="2" Grid.Column="1" Width="120"
+                        AutomationProperties.Name="Method name"
+                        AutomationProperties.AutomationId="MethodName" Margin="5"
+                        Text="{Binding Path=ModelItem.MethodName, Mode=TwoWay, ValidatesOnExceptions=True}"
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </sad:ActivityDesigner.Resources>
+
+    <ContentPresenter x:Uid="ContentPresenter_1" ContentTemplate="{StaticResource InvokeMethodTemplate}" Content="{Binding}" />
+</sad:ActivityDesigner>

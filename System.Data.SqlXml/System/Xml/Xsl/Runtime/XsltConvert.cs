@@ -7,6 +7,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using System.Xml.Schema;
@@ -135,7 +136,7 @@ namespace System.Xml.Xsl.Runtime {
         //------------------------------------------------------------------------
         // ToNode (internal type to internal type)
         //------------------------------------------------------------------------
-
+        [SuppressMessage("Microsoft.Security.Xml", "CA3059:UseXmlReaderForXPathDocument", Justification="Use internal APIs of XPathDocument to build a document and not to read it")]
         public static XPathNavigator ToNode(XPathItem item) {
             XsltLibrary.CheckXsltValue(item);
 

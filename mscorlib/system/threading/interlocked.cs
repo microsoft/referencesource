@@ -252,5 +252,11 @@ namespace System.Threading
         {
             Thread.MemoryBarrier();
         }
+
+        [ResourceExposure(ResourceScope.None)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        [System.Security.SecuritySafeCritical]
+        extern public static void SpeculationBarrier();
     }
 }

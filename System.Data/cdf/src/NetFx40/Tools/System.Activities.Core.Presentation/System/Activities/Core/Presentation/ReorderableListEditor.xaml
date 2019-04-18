@@ -1,0 +1,129 @@
+﻿<UserControl x:Uid="UserControl_1" x:Class="System.Activities.Core.Presentation.ReorderableListEditor"
+             x:ClassModifier="internal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sap="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+             xmlns:sapv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+             xmlns:local="clr-namespace:System.Activities.Core.Presentation">
+    <UserControl.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:IsLastSelectedItemConverter x:Uid="local:IsLastSelectedItemConverter_1" x:Key="isLastSelectedItemConverter" />
+            <local:NotConverter x:Uid="local:NotConverter_1" x:Key="NotConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ListBox x:Uid="listBox" x:Name="listBox" BorderThickness="0" HorizontalContentAlignment="Stretch"
+             PreviewGotKeyboardFocus="OnListBoxPreviewGotKeyboardFocus" Background="{DynamicResource WorkflowViewElementBackgroundBrush}"
+             ItemsSource="{Binding Path=List, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReorderableListEditor}}}"
+             SelectedItem="{Binding Path=SelectedListItem, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReorderableListEditor}}}">
+        <ListBox.Template>
+            <ControlTemplate x:Uid="ControlTemplate_1">
+                <ItemsPresenter x:Uid="ItemsPresenter_1" />
+            </ControlTemplate>
+        </ListBox.Template>
+        <ListBox.Resources>
+            <Style x:Uid="Style_4" TargetType="ListBoxItem">
+                <Setter x:Uid="Setter_11" Property="DockPanel.Dock" Value="Top"/>
+                <Setter x:Uid="Setter_18" Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate x:Uid="ControlTemplate_2" TargetType="{x:Type ListBoxItem}">
+                            <Border x:Uid="Border_2" BorderThickness="0" Margin="2, 0, 0, 0">
+                                <ContentPresenter x:Uid="ContentPresenter_2"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Source={x:Static local:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                      <Setter x:Uid="Setter_22" Property="AutomationProperties.Name" Value="{Binding Item.DisplayName}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ListBox.Resources>
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate x:Uid="ItemsPanelTemplate_1">
+                <DockPanel x:Uid="DockPanel_1" IsItemsHost="True" LastChildFill="False"/>
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate x:Uid="DataTemplate_1">
+                <Border x:Uid="Border_1" Background="Transparent" Margin="8, 5, 0, 0" MinWidth="400">
+                    <Border.Style>
+                        <Style x:Uid="Style_1" TargetType="{x:Type Border}">
+                            <Setter x:Uid="Setter_10" Property="BorderThickness" Value="1"/>
+                            <Setter x:Uid="Setter_17" Property="BorderBrush" Value="{DynamicResource WorkflowViewElementBorderBrush}" />
+                            <Style.Triggers>
+                                <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=IsSelected, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                    <Setter x:Uid="Setter_19" Property="BorderBrush" Value="LightBlue" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid x:Uid="Grid_1">
+                        <ContentPresenter x:Uid="ContentPresenter_1" ContentTemplate="{Binding Path=ItemTemplate, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ReorderableListEditor}}}" VerticalAlignment="Top" Content="{Binding}"/>
+                        <StackPanel x:Uid="StackPanel_1" Margin="0,0,20,0" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+                            <StackPanel.Style>
+                                <Style x:Uid="Style_2" TargetType="{x:Type StackPanel}">
+                                    <Setter x:Uid="Setter_3" Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
+                                            <Setter x:Uid="Setter_4" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                        <!--Hide the reorder buttons if there are only one transition-->
+                                        <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=Items.Count, Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}}" Value="1">
+                                            <Setter x:Uid="Setter_12" Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <Button x:Uid="Button_1" Click="OnUpArrowClicked" Margin="0,3,0,0" Width="16" Height="16" 
+                                    IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type sapv:DesignerView}}, Converter={StaticResource NotConverter}}"
+                                    AutomationProperties.AutomationId="MoveUp" AutomationProperties.Name="Move up" ToolTip="Move up">
+                                <Button.Style>
+                                    <Style x:Uid="Style_5" TargetType="{x:Type Button}" >
+                                        <Setter x:Uid="Setter_13" Property="Visibility" Value="Visible"/>
+                                        <Setter x:Uid="Setter_20" Property="Button.Template" Value="{DynamicResource UpArrowButtonTemplate}" />
+                                        <Style.Triggers>
+                                            <DataTrigger x:Uid="DataTrigger_4" 
+                                                       Binding="{Binding Path=SelectedIndex, 
+                                                                 RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}}" Value="0" >
+                                                <Setter x:Uid="Setter_16" Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button x:Uid="Button_2" Click="OnDownArrowClicked" Margin="0,3,0,0" Width="16" Height="16" 
+                                    IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type sapv:DesignerView}}, Converter={StaticResource NotConverter}}"
+                                    AutomationProperties.AutomationId="MoveDown" AutomationProperties.Name="Move down" ToolTip="Move down">
+                                <Button.Style>
+                                    <Style x:Uid="Style_6" TargetType="{x:Type Button}" >
+                                        <Setter x:Uid="Setter_15" Property="Visibility" Value="Visible"/>
+                                        <Setter x:Uid="Setter_21" Property="Button.Template" Value="{DynamicResource DownArrowButtonTemplate}" />
+                                        <Style.Triggers>
+                                            <DataTrigger x:Uid="DataTrigger_5" Value="True" >
+                                                <DataTrigger.Binding>
+                                                    <MultiBinding x:Uid="MultiBinding_1" Mode="OneWay" Converter="{StaticResource isLastSelectedItemConverter}" >
+                                                        <Binding x:Uid="Binding_1" Path="SelectedIndex" Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}"/>
+                                                        <Binding x:Uid="Binding_2" Path="Items.Count" Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}"/>
+                                                    </MultiBinding>
+                                                </DataTrigger.Binding>
+                                                <Setter x:Uid="Setter_14" Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</UserControl>

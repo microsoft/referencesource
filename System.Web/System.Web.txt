@@ -3802,3 +3802,5 @@ MembershipPasswordFormat_Obsoleted=Unsecured Passwords Format Detected. The Memb
 Unhandled_Monitor_Exception=An unhandled exception occurred while executing '{0}' in '{1}'.
 
 OnExecuteRequestStep_Cannot_Be_Called=Method OnExecuteRequestStep can only be called during HttpApplication initialization or IHttpModule initialization.
+
+AdditionalConfigErrorInfo=Click here to show additional error information

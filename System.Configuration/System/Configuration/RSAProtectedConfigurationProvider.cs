@@ -67,7 +67,7 @@ namespace System.Configuration
                 ed.KeyInfo = new KeyInfo();
 
                 ek = new EncryptedKey();
-                ek.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncRSA15Url);
+                ek.EncryptionMethod = new EncryptionMethod(UseOAEP ? EncryptedXml.XmlEncRSAOAEPUrl : EncryptedXml.XmlEncRSA15Url);
                 ek.KeyInfo = new KeyInfo();
                 ek.CipherData = new CipherData();
                 ek.CipherData.CipherValue = EncryptedXml.EncryptKey(symAlg.Key, rsa, UseOAEP);
@@ -143,8 +143,8 @@ namespace System.Configuration
             _CspProviderName = configurationValues["cspProviderName"];
             configurationValues.Remove("cspProviderName");
             _UseMachineContainer = GetBooleanValue(configurationValues, "useMachineContainer", true);
-            _UseOAEP = GetBooleanValue(configurationValues, "useOAEP", false);
-            _UseFIPS = GetBooleanValue(configurationValues, "useFIPS", false);
+            _UseOAEP = GetBooleanValue(configurationValues, "useOAEP", true);
+            _UseFIPS = GetBooleanValue(configurationValues, "useFIPS", true);
             if (configurationValues.Count > 0)
                 throw new ConfigurationErrorsException(SR.GetString(SR.Unrecognized_initialization_value, configurationValues.GetKey(0)));
         }
@@ -177,7 +177,7 @@ namespace System.Configuration
                 if (keyMustExist)
                     csp.Flags |= CspProviderFlags.UseExistingKey;
 
-                return new RSACryptoServiceProvider(csp);
+                return new RSACryptoServiceProvider(2048, csp);
 
             } catch {
                 ThrowBetterException(keyMustExist);
@@ -186,12 +186,6 @@ namespace System.Configuration
                 // the original one
                 throw;
             }
-        }
-        private byte[] GetRandomKey()
-        {
-            byte [] buf = new byte[24];
-            (new RNGCryptoServiceProvider()).GetBytes(buf);
-            return buf;
         }
 
         private void ThrowBetterException(bool keyMustExist)
@@ -249,11 +243,6 @@ namespace System.Configuration
             else {
                 // Use the 3DES. FIPS obsolated 3DES
                 symAlg = new TripleDESCryptoServiceProvider();
-
-                byte[] rgbKey1 = GetRandomKey();
-                symAlg.Key = rgbKey1;
-                symAlg.Mode = CipherMode.ECB;
-                symAlg.Padding = PaddingMode.PKCS7;
             }
 
             return symAlg;

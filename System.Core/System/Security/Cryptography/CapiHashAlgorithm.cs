@@ -118,11 +118,16 @@ namespace System.Security.Cryptography {
                 throw new ArgumentOutOfRangeException("cbSize");
             }
 
-            byte[] hashData = new byte[cbSize];
-            Buffer.BlockCopy(array, ibStart, hashData, 0, cbSize);
+            if (cbSize == 0) {
+                return;
+            }
 
-            if (!CapiNative.UnsafeNativeMethods.CryptHashData(m_hashHandle, hashData, cbSize, 0)) {
-                throw new CryptographicException(Marshal.GetLastWin32Error());
+            unsafe {
+                fixed (byte* dataPtr = array) {
+                    if (!CapiNative.UnsafeNativeMethods.CryptHashData(m_hashHandle, dataPtr + ibStart, cbSize, 0)) {
+                        throw new CryptographicException(Marshal.GetLastWin32Error());
+                    }
+                }
             }
         }
 

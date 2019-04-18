@@ -57,6 +57,7 @@ namespace System.Net.Configuration
         }
 
         internal const string Address = "address";
+        internal const string AutoConfigUrlRetryInterval = "autoConfigUrlRetryInterval";
         internal const string AutoDetect = "autoDetect";
         internal const string AlwaysUseCompletionPortsForAccept = "alwaysUseCompletionPortsForAccept";
         internal const string AlwaysUseCompletionPortsForConnect = "alwaysUseCompletionPortsForConnect";
@@ -68,6 +69,7 @@ namespace System.Net.Configuration
         internal const string ClientDomain = "clientDomain";
         internal const string ConnectionManagementSectionName = "connectionManagement";
         internal const string DefaultCredentials = "defaultCredentials";
+        internal const string DefaultCredentialsHandleCacheSize = "defaultCredentialsHandleCacheSize";
         internal const string DefaultHttpCachePolicy = "defaultHttpCachePolicy";
         internal const string DefaultFtpCachePolicy = "defaultFtpCachePolicy";
         internal const string DefaultPolicyLevel = "defaultPolicyLevel";
@@ -133,6 +135,7 @@ namespace System.Net.Configuration
         internal const string WebProxyScript = "webProxyScript";
         internal const string WebRequestModulesSectionName = "webRequestModules";
         internal const string WebUtility = "webUtility";
+        internal const string WindowsAuthentication = "windowsAuthentication";
     	internal const string maximumUnauthorizedUploadLength = "maximumUnauthorizedUploadLength";
         internal const string UnescapeRequestUrl = "unescapeRequestUrl";
         internal const string Timeouts = "timeouts";

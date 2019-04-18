@@ -417,9 +417,8 @@ namespace System.Runtime.Diagnostics
         static string GenerateMsdnTraceCode(string traceSource, string traceCodeString)
         {
             return string.Format(CultureInfo.InvariantCulture,
-                "http://msdn.microsoft.com/{0}/library/{1}.{2}.aspx",
-                CultureInfo.CurrentCulture.Name,
-                traceSource, traceCodeString);
+                "https://docs.microsoft.com/dotnet/framework/wcf/diagnostics/tracing/{0}-{1}",
+                traceSource.Replace('.', '-'), traceCodeString);
         }
 
         static string LookupChannel(TraceChannel traceChannel)

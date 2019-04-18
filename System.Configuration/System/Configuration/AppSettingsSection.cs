@@ -10,6 +10,7 @@ namespace System.Configuration {
     using System.Configuration;
     using System.Collections.Specialized;
     using System.Collections;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Text;
 
@@ -98,6 +99,7 @@ namespace System.Configuration {
             return base.SerializeSection(parentElement, name, saveMode);
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         protected internal override void DeserializeElement(XmlReader reader, bool serializeCollectionKey) {
             string ElementName = reader.Name;
 

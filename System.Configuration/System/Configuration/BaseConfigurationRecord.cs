@@ -11,6 +11,7 @@ namespace System.Configuration {
     using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Configuration;
+    using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
     using System.IO;
     using System.Reflection;
@@ -1022,6 +1023,47 @@ namespace System.Configuration {
                             && (   factoryRecord == null
                                 || _initDelayedRoot.IsDefinitionAllowed(factoryRecord.AllowDefinition, factoryRecord.AllowExeDefinition))) {
 
+                            if (factoryRecord == null) {
+                                //
+                                // No factory was found in machine or exe config, and
+                                // initialization of the user config levels (roaming and local)
+                                // has been delayed.
+                                //
+                                // As described above, the design in this case is to complete
+                                // initialization of the user config levels now, and then
+                                // search them to see if they contain a matching factory.
+                                //
+                                // Unfortunately situations have emerged where initializing the
+                                // user config levels at this point would introduce significant
+                                // appcompat breaks. In such cases, ignore the user config
+                                // levels and instead return immediately to simulate the
+                                // case where the user config file contains no matching factory.
+                                //
+                                // NOTE: If the factory is present in the user config files,
+                                // callers can observe inconsistent results. Initially, the
+                                // factory will be ignored. Once any unrelated operation forces
+                                // user config initialization to occur, the factory will be
+                                // used and the associated content will be surfaced to the
+                                // caller. While undesirable, this inconsistency is being
+                                // allowed since the relevant factories are expected to rarely
+                                // (if ever) appear in user config files, and addressing the
+                                // inconsistency (e.g., by updating ScanFactoriesRecursive to
+                                // ignore any releveant factories found at user config levels)
+                                // would significantly expand the footprint of this targeted
+                                // appcompat shim.
+                                //
+                                // NOTE: This logic does NOT ignore user config files in
+                                // any case where a factory was found in the machine or exe
+                                // config and contains an attribute (e.g.,
+                                // allowExeDefinition="MachineToLocalUser") which explicitly
+                                // says that user config files are allowed to contribute
+                                // content.
+                                //
+                                if (NeverLoadUserConfigFilesDuringFactorySearch(configKey)) {
+                                    return;
+                                }
+                            }
+
                             //
                             // We are going to remove this record, so get any data we need
                             // before the reference to 'this' becomes invalid.
@@ -1260,6 +1302,54 @@ namespace System.Configuration {
             if (getRuntimeObject) {
                 resultRuntimeObject = tmpResultRuntimeObject;
             }
+        }
+
+        //
+        // Note that the "configKey" is generally the section name passed to a GetSection API and
+        // is therefore case-sensitive.
+        //
+        private static bool NeverLoadUserConfigFilesDuringFactorySearch(string configKey) {
+
+            if (!LocalAppContextSwitches.AllowUserConfigFilesToLoadWhenSearchingForWellKnownSqlClientFactories) {
+                //
+                // These two sections control new System.Data.SqlClient features that
+                // were added in .NET 4.7.2. The SqlClient code queries these sections
+                // on demand by calling ConfigurationManager.GetSection from class
+                // constructors triggered during first use of the SqlClient services.
+                //
+                // For many customers, this broke appcompat because:
+                //    - The first SqlClient use happened at point where customer code
+                //      had attached non-serializable values to the logical call context.
+                //    - The new section is not present in the machine or exe config files,
+                //      so the first ConfigurationManager.GetSection loads the user
+                //      config files on demand.
+                //    - An AppDomain.CurrentDomain.Evidence call always occurs as part
+                //      of computing the user config file paths.
+                //    - In most secondary app domains, loading the evidence calls over
+                //      into the default domain, which throws an unhandled
+                //      SerializationException due to the non-serializable call context.
+                //
+                // Investigation showed that new SqlClient ConfigurationManager.GetSection
+                // calls cannot be removed without regressing the new .NET 4.7.2 features
+                // (which have shipped and are in wide use). That said, broad and heavy
+                // impact across large-scale customer scenarios means that some kind of
+                // appcompat mitigation needs to ship via servicing.
+                //
+                // The consensus is that it is very unlikely that customers are using
+                // user config files to configure the new SqlClient features. As a result,
+                // the customer impact is being mitigated via a targeted appcompat shim
+                // which prevents the user config files from ever being loaded during
+                // ConfigurationManager.GetSection calls that target any of the new
+                // sections.
+                //
+                if ((configKey == "SqlColumnEncryptionEnclaveProviders") ||
+                    (configKey == "SqlAuthenticationProviders")) {
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         protected void CreateSectionDefault(
@@ -1763,6 +1853,7 @@ namespace System.Configuration {
             return section;
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         private ConfigXmlReader FindSectionRecursive(string [] keys, int iKey, XmlUtil xmlUtil, ref int lineNumber) {
             string name = keys[iKey];
             ConfigXmlReader section = null;
@@ -1825,6 +1916,7 @@ namespace System.Configuration {
             return section;
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         private ConfigXmlReader LoadConfigSource(string name, SectionXmlInfo sectionXmlInfo) {
             string configSourceStreamName = sectionXmlInfo.ConfigSourceStreamName;
 
@@ -1884,6 +1976,7 @@ namespace System.Configuration {
             }
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         protected ConfigXmlReader GetSectionXmlReader(string[] keys, SectionInput input) {
             ConfigXmlReader reader = null;
             string filename = input.SectionXmlInfo.Filename;
@@ -4099,7 +4192,12 @@ namespace System.Configuration {
 
         protected virtual ConfigurationSection CallHostProcessConfigurationSection(ConfigurationSection configSection, ConfigurationBuilder configBuilder) {
             if (ConfigBuilderHost != null) {
-                return ConfigBuilderHost.ProcessConfigurationSection(configSection, configBuilder);
+                try {
+                    return ConfigBuilderHost.ProcessConfigurationSection(configSection, configBuilder);
+                } catch (Exception e) {
+                    throw ExceptionUtil.WrapAsConfigException(SR.GetString(SR.ConfigBuilder_processSection_error,
+                                                                configBuilder.Name, configSection.SectionInformation.Name), e, null);
+                }
             }
 
             return configSection;
@@ -4121,6 +4219,7 @@ namespace System.Configuration {
             return protectionProvider;
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         private ConfigXmlReader DecryptConfigSection(ConfigXmlReader reader, ProtectedConfigurationProvider protectionProvider) {
             ConfigXmlReader     clone           = reader.Clone();
             IConfigErrorInfo    err             = (IConfigErrorInfo)clone;
@@ -4190,6 +4289,7 @@ namespace System.Configuration {
             return new ConfigXmlReader(clearTextXml, filename, sectionLineNumber, true);
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3074:ReviewClassesDerivedFromXmlTextReader", Justification="Reading trusted input")]
         private ConfigXmlReader ProcessRawXml(ConfigXmlReader reader, ConfigurationBuilder configBuilder) {
             IConfigErrorInfo err = (IConfigErrorInfo)reader;
             XmlNode processedXml = null;
@@ -4204,7 +4304,9 @@ namespace System.Configuration {
                 processedXml = CallHostProcessRawXml(doc.DocumentElement, configBuilder);
             }
             catch (Exception e) {
-                throw new ConfigurationErrorsException(SR.GetString(SR.ConfigBuilder_processXml_error, configBuilder.Name, e.Message), e, filename, lineNumber);
+                // 'lineNumber' is actually off by one here for some reason. But this will be caught/rethrown
+                // in GetSectionXmlReader, which will add the correct line number... so long as we don't add it here.
+                throw ExceptionUtil.WrapAsConfigException(SR.GetString(SR.ConfigBuilder_processXml_error_short, configBuilder.Name), e, null);
             }
 
             return new ConfigXmlReader(processedXml.OuterXml, filename, lineNumber, true);

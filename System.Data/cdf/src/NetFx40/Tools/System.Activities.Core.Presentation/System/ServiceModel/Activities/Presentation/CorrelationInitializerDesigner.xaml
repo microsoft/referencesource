@@ -1,0 +1,175 @@
+﻿<ContentControl x:Uid="controlRoot" x:Class="System.ServiceModel.Activities.Presentation.CorrelationInitializerDesigner" x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sadc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:swsmad="clr-namespace:System.ServiceModel.Activities.Presentation"
+    xmlns:ssa="clr-namespace:System.ServiceModel.Activities;assembly=System.ServiceModel.Activities"
+    xmlns:sadm="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sacp="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Style="{DynamicResource WorkflowContentControlStyle}" >
+  <ContentControl.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+
+      <sys:String x:Uid="controlTitle" x:Key="controlTitle">Add Correlation Initializers</sys:String>
+      <sys:String x:Uid="correlationInitializers" x:Key="correlationInitializers">Correlation Initializers</sys:String>
+      <sys:String x:Uid="addNewInitializer" x:Key="addNewInitializer">Add initializer</sys:String>
+      <sys:String x:Uid="editInitializer" x:Key="editInitializer">Edit initializer</sys:String>
+      <sys:String x:Uid="correlationTypeHint" x:Key="correlationTypeHint">Correlation type</sys:String>
+      <sys:String x:Uid="gridSplitterAutomationName" x:Key="gridSplitterAutomationName">Grid Splitter</sys:String>
+
+      <sadc:ArgumentToExpressionConverter x:Uid="sadv:ArgumentToExpressionConverter_1" x:Key="argumentToExpressionConverter" />
+      <sadc:ModelToObjectValueConverter x:Uid="sadm:ModelToObjectValueConverter_1" x:Key="modelToObjectConverter" />
+
+      <Style x:Uid="Style_1" TargetType="{x:Type ComboBoxItem}" x:Key="comboItemStyle">
+        <Setter x:Uid="Setter_1" Property="ContentTemplate">
+          <Setter.Value>
+            <DataTemplate x:Uid="DataTemplate_1">
+              <TextBlock x:Uid="TextBlock_1" Tag="{Binding Path=Name}">
+                <TextBlock.Style>
+                  <Style x:Uid="Style_2" TargetType="{x:Type TextBlock}">
+                    <Setter x:Uid="Setter_2" Property="Text" Value="{Binding Path=Tag, RelativeSource={RelativeSource Self}, Mode=OneTime}"/>
+                    <Style.Triggers>
+                      <Trigger x:Uid="Trigger_1" Property="Tag" Value="CallbackCorrelationInitializer">
+                        <Setter Property="Text" Value="Callback correlation initializer" x:Uid="callbackCorrelationText"/>
+                      </Trigger>
+                      <Trigger x:Uid="Trigger_2" Property="Tag" Value="ContextCorrelationInitializer">
+                        <Setter Property="Text" Value="Context correlation initializer" x:Uid="contextCorrelationText"/>
+                      </Trigger>
+                      <Trigger x:Uid="Trigger_3" Property="Tag" Value="RequestReplyCorrelationInitializer">
+                        <Setter Property="Text" Value="Request-reply correlation initializer" x:Uid="requestReplyCorrelationText"/>
+                      </Trigger>
+                      <Trigger x:Uid="Trigger_4" Property="Tag" Value="QueryCorrelationInitializer">
+                        <Setter Property="Text" Value="Query correlation initializer" x:Uid="queryCorrelationText"/>
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </TextBlock.Style>
+              </TextBlock>
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style x:Uid="Style_3" TargetType="{x:Type ComboBox}" x:Key="typeComboStyle">
+        <Setter x:Uid="Setter_3" Property="SelectedValuePath" Value="Content"/>
+        <Setter x:Uid="Setter_4" Property="SelectedValue" Value="{Binding Path=SelectedItem.Content.CorrelationType, ElementName=correlationInitializers, Mode=TwoWay, Converter={StaticResource modelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_5" Property="AutomationProperties.AutomationId" Value="typeCombo"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=SelectedItem, ElementName=correlationInitializers, Mode=OneWay}" Value="{x:Null}">
+            <Setter x:Uid="Setter_6" Property="IsEnabled" Value="False"/>
+          </DataTrigger>
+          <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=SelectedValue.Name, RelativeSource={RelativeSource Self}, Mode=OneWay}" Value="QueryCorrelationInitializer">
+            <Setter x:Uid="Setter_7" Property="Tag" Value="{Binding Path=SelectedItem.Content.MessageQuerySet, ElementName=correlationInitializers, Mode=OneWay, Converter={StaticResource modelToObjectConverter}}"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+      
+      <!-- defualt style for ETB which is used to edit correlation handles -->      
+      <Style x:Uid="Style_4" x:Key="correlationHandleETBStyle" TargetType="{x:Type sadv:ExpressionTextBox}">
+        <Setter x:Uid="Setter_8" Property="ExpressionType" Value="{x:Type ssa:CorrelationHandle}"/>
+        <Setter x:Uid="Setter_9" Property="OwnerActivity" Value="{Binding Path=Activity, RelativeSource={RelativeSource AncestorType={x:Type swsmad:CorrelationInitializerDesigner}}, Mode=OneTime}"/>
+        <Setter x:Uid="Setter_10" Property="Expression" Value="{Binding Path=Content.CorrelationHandle, Mode=TwoWay, Converter={StaticResource argumentToExpressionConverter}}"/>
+        <Setter x:Uid="Setter_11" Property="UseLocationExpression" Value="False"/>
+        <Setter x:Uid="Setter_11_1" Property="AcceptsReturn" Value="true"/>
+        <Setter x:Uid="Setter_11_2" Property="VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter x:Uid="Setter_12" Property="MaxLines" Value="1"/>
+        <Setter x:Uid="Setter_13" Property="MinLines" Value="1"/>
+        <Setter x:Uid="Setter_14" Property="MinWidth" Value="120"/>        
+        <Setter x:Uid="HintSetter" Property="HintText" Value="{StaticResource editInitializer}" />
+        <Setter x:Uid="Setter_18" Property="AutomationProperties.Name" Value="{StaticResource editInitializer}"/>
+      </Style>
+
+      <!-- default row styles - set automation id -->
+      <Style x:Uid="Style_5" x:Key="defaultRowStyle" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource baseDataRowStyle}">
+        <Setter x:Uid="Setter_16" Property="AutomationProperties.AutomationId" Value="{Binding Path=Item.Content.AutomationId, RelativeSource={RelativeSource Mode=Self}, Mode=OneWay }" />
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding}" Value="{x:Static CollectionView.NewItemPlaceholder}">
+            <Setter x:Uid="Setter_17" Property="AutomationProperties.Name" Value="{StaticResource addNewInitializer}" />
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+
+      <!-- MASTER data grid templates -->
+      <DataTemplate x:Uid="DataTemplate_2" x:Key="correlationHandleReadOnlyTemplate">
+        <sadv:ExpressionTextBox x:Uid="sadv:ExpressionTextBox_1" Style="{StaticResource correlationHandleETBStyle}" IsReadOnly="True" Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded" />
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_3" x:Key="correlationHandleEditableTemplate">
+        <sadv:ExpressionTextBox x:Uid="sadv:ExpressionTextBox_2" Style="{StaticResource correlationHandleETBStyle}" Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded" />
+      </DataTemplate>
+ 
+    </ResourceDictionary>
+
+  </ContentControl.Resources>
+
+  <!-- Actual ui -->
+  <Grid x:Uid="Grid_2">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition x:Uid="ColumnDefinition_1" MinWidth="120" Width="165" />
+      <ColumnDefinition x:Uid="ColumnDefinition_2" Width="Auto"/>
+      <ColumnDefinition x:Uid="ColumnDefinition_3" Width="Auto" MinWidth="10"/>
+      <ColumnDefinition x:Uid="ColumnDefinition_4" Width="*" MinWidth="10"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+      <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- grid containing list of correlation initializers; we do display initializer expression -->
+    <DataGrid x:Uid="DataGrid_1" x:Name="correlationInitializers" 
+              RowStyle="{StaticResource defaultRowStyle}"
+              CellStyle="{StaticResource baseDataCellStyle}"
+              HeadersVisibility="None"
+              AutomationProperties.AutomationId="correlationInitializers"
+              AutomationProperties.Name="{StaticResource correlationInitializers}"
+              Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" RowDetailsVisibilityMode="Collapsed" >
+
+      <DataGrid.Columns>
+
+        <DataGridTemplateColumn
+          x:Uid="DataGridTemplateColumn_1" Header="{StaticResource correlationInitializers}" Width="163" CanUserSort="False" 
+          CellEditingTemplate="{StaticResource correlationHandleEditableTemplate}"
+          CellTemplate="{StaticResource correlationHandleReadOnlyTemplate}"/>
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <GridSplitter x:Uid="GridSplitter_1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="{StaticResource WorkflowViewElementBorderBrush}" Margin="5,10" Width="2" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+      <GridSplitter.Style>
+        <Style x:Uid="Style_6">
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Source={x:Static sacp:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+              <Setter x:Uid="Setter_19" Property="AutomationProperties.Name" Value="{StaticResource gridSplitterAutomationName}"/>
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </GridSplitter.Style>
+    </GridSplitter>
+
+    <Grid x:Uid="Grid_3" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" Margin="3,0">
+      <!-- combo box - references currently selected correlation initializer and displays its type -->
+      <ComboBox x:Uid="typeCombo" Style="{StaticResource typeComboStyle}" x:Name="typeCombo" AutomationProperties.Name="{StaticResource correlationTypeHint}">
+        <ComboBox.Items>
+          <ComboBoxItem x:Uid="ComboBoxItem_1" Content="{x:Type ssa:CallbackCorrelationInitializer}" Style="{StaticResource comboItemStyle}"></ComboBoxItem>
+          <ComboBoxItem x:Uid="ComboBoxItem_2" Content="{x:Type ssa:ContextCorrelationInitializer}" Style="{StaticResource comboItemStyle}"></ComboBoxItem>
+          <ComboBoxItem x:Uid="ComboBoxItem_3" Content="{x:Type ssa:RequestReplyCorrelationInitializer}" Style="{StaticResource comboItemStyle}"></ComboBoxItem>
+          <ComboBoxItem x:Uid="ComboBoxItem_4" Content="{x:Type ssa:QueryCorrelationInitializer}" Style="{StaticResource comboItemStyle}"></ComboBoxItem>
+        </ComboBox.Items>
+      </ComboBox>
+      <TextBlock x:Uid="TextBlock_2" Text="{StaticResource correlationTypeHint}" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=typeCombo, Mode=OneTime}"/>
+    </Grid>
+
+    <!-- message query set designer - looks for message query set in selected correlation initializer -->
+    <swsmad:MessageQuerySetDesigner x:Uid="swsmad:MessageQuerySetDesigner_1" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" Margin="3,3,3,0"
+      Activity="{Binding Path=Activity, RelativeSource={RelativeSource AncestorType={x:Type swsmad:CorrelationInitializerDesigner}}, Mode=OneTime}"
+      MessageQuerySetContainer="{Binding Path=SelectedItem.ReflectedObject, ElementName=correlationInitializers, Mode=OneWay}"/>
+ 
+  </Grid>
+
+  </ContentControl>

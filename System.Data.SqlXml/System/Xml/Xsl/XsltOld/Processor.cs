@@ -9,6 +9,7 @@ namespace System.Xml.Xsl.XsltOld {
     using Res = System.Xml.Utils.Res;
     using System.Globalization;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Xml.XPath;
     using MS.Internal.Xml.XPath;
@@ -150,6 +151,7 @@ namespace System.Xml.Xsl.XsltOld {
             get { return this.keyList; }
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3068:TextReaderImplNeedsSettingsAndResolver", Justification="XmlResolver and DtdProcessing is set on XmlTextReaderImpl after it is constructed or default to null resolver / prohibit DTD")]
         internal XPathNavigator GetNavigator(Uri ruri) {
             XPathNavigator result = null;
             if (documentCache != null) {

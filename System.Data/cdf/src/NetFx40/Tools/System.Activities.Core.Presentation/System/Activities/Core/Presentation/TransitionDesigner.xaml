@@ -1,0 +1,212 @@
+﻿  <sap:ActivityDesigner x:Uid="sap:ActivityDesigner_1" x:Class="System.Activities.Core.Presentation.TransitionDesigner"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:sap="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sapv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    Icon="{x:Static sap:WorkflowDesignerIcons+Activities.StateTransition}"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <sap:ActivityDesigner.CommandBindings>
+        <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static sapv:DesignerView.CopyCommand}" CanExecute="OnCopyCommandCanExecute" Executed="OnCopyCommandExecute"/>
+    </sap:ActivityDesigner.CommandBindings>
+    <sap:ActivityDesigner.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_7" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/WorkflowElementDesignerDefaultTemplate.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_5" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_6" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/StringResourceDictionary.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="sap:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <sys:String x:Uid="String_1" x:Key="CaseKeyBoxEditorAutomationName">Enter a destination state</sys:String>
+            <sys:String x:Uid="String_2" x:Key="CaseKeyBoxComboBoxAutomationName">Enter or choose a destination state</sys:String>
+            <local:ExpandableItemShowExpandedMultiValueConverter x:Uid="ExpandableItemShowExpandedMultiValueConverter_1" x:Key="ExpandableItemShowExpandedMultiValueConverter"/>
+            <local:StateLinkButtonToolTipConverter x:Uid="StateLinkButtonToolTipConverter_1" x:Key="StateLinkButtonToolTipConverter"/>
+            <local:DisplayNameConverter x:Uid="DisplayNameConverter_1" x:Key="DisplayNameConverter"/>
+            <local:NotConverter x:Uid="NotConverter_1" x:Key="NotConverter"/>
+
+            <DataTemplate x:Uid="DataTemplate_1" x:Key="TransitionTemplate">
+                <Grid x:Uid="Grid_3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Uid="ColumnDefinition_1" Width="Auto" />
+                        <ColumnDefinition x:Uid="ColumnDefinition_2" Width="Auto" />
+                        <ColumnDefinition x:Uid="ColumnDefinition_3" Width="*" />
+                        <ColumnDefinition x:Uid="ColumnDefinition_4" Width="52" />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle x:Uid="Rectangle_1" Grid.Column="0" Width="18" Height="1" VerticalAlignment="Bottom" Stroke="{DynamicResource WorkflowViewElementBorderBrush}" StrokeThickness="4" Margin="-12, 10, 0, 10"/>
+                    <Rectangle x:Uid="Rectangle_2" Grid.Column="1" Width="8" Height="8"  VerticalAlignment="Bottom" Margin="0, 0, 0, 6" Fill="{StaticResource ArrowEndPoint}"/>
+                    <StackPanel x:Uid="StackPanel_3" Grid.Column="2" Margin="5, 0, 0, 0">
+                        <StackPanel x:Uid="StackPanel_9" Grid.Column="0" Margin="0, 2, 0, 0" 
+                                    Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <TextBox x:Uid="TextBox_1" ContextMenuOpening="OnTransitionNameTextBoxContextMenuOpening" LostFocus="OnTransitionNameTextBoxLostFocus" 
+                                        IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type sapv:DesignerView}}, Converter={StaticResource NotConverter}}" 
+                                        Text="{Binding Path=Item.DisplayName}" MaxWidth="120" BorderThickness="0" Margin="-1,2,0,2" ToolTip="{Binding Path=Text, Mode=OneWay, RelativeSource={RelativeSource Self}, Converter={StaticResource DisplayNameConverter}}"
+                                        Style="{DynamicResource nameTextBoxStyle}"
+                                        AutomationProperties.AutomationId="TransitionName" AutomationProperties.Name="Transition Name"/>
+                            <StackPanel x:Uid="StackPanel_7" Orientation="Horizontal" Margin="0, 2, 0, 2" VerticalAlignment="Center">
+                                <StackPanel.Style>
+                                    <Style x:Uid="Style_36" TargetType="{x:Type StackPanel}">
+                                        <Setter x:Uid="Setter_1022" Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger x:Uid="DataTrigger_241" Binding="{Binding Path=IsChecked, Mode=OneWay, ElementName=expandCollapseButton}" Value="True">
+                                                <Setter x:Uid="Setter_1023" Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </StackPanel.Style>
+                                <TextBlock x:Uid="TextBlock_8" Text="("/>
+                                <TextBlock x:Uid="TextBlock_5" Text="Destination: "/>
+                                <Button x:Uid="Button_4" Margin="0" MaxWidth="120" Style="{StaticResource LinkButtonStyle}" Content="{Binding Path=Item.To.DisplayName, Converter={StaticResource DisplayNameConverter}}" Tag="{Binding Path=Item.To}" 
+                                        Click="OnDestinationStateClicked" ToolTip="{Binding Path=Content, Mode=OneWay, RelativeSource={RelativeSource Self}, Converter={StaticResource StateLinkButtonToolTipConverter}}"
+                                        AutomationProperties.AutomationId="ToState" AutomationProperties.Name="Destination State"/>
+                                <TextBlock x:Uid="TextBlock_9" Text=")"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel x:Uid="StackPanel_6">
+                            <StackPanel.Style>
+                                <Style x:Uid="Style_35" TargetType="{x:Type StackPanel}">
+                                    <Setter x:Uid="Setter_1020" Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger x:Uid="DataTrigger_240" Binding="{Binding Path=IsChecked, Mode=OneWay, ElementName=expandCollapseButton}" Value="True">
+                                            <Setter x:Uid="Setter_1021" Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock x:Uid="TextBlock_2" Margin="0,4,0,4" Text="Condition" Localization.Attributes="Text(Unreadable Unmodifiable)" />
+                            <Border x:Uid="Border_2" Margin="0,2,-32,2" Padding="0" BorderThickness ="0" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}" >
+                                <sapv:ExpressionTextBox
+                                      x:Uid="conditionBox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                      MinLines="1" MaxLines="1"
+                                      Expression="{Binding Path=Item.Condition, Mode=TwoWay}"
+                                      ExpressionType="{x:Type TypeName=sys:Boolean}"
+                                      OwnerActivity="{Binding Path=Item, Mode=OneWay}"
+                                      AutomationProperties.Name="Condition expression"/>
+                            </Border>
+                            <TextBlock x:Uid="TextBlock_3" Margin="0,4,0,4" Text="Action" Localization.Attributes="Text(Unreadable Unmodifiable)" />
+                            <Border x:Uid="Border_3" BorderThickness="1" Margin="0,2,-32,2" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}">
+                                <sap:WorkflowItemPresenter
+                                    x:Uid="sap:WorkflowItemPresenter_2" AutomationProperties.AutomationId="Action"
+                                    PreviewDragEnter="OnWIPPreviewDragEnter"
+                                    Item="{Binding Path=Item.Action, Mode=TwoWay}"
+                                    AllowedItemType="{x:Type sa:Activity}"
+                                    HintText="{DynamicResource dropActionActivityHint}"
+                                    MinWidth="346"
+                                    MinHeight="150"
+                                    Margin="5"
+                                    AutomationProperties.Name="Action: Drop Action activity here"/>
+                            </Border>
+                            <StackPanel x:Uid="StackPanel_10" Orientation="Horizontal" Margin="0, 2, 0, 6">
+                                <TextBlock x:Uid="TextBlock_7" Text="Destination: " />
+                                <Button x:Uid="Button_5" Margin="0, 0, 4, 0" MaxWidth="120" Style="{StaticResource LinkButtonStyle}" Content="{Binding Path=Item.To.DisplayName, Converter={StaticResource DisplayNameConverter}}"
+                                        ToolTip="{Binding Path=Content, Mode=OneWay, RelativeSource={RelativeSource Self}, Converter={StaticResource StateLinkButtonToolTipConverter}}" Click="OnDestinationStateClicked" Tag="{Binding Path=Item.To}"
+                                        AutomationProperties.AutomationId="ToStateExpanded" AutomationProperties.Name="Destination State" Localization.Attributes="Value(Readable Modifiable)" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <ToggleButton x:Uid="expandCollapseButton" Grid.Column="3" VerticalAlignment="Top" HorizontalAlignment="Right"
+                                  Width="10" Height="10" Margin="0,5,5,0" x:Name="expandCollapseButton" FocusVisualStyle="{DynamicResource FocusStyle}" Click="OnExpandCollapseButtonClicked"
+                                  AutomationProperties.AutomationId="ExpandTransition">
+                        <ToggleButton.IsChecked>
+                            <MultiBinding x:Uid="MultiBinding_1" Mode="OneWay" Converter="{StaticResource ExpandableItemShowExpandedMultiValueConverter}">
+                                <Binding x:Uid="Binding_1" Path="IsExpanded" Mode="OneWay" />
+                                <Binding x:Uid="Binding_5" Path="IsPinned" Mode="OneWay" />
+                                <Binding x:Uid="Binding_3" Path="ShouldExpandAll" Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type sapv:DesignerView}}"/>
+                                <Binding x:Uid="Binding_4" Path="ShouldCollapseAll" Mode="OneWay" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type sapv:DesignerView}}"/>
+                                <Binding x:Uid="Binding_6" />
+                            </MultiBinding>
+                        </ToggleButton.IsChecked>
+                        <ToggleButton.Style>
+                            <Style x:Uid="Style_34" TargetType="ToggleButton">
+                                <Setter x:Uid="Setter_1015" Property="Template" Value="{DynamicResource CollapsedButtonTemplate}" />
+                                <Setter x:Uid="Setter_1001" Property="ToolTip" Value="{StaticResource expandTooltip}" />
+                                <Setter x:Uid="Setter_1017" Property="AutomationProperties.Name" Value="{StaticResource expandTooltip}" />
+                                <Style.Triggers>
+                                    <Trigger x:Uid="Trigger_1" Property="IsChecked" Value="True">
+                                        <Setter x:Uid="Setter_1018" Property="Template" Value="{StaticResource ExpandedButtonTemplate}" />
+                                        <Setter x:Uid="Setter_1002" Property="ToolTip" Value="{StaticResource collapseTooltip}" />
+                                        <Setter x:Uid="Setter_1019" Property="AutomationProperties.Name" Value="{StaticResource collapseTooltip}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </sap:ActivityDesigner.Resources>
+
+    <Grid x:Uid="Grid_1">
+        <StackPanel x:Uid="StackPanel_1">
+            <StackPanel x:Uid="StackPanel_8" Orientation="Horizontal">
+                <TextBlock x:Uid="TextBlock_6" Text="Source: "/>
+                <Button x:Uid="Button_1" Style="{StaticResource LinkButtonStyle}" MaxWidth="120" Content="{Binding Path=ModelItem.Parent.Parent.DisplayName, Mode=OneWay, Converter={StaticResource DisplayNameConverter}}" 
+                        Click="OnSourceStateClicked" ToolTip="{Binding Path=Content, Mode=OneWay, RelativeSource={RelativeSource Self}, Converter={StaticResource StateLinkButtonToolTipConverter}}"
+                        AutomationProperties.AutomationId="SourceState" AutomationProperties.Name="Source State"/>
+            </StackPanel>
+
+            <StackPanel x:Uid="StackPanel_11" Orientation="Horizontal" Margin="0,4,0,4" >
+                <Ellipse x:Uid="Ellipse_1" Stroke="{DynamicResource WorkflowViewElementBorderBrush}" Fill="{DynamicResource WorkflowViewElementBackground}" 
+                          Margin="0,6,0,4" Width="12" Height="12" StrokeThickness="2"/>
+                <TextBlock x:Uid="TextBlock_1" Margin="4,4,0,4" VerticalAlignment="Bottom" Text="Trigger" Localization.Attributes="Text(Unreadable Unmodifiable)"/>
+            </StackPanel>
+
+            <StackPanel x:Uid="StackPanel_4" Orientation="Horizontal">
+                <Rectangle x:Uid="Rectangle_3" Width="1" Margin="5, -10, 0, 12" Stroke="{DynamicResource WorkflowViewElementBorderBrush}"  StrokeThickness="2" />
+                <Grid x:Uid="Grid_2" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+                        <RowDefinition x:Uid="RowDefinition_2" Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border x:Uid="Border_4" Grid.Row="0" Margin="10, 0, 0, 0" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}" BorderThickness="1">
+                        <sap:WorkflowItemPresenter
+                            x:Uid="sap:WorkflowItemPresenter_1" IsDefaultContainer="True"
+                            PreviewDragEnter="OnWIPPreviewDragEnter"
+                            AutomationProperties.AutomationId="Trigger"
+                            Item="{Binding Path=ModelItem.Trigger, Mode=TwoWay}"
+                            AllowedItemType="{x:Type sa:Activity}"
+                            HintText="{DynamicResource dropTriggerActivityHint}"
+                            MinWidth="387"
+                            MinHeight="100"
+                            Margin="5"
+                            AutomationProperties.Name="Trigger: Drop Trigger activity here"/>
+                    </Border>
+                    <local:ReorderableListEditor x:Uid="listEditor" Grid.Row="1" MinWidth="330" VerticalAlignment="Top" AutomationProperties.AutomationId="TransitionListBox"
+                        List="{Binding Path=TransitionsSharingTrigger, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:TransitionDesigner}}}"
+                        ItemTemplate="{StaticResource TransitionTemplate}"
+                        SelectedListItem="{Binding Path=SelectedTransition, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:TransitionDesigner}}}" />
+                </Grid>
+            </StackPanel>
+
+            <StackPanel x:Uid="StackPanel_12" Orientation="Horizontal" Margin="10,5,0,0">
+                <TextBlock x:Uid="AddNewTransitionLabel" Text="{StaticResource availableStateLabel}" 
+                           Loaded="OnAddNewTransitionLabelLoaded" Unloaded="OnAddNewTransitionLabelUnloaded" Margin="1,0,5,0" VerticalAlignment="Center" />
+                <local:CaseKeyBox x:Uid="AddNewTransitionBox" DisplayHintText="true"
+                                  LabelText="{StaticResource addTransitionLabel}" 
+                                  Value="{Binding NewTransition, RelativeSource={RelativeSource AncestorType={x:Type local:TransitionDesigner}}, Mode=TwoWay}"
+                                  ValueType="{x:Type sys:String}" 
+                                  AutomationProperties.AutomationId="AddNewTransition"
+                                  AutomationProperties.Name="Add new transition"
+                                  EditorAutomationName="{StaticResource CaseKeyBoxEditorAutomationName}"
+                                  ComboBoxAutomationName="{StaticResource CaseKeyBoxComboBoxAutomationName}"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  MinWidth="150"
+                                  Margin="1,0,0,0"
+                                  Loaded="OnNewTransitionLoaded"
+                                  Unloaded="OnNewTransitionUnloaded"
+                                  ValueCommitted="OnNewTransitionCommitted"
+                                  EditCancelled="OnNewTransitionEditCancelled"
+                                  GotFocus="OnNewTransitionTextBoxGotFocus"
+                                  IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type sapv:DesignerView}}, Converter={StaticResource NotConverter}}" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</sap:ActivityDesigner>

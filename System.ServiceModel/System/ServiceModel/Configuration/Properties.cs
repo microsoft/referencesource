@@ -4516,6 +4516,40 @@ namespace System.ServiceModel.Configuration
     }
 }
 
+// configType.Name: ServiceHealthElement
+
+namespace System.ServiceModel.Configuration
+{
+    public sealed partial class ServiceHealthElement
+    {
+        ConfigurationPropertyCollection properties;
+
+        protected override ConfigurationPropertyCollection Properties
+        {
+            get
+            {
+                if (this.properties == null)
+                {
+                    ConfigurationPropertyCollection properties = new ConfigurationPropertyCollection();
+
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HealthDetailsEnabled, typeof(System.Boolean), true, null, null, System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpGetEnabled, typeof(System.Boolean), true, null, null, System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpGetUrl, typeof(System.Uri), null, null, null, System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpsGetEnabled, typeof(System.Boolean), true, null, null, System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpsGetUrl, typeof(System.Uri), null, null, null, System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpGetBinding, typeof(System.String), string.Empty, null, new System.Configuration.StringValidator(0, 2147483647, null), System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpsGetBinding, typeof(System.String), string.Empty, null, new System.Configuration.StringValidator(0, 2147483647, null), System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpGetBindingConfiguration, typeof(System.String), string.Empty, null, new System.Configuration.StringValidator(0, 2147483647, null), System.Configuration.ConfigurationPropertyOptions.None));
+                    properties.Add(new ConfigurationProperty(ConfigurationStrings.HttpsGetBindingConfiguration, typeof(System.String), string.Empty, null, new System.Configuration.StringValidator(0, 2147483647, null), System.Configuration.ConfigurationPropertyOptions.None));
+
+                    this.properties = properties;
+                }
+                return this.properties;
+            }
+        }
+    }
+}
+
 // configType.Name: ServiceTimeoutsElement
 
 namespace System.ServiceModel.Configuration

@@ -127,7 +127,14 @@ namespace System.IdentityModel.Selectors
                 {
                     store.Open(OpenFlags.ReadOnly);
                     certificates = store.Find(X509FindType.FindByThumbprint, certificate.GetCertHash(), false);
-                    return certificates.Count > 0;
+
+                    // store.Find(X509FindType.FindByThumbprint, certificate.GetCertHash(), false) gets a cert
+                    // from a store only by comparing SHA-1 certificate hash.
+                    // This is vulnerable to known SHA1 collision attacks where an attacker can produce different certificates
+                    // with the same thumbprint and get a service to trust one of the certificates and later use another.
+                    // As a precaution, we will check if the certificate collection contains the given certificate by comparing certificate's raw data byte-by-byte.
+                    return SecurityUtils.CollectionContainsCertificate(certificates, certificate);
+
                 }
                 finally
                 {

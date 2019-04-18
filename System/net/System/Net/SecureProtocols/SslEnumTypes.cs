@@ -22,12 +22,13 @@ using System.Net;
     [Flags]
     public enum SslProtocols
     {
-        None          =0,
+        None          = 0,
         Ssl2          = SchProtocols.Ssl2,
         Ssl3          = SchProtocols.Ssl3,
         Tls           = SchProtocols.Tls10,
         Tls11         = SchProtocols.Tls11,
         Tls12         = SchProtocols.Tls12,
+        Tls13         = SchProtocols.Tls13,
         Default       = Ssl3 | Tls
     }
 

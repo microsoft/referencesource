@@ -1,0 +1,65 @@
+﻿<swd:ActivityDesigner 	x:Uid="sendReplyDesigner" x:Class="System.ServiceModel.Activities.Presentation.SendReplyDesigner"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:local="clr-namespace:System.ServiceModel.Activities.Presentation"
+  xmlns:swd="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+  xmlns:sacp="clr-namespace:System.Activities.Core.Presentation"
+  xmlns:swdc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+  xmlns:swdv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+  xmlns:swsma="clr-namespace:System.ServiceModel.Activities;assembly=System.ServiceModel.Activities"
+  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  x:Name="sendReplyDesigner"
+  x:ClassModifier="internal"
+  Icon="{x:Static swd:WorkflowDesignerIcons+Activities.SendReply}"
+  Collapsible="False">
+  
+  <swd:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      
+      <ResourceDictionary.MergedDictionaries>
+        <swd:CachedResourceDictionaryExtension x:Uid="swd:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/StringResourceDictionary.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+
+      <local:ActivityXRefConverter x:Uid="local:ActivityXRefConverter_1" x:Key="ActivityXRefConverter" />
+      <local:ContentButtonTitleConverter x:Uid="swdv:ContentButtonTitleConverter_1" x:Key="ContentButtonTitleConverter" />
+
+    </ResourceDictionary>
+  </swd:ActivityDesigner.Resources>
+
+  <swd:ActivityDesigner.Content>
+    <Grid x:Uid="contentGrid" x:Name="contentGrid">
+      
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition MinWidth="92" x:Uid="ColumnDefinition_1" Width="Auto"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_2" Width="5"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_3" Width="*"/>
+      </Grid.ColumnDefinitions>
+      
+      <Grid.RowDefinitions>
+        <RowDefinition x:Uid="RowDefinition_1"/>
+        <RowDefinition x:Uid="RowDefinition_2"/>
+      </Grid.RowDefinitions>
+
+      <TextBlock x:Uid="TextBlock_1" Text="Request" HorizontalAlignment="Right" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Localization.Attributes="Text(Unreadable Unmodifiable)"/>
+      <TextBlock x:Uid="TextBlock_2" Text="Content" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Localization.Attributes="Text(Unreadable Unmodifiable)"/>
+
+      <TextBox x:Uid="TextBox_3" Margin="2" Grid.Column="2" Grid.Row="0" Text="{Binding Path=ModelItem.Request.DisplayName, Mode=OneWay, Converter={StaticResource ActivityXRefConverter}}" AutomationProperties.AutomationId="ReplyToTextBox" Width="140" Foreground="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}" IsReadOnly="True" HorizontalAlignment="Left"
+               AutomationProperties.Name="Request">
+        <TextBox.Style>
+          <Style x:Uid="Style_1">
+            <Style.Triggers>
+              <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Source={x:Static sacp:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                <Setter x:Uid="Setter_1" Property="TextBox.FocusVisualStyle" Value="{StaticResource designerReadOnlyTextBoxFocusVisualStyle}"/>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </TextBox.Style>
+      </TextBox>
+      <Button x:Uid="Button_1" Margin="2" Grid.Column="2" Grid.Row="1" Width="140" HorizontalAlignment="Left" Content="{Binding Path=ModelItem.Content, Converter={StaticResource ContentButtonTitleConverter}}" Click="OnDefineButtonClicked" AutomationProperties.AutomationId="DefineButton" Style="{StaticResource designerButtonStyle}"/>
+
+    </Grid>
+  </swd:ActivityDesigner.Content>
+  
+</swd:ActivityDesigner>

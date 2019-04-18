@@ -23,7 +23,11 @@ namespace System.Security.Cryptography {
 
         [System.Security.SecuritySafeCritical]  // auto-generated
         public MD5CryptoServiceProvider() {
-            if (CryptoConfig.AllowOnlyFipsAlgorithms)
+            // .NET Framework 2.0 - 4.7.2 rejected MD5 when in FIPS mode because it was not
+            // an approved algorithm.  Since this caused problems for legitimate applications
+            // this is no longer done, an application or library needs to determine on its own
+            // if MD5 is prohibited in context.
+            if (CryptoConfig.AllowOnlyFipsAlgorithms && AppContextSwitches.UseLegacyFipsThrow)
                 throw new InvalidOperationException(Environment.GetResourceString("Cryptography_NonCompliantFIPSAlgorithm"));
             Contract.EndContractBlock();
 

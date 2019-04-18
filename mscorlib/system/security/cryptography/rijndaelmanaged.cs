@@ -17,7 +17,15 @@ namespace System.Security.Cryptography
     public sealed class RijndaelManaged : Rijndael {
         public RijndaelManaged () {
 #if FEATURE_CRYPTO
-            if (CryptoConfig.AllowOnlyFipsAlgorithms)
+            // .NET Framework 2.0 - 4.7.2 rejected all managed implementations when in FIPS mode
+            // because the implementations are not certified. For applications which needed to
+            // have FIPS mode enabled but also process data encrypted with Rijndael not in its AES
+            // guise there was no good option (the most plausible scenario is decrypting previously
+            // encrypted data, since FIPS policies mainly restrict applying algorithms to plaintext).
+            //
+            // "Rijndael" in full format is not a FIPS-Approved algorithm, and an application or
+            // library will have to determine on its own if Rijndael would be prohibited in context.
+            if (CryptoConfig.AllowOnlyFipsAlgorithms  && AppContextSwitches.UseLegacyFipsThrow)
                 throw new InvalidOperationException(Environment.GetResourceString("Cryptography_NonCompliantFIPSAlgorithm"));
             Contract.EndContractBlock();
 #endif // FEATURE_CRYPTO
@@ -31,7 +39,7 @@ namespace System.Security.Cryptography
         // 
         //  - CipherMode: CipherMode.CBC
         //  - PaddingMode: PaddingMode.PKCS7
- 
+
         public override ICryptoTransform CreateEncryptor (byte[] rgbKey, byte[] rgbIV) {
             return NewEncryptor(rgbKey,
                                 ModeValue,

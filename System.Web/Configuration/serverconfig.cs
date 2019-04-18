@@ -25,9 +25,7 @@ namespace System.Web.Configuration {
     // and config retreived from new IIS7 configuration system.
     //
     static internal class ServerConfig {
-
-        static int s_iisMajorVersion = 0;
-
+        
         static object s_expressConfigsLock = new object();
 
         // used in the default domain only, by the ClientBuildManager
@@ -48,25 +46,10 @@ namespace System.Web.Configuration {
         }
 
         internal static bool UseMetabase {
-            [RegistryPermissionAttribute(SecurityAction.Assert, Read = "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\InetStp")]
-            get {
-                if (IISExpressVersion != null) {
-                    return false;
-                }
-                if (s_iisMajorVersion == 0) {
-                    int version;
-                    try {
-                        object ver = Registry.GetValue("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\InetStp", "MajorVersion", 0);
-                        version = (ver != null) ? (int)ver : -1;
-                    }
-                    catch (ArgumentException) {
-                        // Ignore ArgumentException from Registry.GetValue. This may indicate that the key does not exist, i.e. IIS not installed
-                        version = -1; // Key not found
-                    }
-                    Interlocked.CompareExchange(ref s_iisMajorVersion, version, 0);
-                }
-
-                return s_iisMajorVersion <= 6;
+            get {                
+                // Devdiv #463596 - The current version of .net framework is only for win7 and above,
+                // so we should not use metabase at all
+                return false;
             }
         }
 

@@ -326,7 +326,7 @@ namespace System.Configuration.Internal {
                 int index;
                 BaseConfigurationRecord currentRecord;
 
-                AcquireHierarchyLockForRead();
+                AcquireHierarchyLockForWrite();
 
                 hlFindConfigRecord(parts, out index, out currentRecord);
 
@@ -336,7 +336,7 @@ namespace System.Configuration.Internal {
                 }
             }
             finally {
-                ReleaseHierarchyLockForRead();
+                ReleaseHierarchyLockForWrite();
             }
         }
 

@@ -9,6 +9,7 @@ namespace System.Workflow.ComponentModel.Serialization
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.Security.Permissions;
+    using System.Workflow.ComponentModel;
 
     [Obsolete("The System.Workflow.* types are deprecated.  Instead, please use the new types from System.Activities.*")]
     public sealed class ActivitySurrogateSelector : SurrogateSelector
@@ -118,6 +119,14 @@ namespace System.Workflow.ComponentModel.Serialization
         {
             public void GetObjectData(object obj, SerializationInfo info, StreamingContext context)
             {
+                // We only use ObjectSurrogate for ActivityBind and DependecyObject
+                if (!AppSettings.DisableActivitySurrogateSelectorTypeCheck &&
+                    !(obj is ActivityBind) &&
+                    !(obj is DependencyObject)
+                   )
+                {
+                    throw new ArgumentException("obj");
+                }
                 info.AddValue("type", obj.GetType());
                 string[] names = null;
                 MemberInfo[] members = FormatterServicesNoSerializableCheck.GetSerializableMembers(obj.GetType(), out names);
@@ -142,6 +151,14 @@ namespace System.Workflow.ComponentModel.Serialization
 
                 Object IObjectReference.GetRealObject(StreamingContext context)
                 {
+                    // We only use ObjectSurrogate for ActivityBind and DependecyObject
+                    if (!AppSettings.DisableActivitySurrogateSelectorTypeCheck &&
+                        !(typeof(ActivityBind).IsAssignableFrom(type)) &&
+                        !(typeof(DependencyObject).IsAssignableFrom(type))
+                       )
+                    {
+                        throw new ArgumentException("context");
+                    }
                     if (this.returnedObject == null)
                         this.returnedObject = FormatterServices.GetUninitializedObject(this.type);
                     return this.returnedObject;
@@ -150,6 +167,16 @@ namespace System.Workflow.ComponentModel.Serialization
                 {
                     if (this.returnedObject != null)
                     {
+                        // We only use ObjectSurrogate for ActivityBind and DependecyObject
+                        if (!AppSettings.DisableActivitySurrogateSelectorTypeCheck &&
+                            !(typeof(ActivityBind).IsAssignableFrom(type)) &&
+                            !(typeof(DependencyObject).IsAssignableFrom(type)) &&
+                            !(this.returnedObject is ActivityBind) &&
+                            !(this.returnedObject is DependencyObject)
+                           )
+                        {
+                            throw new ArgumentException("context");
+                        }
                         string[] names = null;
                         MemberInfo[] members = FormatterServicesNoSerializableCheck.GetSerializableMembers(this.type, out names);
                         FormatterServices.PopulateObjectMembers(this.returnedObject, members, this.memberDatas);

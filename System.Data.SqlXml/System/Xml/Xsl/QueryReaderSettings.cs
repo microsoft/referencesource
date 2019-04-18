@@ -8,6 +8,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Xml;
 
@@ -75,6 +76,7 @@ namespace System.Xml.Xsl {
             }
         }
 
+        [SuppressMessage("Microsoft.Security.Xml", "CA3068:TextReaderImplNeedsSettingsAndResolver", Justification="XmlResolver and DtdProcessing is set on XmlTextReaderImpl after it is constructed or default to null resolver / prohibit DTD")]
         public XmlReader CreateReader(Stream stream, string baseUri) {
             XmlReader reader;
             if (xmlReaderSettings != null) {

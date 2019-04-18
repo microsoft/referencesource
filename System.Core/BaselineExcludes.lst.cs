@@ -6787,7 +6787,15 @@ using System.Diagnostics.CodeAnalysis;
 [module: SuppressMessage("Microsoft.Naming","CA1703:ResourceStringsShouldBeSpelledCorrectly", MessageId="lvalue", Scope="resource", Target="System.Linq.Expressions.resources")]
 [module: SuppressMessage("Microsoft.Naming","CA1703:ResourceStringsShouldBeSpelledCorrectly", MessageId="unbox", Scope="resource", Target="System.Linq.Expressions.resources")]
 [module: SuppressMessage("Microsoft.Performance","CA1811:AvoidUncalledPrivateCode", Scope="member", Target="Microsoft.CSharp.Semantics.ReflectionSymbolLoader.#IsRegString(System.String,System.String)")]
-
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5353:TripleDESCannotBeUsed", Scope="member", Target="System.Security.Cryptography.TripleDESCng.#.ctor()", Justification="Used by security algorithm implementation")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5353:TripleDESCannotBeUsed", Scope="member", Target="System.Security.Cryptography.TripleDESCng.#.ctor(System.String)", Justification="Used by security algorithm implementation")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5353:TripleDESCannotBeUsed", Scope="member", Target="System.Security.Cryptography.TripleDESCng.#.ctor(System.String,System.Security.Cryptography.CngProvider)", Justification="Used by security algorithm implementation")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5353:TripleDESCannotBeUsed", Scope="member", Target="System.Security.Cryptography.TripleDESCng.#.ctor(System.String,System.Security.Cryptography.CngProvider,System.Security.Cryptography.CngKeyOpenOptions)", Justification="Used by security algorithm implementation")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5353:TripleDESCannotBeUsed", Scope="member", Target="System.Security.Cryptography.TripleDESCng.#Internal.Cryptography.ICngSymmetricAlgorithm.IsWeakKey(System.Byte[])", Justification="Used by security algorithm implementation")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5350:MD5CannotBeUsed", Scope="member", Target="System.Security.Cryptography.IncrementalHash.#GetHashAlgorithm(System.Security.Cryptography.HashAlgorithmName)", Justification="MD5 only used when user requests")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5350:MD5CannotBeUsed", Scope="member", Target="System.Security.Cryptography.IncrementalHash.#GetHMAC(System.Security.Cryptography.HashAlgorithmName,System.Byte[])", Justification="MD5 only used when user requests")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5350:MD5CannotBeUsed", Scope="member", Target="System.Security.Cryptography.MD5Cng.#.ctor()", Justification="Used by security algorithm implementation")]
+[module: SuppressMessage("Microsoft.Security.Cryptography", "CA5357:RijndaelCannotBeUsed", Scope="member", Target="System.Security.Cryptography.AesManaged.#.ctor()", Justification="Used by security algorithm implementation")]
 
 /*
  * jfree Action/Func
