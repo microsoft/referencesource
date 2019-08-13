@@ -39,7 +39,8 @@ namespace System.Workflow.ComponentModel.Serialization
 
         // This collection is populated from config under System.Workflow.Compiler section and then
         // a few "hard coded" UNauthorized types are added to it
-        private ReadOnlyCollection<AuthorizedType> authorizedTypes;
+        private static volatile ReadOnlyCollection<AuthorizedType> StaticAuthorizedTypes;
+        private static object StaticAuthTypesLockObject = new object();
 
         #region Public Methods
         public object Deserialize(XmlReader reader)
@@ -64,8 +65,8 @@ namespace System.Workflow.ComponentModel.Serialization
             // If SerializerTypeChecking is enabled, initialize it.
             if (!AppSettings.DisableXOMLSerializerTypeChecking)
             {
-                this.GetAuthorizedTypes();
-                SerializerTypeAuthorizerClass typeAuthorizer = new SerializerTypeAuthorizerClass(this.authorizedTypes);
+                WorkflowMarkupSerializer.GetAuthorizedTypes();
+                SerializerTypeAuthorizerClass typeAuthorizer = new SerializerTypeAuthorizerClass(WorkflowMarkupSerializer.StaticAuthorizedTypes);
                 WorkflowMarkupSerializationHelpers.SerializationTypeAuthorizer = typeAuthorizer;
             }
 
@@ -2099,7 +2100,7 @@ namespace System.Workflow.ComponentModel.Serialization
         #endregion
 
         #region GetAuthorizedTypes
-        void AddUnauthorizedTypes(IList<AuthorizedType> authorizedTypes)
+        static void AddUnauthorizedTypes(IList<AuthorizedType> authorizedTypes)
         {
             AuthorizedType authType = new AuthorizedType();
             authType.Assembly = "System.Activities.Presentation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
@@ -2175,42 +2176,118 @@ namespace System.Workflow.ComponentModel.Serialization
             authType.TypeName = "BindingSource";
             authType.Authorized = "false";
             authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            authType.Namespace = "System.ComponentModel.Composition.Hosting";
+            authType.TypeName = "DirectoryCatalog";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            authType.Namespace = "System.ComponentModel.Composition.Hosting";
+            authType.TypeName = "AssemblyCatalog";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            // The default constructor of System.Workflow.ComponentModel.Design.WorkflowView displays a set of dialog box on a
+            // non-windowed application. Like if you are running the WorkflowCompiler in a console application.
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Workflow.ComponentModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Workflow.ComponentModel.Design";
+            authType.TypeName = "WorkflowView";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Workflow.ComponentModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Workflow.ComponentModel.Design";
+            authType.TypeName = "WorkflowView";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            // The default constructor of System.Speech.Recognition.SpeechRecognizer displays a dialog box on a
+            // non-windowed application. Like if you are running the WorkflowCompiler in a console application.
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Speech, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Speech.Recognition";
+            authType.TypeName = "SpeechRecognizer";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.Speech, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35";
+            authType.Namespace = "System.Speech.Recognition";
+            authType.TypeName = "SpeechRecognizer";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            // The default constructor of System.ServiceModel.ComIntegration.ServiceMoniker throws a remoting
+            // exception that can cause the calling process to fail, leading to denial of service.
+            authType = new AuthorizedType();
+            authType.Assembly = "System.ServiceModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            authType.Namespace = "System.ServiceModel.ComIntegration";
+            authType.TypeName = "ServiceMoniker";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            authType = new AuthorizedType();
+            authType.Assembly = "System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            authType.Namespace = "System.ServiceModel.ComIntegration";
+            authType.TypeName = "ServiceMoniker";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
+
+            // The default constructor of System.ServiceModel.ServiceMoniker40.ServiceMoniker40 throws a remoting
+            // exception that can cause the calling process to fail, leading to denial of service.
+            authType = new AuthorizedType();
+            authType.Assembly = "System.ServiceModel.ServiceMoniker40, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089";
+            authType.Namespace = "System.ServiceModel.ServiceMoniker40";
+            authType.TypeName = "ServiceMoniker40";
+            authType.Authorized = "false";
+            authorizedTypes.Add(authType);
         }
 
-        IList<AuthorizedType> GetAuthorizedTypes()
+        static void GetAuthorizedTypes()
         {
-            if (this.authorizedTypes == null)
+            if (WorkflowMarkupSerializer.StaticAuthorizedTypes == null)
             {
-                try
+                lock (WorkflowMarkupSerializer.StaticAuthTypesLockObject)
                 {
-                    IList<AuthorizedType> authorizedTypes;
-
-                    IDictionary<string, IList<AuthorizedType>> authorizedTypesDictionary =
-                        ConfigurationManager.GetSection("System.Workflow.ComponentModel.WorkflowCompiler/authorizedTypes") as IDictionary<string, IList<AuthorizedType>>;
-                    // The WorkflowMarkupSerializer will only look for AuthorizedType entries under the 4.0 section.
-                    Version targetVersion = new Version("4.0");
-
-                    string normalizedVersionString = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}", targetVersion.Major, targetVersion.Minor);
-
-                    // If there was nothing in config, we still need to create an "authorizedTypes" collection with the hard coded UNauthorized types.
-                    if ((authorizedTypesDictionary == null) || !authorizedTypesDictionary.TryGetValue(normalizedVersionString, out authorizedTypes))
+                    if (WorkflowMarkupSerializer.StaticAuthorizedTypes == null)
                     {
-                        authorizedTypes = new List<AuthorizedType>();
-                    }
+                        try
+                        {
+                            IList<AuthorizedType> authorizedTypes;
 
-                    // Now add the types that we don't ever want to be authorized.
-                    if (!AppSettings.DisableXOMLSerializerDefaultUnauthorizedTypes)
-                    {
-                        AddUnauthorizedTypes(authorizedTypes);
-                    }
+                            IDictionary<string, IList<AuthorizedType>> authorizedTypesDictionary =
+                                ConfigurationManager.GetSection("System.Workflow.ComponentModel.WorkflowCompiler/authorizedTypes") as IDictionary<string, IList<AuthorizedType>>;
+                            // The WorkflowMarkupSerializer will only look for AuthorizedType entries under the 4.0 section.
+                            Version targetVersion = new Version("4.0");
 
-                    this.authorizedTypes = new ReadOnlyCollection<AuthorizedType>(authorizedTypes);
-                }
-                catch
-                {
+                            string normalizedVersionString = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}", targetVersion.Major, targetVersion.Minor);
+
+                            // If there was nothing in config, we still need to create an "authorizedTypes" collection with the hard coded UNauthorized types.
+                            if ((authorizedTypesDictionary == null) || !authorizedTypesDictionary.TryGetValue(normalizedVersionString, out authorizedTypes))
+                            {
+                                authorizedTypes = new List<AuthorizedType>();
+                            }
+
+                            // Now add the types that we don't ever want to be authorized.
+                            if (!AppSettings.DisableXOMLSerializerDefaultUnauthorizedTypes)
+                            {
+                                AddUnauthorizedTypes(authorizedTypes);
+                            }
+
+                            WorkflowMarkupSerializer.StaticAuthorizedTypes = new ReadOnlyCollection<AuthorizedType>(authorizedTypes);
+                        }
+                        catch
+                        {
+                        }
+                    }
                 }
             }
-            return this.authorizedTypes;
         }
         #endregion
 
@@ -2425,6 +2502,26 @@ namespace System.Workflow.ComponentModel.Serialization
             {
                 serializationManager.ReportError(CreateSerializationError(SR.GetString(SR.Error_MarkupSerializerTypeNotResolved, typename), reader));
                 return null;
+            }
+
+            // Check the serializationTypeAuthorizer if there is one.
+            ITypeAuthorizer serializationTypeAuthorizer = WorkflowMarkupSerializationHelpers.SerializationTypeAuthorizer;
+            if (serializationTypeAuthorizer != null)
+            {
+                if (!serializationTypeAuthorizer.IsTypeAuthorized(type))
+                {
+                    throw new InvalidOperationException(SR.GetString(SR.Error_TypeNotAuthorized, type));
+                }
+            }
+
+            ITypeAuthorizer localTypeAuthorizer = WorkflowMarkupSerializationHelpers.TypeAuthorizer;
+            if (localTypeAuthorizer != null)
+            {
+                // The TypeAuthorizer should add the appropriate error to the errors collection.
+                if (!localTypeAuthorizer.IsTypeAuthorized(type))
+                {
+                    return null;
+                }
             }
 
             // Break apart the argument string.

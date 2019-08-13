@@ -5,8 +5,10 @@
 //------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.Globalization;
+using System.Net;
+using System.Text;
 
 namespace System {
 
@@ -28,7 +30,11 @@ namespace System {
 
         internal static string ParseCanonicalName(string str, int start, ref bool isLoopback, ref string scopeId) {
             unsafe {
-                ushort *numbers = stackalloc ushort[NumberOfLabels];
+                // Allocate one additional element due to off-by-one bug in the Parse() method because of invalid logic
+                // in the InternalIsValid() method. We allow the bug fix to be turned off for app-compat reasons via
+                // the registry key 'UseStrictIPv6AddressParsing'. But if the bug fix is turned off we still don't
+                // want to write into unallocated memory.
+                ushort *numbers = stackalloc ushort[NumberOfLabels + 1];
                 // optimized zeroing of 8 shorts = 2 longs
                 ((long*)numbers)[0] = 0L;
                 ((long*)numbers)[1] = 0L;
@@ -175,6 +181,11 @@ namespace System {
             bool havePrefix = false;
             bool expectingNumber = true;
             int lastSequence = 1;
+
+            // Starting with a colon character is only valid if another colon follows.
+            if (name[start] == ':' && (start + 1 >= end || name[start + 1] != ':') && ServicePointManager.UseStrictIPv6AddressParsing) {
+                return false;
+            }
 
             int i;
             for (i = start; i < end; ++i) {
@@ -398,6 +409,7 @@ namespace System {
             }
 
             for (int i = start; i < address.Length && address[i] != ']'; ) {
+                ValidateIndex(index);
                 switch (address[i]) {
                    case '%':
                         if (numberIsValid) {
@@ -460,7 +472,9 @@ namespace System {
                                     ++j;
                                 }
                                 number = IPv4AddressHelper.ParseHostNumber(address, i, j);
+                                ValidateIndex(index);
                                 numbers[index++] = (ushort)(number>>16);
+                                ValidateIndex(index);
                                 numbers[index++] = (ushort)number;
                                 i = j;
 
@@ -504,6 +518,7 @@ namespace System {
             //
 
             if (numberIsValid) {
+                ValidateIndex(index);
                 numbers[index++] = (ushort)number;
             }
 
@@ -518,7 +533,10 @@ namespace System {
                 int fromIndex = index - 1;
 
                 for (int i = index - compressorIndex; i > 0 ; --i) {
+                    ValidateIndex(fromIndex);
+                    ValidateIndex(toIndex);
                     numbers[toIndex--] = numbers[fromIndex];
+                    ValidateIndex(fromIndex);
                     numbers[fromIndex--] = 0;
                 }
             }
@@ -544,6 +562,12 @@ namespace System {
                                    && ((numbers[5] == 0)
                                        || (numbers[5] == 0xFFFF))));
 
+        }
+
+        [Conditional("DEBUG")]
+        private static void ValidateIndex(int index) {
+            int limit = ServicePointManager.UseStrictIPv6AddressParsing ? NumberOfLabels : NumberOfLabels + 1;
+            Debug.Assert(index >= 0 && index < limit, "index = " + index.ToString());
         }
     }
 }

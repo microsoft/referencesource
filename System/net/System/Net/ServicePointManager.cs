@@ -85,6 +85,8 @@ namespace System.Net {
         private static bool s_useSafeSynchronousClose;
         private static bool s_useStrictRfcInterimResponseHandling;
         private static bool s_allowDangerousUnicodeDecompositions;
+        private static bool s_useStrictIPv6AddressParsing;
+        private static bool s_allowAllUriEncodingExpansion;
 #endif // !FEATURE_PAL
 
         private static volatile Hashtable s_ConfigTable = null;
@@ -360,6 +362,24 @@ namespace System.Net {
             {
                 EnsureConfigurationLoaded();
                 return s_allowDangerousUnicodeDecompositions;
+            }
+        }
+
+        internal static bool UseStrictIPv6AddressParsing
+        {
+            get
+            {
+                EnsureConfigurationLoaded();
+                return s_useStrictIPv6AddressParsing;
+            }
+        }
+
+        internal static bool AllowAllUriEncodingExpansion
+        {
+            get
+            {
+                EnsureConfigurationLoaded();
+                return s_allowAllUriEncodingExpansion;
             }
         }
 

@@ -7,6 +7,7 @@ namespace System.IdentityModel
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Diagnostics;
+    using System.Globalization;
     using System.IdentityModel.Claims;
     using System.IdentityModel.Diagnostics;
     using System.IdentityModel.Policy;
@@ -18,6 +19,7 @@ namespace System.IdentityModel
     using System.Security.Permissions;
     using System.Security.Principal;
     using System.Text;
+    using System.Threading;
     using System.Xml;
     using Microsoft.Win32;
 
@@ -227,6 +229,70 @@ namespace System.IdentityModel
             return fipsAlgorithmPolicy;
         }
 
+        private static bool s_readMaxTransformsPerReference = false;
+        private static long s_maxTransformsPerReference = 10;
+
+        [RegistryPermission(SecurityAction.Assert, Unrestricted = true)]
+        [SecuritySafeCritical]
+        internal static long GetMaxXmlTransformsPerReference()
+        {
+            // Allow machine administrators to specify a maximum number of Transforms per Reference in SignedXML.
+            if (!s_readMaxTransformsPerReference)
+            {
+                s_maxTransformsPerReference = GetNetFxSecurityRegistryValue("SignedXmlMaxTransformsPerReference", s_maxTransformsPerReference);
+                Thread.MemoryBarrier();
+                s_readMaxTransformsPerReference = true;
+            }
+
+            return s_maxTransformsPerReference;
+        }
+
+        private static bool s_readMaxReferencesPerSignedInfo = false;
+        private static long s_maxReferencesPerSignedInfo = 100;
+
+        [RegistryPermission(SecurityAction.Assert, Unrestricted = true)]
+        [SecuritySafeCritical]
+        internal static long GetMaxXmlReferencesPerSignedInfo()
+        {
+            // Allow machine administrators to specify a maximum number of References per SignedInfo/Signature in SignedXML.
+            if (!s_readMaxReferencesPerSignedInfo)
+            {
+                s_maxReferencesPerSignedInfo = GetNetFxSecurityRegistryValue("SignedXmlMaxReferencesPerSignedInfo", s_maxReferencesPerSignedInfo);
+                Thread.MemoryBarrier();
+                s_readMaxReferencesPerSignedInfo = true;
+            }
+
+            return s_maxReferencesPerSignedInfo;
+        }
+
+        private static long GetNetFxSecurityRegistryValue(string regValueName, long defaultValue)
+        {
+            try
+            {
+                using (RegistryKey securityRegKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\.NETFramework\Security", false))
+                {
+                    if (securityRegKey != null)
+                    {
+                        object regValue = securityRegKey.GetValue(regValueName);
+                        if (regValue != null)
+                        {
+                            RegistryValueKind valueKind = securityRegKey.GetValueKind(regValueName);
+                            if (valueKind == RegistryValueKind.DWord || valueKind == RegistryValueKind.QWord)
+                            {
+                                return Convert.ToInt64(regValue, CultureInfo.InvariantCulture);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SecurityException) 
+            { 
+                // we could not open the key - that's fine, we can proceed with the default value 
+            }
+
+            return defaultValue;
+        }
+
         /// <summary>
         /// Checks if an <see cref="X509Certificate2Collection"/> object contains a given <see cref="X509Certificate2"/> 
         /// by comparing <see cref="X509Certificate2.RawData"/>, byte-by-byte.
@@ -237,7 +303,7 @@ namespace System.IdentityModel
         internal static bool CollectionContainsCertificate(X509Certificate2Collection collection, X509Certificate2 certificate)
         {
             if (collection == null || certificate == null || certificate.Handle == IntPtr.Zero)
-            	return false;
+                return false;
 
             var certificateRawData = certificate.RawData;
 

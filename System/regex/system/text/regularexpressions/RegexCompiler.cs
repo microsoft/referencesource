@@ -87,6 +87,7 @@ namespace System.Text.RegularExpressions {
         internal LocalBuilder      _tempV;
         internal LocalBuilder      _temp2V;
         internal LocalBuilder      _temp3V;
+        internal LocalBuilder      _loopV;
 
 
         internal RegexCode       _code;              // the RegexCode object (used for debugging only)
@@ -126,6 +127,8 @@ namespace System.Text.RegularExpressions {
         internal const int lazybranchcountback2   = 8;    // back2 part of lazybranchcount
         internal const int forejumpback           = 9;    // back part of forejump
         internal const int uniquecount            = 10;
+        private const int LoopTimeoutCheckCount = 2000; // A conservative value to guarantee the correct timeout handling.
+        private static readonly bool UseLegacyTimeoutCheck = LocalAppContextSwitches.UseLegacyTimeoutCheck;
 
         static RegexCompiler() {
             // <SECREVIEW> Regex only generates string manipulation, so this is ok.
@@ -419,6 +422,22 @@ namespace System.Text.RegularExpressions {
          */
         internal void Ret() {
             _ilg.Emit(OpCodes.Ret);
+        }
+
+        /*
+         * A macro for _ilg.Emit(OpCodes.Rem)
+         */
+        private void Rem()
+        {
+            _ilg.Emit(OpCodes.Rem);
+        }
+
+        /*
+         * A macro for _ilg.Emit(OpCodes.Ceq)
+         */
+        private void Ceq()
+        {
+            _ilg.Emit(OpCodes.Ceq);
         }
 
         /*
@@ -1541,6 +1560,10 @@ namespace System.Text.RegularExpressions {
             _textbegV       = DeclareInt();
             _textendV       = DeclareInt();
             _textstartV     = DeclareInt();
+
+            if (!UseLegacyTimeoutCheck) {
+                _loopV = DeclareInt();
+            }
 
             // clear some tables
 
@@ -2702,6 +2725,10 @@ namespace System.Text.RegularExpressions {
                             CallToLower();
                         
                         if (Code() == RegexCode.Setrep) {
+                            if (!UseLegacyTimeoutCheck) {
+                                EmitTimeoutCheck();
+                            }
+
                             Ldstr(_strings[Operand(0)]);
                             Call(_charInSetM);
 
@@ -2806,6 +2833,9 @@ namespace System.Text.RegularExpressions {
                             CallToLower();
                         
                         if (Code() == RegexCode.Setloop) {
+                            if (!UseLegacyTimeoutCheck) {
+                                EmitTimeoutCheck();
+                            }
                             Ldstr(_strings[Operand(0)]);
                             Call(_charInSetM);
 
@@ -3008,6 +3038,26 @@ namespace System.Text.RegularExpressions {
                 default:
                     throw new NotImplementedException(SR.GetString(SR.UnimplementedState));
             }
+        }
+
+        private void EmitTimeoutCheck()
+        {
+            Label label = DefineLabel();
+            // Increment counter for each loop iteration.
+            Ldloc(_loopV);
+            Ldc(1);
+            Add();
+            Stloc(_loopV);
+            // Emit code to check the timeout every 2000th-iteration.
+            Ldloc(_loopV);
+            Ldc(LoopTimeoutCheckCount);
+            Rem();
+            Ldc(0);
+            Ceq();
+            Brfalse(label);
+            Ldthis();
+            Callvirt(_checkTimeoutM);
+            MarkLabel(label);
         }
     }
 

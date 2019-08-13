@@ -337,9 +337,20 @@ namespace System.Workflow.ComponentModel.Serialization
             {
                 if (this.activity == null)
                 {
-                    // meta properties and other instance properties, parent-child relation ships are lost
-                    this.activity = (Activity)Activator.CreateInstance(this.type);
-                    this.activity.Name = this.id;
+                    // Make sure this.type derives from Activity
+                    if (typeof(Activity).IsAssignableFrom(this.type))
+                    {
+                        // meta properties and other instance properties, parent-child relation ships are lost
+                        this.activity = (Activity)Activator.CreateInstance(this.type);
+                        this.activity.Name = this.id;
+                    }
+                    else
+                    // Before the check for typeof(Activity).IsAssignableFrom, the object was being created and if it
+                    // was not an Activity, an InvalidCastException would be thrown. For compatibility, continuing with that
+                    // exception, but not create an instance of the type.
+                    {
+                        throw new InvalidCastException();
+                    }
                 }
                 return this.activity;
             }

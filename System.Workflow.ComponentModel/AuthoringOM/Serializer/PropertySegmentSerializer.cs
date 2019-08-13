@@ -31,6 +31,7 @@ namespace System.Workflow.ComponentModel.Serialization
         protected override object CreateInstance(WorkflowMarkupSerializationManager serializationManager, Type type)
         {
             if (typeof(PropertySegment) == type)
+                // This is a "safe" Activiator.CreateInstance because we know we are creating an instance of PropertySegment, which is an internal sealed class.
                 return Activator.CreateInstance(type, new object[] { serializationManager as IServiceProvider, serializationManager.Context.Current });
             else
                 return base.CreateInstance(serializationManager, type);

@@ -685,6 +685,13 @@ namespace System.IdentityModel
 
         public void AddReference(Reference reference)
         {
+            if (!LocalAppContextSwitches.AllowUnlimitedXmlReferences)
+            {
+                long maximumNumberOfReferences = SecurityUtils.GetMaxXmlReferencesPerSignedInfo();
+                if (ReferenceCount > maximumNumberOfReferences)
+                    throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new CryptographicException());
+            }
+
             reference.ResourcePool = this.ResourcePool;
             this.references.Add(reference);
         }
@@ -1356,6 +1363,13 @@ namespace System.IdentityModel
 
         public void Add(Transform transform)
         {
+            if (!LocalAppContextSwitches.AllowUnlimitedXmlTransforms)
+            {
+                long maximumTransforms = SecurityUtils.GetMaxXmlTransformsPerReference();
+                if (TransformCount > maximumTransforms)
+                    throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new CryptographicException());
+            }
+
             this.transforms.Add(transform);
         }
 

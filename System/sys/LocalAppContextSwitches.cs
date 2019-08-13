@@ -182,5 +182,17 @@ namespace System
                 return LocalAppContext.GetCachedSwitchValue(DoNotUseNativeZipLibraryForDecompressionName, ref _doNotUseNativeZipLibraryForDecompression);
             }
         }
+
+        private static int _useLegacyTimeoutCheck;
+        internal const string UseLegacyTimeoutCheckName = @"Switch.System.Text.RegularExpressions.UseLegacyTimeoutCheck";
+
+        public static bool UseLegacyTimeoutCheck
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(UseLegacyTimeoutCheckName, ref _useLegacyTimeoutCheck);
+            }
+        }
     }
 }

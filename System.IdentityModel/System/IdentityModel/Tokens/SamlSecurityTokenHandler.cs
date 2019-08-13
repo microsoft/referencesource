@@ -3431,7 +3431,10 @@ namespace System.IdentityModel.Tokens
                 && issuerResolver != null)
             {
                 SecurityKeyIdentifier keyIdentifier = assertion.SigningCredentials.SigningKeyIdentifier;
-                return issuerResolver.TryResolveToken(keyIdentifier, out token);
+                if (keyIdentifier.Count < 2 || LocalAppContextSwitches.ProcessMultipleSecurityKeyIdentifierClauses)
+                    return issuerResolver.TryResolveToken(keyIdentifier, out token);
+                else
+                    return issuerResolver.TryResolveToken(new SecurityKeyIdentifier(keyIdentifier[0]), out token);
             }
             else
             {

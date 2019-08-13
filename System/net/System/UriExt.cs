@@ -20,6 +20,7 @@ Revision History:
 
 namespace System {
     using System.Globalization;
+    using System.Net;
     using System.Text;
     using System.Runtime.InteropServices;
     using System.Diagnostics;
@@ -146,7 +147,22 @@ namespace System {
                     if (m_iriParsing && hasUnicode && (uriKind == UriKind.Absolute || err == ParsingError.None))
                     {
                         // In this scenario we need to parse the whole string 
-                        EnsureParseRemaining();
+                        try
+                        {
+                            EnsureParseRemaining();
+                        }
+                        catch (UriFormatException ex)
+                        {
+                            if (ServicePointManager.AllowAllUriEncodingExpansion)
+                            {
+                                throw;
+                            }
+                            else
+                            {
+                                e = ex;
+                                return;
+                            }
+                        }
                     }
                 }
                 else
@@ -187,7 +203,22 @@ namespace System {
 
                         if (m_iriParsing && hasUnicode){
                             // In this scenario we need to parse the whole string 
-                            EnsureParseRemaining();
+                            try
+                            {
+                                EnsureParseRemaining();
+                            }
+                            catch (UriFormatException ex)
+                            {
+                                if (ServicePointManager.AllowAllUriEncodingExpansion)
+                                {
+                                    throw;
+                                }
+                                else
+                                {
+                                    e = ex;
+                                    return;
+                                }
+                            }
                         }
                         
                     }

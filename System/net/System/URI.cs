@@ -2536,7 +2536,7 @@ namespace System {
                         flags |= (Flags.HostNotCanonical | Flags.E_HostNotCanonical);
                     }
                     else {
-                        for (ushort i=0 ; i < host.Length; ++i) {
+                        for (int i=0 ; i < host.Length; ++i) {
                              if ((m_Info.Offset.Host + i) >= m_Info.Offset.End || 
                                  host[i] != m_String[m_Info.Offset.Host + i]) {
                                  flags |= (Flags.HostNotCanonical | Flags.E_HostNotCanonical);
@@ -2652,7 +2652,7 @@ namespace System {
                 else
                 {
                     host = CreateHostStringHelper(host, 0, (ushort)host.Length, ref flags, ref m_Info.ScopeId);
-                    for (ushort i=0 ; i < host.Length; ++i) {
+                    for (int i=0 ; i < host.Length; ++i) {
                              if ((m_Info.Offset.Host + i) >= m_Info.Offset.End || host[i] != m_String[m_Info.Offset.Host + i]) {
                                  m_Flags |= (Flags.HostNotCanonical | Flags.E_HostNotCanonical);
                                  break;
@@ -3367,6 +3367,11 @@ namespace System {
                     throw e;
                 }
 
+                if (!ServicePointManager.AllowAllUriEncodingExpansion && m_String.Length > ushort.MaxValue){
+                    UriFormatException e = GetException(ParsingError.SizeLimit);
+                    throw e;
+                }
+
                 length = (ushort)m_String.Length;
             }
 
@@ -3484,6 +3489,11 @@ namespace System {
                        throw e;
                    }
 
+                   if (!ServicePointManager.AllowAllUriEncodingExpansion && m_String.Length > ushort.MaxValue){
+                       UriFormatException e = GetException(ParsingError.SizeLimit);
+                       throw e;
+                   }
+
                    length = (ushort)m_String.Length;
                }
             }
@@ -3534,6 +3544,11 @@ namespace System {
                     }
                     catch (ArgumentException){
                         UriFormatException e = GetException(ParsingError.BadFormat);
+                        throw e;
+                    }
+
+                    if (!ServicePointManager.AllowAllUriEncodingExpansion && m_String.Length > ushort.MaxValue){
+                        UriFormatException e = GetException(ParsingError.SizeLimit);
                         throw e;
                     }
 
@@ -3967,6 +3982,11 @@ namespace System {
                                 }
 
                                 newHost += userInfoString;
+
+                                if (!ServicePointManager.AllowAllUriEncodingExpansion && newHost.Length > ushort.MaxValue){
+                                    err = ParsingError.SizeLimit;
+                                    return idx;
+                                }
                             }
                             else{
                                 userInfoString = new string(pString, startInput, start - startInput + 1);
