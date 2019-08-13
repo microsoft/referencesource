@@ -28,6 +28,10 @@ namespace System.Text.RegularExpressions
         internal bool runrtl;
         internal bool runci;
         internal CultureInfo runculture;
+#if !SILVERLIGHT
+        private const int LoopTimeoutCheckCount = 2000; // A conservative value to guarantee the correct timeout handling.
+        private static readonly bool UseLegacyTimeoutCheck = LocalAppContextSwitches.UseLegacyTimeoutCheck;
+#endif
 
         internal RegexInterpreter(RegexCode code, CultureInfo culture) {
             runcode       = code;
@@ -890,8 +894,19 @@ namespace System.Text.RegularExpressions
                             String set = runstrings[Operand(0)];
 
                             while (c-- > 0)
+                            {
+#if !SILVERLIGHT
+                                // Check the timeout every 2000th iteration. The aditional if check
+                                // in every iteration can be neglected as the cost of the CharInClass
+                                // check is many times higher.
+                                if (!UseLegacyTimeoutCheck && c % LoopTimeoutCheckCount == 0)
+                                {
+                                    CheckTimeout();
+                                }
+#endif
                                 if (!RegexCharClass.CharInClass(Forwardcharnext(), set))
                                     goto BreakBackward;
+                            }
 
                             Advance(2);
                             continue;
@@ -956,6 +971,15 @@ namespace System.Text.RegularExpressions
                             int i;
 
                             for (i = c; i > 0; i--) {
+#if !SILVERLIGHT
+                                // Check the timeout every 2000th iteration. The aditional if check
+                                // in every iteration can be neglected as the cost of the CharInClass
+                                // check is many times higher.
+                                if (!UseLegacyTimeoutCheck && i % LoopTimeoutCheckCount == 0)
+                                {
+                                    CheckTimeout();
+                                }
+#endif
                                 if (!RegexCharClass.CharInClass(Forwardcharnext(), set)) {
                                     Backwardnext();
                                     break;

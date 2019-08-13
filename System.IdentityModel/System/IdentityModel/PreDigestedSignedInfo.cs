@@ -62,6 +62,13 @@ namespace System.IdentityModel
 
         public void AddReference(string id, byte[] digest, bool useStrTransform)
         {
+            if (!LocalAppContextSwitches.AllowUnlimitedXmlReferences)
+            {
+                long maximumNumberOfReferences = SecurityUtils.GetMaxXmlReferencesPerSignedInfo();
+                if (ReferenceCount > maximumNumberOfReferences)
+                    throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new CryptographicException());
+            }
+
             if (this.count == this.references.Length)
             {
                 ReferenceEntry[] newReferences = new ReferenceEntry[this.references.Length * 2];

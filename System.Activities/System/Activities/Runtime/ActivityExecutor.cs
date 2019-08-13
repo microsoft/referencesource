@@ -1686,8 +1686,16 @@ namespace System.Activities.Runtime
                 {
                     // Regardless of whether it is already completed or not we need
                     // to honor the workflow abort
+                    // If the TerminateOnUnhandledExceptionDuringCancel switch is true, terminate instead of abort.
+                    if (System.Activities.LocalAppContextSwitches.TerminateOnUnhandledExceptionDuringCancel)
+                    {
+                        this.Terminate(new InvalidOperationException(SR.CannotPropagateExceptionWhileCanceling(exceptionSource.Activity.DisplayName, exceptionSource.Id), exception));
+                    }
+                    else
+                    {
+                        this.AbortWorkflowInstance(new InvalidOperationException(SR.CannotPropagateExceptionWhileCanceling(exceptionSource.Activity.DisplayName, exceptionSource.Id), exception));
+                    }
 
-                    this.AbortWorkflowInstance(new InvalidOperationException(SR.CannotPropagateExceptionWhileCanceling(exceptionSource.Activity.DisplayName, exceptionSource.Id), exception));
                     workItem.ExceptionPropagated();
                     ExitNoPersistForExceptionPropagation();
                     return;

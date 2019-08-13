@@ -1255,6 +1255,12 @@ namespace System.Web.Hosting {
             }
         }
 
+        internal static bool IsUnderIISExpressProcess {
+            get {
+                return VersionInfo.ExeName == "ii----press";
+            }
+        }
+
         public static IApplicationHost ApplicationHost {
             //DevDivBugs 109864: ASP.NET: path discovery issue - In low trust, it is possible to get the physical path of any virtual path on the machine
             [SecurityPermission(SecurityAction.Demand, Unrestricted = true)]

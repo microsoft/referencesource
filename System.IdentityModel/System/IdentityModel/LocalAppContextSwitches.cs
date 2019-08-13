@@ -18,11 +18,21 @@ namespace System.IdentityModel
         private const string DisableMultipleDNSEntriesInSANCertificateString = "Switch.System.IdentityModel.DisableMultipleDNSEntriesInSANCertificate";
         private const string DisableUpdatingRsaProviderTypeString = "Switch.System.IdentityModel.DisableUpdatingRsaProviderType";
         private const string DisableCngCertificatesString = "Switch.System.IdentityModel.DisableCngCertificates";
+        private const string ProcessMultipleSecurityKeyIdentifierClausesString = "Switch.System.IdentityModel.ProcessMultipleSecurityKeyIdentifierClauses";
+        private const string ReturnMultipleSecurityKeyIdentifierClausesString = "Switch.System.IdentityModel.ReturnMultipleSecurityKeyIdentifierClauses";
+        private const string PassUnfilteredAlgorithmsToCryptoConfigString = "Switch.System.IdentityModel.PassUnfilteredAlgorithmsToCryptoConfig";
+        private const string AllowUnlimitedXmlTransformsString = "Switch.System.IdentityModel.AllowUnlimitedXmlTransforms";
+        private const string AllowUnlimitedXmlReferencesString = "Switch.System.IdentityModel.AllowUnlimitedXmlReferences";
 
         private static int enableCachedEmptyDefaultAuthorizationContext;
         private static int disableMultipleDNSEntriesInSANCertificate;
         private static int disableUpdatingRsaProviderType;
         private static int disableCngCertificatesString;
+        private static int processMultipleSecurityKeyIdentifierClauses;
+        private static int returnMultipleSecurityKeyIdentifierClauses;
+        private static int passUnfilteredAlgorithmsToCryptoConfig;
+        private static int allowUnlimitedXmlTransforms;
+        private static int allowUnlimitedXmlReferences;
 
         public static bool EnableCachedEmptyDefaultAuthorizationContext
         {
@@ -57,6 +67,51 @@ namespace System.IdentityModel
             get
             {
                 return LocalAppContext.GetCachedSwitchValue(DisableCngCertificatesString, ref disableCngCertificatesString);
+            }
+        }
+
+        public static bool ProcessMultipleSecurityKeyIdentifierClauses
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(ProcessMultipleSecurityKeyIdentifierClausesString, ref processMultipleSecurityKeyIdentifierClauses);
+            }
+        }
+
+        public static bool ReturnMultipleSecurityKeyIdentifierClauses
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(ReturnMultipleSecurityKeyIdentifierClausesString, ref returnMultipleSecurityKeyIdentifierClauses);
+            }
+        }
+
+        public static bool PassUnfilteredAlgorithmsToCryptoConfig
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(PassUnfilteredAlgorithmsToCryptoConfigString, ref passUnfilteredAlgorithmsToCryptoConfig);
+            }
+        }
+
+        public static bool AllowUnlimitedXmlTransforms
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(AllowUnlimitedXmlTransformsString, ref allowUnlimitedXmlTransforms);
+            }
+        }
+
+        public static bool AllowUnlimitedXmlReferences
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(AllowUnlimitedXmlReferencesString, ref allowUnlimitedXmlReferences);
             }
         }
 

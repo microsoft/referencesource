@@ -1231,6 +1231,8 @@ namespace System.IdentityModel
             }
         }
 
+        private static readonly char[] s_invalidChars = new char[] { ',', '`', '[', '*', '&' };
+
         internal static object GetAlgorithmFromConfig(string algorithm)
         {
             if (string.IsNullOrEmpty(algorithm))
@@ -1250,6 +1252,10 @@ namespace System.IdentityModel
                     {
                         try
                         {
+                            if (!LocalAppContextSwitches.PassUnfilteredAlgorithmsToCryptoConfig)
+                                if (algorithm == null || algorithm.IndexOfAny(s_invalidChars) > 0)
+                                    return null;
+
                             algorithmObject = CryptoConfig.CreateFromName(algorithm);
                         }
                         catch (TargetInvocationException)

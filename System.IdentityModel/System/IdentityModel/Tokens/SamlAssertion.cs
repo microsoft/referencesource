@@ -317,17 +317,62 @@ namespace System.IdentityModel.Tokens
             signedXml.TransformFactory = ExtendedTransformFactory.Instance;
             signedXml.ReadFrom(effectiveReader);
             SecurityKeyIdentifier securityKeyIdentifier = signedXml.Signature.KeyIdentifier;
-            this.verificationKey = SamlSerializer.ResolveSecurityKey(securityKeyIdentifier, outOfBandTokenResolver);
+            SecurityKeyIdentifierClause securityKeyIdentifierClause = null;
+            if (securityKeyIdentifier.Count < 2 || LocalAppContextSwitches.ProcessMultipleSecurityKeyIdentifierClauses)
+                this.verificationKey = SamlSerializer.ResolveSecurityKey(securityKeyIdentifier, outOfBandTokenResolver);
+            else
+                this.verificationKey = ResolveSecurityKey(securityKeyIdentifier, outOfBandTokenResolver, out securityKeyIdentifierClause);
+
             if (this.verificationKey == null)
                 throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new SecurityTokenException(SR.GetString(SR.SAMLUnableToResolveSignatureKey, this.issuer)));
 
             this.signature = signedXml;
-            this.signingToken = SamlSerializer.ResolveSecurityToken(securityKeyIdentifier, outOfBandTokenResolver);
+            if (securityKeyIdentifier.Count < 2 || LocalAppContextSwitches.ProcessMultipleSecurityKeyIdentifierClauses)
+                this.signingToken = SamlSerializer.ResolveSecurityToken(securityKeyIdentifier, outOfBandTokenResolver);
+            else
+                this.signingToken = SamlSerializer.ResolveSecurityToken(new SecurityKeyIdentifier(securityKeyIdentifierClause), outOfBandTokenResolver);
             if (this.signingToken == null)
                 throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new SecurityTokenException(SR.GetString(SR.SamlSigningTokenNotFound)));
 
             if (!ReferenceEquals(reader, effectiveReader))
                 effectiveReader.Close();
+        }
+
+        private static SecurityKey ResolveSecurityKey(SecurityKeyIdentifier ski, SecurityTokenResolver tokenResolver, out SecurityKeyIdentifierClause clause)
+        {
+            if (ski == null)
+                throw DiagnosticUtility.ExceptionUtility.ThrowHelperArgumentNull("ski");
+
+            clause = null;
+
+            if (tokenResolver != null)
+            {
+                for (int i = 0; i < ski.Count; ++i)
+                {
+                    SecurityKey key = null;
+                    if (tokenResolver.TryResolveSecurityKey(ski[i], out key))
+                    {
+                        clause = ski[i];
+                        return key;
+                    }
+                }
+            }
+
+            if (ski.CanCreateKey)
+            {
+                foreach (var skiClause in ski)
+                {
+                    if (skiClause.CanCreateKey)
+                    {
+                        clause = skiClause;
+                        return clause.CreateKey();
+                    }
+                }
+
+                throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidOperationException(SR.GetString(SR.KeyIdentifierCannotCreateKey)));
+            }
+
+            return null;
         }
 
         void CheckObjectValidity()

@@ -188,11 +188,30 @@ namespace System.IdentityModel
             }
 
             SecurityKey signingKey = null;
+            WifSignedInfo signedInfo = _signedXml.Signature.SignedInfo as WifSignedInfo;
             if (!_signingTokenResolver.TryResolveSecurityKey(_signedXml.Signature.KeyIdentifier[0], out signingKey))
             {
                 if (_resolveIntrinsicSigningKeys && _signedXml.Signature.KeyIdentifier.CanCreateKey)
                 {
-                    signingKey = _signedXml.Signature.KeyIdentifier.CreateKey();
+                    if (_signedXml.Signature.KeyIdentifier.Count < 2 || LocalAppContextSwitches.ReturnMultipleSecurityKeyIdentifierClauses)
+                    {
+                        signingKey = _signedXml.Signature.KeyIdentifier.CreateKey();
+                        _signingCredentials = new SigningCredentials(signingKey, _signedXml.Signature.SignedInfo.SignatureMethod, signedInfo[0].DigestMethod, _signedXml.Signature.KeyIdentifier);
+                        return;
+                    }
+                    else
+                    {
+                        foreach (var clause in _signedXml.Signature.KeyIdentifier)
+                        {
+                            if (clause.CanCreateKey)
+                            {
+                                _signingCredentials = new SigningCredentials(clause.CreateKey(), _signedXml.Signature.SignedInfo.SignatureMethod, signedInfo[0].DigestMethod, new SecurityKeyIdentifier(clause));
+                                return;
+                            }
+                        }
+
+                        throw DiagnosticUtility.ExceptionUtility.ThrowHelperError(new InvalidOperationException(SR.GetString(SR.KeyIdentifierCannotCreateKey)));
+                    }
                 }
                 else
                 {
@@ -220,8 +239,10 @@ namespace System.IdentityModel
                 }
             }
 
-            WifSignedInfo signedInfo = _signedXml.Signature.SignedInfo as WifSignedInfo;
-            _signingCredentials = new SigningCredentials(signingKey, _signedXml.Signature.SignedInfo.SignatureMethod, signedInfo[0].DigestMethod, _signedXml.Signature.KeyIdentifier);
+            if (_signedXml.Signature.KeyIdentifier.Count < 2 || LocalAppContextSwitches.ReturnMultipleSecurityKeyIdentifierClauses)
+                _signingCredentials = new SigningCredentials(signingKey, _signedXml.Signature.SignedInfo.SignatureMethod, signedInfo[0].DigestMethod, _signedXml.Signature.KeyIdentifier);
+            else
+                _signingCredentials = new SigningCredentials(signingKey, _signedXml.Signature.SignedInfo.SignatureMethod, signedInfo[0].DigestMethod, new SecurityKeyIdentifier(_signedXml.Signature.KeyIdentifier[0]));
         }
 
         /// <summary>
