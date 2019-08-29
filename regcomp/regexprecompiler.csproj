@@ -1,0 +1,32 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--*****************************************************-->
+  <!--This MSBuild project file was automatically generated-->
+  <!--from the original SOURCES/DIRS file by the KBC tool.-->
+  <!--*****************************************************-->
+  <!--Import the settings-->
+  <Import Project="$(_NTDRIVE)$(_NTROOT)\ndp\fx\Microsoft.Fx.Settings.targets" />
+  <!--Leaf project Properties-->
+  <PropertyGroup>
+    <AssemblyName>RegexPreCompiler</AssemblyName>
+    <OutputType>exe</OutputType>
+
+    <!-- marcind: Do not copy to the output directory because this is just a tool used by ..\regexes -->
+    <BinplaceSymbols>false</BinplaceSymbols>
+    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <CoreOnly>false</CoreOnly>
+    <NonShipping>true</NonShipping>
+  </PropertyGroup>
+  <!--Leaf Project Items-->
+  <ItemGroup>
+    <Reference Include="$(NDP_FXRefPath)\System.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <RCResourceFile Include="regexprecompiler.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="RegexPreCompiler.cs" />
+  </ItemGroup>
+  <!--Import the targets-->
+  <Import Project="$(_NTDRIVE)$(_NTROOT)\ndp\fx\Microsoft.Fx.targets" />  
+</Project>

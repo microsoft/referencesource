@@ -1,0 +1,25 @@
+/**
+ * resource script.
+ * 
+ * Copyright (c) 1998 Microsoft Corporation
+ */
+
+//
+// Version Resource
+//
+
+
+#undef FX_VER_INTERNALNAME_STR
+#define FX_VER_INTERNALNAME_STR aspnet_compiler.exe
+
+#include "fxver.h"
+#include "fxver.rc"
+
+#define MANIFEST_RESOURCE_ID 1
+
+#ifndef RT_MANIFEST
+#define RT_MANIFEST 24
+#endif // !RT_MANIFEST
+
+MANIFEST_RESOURCE_ID RT_MANIFEST "aspnet_compiler.manifest"
+

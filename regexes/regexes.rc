@@ -1,0 +1,19 @@
+/**
+ * resource script.
+ * 
+ * Copyright (c) 1998 Microsoft Corporation
+ */
+
+//
+// Version Resource
+//
+
+
+#undef FX_VER_INTERNALNAME_STR
+#define FX_VER_INTERNALNAME_STR System.Web.RegularExpressions.dll
+
+#include "fxver.h"
+#include "fxver.rc"
+
+
+
