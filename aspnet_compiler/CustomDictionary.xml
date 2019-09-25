@@ -1,0 +1,31 @@
+<Dictionary>
+  <Words>
+    <Deprecated>
+      <!-- Words that should be flagged as obsolete. -->
+    </Deprecated>
+    <Recognized>
+      <!-- Words that should not cause a violation. -->
+
+      <Word>aspnetcompiler</Word>
+      <Word>precompile</Word>
+      <Word>precompilation</Word>
+
+      <!-- IIS terminology -->
+      <Word>metabase</Word>
+
+      <!-- Switch names -->
+      <Word>keyfile</Word>
+      <Word>keycontainer</Word>
+      <Word>delaysign</Word>
+
+    </Recognized>
+    <Unrecognized>
+      <!-- Words that should cause a violation. -->
+    </Unrecognized>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <!-- Exceptions to the acronym casing rules. Add a justification comment for each new string. -->
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

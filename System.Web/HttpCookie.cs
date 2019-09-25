@@ -19,6 +19,7 @@ namespace System.Web {
     using System.Web.Configuration;
     using System.Web.Management;
     using Util;
+    using System.ComponentModel;
 
 
     /// <devdoc>
@@ -425,8 +426,8 @@ namespace System.Web {
                 //
                 // SameSite
                 else if(StringUtil.EqualsIgnoreCase(attributeName, "SameSite")) {
-                    SameSiteMode sameSite;
-                    if(Enum.TryParse<SameSiteMode>(attributeValue, true, out sameSite) && sameSite != SameSiteMode.None) {
+                    SameSiteMode sameSite = (SameSiteMode)(-1);
+                    if(Enum.TryParse<SameSiteMode>(attributeValue, true, out sameSite)) {
                         cookie.SameSite = sameSite;
                     }
                 }
@@ -483,7 +484,7 @@ namespace System.Web {
             }
 
             // SameSite
-            if(_sameSite != SameSiteMode.None) {
+            if(_sameSite > (AppSettings.SuppressSameSiteNone ? SameSiteMode.None : (SameSiteMode)(-1) /* Unspecified */)) {
                 s.Append("; SameSite=");
                 s.Append(_sameSite);
             }
@@ -508,11 +509,30 @@ namespace System.Web {
         UseDeviceProfile // cookieless=UseDeviceProfile; Base decision on caps
     }
 
+    // Due to modern browser updates, "None" is now required to be emitted in the cookie header. To prevent
+    // any the header from being written, Cookies should be SameSite=Unspecified. But we can't update the
+    // enum in a servicing patch. So...
+    // Unspecified == -1
     public enum SameSiteMode {
         None,
 
         Lax,
 
         Strict
+    }
+
+    internal class SameSiteConverter : EnumConverter
+    {
+        public SameSiteConverter() : base(typeof(SameSiteMode)) { }
+
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            string strval = value as string;
+
+            if (strval != null && strval.Equals("Unspecified", StringComparison.InvariantCultureIgnoreCase))
+                return (SameSiteMode)(-1);
+
+            return base.ConvertFrom(context, culture, value);
+        }
     }
 }

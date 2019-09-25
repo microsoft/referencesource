@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <!--*****************************************************-->
+  <!--This MSBuild project file was automatically generated-->
+  <!--from the original SOURCES/DIRS file by the KBC tool.-->
+  <!--*****************************************************-->
+  <!--Import the settings-->
+  <Import Project="..\xsp.settings.targets" />
+  <!--Leaf project Properties-->
+  <PropertyGroup>
+    <AssemblyName>aspnet_compiler</AssemblyName>
+    <RootNamespace>System.Web.Compilation</RootNamespace>
+    <OutputType>exe</OutputType>
+    <ProjectGuid>{17F91360-5F52-3945-7A64-5B2EE56B496A}</ProjectGuid>
+    <PlatformSpecificBuild>true</PlatformSpecificBuild>
+    <GenerateAssemblyRefs>true</GenerateAssemblyRefs>
+    <DevdivCLRCodeAnalysis>true</DevdivCLRCodeAnalysis>
+    <RCSuppressManifest>true</RCSuppressManifest>
+  </PropertyGroup>
+  <!--Leaf Project Items-->
+  <ItemGroup>
+    <Reference Include="$(NDP_FXRefPath)\System.dll" />
+    <Reference Include="$(NDP_FXRefPath)\System.Web.dll" />
+    <Reference Include="$(NDP_FXRefPath)\System.Configuration.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="aspnet_compiler.cs" />
+    <Compile Include="DataAnnotationsResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CompilerResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <RCResourceFile Include="aspnet_compiler.rc" />
+    <CodeAnalysisDictionary Include="CustomDictionary.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CompilerResources.resx">
+      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DataAnnotationsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!--Import the targets-->
+  <Import Project="..\xsp.targets" />
+</Project>

@@ -1,0 +1,82 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--*****************************************************-->
+  <!--This MSBuild project file was automatically generated-->
+  <!--from the original SOURCES/DIRS file by the KBC tool.-->
+  <!--*****************************************************-->
+  <!--Import the settings-->
+  <Import Project="..\Xsp.Settings.targets" />
+  <!--Leaf project Properties-->
+  <PropertyGroup>
+    <GenerateAssemblyRefs>true</GenerateAssemblyRefs>
+    <AssemblyName>System.Web.RegularExpressions</AssemblyName>
+    <OutputType>Library</OutputType>
+    <!-- This assembly will be fully transparent, so APTCA unnecessary. -->
+    <TransparentAssembly>true</TransparentAssembly>
+    <AllowPartialTrustedCalls>false</AllowPartialTrustedCalls>
+    <!-- Set to false so that the assembly is built with SecurityRules(SecurityRuleSet.Level2, SkipVerificationInFullTrust=true)] instead of Level1. This is what the previous build did. -->
+    <SecurityMigration>false</SecurityMigration>
+    <DevdivCLRCodeAnalysis>true</DevdivCLRCodeAnalysis>
+  </PropertyGroup>
+  <!--Leaf Project Items-->
+  <ItemGroup>
+    <RCResourceFile Include="regexes.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ManagedPreprocessFile Include="System.Web.RegularExpressions.ilpp">
+      <!-- marcind: The following options match the settings for AssemblyAttributes.cspp defined in Microsoft.DevDiv.CSharp.targets -->
+      <OutputFileExtension>.il</OutputFileExtension>
+      <Defines>CSC_INVOKED=1;PPTARGET_CS=1</Defines>
+      <SuppressLineNumbers>false</SuppressLineNumbers>
+      <Compile>false</Compile>
+      <Includes>..\inc\;$(VersionIncPath)\full</Includes>
+    </ManagedPreprocessFile>
+    <!-- Make the CoreCompile task dependent on the .ilpp file to force recompilation when it changes -->
+    <CustomAdditionalCompileInputs Include="System.Web.RegularExpressions.ilpp" />
+  </ItemGroup>
+  <!--Import the targets-->
+  <Import Project="..\xsp.targets" />
+  <PropertyGroup>
+    <!-- CoreCompile will call TargetsTriggeredByCompilation. Ensure that BuildAssemblyFromIL is executed first -->
+    <TargetsTriggeredByCompilation>BuildAssemblyFromIL;$(TargetsTriggeredByCompilation)</TargetsTriggeredByCompilation>
+  </PropertyGroup>
+  <Target Name="BuildAssemblyFromIL">
+    <!-- Disassemble this DLL -->
+    <Exec Command="$(ManagedToolsPath)\ildasm.exe /NOBAR $(IntermediateOutputDirectory)\$(AssemblyName).dll /OUT:$(IntermediateOutputDirectory)\$(TargetFileName).metadata.il"/>
+
+    <!-- Merge attributes from this assembly into the IL containing the regex code -->
+    <Exec Command="$(MergeAttributesCommand) $(IntermediateOutputDirectory)\$(AssemblyName).il $(IntermediateOutputDirectory)\$(TargetFileName).metadata.il /out $(IntermediateOutputDirectory)\$(AssemblyName).merged.il"/>
+    <Exec Command="$(MergeAttributesCommand) $(IntermediateOutputDirectory)\$(AssemblyName).merged.il FriendAsmAttribute.il /out $(IntermediateOutputDirectory)\$(AssemblyName).merged.final.il"/>
+    <!-- marcind: I tried to change this process so that merging in FriendAsmAttribute.il would not be necessary (instead we could have a regular .cs file that 
+        defines the InternalsVisibleToAttributes) but unfortunately because of how mergeattributes.exe works it swallows duplicate attributes of the same type
+        so this would always result in one of them not appearing on the output assembly.
+        The reason why using the .il file works is because it 'cheats' by escaping the name of the second instance in single quotes. This works because
+        mergeattributes.exe is actually string-based so the extra characters fool it into thinking it's a different type of attribute.
+    -->
+
+    <!-- Reassemble System.Web.RegularExpressions.dll -->
+    <PropertyGroup>
+      <IlasmFlags>/base=$(BaseAddress) /include=$(DevDivToolsPath) /dll /quiet /res=$(IntermediateOutputDirectory)\regexes.res /key:$(DevDivToolsPath)\FinalPublicKey.snk</IlasmFlags>
+      <IlasmFlags Condition=" '$(DebugBuild)' == 'true' ">$(IlasmFlags) /debug</IlasmFlags>
+      <IlasmFlags Condition=" '$(DebugBuild)' != 'true' ">$(IlasmFlags) /pdb</IlasmFlags>
+    </PropertyGroup>
+    <Exec Command="$(ManagedToolsPath)\ilasm.exe $(IlasmFlags) $(IntermediateOutputDirectory)\$(AssemblyName).merged.final.il /out:$(IntermediateOutputDirectory)\$(AssemblyName).dll" />
+    <ItemGroup Condition=" '$(RazzleBuild)' == 'true' ">
+      <!-- FxCop needs to resolve the reference to System.dll -->
+      <CodeAnalysisDependentAssemblyPaths Include="$(NDP_FXRefPath)" />
+    </ItemGroup>
+    <PropertyGroup>
+      <!--
+           Due to the unique way in which this project is built, FxCop suppressions are very difficult to shoehorn into
+           the project. But FxCop isn't really a big deal here, since this assembly contains types that really aren't
+           meant to be consumed by our users. We can selectively disable rules here rather than having a GlobalSuppressions.cs
+           file, and the important rules (security, correctness, etc.) will remain enabled.
+           
+           Disabled rules:
+           Microsoft.Naming#CA1702:CompoundWordsShouldBeCasedCorrectly - The naming of infrastructure types isn't that important here.
+           Microsoft.Naming#CA1704:IdentifiersShouldBeSpelledCorrectly - The spelling of infrastructure types isn't that important here.
+           Microsoft.Usage#CA2237:MarkISerializableTypesWithSerializable - These types subclass ISerializable types but aren't themselves meant to be serialized.
+      -->
+      <CodeAnalysisRules>$(CodeAnalysisRules);-Microsoft.Naming#CA1702;-Microsoft.Naming#CA1704;-Microsoft.Naming#CA1707;-Microsoft.Naming#CA1709;-Microsoft.Usage#CA2237;</CodeAnalysisRules>
+    </PropertyGroup>
+  </Target>
+</Project>

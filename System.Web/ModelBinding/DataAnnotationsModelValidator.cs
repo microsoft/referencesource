@@ -75,7 +75,7 @@
             context.DisplayName = Metadata.GetDisplayName();
             // Bug#563497 - Fix the issue that MemberName is not set when using custom ValidationAtrribute
             string memberName = null;
-            if (!AppSettings.GetValidationMemberName)
+            if (AppSettings.GetValidationMemberName)
             {
                 memberName = Metadata.PropertyName ?? Metadata.ModelType.Name;
                 context.MemberName = memberName;
