@@ -1,0 +1,15 @@
+;==++==
+;
+;   Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;==--==
+
+; NOTE: do not use \", use ' instead
+; NOTE: Use # or ; for comments
+
+Argument_MustBeNonNegative=The value of the parameter must be greater than or equal to zero.
+Argument_MustBeInRangeZeroTo360=The value of the parameter must be from 0.0 to 360.0.
+Argument_MustBeInRangeNegative90to90=The value of the parameter must be from -90.0 to 90.0.
+Argument_MustBeInRangeNegative180To180=The value of the parameter must be from -180.0 to 180.0.
+Argument_LatitudeOrLongitudeIsNotANumber=The coordinate's latitude or longitude is not a number.
+Argument_RequiresAtLeastOneNonEmptyStringParameter=At least one address field is required.
