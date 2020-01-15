@@ -446,6 +446,11 @@ namespace System
         [System.Security.SecurityCritical]  // auto-generated
         [ResourceExposure(ResourceScope.None)]
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal static extern bool IsZapped(RuntimeType type);
+
+        [System.Security.SecurityCritical]  // auto-generated
+        [ResourceExposure(ResourceScope.None)]
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool IsComObject(RuntimeType type, bool isGenericCOM); 
 
         [System.Security.SecurityCritical]  // auto-generated

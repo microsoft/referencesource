@@ -1853,7 +1853,7 @@ namespace  System.StubHelpers {
 
 #if MDA_SUPPORTED
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        static internal extern Exception TriggerException----edMDA(Exception ex, IntPtr pManagedTarget);
+        static internal extern Exception TriggerExceptionSwallowedMDA(Exception ex, IntPtr pManagedTarget);
 #endif // MDA_SUPPORTED
 
 #endif // FEATURE_COMINTEROP

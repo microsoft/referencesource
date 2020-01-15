@@ -61,6 +61,18 @@ namespace System
         }
         #endregion
 
+        private static int _disableEventLogRegistryKeysFiltering;
+        private const string DisableEventLogRegistryKeysFilteringName = @"Switch.System.Diagnostics.EventLog.DisableEventLogRegistryKeysFiltering";
+
+        public static bool DisableEventLogRegistryKeysFiltering
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return LocalAppContext.GetCachedSwitchValue(DisableEventLogRegistryKeysFilteringName, ref _disableEventLogRegistryKeysFiltering);
+            }
+        }
+
         #region System.Net quirks
         private static int _dontEnableSchUseStrongCrypto;
         internal const string DontEnableSchUseStrongCryptoName = @"Switch.System.Net.DontEnableSchUseStrongCrypto";

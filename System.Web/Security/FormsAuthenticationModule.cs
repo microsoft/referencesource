@@ -458,7 +458,6 @@ namespace System.Web.Security {
                         cookie.Secure = FormsAuthentication.RequireSSL;
                         if (FormsAuthentication.CookieDomain != null)
                             cookie.Domain = FormsAuthentication.CookieDomain;
-                        cookie.SameSite = FormsAuthentication.CookieSameSite;
                         context.Response.Cookies.Remove(cookie.Name);
                         context.Response.Cookies.Add(cookie);
                     }

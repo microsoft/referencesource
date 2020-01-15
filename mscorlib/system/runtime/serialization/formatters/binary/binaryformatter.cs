@@ -31,7 +31,8 @@ namespace System.Runtime.Serialization.Formatters.Binary {
     using System.Runtime.Serialization;
     using System.Security.Permissions;
     using System.Diagnostics.Contracts;
-    
+    using System.Collections.Concurrent;
+
     [System.Runtime.InteropServices.ComVisible(true)]
     sealed public class BinaryFormatter :
 #if !FEATURE_REMOTING
@@ -50,6 +51,7 @@ namespace System.Runtime.Serialization.Formatters.Binary {
         internal TypeFilterLevel m_securityLevel = TypeFilterLevel.Full;
         internal Object[] m_crossAppDomainArray = null;
         private static Dictionary<Type, TypeInformation> typeNameCache = new Dictionary<Type, TypeInformation>();
+        private static Lazy<ConcurrentDictionary<Type, TypeInformation>> concurrentTypeNameCache = new Lazy<ConcurrentDictionary<Type, TypeInformation>>(() => new ConcurrentDictionary<Type, TypeInformation>());
 
         // Property which specifies how types are serialized,
         // FormatterTypeStyle Enum specifies options
@@ -236,6 +238,15 @@ namespace System.Runtime.Serialization.Formatters.Binary {
 
         internal static TypeInformation GetTypeInformation(Type type)
         {
+            if (AppContextSwitches.UseConcurrentFormatterTypeCache)
+            {
+                return concurrentTypeNameCache.Value.GetOrAdd(type, (t) =>
+                {
+                    bool hasTypeForwardedFrom2;
+                    string assemblyName2 = FormatterServices.GetClrAssemblyName(t, out hasTypeForwardedFrom2);
+                    return new TypeInformation(FormatterServices.GetClrTypeFullName(t), assemblyName2, hasTypeForwardedFrom2);
+                });
+            }
             lock (typeNameCache)
             {
                 TypeInformation typeInformation = null;

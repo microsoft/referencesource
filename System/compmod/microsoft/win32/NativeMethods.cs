@@ -697,6 +697,18 @@ namespace Microsoft.Win32 {
             Auto = 3,
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct RTL_OSVERSIONINFOEX
+        {
+            internal uint dwOSVersionInfoSize;
+            internal uint dwMajorVersion;
+            internal uint dwMinorVersion;
+            internal uint dwBuildNumber;
+            internal uint dwPlatformId;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
+            internal string szCSDVersion;
+        }
+
         public delegate IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         public delegate int ConHndlr(int signalType);
@@ -1293,6 +1305,8 @@ namespace Microsoft.Win32 {
         [DllImport(ExternDll.Kernel32, CharSet=System.Runtime.InteropServices.CharSet.Auto, BestFitMapping=false)]
         [ResourceExposure(ResourceScope.Machine)]
         public static extern SafeFileHandle CreateFile(string lpFileName,int dwDesiredAccess,int dwShareMode, SECURITY_ATTRIBUTES lpSecurityAttributes, int dwCreationDisposition,int dwFlagsAndAttributes, SafeFileHandle hTemplateFile);
+        [DllImport(ExternDll.Ntdll)]
+        public static extern int RtlGetVersion(out RTL_OSVERSIONINFOEX lpVersionInformation);
 
 
 #endif // !FEATURE_PAL

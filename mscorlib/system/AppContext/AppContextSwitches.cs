@@ -61,6 +61,16 @@ namespace System
             }
         }
 
+        private static int _useConcurrentFormatterTypeCache;
+        public static bool UseConcurrentFormatterTypeCache
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchUseConcurrentFormatterTypeCache, ref _useConcurrentFormatterTypeCache);
+            }
+        }
+
         private static int _preserveEventListnerObjectIdentity;
         public static bool PreserveEventListnerObjectIdentity
         {
@@ -180,6 +190,16 @@ namespace System
             get
             {
                 return GetCachedSwitchValue(AppContextDefaultValues.SwitchUseNetCoreTimer, ref _useNetCoreTimer);
+            }
+        }
+
+        private static int _doNotForceOrderOfConstructors;
+        public static bool DoNotForceOrderOfConstructors
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                return GetCachedSwitchValue(AppContextDefaultValues.SwitchDoNotForceOrderOfConstructors, ref _doNotForceOrderOfConstructors);
             }
         }
 

@@ -34,7 +34,7 @@ namespace System.Web.Configuration {
                 partitionResolverType="[fully qualified type of partition resolver]"
                 useHostingIdentity="[true|false]"
                 sessionIDManagerType="[fully qualified type of session ID Manager]"
-                cookieSameSite="[None|Lax|Strict|-1]" - Set SameSite cookie header to the given value, or omit the header for the session cookie entirely.
+                cookieSameSite="[None|Lax|Strict]"
 
               Child nodes:
                 <providers>              Custom store providers (class must inherit SessionStateStoreProviderBase)
@@ -60,7 +60,6 @@ namespace System.Web.Configuration {
             compressionEnabled="false"
             regenerateExpiredSessionId="false"
             timeout="20"
-            cookieSameSite="Lax"
         >
             <providers>
             </providers>
@@ -206,7 +205,7 @@ namespace System.Web.Configuration {
         private static readonly ConfigurationProperty _propCookieSameSite =
             new ConfigurationProperty("cookieSameSite", 
                                         typeof(SameSiteMode), 
-                                        SameSiteMode.Lax, 
+                                        SameSiteMode.None, 
                                         ConfigurationPropertyOptions.None); 
 
         private HttpCookieMode cookielessCache = SessionIDManager.COOKIEMODE_DEFAULT;

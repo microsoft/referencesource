@@ -18,6 +18,7 @@ namespace System.Diagnostics {
     using Microsoft.Win32.SafeHandles;
     using System.IO;
     using System.Collections;
+    using System.Collections.Generic;
     using System.Collections.Specialized;
     using System.Globalization;
     using System.ComponentModel.Design;
@@ -64,6 +65,8 @@ namespace System.Diagnostics {
                 return s_SkipRegPatch;
             }
         }
+
+        private static readonly bool s_dontFilterRegKeys = !IsWindowsRS5OrUp() || LocalAppContextSwitches.DisableEventLogRegistryKeysFiltering;
 
         internal static PermissionSet _UnsafeGetAssertPermSet() {
             // SEC_NOTE: All callers should already be guarded by EventLogPermission demand.
@@ -1002,13 +1005,45 @@ namespace System.Diagnostics {
             }
 
             // now create EventLog objects that point to those logs
-            EventLog[] logs = new EventLog[logNames.Length];
-            for (int i = 0; i < logNames.Length; i++) {
-                EventLog log = new EventLog(logNames[i], machineName);
-                logs[i] = log;
-            }
+            if (s_dontFilterRegKeys || machineName != "."){
+                EventLog[] logs = new EventLog[logNames.Length];
+                for (int i = 0; i < logNames.Length; i++) {
+                    EventLog log = new EventLog(logNames[i], machineName);
+                    logs[i] = log;
+                }
 
-            return logs;
+                return logs;
+            }
+            else
+            {
+                List<EventLog> logs = new List<EventLog>(logNames.Length);
+                for (int i = 0; i < logNames.Length; i++) {
+                    EventLog log = new EventLog(logNames[i], machineName);
+                    SafeEventLogReadHandle handle = SafeEventLogReadHandle.OpenEventLog(machineName, logNames[i]);
+
+                    if (!handle.IsInvalid) {
+                        handle.Close();
+                        logs.Add(log);
+                    }
+                    else if (Marshal.GetLastWin32Error() != 87) { // Windows returns ERROR_INVALID_PARAMETER for special keys which were added in RS5+ but do not represent actual event logs.
+                        logs.Add(log);
+                    }
+                }
+
+                return logs.ToArray();
+            }
+        }
+
+        private static bool IsWindowsRS5OrUp()
+        {
+            // Asserting permissions required to run unmananged code.
+            new System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityPermissionFlag.UnmanagedCode).Assert();
+            // VER_PLATFORM_WIN32_NT = 2
+            NativeMethods.RTL_OSVERSIONINFOEX osv = new NativeMethods.RTL_OSVERSIONINFOEX();
+            osv.dwOSVersionInfoSize = (uint)Marshal.SizeOf(osv);
+            int ret = NativeMethods.RtlGetVersion(out osv);
+            return ret == 0 && osv.dwPlatformId == 2 &&
+                    (osv.dwMajorVersion > 10 || (osv.dwMajorVersion == 10 && (osv.dwMinorVersion > 0 || (osv.dwMinorVersion == 0 && osv.dwBuildNumber >= 17763))));
         }
 
         [ResourceExposure(ResourceScope.Machine)]

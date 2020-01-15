@@ -3036,6 +3036,16 @@ namespace System
 
             return candidates;
         }
+
+        private class ConstructorInfoComparer : IComparer<ConstructorInfo>
+        {
+            internal static readonly ConstructorInfoComparer SortByMetadataToken = new ConstructorInfoComparer();
+
+            public Int32 Compare(ConstructorInfo x, ConstructorInfo y)
+            {
+                return x.MetadataToken.CompareTo(y.MetadataToken);
+            }
+        }  // private class ConstructorInfoComparer
         #endregion
 
         #region Get All XXXInfos
@@ -3047,7 +3057,24 @@ namespace System
 [System.Runtime.InteropServices.ComVisible(true)]
         public override ConstructorInfo[] GetConstructors(BindingFlags bindingAttr)
         {
-            return GetConstructorCandidates(null, bindingAttr, CallingConventions.Any, null, false).ToArray();
+            ConstructorInfo[] constructors = GetConstructorCandidates(null, bindingAttr, CallingConventions.Any, null, false).ToArray();
+
+            if (!AppContextSwitches.DoNotForceOrderOfConstructors)
+            {
+                // do not consider array types as their MetadataTokens are all the same
+                // and Array.Sort is not a stable sort.  Skip types that are not part of
+                // ngen'd assemblies to minimize the risk
+                if (!IsArrayImpl() && IsZappedImpl())
+                {
+                    // By default sort the returned constructors based on MetadataToken
+                    // which aligns the sort order with MSIL.  Assemblies that are ngen'd 
+                    // can change the order of the constructors, assemblies that are ngen'd 
+                    // with IBC data have a higher chance of changing the order of constructors.
+                    Array.Sort(constructors, ConstructorInfoComparer.SortByMetadataToken);
+                }
+            }
+
+            return constructors;
         }
 
         public override PropertyInfo[] GetProperties(BindingFlags bindingAttr)
@@ -3887,6 +3914,12 @@ namespace System
         protected override bool IsCOMObjectImpl() 
         {
             return RuntimeTypeHandle.IsComObject(this, false);
+        }
+
+        [System.Security.SecuritySafeCritical]  // auto-generated
+        private bool IsZappedImpl() 
+        {
+            return RuntimeTypeHandle.IsZapped(this);
         }
 
 #if FEATURE_COMINTEROP
