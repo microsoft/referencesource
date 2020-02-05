@@ -1389,7 +1389,12 @@ namespace System.ServiceModel.Channels
                 {
                     DiagnosticUtility.TraceHandledException(exception, TraceEventType.Error);
 
-                    throw;
+                    if (Fx.IsFatal(exception) || ServiceModelAppSettings.FailOnSocketDuplicationError)
+                    {
+                        throw;
+                    }
+                    
+                    return new DuplicateConnectionAsyncResult(callback, state);
                 }
             }
 

@@ -148,6 +148,9 @@ namespace System.Web.Util {
                             if (settings == null || !Boolean.TryParse(settings["aspnet:UseLegacyMultiValueHeaderHandling"], out _useLegacyMultiValueHeaderHandling))
                                 _useLegacyMultiValueHeaderHandling = !BinaryCompatibility.Current.TargetsAtLeastFramework48; // Opt in for 4.7.2 and earlier. Opt out for 4.8.
 
+                            if (settings == null || !Boolean.TryParse(settings["aspnet:SuppressSameSiteNone"], out _suppressSameSiteNone))
+                                _suppressSameSiteNone = false; // Use the new stricter behavior by default, as the old behavior is likely to cause problems with newer browsers.
+
                             _settingsInitialized = true;
                         }
                     }
@@ -574,6 +577,18 @@ namespace System.Web.Util {
             {
                 EnsureSettingsLoaded();
                 return _useLegacyMultiValueHeaderHandling;
+            }
+        }
+
+        // false [default] - Emit SameSite cookie header for all valid valudes, even if value is 'None'.
+        // true - Don't emit the SameSite cookie header if the value is 'None'.
+        private static bool _suppressSameSiteNone;
+        internal static bool SuppressSameSiteNone
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+                return _suppressSameSiteNone;
             }
         }
     }

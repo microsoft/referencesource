@@ -3059,7 +3059,10 @@ namespace System
         {
             ConstructorInfo[] constructors = GetConstructorCandidates(null, bindingAttr, CallingConventions.Any, null, false).ToArray();
 
-            if (!AppContextSwitches.DoNotForceOrderOfConstructors)
+            // Do not use the AppContextSwitch infrastructure as this method is called very early in 
+            // app domain creation.  Calling AppContextSwitch may lock the app domain into an undefined
+            // TargetFramework (eg. 4.0).
+            if (!IsDoNotForceOrderOfConstructorsSetImpl())
             {
                 // do not consider array types as their MetadataTokens are all the same
                 // and Array.Sort is not a stable sort.  Skip types that are not part of
@@ -3070,7 +3073,11 @@ namespace System
                     // which aligns the sort order with MSIL.  Assemblies that are ngen'd 
                     // can change the order of the constructors, assemblies that are ngen'd 
                     // with IBC data have a higher chance of changing the order of constructors.
-                    Array.Sort(constructors, ConstructorInfoComparer.SortByMetadataToken);
+
+                    // Avoid using public Array.Sort as that attempts to access BinaryCompatibility. Unfortunately GetConstructors gets called 
+                    // very early in the app domain creation, when _FusionStore is not set up yet, resulting in a null TargetFrameworkMoniker being
+                    // set. This then locks in the TargetFrameworkMoniker for the entire process as null.
+                    ArraySortHelper<ConstructorInfo>.IntrospectiveSort(constructors, 0, constructors.Length, ConstructorInfoComparer.SortByMetadataToken);
                 }
             }
 
@@ -3920,6 +3927,12 @@ namespace System
         private bool IsZappedImpl() 
         {
             return RuntimeTypeHandle.IsZapped(this);
+        }
+
+        [System.Security.SecuritySafeCritical]  // auto-generated
+        private bool IsDoNotForceOrderOfConstructorsSetImpl() 
+        {
+            return RuntimeTypeHandle.IsDoNotForceOrderOfConstructorsSet();
         }
 
 #if FEATURE_COMINTEROP

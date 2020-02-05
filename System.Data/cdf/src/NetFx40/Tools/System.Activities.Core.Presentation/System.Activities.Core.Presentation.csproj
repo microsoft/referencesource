@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{cdd41315-ba9c-419a-baba-8e688b72ad20}</ProjectGuid>
+    <ProjectGuid>{32525f52-908b-4a82-860f-03acf66430c0}</ProjectGuid>
     <OutputPath>.</OutputPath>
     <OutputType>Library</OutputType>
     <AssemblyName>System.Activities.Core.Presentation</AssemblyName>
@@ -20,91 +20,91 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
-      <Project>{682f58eb-f55f-4e6c-8b54-583c42670b0b}</Project>
+      <Project>{43e44db7-dc97-46cb-b868-751d11c60bf1}</Project>
       <Name>mscorlib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\wpf\src\PresentationCore.csproj">
-      <Project>{cea2cf1b-fa1a-4a7b-a36d-a7e599ee035a}</Project>
+      <Project>{92f258f1-0762-43b2-bf79-7b514a247732}</Project>
       <Name>PresentationCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\wpf\PresentationFramework.csproj">
-      <Project>{b0df0f91-7c20-4e24-bf4a-a6a455ea093e}</Project>
+      <Project>{9870be24-923d-4575-a015-03e1285b8f8a}</Project>
       <Name>PresentationFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\System.csproj">
-      <Project>{a4b570f5-65be-40ba-a954-a60573480632}</Project>
+      <Project>{d218394f-a89e-455a-8c59-5e3554100e4a}</Project>
       <Name>System</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\System.Activities\System.Activities.csproj">
-      <Project>{c1cdcbfa-f282-4424-ae3e-31fc8fee6e54}</Project>
+      <Project>{dabaf3db-e90a-4053-839b-93b45d30ae63}</Project>
       <Name>System.Activities</Name>
     </ProjectReference>
     <ProjectReference Include="..\System.Activities.Presentation.csproj">
-      <Project>{d2d46f36-15f8-4864-9bea-603719038ea7}</Project>
+      <Project>{1f974bcb-fbcd-4f45-8467-478803dc438c}</Project>
       <Name>System.Activities.Presentation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\Configuration\System.Configuration.csproj">
-      <Project>{e6377672-3cff-4bd3-926f-46889b87d384}</Project>
+      <Project>{24728477-162e-4c13-9c17-6be2dc1fd2bc}</Project>
       <Name>System.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\Core\System.Core.csproj">
-      <Project>{2b0b1dea-d94d-4017-bd04-2678d8ea836b}</Project>
+      <Project>{e7e62ebb-b829-4b6e-9ec0-4ca0c96fe4ac}</Project>
       <Name>System.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\System.Data.csproj">
-      <Project>{97321b6d-82a7-432f-b063-33f756e4bc31}</Project>
+      <Project>{50bf0abe-a7fe-40e6-8e95-ce5080b432af}</Project>
       <Name>System.Data</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\DataSet\System.Data.DataSetExtensions.csproj">
-      <Project>{b4c9a1a4-4f89-42c2-a3c2-19d584367246}</Project>
+      <Project>{8d49e6d7-25f7-4343-9a10-890365324fc7}</Project>
       <Name>System.Data.DataSetExtensions</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\System.Drawing.csproj">
-      <Project>{9f8eb4d7-73a1-45c5-8c82-a4483d473936}</Project>
+      <Project>{2ccdab8f-9a51-4660-abb5-b42b005b5024}</Project>
       <Name>System.Drawing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\WCF\IdentityModel\System.IdentityModel.csproj">
-      <Project>{38e2f25d-394b-43d6-97d2-258e93dfcf1b}</Project>
+      <Project>{c384bf9a-a288-4785-97fd-645fc26eddc1}</Project>
       <Name>System.IdentityModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\System.Runtime.DurableInstancing\System.Runtime.DurableInstancing.csproj">
-      <Project>{4224ec98-073e-4b51-9a89-a3e7e393a357}</Project>
+      <Project>{6b333684-f5d0-4b66-af4b-35ec86884217}</Project>
       <Name>System.Runtime.DurableInstancing</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\WCF\Serialization\System.Runtime.Serialization.csproj">
-      <Project>{12f1cd41-01a0-4728-bdf8-d53d64c183ee}</Project>
+      <Project>{2d14aaa5-e16c-4c36-92ee-4514f43396ee}</Project>
       <Name>System.Runtime.Serialization</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\WCF\ServiceModel\System.ServiceModel.csproj">
-      <Project>{d8661f10-1dca-4a54-9562-3eccbbcf896f}</Project>
+      <Project>{5e7bc3a1-c532-415c-8395-1b6233a98d90}</Project>
       <Name>System.ServiceModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\WCF\System.ServiceModel.Activation\System.ServiceModel.Activation.csproj">
-      <Project>{1ca6a5ad-1440-417c-9e54-6743d3c992f1}</Project>
+      <Project>{add0073a-2d51-4fe3-b120-3f1d800b0a6e}</Project>
       <Name>System.ServiceModel.Activation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\System.ServiceModel.Activities\System.ServiceModel.Activities.csproj">
-      <Project>{c5fa7a94-5e19-42e9-bdb5-e0547cb254ed}</Project>
+      <Project>{af0002a6-cd63-4610-84bb-4b37a357377e}</Project>
       <Name>System.ServiceModel.Activities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\System.ServiceModel.Internals\System.ServiceModel.Internals.csproj">
-      <Project>{984e2b3d-f4f9-4933-9455-9143eed457e0}</Project>
+      <Project>{c1031d3a-479a-4360-8bf2-e294bfa8debb}</Project>
       <Name>System.ServiceModel.Internals</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\System.Windows.Forms.csproj">
-      <Project>{450e1ae1-f8e9-4e56-a5a1-03c70fc32861}</Project>
+      <Project>{e3f4bb6b-ba05-46a9-b3a0-db4fd00a92f1}</Project>
       <Name>System.Windows.Forms</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\Xml\System.Xml.csproj">
-      <Project>{d5f2ee2f-7fa5-40c5-a616-29be467bd299}</Project>
+      <Project>{23c706b3-6f70-42a4-9476-ee1b30c0cca3}</Project>
       <Name>System.Xml</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\fx\src\XLinq\System.Xml.Linq.csproj">
-      <Project>{48f9f957-8fc3-4e80-8d8f-e8ffbf67894c}</Project>
+      <Project>{ba1d1490-39d6-4136-8f22-30531fbdb8c9}</Project>
       <Name>System.Xml.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\..\..\wpf\src\WindowsBase.csproj">
-      <Project>{684a7456-f271-43b7-ba49-4506f063e554}</Project>
+      <Project>{ef97030a-f8cc-442c-8ba0-bd9861d1ac98}</Project>
       <Name>WindowsBase</Name>
     </ProjectReference>
   </ItemGroup>

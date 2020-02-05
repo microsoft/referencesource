@@ -193,16 +193,6 @@ namespace System
             }
         }
 
-        private static int _doNotForceOrderOfConstructors;
-        public static bool DoNotForceOrderOfConstructors
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
-            {
-                return GetCachedSwitchValue(AppContextDefaultValues.SwitchDoNotForceOrderOfConstructors, ref _doNotForceOrderOfConstructors);
-            }
-        }
-
         //
         // Implementation details
         //

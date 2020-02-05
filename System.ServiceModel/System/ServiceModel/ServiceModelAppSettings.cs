@@ -19,6 +19,7 @@ namespace System.ServiceModel
         internal const string DisableOperationContextAsyncFlowString = "wcf:disableOperationContextAsyncFlow";
         internal const string UseLegacyCertificateUsagePolicyString = "wcf:useLegacyCertificateUsagePolicy";
         internal const string DeferSslStreamServerCertificateCleanupString = "wcf:deferSslStreamServerCertificateCleanup";
+        internal const string FailOnSocketDuplicationErrorString = "wcf:failOnSocketDuplicationError";
 
         const bool DefaultHttpTransportPerFactoryConnectionPool = false;
         const bool DefaultEnsureUniquePerformanceCounterInstanceNames = false;
@@ -27,6 +28,7 @@ namespace System.ServiceModel
         const bool DefaultUseLegacyCertificateUsagePolicy = false;
         const bool DefaultDisableOperationContextAsyncFlow = true;
         const bool DefaultDeferSslStreamServerCertificateCleanup = false;
+        const bool DefaultFailOnSocketDuplicationError = false;
 
         static bool useLegacyCertificateUsagePolicy;
         static bool httpTransportPerFactoryConnectionPool;
@@ -35,6 +37,7 @@ namespace System.ServiceModel
         static bool useBestMatchNamedPipeUri;
         static bool disableOperationContextAsyncFlow;
         static bool deferSslStreamServerCertificateCleanup;
+        static bool failOnSocketDuplicationError;
         static volatile bool settingsInitalized = false;
         static object appSettingsLock = new object();
 
@@ -107,6 +110,16 @@ namespace System.ServiceModel
             }
         }
 
+        internal static bool FailOnSocketDuplicationError
+        {
+            get
+            {
+                EnsureSettingsLoaded();
+
+                return failOnSocketDuplicationError;
+            }
+        }
+
         [SuppressMessage(FxCop.Category.ReliabilityBasic, "Reliability104:CaughtAndHandledExceptionsRule",
             Justification = "Handle the configuration exceptions here to avoid regressions on customer's existing scenarios")]
         static void EnsureSettingsLoaded()
@@ -160,6 +173,11 @@ namespace System.ServiceModel
                             if ((appSettingsSection == null) || !bool.TryParse(appSettingsSection[DeferSslStreamServerCertificateCleanupString], out deferSslStreamServerCertificateCleanup))
                             {
                                 deferSslStreamServerCertificateCleanup = DefaultDeferSslStreamServerCertificateCleanup;
+                            }
+
+                            if ((appSettingsSection == null) || !bool.TryParse(appSettingsSection[FailOnSocketDuplicationErrorString], out failOnSocketDuplicationError))
+                            {
+                                failOnSocketDuplicationError = DefaultFailOnSocketDuplicationError;
                             }
 
                             settingsInitalized = true;

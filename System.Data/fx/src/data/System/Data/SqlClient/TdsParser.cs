@@ -3131,7 +3131,7 @@ namespace System.Data.SqlClient {
             // Skip reading token length, since it has already been read in caller
 
             if (Bid.AdvancedOn) {
-                Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> FEDAUTHINFO token stream length = {0}\n", tokenLen);
+                Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> FEDAUTHINFO token stream length = %d\n", tokenLen);
             }
 
             if (tokenLen < sizeof(uint)) {
@@ -3149,7 +3149,7 @@ namespace System.Data.SqlClient {
             tokenLen -= sizeof(uint); // remaining length is shortened since we read optCount
 
             if (Bid.AdvancedOn) {
-                Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> CountOfInfoIDs = {0}\n", optionsCount.ToString(CultureInfo.InvariantCulture));
+                Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> CountOfInfoIDs = %ls\n", optionsCount.ToString(CultureInfo.InvariantCulture));
             }
 
             if (tokenLen > 0) {
@@ -3159,11 +3159,11 @@ namespace System.Data.SqlClient {
                 bool successfulRead = stateObj.TryReadByteArray(tokenData, 0, tokenLen, out totalRead);
 
                 if (Bid.AdvancedOn) {
-                    Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> Read rest of FEDAUTHINFO token stream: {0}\n", BitConverter.ToString(tokenData, 0, totalRead));
+                    Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> Read rest of FEDAUTHINFO token stream: %ls\n", BitConverter.ToString(tokenData, 0, totalRead));
                 }
 
                 if (!successfulRead || totalRead != tokenLen) {
-                    Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo|ERR> Failed to read FEDAUTHINFO token stream. Attempted to read {0} bytes, actually read {1}\n", tokenLen, totalRead);
+                    Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo|ERR> Failed to read FEDAUTHINFO token stream. Attempted to read %d bytes, actually read %d\n", tokenLen, totalRead);
                     throw SQL.ParsingError(ParsingErrorState.FedAuthInfoFailedToReadTokenStream);
                 }
 
@@ -3185,7 +3185,7 @@ namespace System.Data.SqlClient {
                     uint dataOffset = BitConverter.ToUInt32(tokenData, checked((int)(currentOptionOffset + 5)));
 
                     if (Bid.AdvancedOn) {
-                        Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> FedAuthInfoOpt: ID={0}, DataLen={1}, Offset={2}\n", id, dataLen.ToString(CultureInfo.InvariantCulture), dataOffset.ToString(CultureInfo.InvariantCulture));
+                        Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> FedAuthInfoOpt: ID=%d, DataLen=%ls, Offset=%ls\n", id, dataLen.ToString(CultureInfo.InvariantCulture), dataOffset.ToString(CultureInfo.InvariantCulture));
                     }
 
                     // offset is measured from optCount, so subtract to make offset measured
@@ -3215,7 +3215,7 @@ namespace System.Data.SqlClient {
                     }
 
                     if (Bid.AdvancedOn) {
-                        Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> FedAuthInfoData: {0}\n", data);
+                        Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> FedAuthInfoData: %ls\n", data);
                     }
 
                     // store data in tempFedAuthInfo
@@ -3228,7 +3228,7 @@ namespace System.Data.SqlClient {
                             break;
                         default:
                             if (Bid.AdvancedOn) {
-                                Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> Ignoring unknown federated authentication info option: {0}\n", id);
+                                Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> Ignoring unknown federated authentication info option: %d\n", id);
                             }
                             break;
                     }
@@ -3239,7 +3239,7 @@ namespace System.Data.SqlClient {
                 throw SQL.ParsingErrorLength(ParsingErrorState.FedAuthInfoLengthTooShortForData, tokenLen);
             }
 
-            Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> Processed FEDAUTHINFO token stream: {0}\n", tempFedAuthInfo.ToString());
+            Bid.Trace("<sc.TdsParser.TryProcessFedAuthInfo> Processed FEDAUTHINFO token stream: %ls\n", tempFedAuthInfo.ToString());
 
             if (String.IsNullOrWhiteSpace(tempFedAuthInfo.stsurl) || String.IsNullOrWhiteSpace(tempFedAuthInfo.spn)) {
                 // We should be receiving both stsurl and spn
