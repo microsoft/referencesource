@@ -1,0 +1,11 @@
+//!-----------------------------------------------------------------------
+//! Copyright (C) Microsoft Corporation. All rights reserved.
+//!-----------------------------------------------------------------------
+
+// **********************************************
+// ** Date.UmAlQuraCalendar.js
+// **********************************************
+
+Type._registerScript("Date.UmAlQuraCalendar.js", ["MicrosoftAjaxGlobalization.js"]);
+
+#include "Date.UmAlQuraCalendar.js"
