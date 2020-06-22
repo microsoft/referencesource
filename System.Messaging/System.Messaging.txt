@@ -1,0 +1,303 @@
+
+; Resources for System.Messaging component
+; Copyright (c) 2000 Microsoft Corporation
+
+; Exceptions messages
+
+MSMQNotInstalled=Message Queuing has not been installed on this computer.
+MSMQInfoNotSupported=Browsing private queues is not supported by the Microsoft Message Queuing (MSMQ) runtime installed on this computer.
+MissingProperty=Property {0} was not retrieved when receiving the message. Ensure that the PropertyFilter is set correctly.
+NotAcknowledgement=Cannot retrieve property because the message is not an acknowledgment message.
+InvalidId=Identifier is not in the incorrect format.
+ArrivedTimeNotSet=Arrived time is undefined for this message. This message was not created by a call to the Receive method.
+AuthenticationNotSet=Cannot determine authentication for this message. This message was not created by a call to the Receive method.
+DestinationQueueNotSet=Destination queue is not defined for this message. The message was not created by a call to the Receive method.
+IdNotSet=Unique identifier for this message is not defined. The message was not created by a call to the Receive method.
+LookupIdNotSet=Lookup identifier is not defined for this message. The message was not created by a call to the Receive method, or lookup identifier was not added to the properties to retrieve.
+MessageTypeNotSet=Type is not defined for this message. The message was not created by a call to the Receive method.
+SenderIdNotAttached=Sender identifier has not been attached to the message.
+SenderIdNotSet=Sender identifier is not defined for this message. The message was not created by a call to the Receive method.
+SentTimeNotSet=Sent time is not defined for this message. The message was not created by a call to the Receive method.
+SourceMachineNotSet=Source computer is not defined for this message. The message was not created by a call to the Receive method.
+VersionNotSet=Message Queuing version is not defined for this message. The message was not created by a call to the Receive method.
+PathNotSet=Operation failed because the path was not set.
+CriteriaNotDefined=Criteria property has not been defined.
+TypeNotSupported=Serializer does not support the type.
+InvalidQueuePathToCreate=Cannot create a queue with the path {0}.
+PathSyntax=Path syntax is invalid.
+InvalidLabel=Cannot find queue with label {0}.
+AmbiguousLabel=Label "{0}" references more than one queue. Set the path for the desired queue.
+LongQueueName=Queue name is too long. Size of queue name cannot exceed 255 characters.
+TransactionStarted=Cannot start a transaction while a pending transaction exists.
+TransactionNotStarted=Cannot commit or roll back transaction because BeginTransaction has not been called.
+CoertionType=Cannot specify coercion type for serialized objects using this formatter.
+InvalidMaxJournalSize=Maximum Journal size has to be greater than or equal to 0.
+InvalidMaxQueueSize=Maximum Journal size has to be greater than or equal to 0.
+InvalidTypeDeserialization=Cannot deserialize the message passed as an argument. Cannot recognize the serialization format.
+InvalidTypeSerialization=Cannot serialize the object because its type is not supported.
+TypeListMissing=Target type array is missing. The target type array must be set in order to deserialize the XML-formatted message.
+FormatterMissing=Cannot find a formatter capable of reading this message.
+QueueExistsError=Cannot determine whether a queue with the specified format name exists.
+AsyncResultInvalid=IAsyncResult interface passed is not valid because it was not created as a result of an asynchronous request on this object.
+NotAMessageQueue=MessageQueueInstaller cannot install the component. MessageQueue installer can only install MessageQueue components.
+NoCurrentMessageQueue=Cursor is not currently pointing to a MessageQueue instance. It is located either before the first or after the last queue in the enumeration.
+NoCurrentMessage=Cursor is not currently pointing to a Message instance. It is located either before the first or after the last message in the enumeration.
+TooManyColumns=Column Count limit exceeded ({0}).
+PropertyAddFailed=Property has not been added.
+PropertyOverflow=Property overflow.
+MessageNotFound=Message requested was not found in the queue specified.
+DefaultSizeError=Size is invalid. It must be greater than or equal to zero.
+IncompleteMQ=Path property must be set to create an installer for this MessageQueue.
+PermissionPathOrCriteria=Path, FormatName, MachineName, Label, or Category cannot be set simultaneously as a single permission entry criteria.
+PermissionAllNull=At least one of the following properties (Path, FormatName, MachineName, Label, or Category) must be set as permission entry criteria.
+InvalidProperty=Invalid value {1} for property {0}.
+InvalidParameter=Invalid value {1} for parameter {0}.
+InvalidXmlFormat=XML format is invalid.
+UnknownError=Error 0x{0} is unknown.
+CouldntResolve=Could not resolve name {0} (error = {1} ).
+CouldntResolveName=Could not resolve name {0}.
+IncorrectNumberOfBytes=Wrote an incorrect number of bytes.
+NotImplemented=Feature is not implemented.
+InvalidDateValue=Date is invalid. It must be between {0} and {1}.
+StoredObjectsNotSupported=Stored object format is not supported by ActiveXMessageFormatter.
+PathNameDns=DNS path name for the queue specified is not available.
+InvalidTrusteeName=Entry in the access control list contains a trustee with an invalid name.
+InvalidTrustee=Trustee property of an entry in the access control list is null.
+WinNTRequired=Feature requires Windows NT.
+PlatformNotSupported=Requested operation is not supported on this platform.
+
+; Log entries
+
+ClearingQueue=Clearing any messages from queue {0}.
+CreatingQueue=Creating queue {0}.
+RestoringQueue=Restoring message queue {0} to previous state.
+RemovingQueue=Removing message queue {0}.
+DeletingQueue=Deleting queue {0}.
+
+; DescriptionAttribute
+
+MsgTopObjectFormat=Determines how the top (root) object of a graph is laid out in the serialized stream.
+MsgTypeFormat=Determines how type descriptions are laid out in the serialized stream.
+MsgAcknowledgeType=Specifies the type of acknowledgment messages the system posts (in the administration queue) and when acknowledgments are returned.
+MsgAdministrationQueue=Specifies the administration queue used for system-generated acknowledgment.
+MsgAppSpecific=Specifies application-generated information such as single integer values or application-defined message classes.
+MsgAttachSenderId=Indicates if the SenderId is to be or has been attached to the message.
+MsgExtension=Provides a place to put additional application-defined information that is associated with the message.
+MsgHashAlgorithm=Identifies the hashing algorithm MSMQ uses when authenticating messages.
+MsgLabel=Specifies the label of the message.
+MsgPriority=Message priority affects how MSMQ handles the message while it is in route, as well as where the message is placed in the queue.
+MsgRecoverable=The message will be delivered, even if a computer crashes while the message is en-route to the queue.
+MsgResponseQueue=Specifies the queue to which application-generated response messages are returned.
+MsgTimeToBeReceived=Specifies the total time (in seconds) the message is allowed to live. Use "Infinity" to set the maximum value.
+MsgTimeToReachQueue=Specifies a time limit (in seconds) for the message to reach the queue. Use "Infinity" to set the maximum value.
+MsgTransactionStatusQueue=Identifies the transaction status queue on the source computer.
+MsgUseAuthentication=Specifies if the message needs to be authenticated.
+MsgUseDeadLetterQueue=Specifies if a copy of the message should be sent to a dead-letter queue.
+MsgUseEncryption=Set this property to have MSMQ encrypt a private message.
+MsgUseJournalQueue=Specifies if a copy of the message should be kept in a machine journal (on the originating machine).
+MsgUseTracing=Specifies if report messages are sent when tracing a message.
+MsgAcknowledgement=Gets the classification of acknowledgment that this message represents.
+MsgArrivedTime=Indicates when the message arrived at the queue.
+MsgAuthenticated=Used by the receiving application when trying to determine if authentication was requested. If authentication was requested and the message is in the queue, then the message was authenticated.
+MsgAuthenticationProviderName=Specifies the name of the cryptographic provider used to generate the digital signature of the message.
+MsgAuthenticationProviderType=Specifies the type of cryptographic provider used to generate the digital signature of the message.
+MsgBodyStream=Represents the information included in the body of the message.
+MsgBodyType=Indicates the type of body the message contains
+MsgConnectorType=Whenever a message is passed by a connector application, the connector type is required so that the sending and receiving applications know how to interpret the security and acknowledgment properties of the messages. When sending application-encrypted messages, this property tells the MSMQ runtime to use the symmetric key.
+MsgCorrelationId=Provides an application-defined identifier that the receiving application can use to sort messages.
+MsgDestinationQueue=Identifies the original destination queue of a message.
+MsgDestinationSymmetricKey=Specifies the symmetric key used to encrypt messages. Is required when you send application-encrypted messages.
+MsgDigitalSignature=Specifies the digital signature used to authenticate the message.
+MsgEncryptionAlgorithm=Specifies the encryption algorithm used to encrypt the message body of a private message.
+MsgId=Indicates the MSMQ-generated identifier of the message.
+MsgLookupId=Indicates the MSMQ-generated lookup identifier of the message.
+MsgIsFirstInTransaction=It is used by receiving applications to verify that a message was the first message sent in a single transaction to a single queue.
+MsgIsLastInTransaction=It is used by receiving applications to verify that a message was the last message sent from a single transaction to a single queue.
+MsgMessageType=A message can be a normal MSMQ message, a positive or negative (arrival and read) acknowledgment message, or a report message.
+MsgSenderCertificate=Specifies the security certificate used to authenticate messages.
+MsgSenderId=This property is set by MSMQ, and is used primarily by the receiving Queue Manager when authenticating a message.
+MsgSenderVersion=Specifies the version of MSMQ used to send the message.
+MsgSentTime=Indicates the date and time that the message was sent by the source Queue Manager.
+MsgSourceMachine=Specifies the computer where the message originated.
+MsgTransactionId=It is used by receiving applications to verify that a message was sent from a specific transaction.
+MsgBody=Represents the information included in the body of the message.
+MsgDefaultBodySize=The default body buffer size to create, when the message is received.
+MsgDefaultExtensionSize=The default extension buffer size to create, when the message is received.
+MsgDefaultLabelSize=The default label buffer size to create, when the message is received.
+
+MessageQueueDesc=Provides access to a queue on a Message Queue server.
+MQ_Authenticate=Specifies whether or not the queue only accepts authenticated messages.
+MQ_BasePriority=Used for routing the queue's messages over the network.
+MQ_CanRead=Indicates if the queue has read permission.
+MQ_CanWrite=Indicates if the queue has write permission.
+MQ_Category=Allows applications to categorize their queues according to how they are used.
+MQ_CreateTime=Indicates the time and date when the queue was created.
+MQ_DefaultPropertiesToSend=Specifies the properties that are going to be used by default when sending messages to the queue referenced by this object.
+MQ_DenySharedReceive=If true, no other instance of this object will be able to receive messages.
+MQ_EncryptionRequired=Specifies whether or not the queue only accepts non-private (clear) messages.
+MQ_FormatName=Specifies a unique name for the queue generated by MSMQ when it is created.
+MQ_Formatter=This is the formatter that will be used when an object is written to or read from the body.
+MQ_GuidId=Identifies a specific public queue.
+MQ_Label=Specifies a description of the queue.
+MQ_LastModifyTime=Indicates the last time the properties of a queue were modified.
+MQ_MachineName=Specifies the machine where the queue referenced by this object is located.
+MQ_MaximumJournalSize=Specifies the maximum size (in kilobytes) of the journal queue. Use "Infinity" to set the maximum value.
+MQ_MaximumQueueSize=Specifies the maximum size (in kilobytes) of the queue. Use "Infinity" to set the maximum value.
+MQ_MessageReadPropertyFilter=Specifies the property filter used by this queue to receive messages.
+MQ_MulticastAddress=Specifies the IP multicast address associated with the queue.
+MQ_Path=Specifies the location of the queue that will be referenced by this object.
+MQ_QueueName=Specifies the friendly name that identifies the queue referenced by this object.
+MQ_ReadHandle=The native handle used to receive messages from the message queue.
+MQ_SynchronizingObject=The object used to marshal the event handler calls issued as a result of a BeginReceive or BeginPeek request.
+MQ_Transactional=If a queue is transactional, it can only accept messages that are sent as part of a transaction.
+MQ_UseJournalQueue=Specifies if messages retrieved from the queue are also copied to its journal queue.
+MQ_WriteHandle=The native handle used to send messages to the message queue.
+MQ_PeekCompleted=This event occurs when a message is read without being removed from the queue using the BeginPeek method.
+MQ_ReceiveCompleted=This event occurs when a message is removed from the queue using the BeginReceive method.
+
+XmlMsgTargetTypeNames=Specifies the set of possible types that will be deserialized by the formatter from the message provided.
+XmlMsgTargetTypes=Specifies the set of possible types that will be deserialized by the formatter from the message provided.
+
+;Strings for QueueValueEditor
+
+NotSet=[Not Set]
+RefByFormatName=Format Name
+RefByPath=Path
+RefByLabel=Label
+ReferenceLabel=&Reference Queue By:
+QueueOk=OK
+QueueHelp=&Help
+SelectLabel=&Select message queue:
+MessageQueueBrowser=Message Queue Browser
+QueueNetworkProblems=Cannot access MessageQueue network. Please make sure that the message queuing service is available in your system.
+ActiveXFormatter=ActiveX Formatter
+XmlFormatter=Xml Formatter
+InfiniteValue=Infinity
+toStringNone=(none)
+PleaseWait=Please wait while locating machines.
+CancelCaption=Cancel
+
+
+; Server Runtime Strings
+
+C00E0002=One or more of the passed properties are invalid.
+C00E0003=The queue does not exist or you do not have sufficient permissions to perform the operation.
+C00E0005=A queue with the same path name already exists.
+C00E0006=Invalid parameter was passed to a function.
+C00E0007=An invalid handle was passed to the function.
+C00E0008=Operation was cancelled before it could be completed.
+C00E0009=Sharing violation resulted from queue being open already for exclusive receive.
+C00E000B=Message Queue service is not available.
+C00E000D=Cannot find specified machine.
+
+
+C00E0010=Sort specified in MQLocateBegin is invalid. There may be duplicate columns.
+C00E0011=User is invalid.
+C00E0013=A connection with Active Directory cannot be established. Verify that there are sufficient permissions to perform this operation.
+C00E0014=Invalid queue path name.
+C00E0018=Invalid property value.
+C00E0019=Invalid VARTYPE value.
+C00E001A=Buffer supplied to MQReceiveMessage for reading the message body was too small. The message cannot be removed from the queue, and the message body was truncated to fit the buffer when it was copied to the buffer.
+C00E001B=Timeout for the requested operation has expired.
+C00E001C=MQ_ACTION_PEEK_NEXT specified to MQReceiveMessage cannot be used with the current cursor position.
+C00E001D=Message that the cursor is currently pointing to has been removed from the queue by another process or by another call to Receive without the use of this cursor.
+C00E001E=Format name is invalid.
+C00E001F=Format name buffer supplied to the API was too small to fit the format name.
+
+
+C00E0020=The specified format name does not support the requested operation. For example, a direct queue format name cannot be deleted.
+C00E0021=Security descriptor is not valid.
+C00E0022=The buffer supplied for the user identifier property is too small.
+C00E0023=The buffer passed to MQGetQueueSecurity is too small.
+C00E0024=Security credentials cannot be verified because the Remote Procedure Call (RPC) server cannot reproduce the client application.
+C00E0025=Access to Message Queuing system is denied.
+C00E0026=Client does not have the required privileges to perform the operation.
+C00E0027=Insufficient resources to perform operation.
+C00E0028=Cannot process request because the user buffer is too small to hold the information returned by the request.
+C00E002A=Cannot store recoverable or journal message. The corresponding message was not sent.
+C00E002B=The buffer supplied for the user certificate property is too small.
+C00E002C=User certificate is not valid.
+C00E002D=Internal Message Queuing certificate is corrupted.
+C00E002F=User's internal Message Queuing certificate does not exist.
+
+
+C00E0030=Cryptographic function has failed.
+C00E0033=Encryption operations are not supported by the computer.
+C00E0035=Security context is unrecognized.
+C00E0036=Cannot retrieve SID information from the thread token.
+C00E0037=Cannot retrieve user account information.
+C00E0038=MQCOLUMNS parameter is invalid.
+C00E0039=Invalid propid value.
+C00E003A=Invalid relation value in restriction.
+C00E003B=Invalid property buffer size.
+C00E003C=Invalid propid value in MQRESTRICTION parameter.
+C00E003D=Invalid MQQUEUEPROPS parameter. It is either null or has zero properties.
+C00E003E=Invalid propid supplied for the requested Operation.
+C00E003F=Required properties for the operation were not all specified in the input parameters.
+
+
+C00E0040=The MSMQ Configuration (msmq) object already exists in Active Directory.
+C00E0041=Invalid MQQMPROPS parameter. It is either null or has zero properties.
+C00E0042=DS is full.
+C00E0043=Internal DS error has occurred.
+C00E0044=Object owner was invalid. For example, MQCreateQueue failed because the Queue Manager object is invalid.
+C00E0045=The specified access mode is not supported.
+C00E0046=The buffer supplied for the result is too small.
+C00E0048=Connected Network is in use and cannot be deleted.
+C00E0049=The object owner has not responded.
+C00E004A=The object owner is not reachable.
+C00E004B=Error occurs when reading from a queue on a remote computer.
+C00E004C=Failure to connect to MS DTC.
+C00E004E=Cannot import the transaction.
+
+
+C00E0050=The transaction usage is invalid.
+C00E0051=The transaction operations sequence is invalid.
+C00E0055=ConnectorType was not supplied. The connector type is required to send acknowledgment or secure messages.
+C00E0056=The Queue manager service has been restarted. The queue handle is stale and should be closed.
+C00E0058=Cannot enlist the transaction.
+C00E005A=Queue handle can no longer be used to receive messages because the queue was deleted. The handle should be closed.
+C00E005B=Invalid context Parameter(MQLocateBegin).
+C00E005C=Invalid propid value in MQSORTSET.
+C00E005D=Label size is too big. It should be less than or equal to MQ_MAX_MSG_LABEL_LEN.
+C00E005E=Label buffer supplied to the API was too small.
+C00E005F=Registry list of MQIS servers is empty.
+
+
+C00E0060=MQIS database is in read-only mode.
+C00E0061=The buffer supplied for the symmetric key property is too small.
+C00E0062=The buffer supplied for the signature property is too small.
+C00E0063=The buffer passed for the Provider name property is too small.
+C00E0064=Foreign message queuing system does not support the operation.
+C00E0065=The database does not currently allow write operations because another MQIS server is being installed.
+C00E0066=MSMQ independent clients cannot serve MSMQ dependent clients.
+C00E0067=Message Queuing server has reached the maximum number of dependent clients it can serve.
+C00E0068=Initialization file for queue {1} in LQS was deleted because it was corrupted.
+C00E0069=Remote computer is not available.
+C00E006A=A workgroup installation computer does not support the operation.
+C00E006B=The Cryptographic Service Provider is not supported by Message Queuing.
+C00E006C=Cannot set the Security descriptor for the cryptographic keys.
+C00E006D=A user attempted to send an authenticated message without a certificate. 
+C00E006E=Column PROPID_Q_PATHNAME_DNS is not supported for the MQLocateBegin API.
+C00E006F=Cannot create a certificate store for the internal certificate.
+
+C00E0070=Cannot open a certificate store for the internal certificate.
+C00E0071=MSMQServices object does not support the operation.
+C00E0072=Failed to grant the Add Guid permission to the current user.
+C00E0073=MSMQOCM.DLL library cannot be loaded.
+C00E0074=Entry point in the MSMQOCM.DLL library cannot be located.
+C00E0075=Failed to find Message Queuing servers on the domain controllers.
+C00E0076=The computer joined the domain, but Message Queuing will continue to run in workgroup mode because it failed to register itself in Active Directory.
+C00E0077=Failed to create an object on a specified Global Catalog server.
+C00E0078=Failed to create msmqConfiguration object with GUID that matched computer installation. You must uninstall Message Queuing and then reinstall it.
+C00E0079=Public key for the computer cannot be found.
+C00E007A=Public key for the computer does not exist.
+C00E007B=MQPRIVATEPROPS parameter value is invalid. This might be because it has a null value or has zero properties specified.
+C00E007C=Cannot find Global Catalog servers in the specified domain.
+C00E007D=Cannot find Message Queuing servers on the Global Catalog domain controllers.
+C00E007E=Failed to retrieve the distinguished name of the local computer.
+C00E007F=Cannot hash Data for an authenticated message.
+
+C00E0080=Cannot sign data for an authenticated message before it was sent.
+C00E0081=Cannot create hash object for an authenticated message.
+C00E0082=Signature of a received message is not valid.
