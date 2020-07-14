@@ -1,0 +1,4503 @@
+.assembly extern System
+{
+	.publickeytoken = (B7 7A 5C 56 19 34 E0 89)
+	.ver 4:0:0:0
+}
+.assembly extern System.Configuration.Install
+{
+	.publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A)
+	.ver 4:0:0:0
+}
+.assembly extern System.Drawing
+{
+	.publickeytoken = (B0 3F 5F 7F 11 D5 0A 3A)
+	.ver 4:0:0:0
+}
+.assembly extern System.Windows.Forms
+{
+	.publickeytoken = (B7 7A 5C 56 19 34 E0 89)
+	.ver 4:0:0:0
+}
+.assembly extern mscorlib
+{
+	.publickeytoken = (B7 7A 5C 56 19 34 E0 89)
+	.ver 4:0:0:0
+}
+.assembly System.Messaging
+{
+	.custom instance void [mscorlib]System.CLSCompliantAttribute::.ctor(bool) = { bool(true) }
+	.custom instance void [mscorlib]System.Runtime.InteropServices.ComVisibleAttribute::.ctor(bool) = { bool(false) }
+	.permissionset reqmin = (2E 01 80 84 53 79 73 74 65 6D 2E 53 65 63 75 72 69 74 79 2E 50 65 72 6D 69 73 73 69 6F 6E 73 2E 53 65 63 75 72 69 74 79 50 65 72 6D 69 73 73 69 6F 6E 41 74 74 72 69 62 75 74 65 2C 20 6D 73 63 6F 72 6C 69 62 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 37 37 61 35 63 35 36 31 39 33 34 65 30 38 39 15 01 54 02 10 53 6B 69 70 56 65 72 69 66 69 63 61 74 69 6F 6E 01)
+	.publickey = (00 24 00 00 04 80 00 00 94 00 00 00 06 02 00 00 00 24 00 00 52 53 41 31 00 04 00 00 01 00 01 00 07 D1 FA 57 C4 AE D9 F0 A3 2E 84 AA 0F AE FD 0D E9 E8 FD 6A EC 8F 87 FB 03 76 6C 83 4C 99 92 1E B2 3B E7 9A D9 D5 DC C1 DD 9A D2 36 13 21 02 90 0B 72 3C F9 80 95 7F C4 E1 77 10 8F C6 07 77 4F 29 E8 32 0E 92 EA 05 EC E4 E8 21 C0 A5 EF E8 F1 64 5C 4C 0C 93 C1 AB 99 28 5D 62 2C AA 65 2C 1D FA D6 3D 74 5D 6F 2D E5 F1 7E 5E AF 0F C4 96 3D 26 1C 8A 12 43 65 18 20 6D C0 93 34 4D 5A D2 93)
+	.hash algorithm 0x00008004
+	.ver 4:0:0:0
+}
+.namespace System.Messaging
+{
+	.class public AccessControlEntry
+		extends [mscorlib]System.Object
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(class System.Messaging.Trustee trustee)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(class System.Messaging.Trustee trustee, valuetype System.Messaging.GenericAccessRights genericAccessRights, valuetype System.Messaging.StandardAccessRights standardAccessRights, valuetype System.Messaging.AccessControlEntryType entryType)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.AccessControlEntryType get_EntryType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_EntryType(valuetype System.Messaging.AccessControlEntryType 'value')
+		{
+			ret
+		}
+		.method family hidebysig specialname 
+			instance int32 get_CustomAccessRights()
+		{
+			ret
+		}
+		.method family hidebysig specialname 
+			instance void set_CustomAccessRights(int32 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.GenericAccessRights get_GenericAccessRights()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_GenericAccessRights(valuetype System.Messaging.GenericAccessRights 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.StandardAccessRights get_StandardAccessRights()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_StandardAccessRights(valuetype System.Messaging.StandardAccessRights 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.Trustee get_Trustee()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Trustee(class System.Messaging.Trustee 'value')
+		{
+			ret
+		}
+		.property instance int32 CustomAccessRights()
+		{
+			.get instance int32 System.Messaging.AccessControlEntry::get_CustomAccessRights()
+			.set instance void System.Messaging.AccessControlEntry::set_CustomAccessRights(int32)
+		}
+		.property instance valuetype System.Messaging.AccessControlEntryType EntryType()
+		{
+			.get instance valuetype System.Messaging.AccessControlEntryType System.Messaging.AccessControlEntry::get_EntryType()
+			.set instance void System.Messaging.AccessControlEntry::set_EntryType(valuetype System.Messaging.AccessControlEntryType)
+		}
+		.property instance valuetype System.Messaging.GenericAccessRights GenericAccessRights()
+		{
+			.get instance valuetype System.Messaging.GenericAccessRights System.Messaging.AccessControlEntry::get_GenericAccessRights()
+			.set instance void System.Messaging.AccessControlEntry::set_GenericAccessRights(valuetype System.Messaging.GenericAccessRights)
+		}
+		.property instance valuetype System.Messaging.StandardAccessRights StandardAccessRights()
+		{
+			.get instance valuetype System.Messaging.StandardAccessRights System.Messaging.AccessControlEntry::get_StandardAccessRights()
+			.set instance void System.Messaging.AccessControlEntry::set_StandardAccessRights(valuetype System.Messaging.StandardAccessRights)
+		}
+		.property instance class System.Messaging.Trustee Trustee()
+		{
+			.get instance class System.Messaging.Trustee System.Messaging.AccessControlEntry::get_Trustee()
+			.set instance void System.Messaging.AccessControlEntry::set_Trustee(class System.Messaging.Trustee)
+		}
+	}
+	.class public sealed AccessControlEntryType
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.AccessControlEntryType Allow = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.AccessControlEntryType Deny = int32(0x00000003)
+		.field static public literal valuetype System.Messaging.AccessControlEntryType Revoke = int32(0x00000004)
+		.field static public literal valuetype System.Messaging.AccessControlEntryType Set = int32(0x00000002)
+	}
+	.class public AccessControlList
+		extends [mscorlib]System.Collections.CollectionBase
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance int32 Add(class System.Messaging.AccessControlEntry entry)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Insert(int32 index, class System.Messaging.AccessControlEntry entry)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance int32 IndexOf(class System.Messaging.AccessControlEntry entry)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance bool Contains(class System.Messaging.AccessControlEntry entry)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Remove(class System.Messaging.AccessControlEntry entry)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void CopyTo(class System.Messaging.AccessControlEntry[] 'array', int32 index)
+		{
+			ret
+		}
+	}
+	.class public sealed AcknowledgeTypes
+		extends [mscorlib]System.Enum
+	{
+		.custom instance void [mscorlib]System.FlagsAttribute::.ctor() = { }
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes FullReachQueue = int32(0x00000005)
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes FullReceive = int32(0x0000000E)
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes NegativeReceive = int32(0x00000008)
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes NotAcknowledgeReachQueue = int32(0x00000004)
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes NotAcknowledgeReceive = int32(0x0000000C)
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes PositiveArrival = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.AcknowledgeTypes PositiveReceive = int32(0x00000002)
+	}
+	.class public sealed Acknowledgment
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.Acknowledgment AccessDenied = int32(0x00008004)
+		.field static public literal valuetype System.Messaging.Acknowledgment BadDestinationQueue = int32(0x00008000)
+		.field static public literal valuetype System.Messaging.Acknowledgment BadEncryption = int32(0x00008007)
+		.field static public literal valuetype System.Messaging.Acknowledgment BadSignature = int32(0x00008006)
+		.field static public literal valuetype System.Messaging.Acknowledgment CouldNotEncrypt = int32(0x00008008)
+		.field static public literal valuetype System.Messaging.Acknowledgment HopCountExceeded = int32(0x00008005)
+		.field static public literal valuetype System.Messaging.Acknowledgment None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.Acknowledgment NotTransactionalMessage = int32(0x0000800A)
+		.field static public literal valuetype System.Messaging.Acknowledgment NotTransactionalQueue = int32(0x00008009)
+		.field static public literal valuetype System.Messaging.Acknowledgment Purged = int32(0x00008001)
+		.field static public literal valuetype System.Messaging.Acknowledgment QueueDeleted = int32(0x0000C000)
+		.field static public literal valuetype System.Messaging.Acknowledgment QueueExceedMaximumSize = int32(0x00008003)
+		.field static public literal valuetype System.Messaging.Acknowledgment QueuePurged = int32(0x0000C001)
+		.field static public literal valuetype System.Messaging.Acknowledgment ReachQueue = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.Acknowledgment ReachQueueTimeout = int32(0x00008002)
+		.field static public literal valuetype System.Messaging.Acknowledgment Receive = int32(0x00004000)
+		.field static public literal valuetype System.Messaging.Acknowledgment ReceiveTimeout = int32(0x0000C002)
+	}
+	.class public ActiveXMessageFormatter
+		extends [mscorlib]System.Object
+		implements System.Messaging.IMessageFormatter, [mscorlib]System.ICloneable
+	{
+		.method public final virtual hidebysig newslot 
+			instance bool CanRead(class System.Messaging.Message message)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance object Clone()
+		{
+			ret
+		}
+		.method public static hidebysig 
+			void InitStreamedObject(object streamedObject)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance object Read(class System.Messaging.Message message)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Write(class System.Messaging.Message message, object obj)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+	}
+	.class public BinaryMessageFormatter
+		extends [mscorlib]System.Object
+		implements System.Messaging.IMessageFormatter, [mscorlib]System.ICloneable
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterAssemblyStyle topObjectFormat, valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterTypeStyle typeFormat)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterAssemblyStyle get_TopObjectFormat()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TopObjectFormat(valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterAssemblyStyle 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterTypeStyle get_TypeFormat()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TypeFormat(valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterTypeStyle 'value')
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance bool CanRead(class System.Messaging.Message message)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance object Clone()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance object Read(class System.Messaging.Message message)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Write(class System.Messaging.Message message, object obj)
+		{
+			ret
+		}
+		.property instance valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterAssemblyStyle TopObjectFormat()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 80 8B 53 79 73 74 65 6D 2E 52 75 6E 74 69 6D 65 2E 53 65 72 69 61 6C 69 7A 61 74 69 6F 6E 2E 46 6F 72 6D 61 74 74 65 72 73 2E 46 6F 72 6D 61 74 74 65 72 41 73 73 65 6D 62 6C 79 53 74 79 6C 65 2C 20 6D 73 63 6F 72 6C 69 62 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 37 37 61 35 63 35 36 31 39 33 34 65 30 38 39 00 00 00 00 00 00)
+			.get instance valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterAssemblyStyle System.Messaging.BinaryMessageFormatter::get_TopObjectFormat()
+			.set instance void System.Messaging.BinaryMessageFormatter::set_TopObjectFormat(valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterAssemblyStyle)
+		}
+		.property instance valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterTypeStyle TypeFormat()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 80 87 53 79 73 74 65 6D 2E 52 75 6E 74 69 6D 65 2E 53 65 72 69 61 6C 69 7A 61 74 69 6F 6E 2E 46 6F 72 6D 61 74 74 65 72 73 2E 46 6F 72 6D 61 74 74 65 72 54 79 70 65 53 74 79 6C 65 2C 20 6D 73 63 6F 72 6C 69 62 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 37 37 61 35 63 35 36 31 39 33 34 65 30 38 39 00 00 00 00 00 00)
+			.get instance valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterTypeStyle System.Messaging.BinaryMessageFormatter::get_TypeFormat()
+			.set instance void System.Messaging.BinaryMessageFormatter::set_TypeFormat(valuetype [mscorlib]System.Runtime.Serialization.Formatters.FormatterTypeStyle)
+		}
+	}
+	.class public sealed CryptographicProviderType
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.CryptographicProviderType Dss = int32(0x00000003)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType Fortezza = int32(0x00000004)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType MicrosoftExchange = int32(0x00000005)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType RsaFull = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType RsqSig = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType Ssl = int32(0x00000006)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType SttAcq = int32(0x00000008)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType SttBrnd = int32(0x00000009)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType SttIss = int32(0x0000000B)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType SttMer = int32(0x00000007)
+		.field static public literal valuetype System.Messaging.CryptographicProviderType SttRoot = int32(0x0000000A)
+	}
+	.class public sealed Cursor
+		extends [mscorlib]System.Object
+		implements [mscorlib]System.IDisposable
+	{
+		.method public hidebysig 
+			instance void Close()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Dispose()
+		{
+			ret
+		}
+	}
+	.class public DefaultPropertiesToSend
+		extends [mscorlib]System.Object
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.AcknowledgeTypes get_AcknowledgeType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AcknowledgeType(valuetype System.Messaging.AcknowledgeTypes 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_AdministrationQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AdministrationQueue(class System.Messaging.MessageQueue 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int32 get_AppSpecific()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AppSpecific(int32 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AttachSenderId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AttachSenderId(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.EncryptionAlgorithm get_EncryptionAlgorithm()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_EncryptionAlgorithm(valuetype System.Messaging.EncryptionAlgorithm 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance uint8[] get_Extension()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Extension(uint8[] 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.HashAlgorithm get_HashAlgorithm()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_HashAlgorithm(valuetype System.Messaging.HashAlgorithm 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Label(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessagePriority get_Priority()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Priority(valuetype System.Messaging.MessagePriority 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Recoverable()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Recoverable(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_ResponseQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ResponseQueue(class System.Messaging.MessageQueue 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.TimeSpan get_TimeToBeReceived()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TimeToBeReceived(valuetype [mscorlib]System.TimeSpan 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.TimeSpan get_TimeToReachQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TimeToReachQueue(valuetype [mscorlib]System.TimeSpan 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_TransactionStatusQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TransactionStatusQueue(class System.Messaging.MessageQueue 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseAuthentication()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseAuthentication(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseDeadLetterQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseDeadLetterQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseEncryption()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseEncryption(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseJournalQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseJournalQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseTracing()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseTracing(bool 'value')
+		{
+			ret
+		}
+		.property instance valuetype System.Messaging.AcknowledgeTypes AcknowledgeType()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 21 53 79 73 74 65 6D 2E 4D 65 73 73 61 67 69 6E 67 2E 41 63 6B 6E 6F 77 6C 65 64 67 65 54 79 70 65 73 00 00 00 00 00 00)
+			.get instance valuetype System.Messaging.AcknowledgeTypes System.Messaging.DefaultPropertiesToSend::get_AcknowledgeType()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_AcknowledgeType(valuetype System.Messaging.AcknowledgeTypes)
+		}
+		.property instance class System.Messaging.MessageQueue AdministrationQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string(nullref) }
+			.get instance class System.Messaging.MessageQueue System.Messaging.DefaultPropertiesToSend::get_AdministrationQueue()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_AdministrationQueue(class System.Messaging.MessageQueue)
+		}
+		.property instance int32 AppSpecific()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(int32) = { int32(0) }
+			.get instance int32 System.Messaging.DefaultPropertiesToSend::get_AppSpecific()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_AppSpecific(int32)
+		}
+		.property instance bool AttachSenderId()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.DefaultPropertiesToSend::get_AttachSenderId()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_AttachSenderId(bool)
+		}
+		.property instance valuetype System.Messaging.EncryptionAlgorithm EncryptionAlgorithm()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 24 53 79 73 74 65 6D 2E 4D 65 73 73 61 67 69 6E 67 2E 45 6E 63 72 79 70 74 69 6F 6E 41 6C 67 6F 72 69 74 68 6D 02 66 00 00 00 00)
+			.get instance valuetype System.Messaging.EncryptionAlgorithm System.Messaging.DefaultPropertiesToSend::get_EncryptionAlgorithm()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_EncryptionAlgorithm(valuetype System.Messaging.EncryptionAlgorithm)
+		}
+		.property instance uint8[] Extension()
+		{
+			.get instance uint8[] System.Messaging.DefaultPropertiesToSend::get_Extension()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_Extension(uint8[])
+		}
+		.property instance valuetype System.Messaging.HashAlgorithm HashAlgorithm()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 1E 53 79 73 74 65 6D 2E 4D 65 73 73 61 67 69 6E 67 2E 48 61 73 68 41 6C 67 6F 72 69 74 68 6D 03 80 00 00 00 00)
+			.get instance valuetype System.Messaging.HashAlgorithm System.Messaging.DefaultPropertiesToSend::get_HashAlgorithm()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_HashAlgorithm(valuetype System.Messaging.HashAlgorithm)
+		}
+		.property instance string Label()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string('') }
+			.get instance string System.Messaging.DefaultPropertiesToSend::get_Label()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_Label(string)
+		}
+		.property instance valuetype System.Messaging.MessagePriority Priority()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 20 53 79 73 74 65 6D 2E 4D 65 73 73 61 67 69 6E 67 2E 4D 65 73 73 61 67 65 50 72 69 6F 72 69 74 79 03 00 00 00 00 00)
+			.get instance valuetype System.Messaging.MessagePriority System.Messaging.DefaultPropertiesToSend::get_Priority()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_Priority(valuetype System.Messaging.MessagePriority)
+		}
+		.property instance bool Recoverable()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.DefaultPropertiesToSend::get_Recoverable()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_Recoverable(bool)
+		}
+		.property instance class System.Messaging.MessageQueue ResponseQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string(nullref) }
+			.get instance class System.Messaging.MessageQueue System.Messaging.DefaultPropertiesToSend::get_ResponseQueue()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_ResponseQueue(class System.Messaging.MessageQueue)
+		}
+		.property instance valuetype [mscorlib]System.TimeSpan TimeToBeReceived()
+		{
+			.get instance valuetype [mscorlib]System.TimeSpan System.Messaging.DefaultPropertiesToSend::get_TimeToBeReceived()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_TimeToBeReceived(valuetype [mscorlib]System.TimeSpan)
+		}
+		.property instance valuetype [mscorlib]System.TimeSpan TimeToReachQueue()
+		{
+			.get instance valuetype [mscorlib]System.TimeSpan System.Messaging.DefaultPropertiesToSend::get_TimeToReachQueue()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_TimeToReachQueue(valuetype [mscorlib]System.TimeSpan)
+		}
+		.property instance class System.Messaging.MessageQueue TransactionStatusQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string(nullref) }
+			.get instance class System.Messaging.MessageQueue System.Messaging.DefaultPropertiesToSend::get_TransactionStatusQueue()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_TransactionStatusQueue(class System.Messaging.MessageQueue)
+		}
+		.property instance bool UseAuthentication()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.DefaultPropertiesToSend::get_UseAuthentication()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_UseAuthentication(bool)
+		}
+		.property instance bool UseDeadLetterQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.DefaultPropertiesToSend::get_UseDeadLetterQueue()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_UseDeadLetterQueue(bool)
+		}
+		.property instance bool UseEncryption()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.DefaultPropertiesToSend::get_UseEncryption()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_UseEncryption(bool)
+		}
+		.property instance bool UseJournalQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.DefaultPropertiesToSend::get_UseJournalQueue()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_UseJournalQueue(bool)
+		}
+		.property instance bool UseTracing()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.DefaultPropertiesToSend::get_UseTracing()
+			.set instance void System.Messaging.DefaultPropertiesToSend::set_UseTracing(bool)
+		}
+	}
+	.class public sealed EncryptionAlgorithm
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.EncryptionAlgorithm None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.EncryptionAlgorithm Rc2 = int32(0x00006602)
+		.field static public literal valuetype System.Messaging.EncryptionAlgorithm Rc4 = int32(0x00006801)
+	}
+	.class public sealed EncryptionRequired
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.EncryptionRequired Body = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.EncryptionRequired None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.EncryptionRequired Optional = int32(0x00000001)
+	}
+	.class public sealed GenericAccessRights
+		extends [mscorlib]System.Enum
+	{
+		.custom instance void [mscorlib]System.FlagsAttribute::.ctor() = { }
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.GenericAccessRights All = int32(0x10000000)
+		.field static public literal valuetype System.Messaging.GenericAccessRights Execute = int32(0x20000000)
+		.field static public literal valuetype System.Messaging.GenericAccessRights None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.GenericAccessRights Read = int32(0x80000000)
+		.field static public literal valuetype System.Messaging.GenericAccessRights Write = int32(0x40000000)
+	}
+	.class public sealed HashAlgorithm
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.HashAlgorithm Mac = int32(0x00008005)
+		.field static public literal valuetype System.Messaging.HashAlgorithm Md2 = int32(0x00008001)
+		.field static public literal valuetype System.Messaging.HashAlgorithm Md4 = int32(0x00008002)
+		.field static public literal valuetype System.Messaging.HashAlgorithm Md5 = int32(0x00008003)
+		.field static public literal valuetype System.Messaging.HashAlgorithm None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.HashAlgorithm Sha = int32(0x00008004)
+		.field static public literal valuetype System.Messaging.HashAlgorithm Sha256 = int32(0x0000800C)
+		.field static public literal valuetype System.Messaging.HashAlgorithm Sha384 = int32(0x0000800D)
+		.field static public literal valuetype System.Messaging.HashAlgorithm Sha512 = int32(0x0000800E)
+	}
+	.class public interface abstract IMessageFormatter
+		implements [mscorlib]System.ICloneable
+	{
+		.method public virtual hidebysig newslot abstract 
+			instance bool CanRead(class System.Messaging.Message message)
+		{
+		}
+		.method public virtual hidebysig newslot abstract 
+			instance object Read(class System.Messaging.Message message)
+		{
+		}
+		.method public virtual hidebysig newslot abstract 
+			instance void Write(class System.Messaging.Message message, object obj)
+		{
+		}
+	}
+	.class public Message
+		extends [System]System.ComponentModel.Component
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(object body)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(object body, class System.Messaging.IMessageFormatter formatter)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.Acknowledgment get_Acknowledgment()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.AcknowledgeTypes get_AcknowledgeType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AcknowledgeType(valuetype System.Messaging.AcknowledgeTypes 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_AdministrationQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AdministrationQueue(class System.Messaging.MessageQueue 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int32 get_AppSpecific()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AppSpecific(int32 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_ArrivedTime()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AttachSenderId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AttachSenderId(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Authenticated()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_AuthenticationProviderName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AuthenticationProviderName(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.CryptographicProviderType get_AuthenticationProviderType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AuthenticationProviderType(valuetype System.Messaging.CryptographicProviderType 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance object get_Body()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Body(object 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class [mscorlib]'System.IO.Stream' get_BodyStream()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_BodyStream(class [mscorlib]'System.IO.Stream' 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int32 get_BodyType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_BodyType(int32 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.Guid get_ConnectorType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ConnectorType(valuetype [mscorlib]System.Guid 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_CorrelationId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_CorrelationId(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_DestinationQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance uint8[] get_DestinationSymmetricKey()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DestinationSymmetricKey(uint8[] 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance uint8[] get_DigitalSignature()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DigitalSignature(uint8[] 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.EncryptionAlgorithm get_EncryptionAlgorithm()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_EncryptionAlgorithm(valuetype System.Messaging.EncryptionAlgorithm 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance uint8[] get_Extension()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Extension(uint8[] 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.IMessageFormatter get_Formatter()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Formatter(class System.Messaging.IMessageFormatter 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.HashAlgorithm get_HashAlgorithm()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_HashAlgorithm(valuetype System.Messaging.HashAlgorithm 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Id()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_IsFirstInTransaction()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_IsLastInTransaction()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Label(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int64 get_LookupId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessageType get_MessageType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessagePriority get_Priority()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Priority(valuetype System.Messaging.MessagePriority 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Recoverable()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Recoverable(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_ResponseQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ResponseQueue(class System.Messaging.MessageQueue 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.SecurityContext get_SecurityContext()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SecurityContext(class System.Messaging.SecurityContext 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance uint8[] get_SenderCertificate()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SenderCertificate(uint8[] 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance uint8[] get_SenderId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int64 get_SenderVersion()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_SentTime()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_SourceMachine()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.TimeSpan get_TimeToBeReceived()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TimeToBeReceived(valuetype [mscorlib]System.TimeSpan 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.TimeSpan get_TimeToReachQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TimeToReachQueue(valuetype [mscorlib]System.TimeSpan 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_TransactionId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_TransactionStatusQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TransactionStatusQueue(class System.Messaging.MessageQueue 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseAuthentication()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseAuthentication(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseDeadLetterQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseDeadLetterQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseEncryption()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseEncryption(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseJournalQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseJournalQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseTracing()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseTracing(bool 'value')
+		{
+			ret
+		}
+		.field static public initonly valuetype [mscorlib]System.TimeSpan InfiniteTimeout
+		.property instance valuetype System.Messaging.AcknowledgeTypes AcknowledgeType()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.AcknowledgeTypes System.Messaging.Message::get_AcknowledgeType()
+			.set instance void System.Messaging.Message::set_AcknowledgeType(valuetype System.Messaging.AcknowledgeTypes)
+		}
+		.property instance valuetype System.Messaging.Acknowledgment Acknowledgment()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.Acknowledgment System.Messaging.Message::get_Acknowledgment()
+		}
+		.property instance class System.Messaging.MessageQueue AdministrationQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class System.Messaging.MessageQueue System.Messaging.Message::get_AdministrationQueue()
+			.set instance void System.Messaging.Message::set_AdministrationQueue(class System.Messaging.MessageQueue)
+		}
+		.property instance int32 AppSpecific()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance int32 System.Messaging.Message::get_AppSpecific()
+			.set instance void System.Messaging.Message::set_AppSpecific(int32)
+		}
+		.property instance valuetype [mscorlib]System.DateTime ArrivedTime()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.Message::get_ArrivedTime()
+		}
+		.property instance bool AttachSenderId()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_AttachSenderId()
+			.set instance void System.Messaging.Message::set_AttachSenderId(bool)
+		}
+		.property instance bool Authenticated()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_Authenticated()
+		}
+		.property instance string AuthenticationProviderName()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.Message::get_AuthenticationProviderName()
+			.set instance void System.Messaging.Message::set_AuthenticationProviderName(string)
+		}
+		.property instance valuetype System.Messaging.CryptographicProviderType AuthenticationProviderType()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.CryptographicProviderType System.Messaging.Message::get_AuthenticationProviderType()
+			.set instance void System.Messaging.Message::set_AuthenticationProviderType(valuetype System.Messaging.CryptographicProviderType)
+		}
+		.property instance object Body()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance object System.Messaging.Message::get_Body()
+			.set instance void System.Messaging.Message::set_Body(object)
+		}
+		.property instance class [mscorlib]'System.IO.Stream' BodyStream()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class [mscorlib]'System.IO.Stream' System.Messaging.Message::get_BodyStream()
+			.set instance void System.Messaging.Message::set_BodyStream(class [mscorlib]'System.IO.Stream')
+		}
+		.property instance int32 BodyType()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance int32 System.Messaging.Message::get_BodyType()
+			.set instance void System.Messaging.Message::set_BodyType(int32)
+		}
+		.property instance valuetype [mscorlib]System.Guid ConnectorType()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.Guid System.Messaging.Message::get_ConnectorType()
+			.set instance void System.Messaging.Message::set_ConnectorType(valuetype [mscorlib]System.Guid)
+		}
+		.property instance string CorrelationId()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.Message::get_CorrelationId()
+			.set instance void System.Messaging.Message::set_CorrelationId(string)
+		}
+		.property instance class System.Messaging.MessageQueue DestinationQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class System.Messaging.MessageQueue System.Messaging.Message::get_DestinationQueue()
+		}
+		.property instance uint8[] DestinationSymmetricKey()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance uint8[] System.Messaging.Message::get_DestinationSymmetricKey()
+			.set instance void System.Messaging.Message::set_DestinationSymmetricKey(uint8[])
+		}
+		.property instance uint8[] DigitalSignature()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance uint8[] System.Messaging.Message::get_DigitalSignature()
+			.set instance void System.Messaging.Message::set_DigitalSignature(uint8[])
+		}
+		.property instance valuetype System.Messaging.EncryptionAlgorithm EncryptionAlgorithm()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.EncryptionAlgorithm System.Messaging.Message::get_EncryptionAlgorithm()
+			.set instance void System.Messaging.Message::set_EncryptionAlgorithm(valuetype System.Messaging.EncryptionAlgorithm)
+		}
+		.property instance uint8[] Extension()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance uint8[] System.Messaging.Message::get_Extension()
+			.set instance void System.Messaging.Message::set_Extension(uint8[])
+		}
+		.property instance class System.Messaging.IMessageFormatter Formatter()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class System.Messaging.IMessageFormatter System.Messaging.Message::get_Formatter()
+			.set instance void System.Messaging.Message::set_Formatter(class System.Messaging.IMessageFormatter)
+		}
+		.property instance valuetype System.Messaging.HashAlgorithm HashAlgorithm()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.HashAlgorithm System.Messaging.Message::get_HashAlgorithm()
+			.set instance void System.Messaging.Message::set_HashAlgorithm(valuetype System.Messaging.HashAlgorithm)
+		}
+		.property instance string Id()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.Message::get_Id()
+		}
+		.property instance bool IsFirstInTransaction()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_IsFirstInTransaction()
+		}
+		.property instance bool IsLastInTransaction()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_IsLastInTransaction()
+		}
+		.property instance string Label()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.Message::get_Label()
+			.set instance void System.Messaging.Message::set_Label(string)
+		}
+		.property instance int64 LookupId()
+		{
+			.get instance int64 System.Messaging.Message::get_LookupId()
+		}
+		.property instance valuetype System.Messaging.MessageType MessageType()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.MessageType System.Messaging.Message::get_MessageType()
+		}
+		.property instance valuetype System.Messaging.MessagePriority Priority()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.MessagePriority System.Messaging.Message::get_Priority()
+			.set instance void System.Messaging.Message::set_Priority(valuetype System.Messaging.MessagePriority)
+		}
+		.property instance bool Recoverable()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_Recoverable()
+			.set instance void System.Messaging.Message::set_Recoverable(bool)
+		}
+		.property instance class System.Messaging.MessageQueue ResponseQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class System.Messaging.MessageQueue System.Messaging.Message::get_ResponseQueue()
+			.set instance void System.Messaging.Message::set_ResponseQueue(class System.Messaging.MessageQueue)
+		}
+		.property instance class System.Messaging.SecurityContext SecurityContext()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class System.Messaging.SecurityContext System.Messaging.Message::get_SecurityContext()
+			.set instance void System.Messaging.Message::set_SecurityContext(class System.Messaging.SecurityContext)
+		}
+		.property instance uint8[] SenderCertificate()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance uint8[] System.Messaging.Message::get_SenderCertificate()
+			.set instance void System.Messaging.Message::set_SenderCertificate(uint8[])
+		}
+		.property instance uint8[] SenderId()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance uint8[] System.Messaging.Message::get_SenderId()
+		}
+		.property instance int64 SenderVersion()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance int64 System.Messaging.Message::get_SenderVersion()
+		}
+		.property instance valuetype [mscorlib]System.DateTime SentTime()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.Message::get_SentTime()
+		}
+		.property instance string SourceMachine()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.Message::get_SourceMachine()
+		}
+		.property instance valuetype [mscorlib]System.TimeSpan TimeToBeReceived()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.TimeSpan System.Messaging.Message::get_TimeToBeReceived()
+			.set instance void System.Messaging.Message::set_TimeToBeReceived(valuetype [mscorlib]System.TimeSpan)
+		}
+		.property instance valuetype [mscorlib]System.TimeSpan TimeToReachQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.TimeSpan System.Messaging.Message::get_TimeToReachQueue()
+			.set instance void System.Messaging.Message::set_TimeToReachQueue(valuetype [mscorlib]System.TimeSpan)
+		}
+		.property instance string TransactionId()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.Message::get_TransactionId()
+		}
+		.property instance class System.Messaging.MessageQueue TransactionStatusQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class System.Messaging.MessageQueue System.Messaging.Message::get_TransactionStatusQueue()
+			.set instance void System.Messaging.Message::set_TransactionStatusQueue(class System.Messaging.MessageQueue)
+		}
+		.property instance bool UseAuthentication()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_UseAuthentication()
+			.set instance void System.Messaging.Message::set_UseAuthentication(bool)
+		}
+		.property instance bool UseDeadLetterQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_UseDeadLetterQueue()
+			.set instance void System.Messaging.Message::set_UseDeadLetterQueue(bool)
+		}
+		.property instance bool UseEncryption()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_UseEncryption()
+			.set instance void System.Messaging.Message::set_UseEncryption(bool)
+		}
+		.property instance bool UseJournalQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_UseJournalQueue()
+			.set instance void System.Messaging.Message::set_UseJournalQueue(bool)
+		}
+		.property instance bool UseTracing()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.Message::get_UseTracing()
+			.set instance void System.Messaging.Message::set_UseTracing(bool)
+		}
+	}
+	.class public MessageEnumerator
+		extends [mscorlib]System.MarshalByRefObject
+		implements [mscorlib]System.Collections.IEnumerator, [mscorlib]System.IDisposable
+	{
+		.method public hidebysig specialname 
+			instance class System.Messaging.Message get_Current()
+		{
+			ret
+		}
+		.method private final virtual hidebysig newslot specialname 
+			instance object System.Collections.IEnumerator.get_Current()
+		{
+			.override [mscorlib]System.Collections.IEnumerator::get_Current
+			ret
+		}
+		.method public hidebysig specialname 
+			instance native int get_CursorHandle()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Close()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Dispose()
+		{
+			ret
+		}
+		.method family virtual hidebysig newslot 
+			instance void Dispose(bool disposing)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance bool MoveNext()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance bool MoveNext(valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message RemoveCurrent()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message RemoveCurrent(class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message RemoveCurrent(valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message RemoveCurrent(valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message RemoveCurrent(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message RemoveCurrent(valuetype [mscorlib]System.TimeSpan timeout, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Reset()
+		{
+			ret
+		}
+		.property instance class System.Messaging.Message Current()
+		{
+			.get instance class System.Messaging.Message System.Messaging.MessageEnumerator::get_Current()
+		}
+		.property instance native int CursorHandle()
+		{
+			.get instance native int System.Messaging.MessageEnumerator::get_CursorHandle()
+		}
+		.property instance object System.Collections.IEnumerator.Current()
+		{
+			.get instance object System.Messaging.MessageEnumerator::System.Collections.IEnumerator.get_Current()
+		}
+	}
+	.class public sealed MessageLookupAction
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessageLookupAction Current = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.MessageLookupAction First = int32(0x00000004)
+		.field static public literal valuetype System.Messaging.MessageLookupAction Last = int32(0x00000008)
+		.field static public literal valuetype System.Messaging.MessageLookupAction Next = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.MessageLookupAction Previous = int32(0x00000002)
+	}
+	.class public sealed MessagePriority
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessagePriority AboveNormal = int32(0x00000004)
+		.field static public literal valuetype System.Messaging.MessagePriority High = int32(0x00000005)
+		.field static public literal valuetype System.Messaging.MessagePriority Highest = int32(0x00000007)
+		.field static public literal valuetype System.Messaging.MessagePriority Low = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.MessagePriority Lowest = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.MessagePriority Normal = int32(0x00000003)
+		.field static public literal valuetype System.Messaging.MessagePriority VeryHigh = int32(0x00000006)
+		.field static public literal valuetype System.Messaging.MessagePriority VeryLow = int32(0x00000001)
+	}
+	.class public MessagePropertyFilter
+		extends [mscorlib]System.Object
+		implements [mscorlib]System.ICloneable
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Acknowledgment()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Acknowledgment(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AcknowledgeType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AcknowledgeType(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AdministrationQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AdministrationQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AppSpecific()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AppSpecific(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_ArrivedTime()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ArrivedTime(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AttachSenderId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AttachSenderId(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Authenticated()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Authenticated(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AuthenticationProviderName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AuthenticationProviderName(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_AuthenticationProviderType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AuthenticationProviderType(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Body()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Body(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_ConnectorType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ConnectorType(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_CorrelationId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_CorrelationId(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int32 get_DefaultBodySize()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DefaultBodySize(int32 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int32 get_DefaultExtensionSize()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DefaultExtensionSize(int32 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int32 get_DefaultLabelSize()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DefaultLabelSize(int32 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_DestinationQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DestinationQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_DestinationSymmetricKey()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DestinationSymmetricKey(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_DigitalSignature()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DigitalSignature(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_EncryptionAlgorithm()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_EncryptionAlgorithm(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Extension()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Extension(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_HashAlgorithm()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_HashAlgorithm(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Id()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Id(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_IsFirstInTransaction()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_IsFirstInTransaction(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_IsLastInTransaction()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_IsLastInTransaction(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Label(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_LookupId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_LookupId(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_MessageType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MessageType(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Priority()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Priority(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Recoverable()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Recoverable(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_ResponseQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ResponseQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_SenderCertificate()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SenderCertificate(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_SenderId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SenderId(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_SenderVersion()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SenderVersion(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_SentTime()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SentTime(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_SourceMachine()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SourceMachine(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_TimeToBeReceived()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TimeToBeReceived(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_TimeToReachQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TimeToReachQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_TransactionId()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TransactionId(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_TransactionStatusQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TransactionStatusQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseAuthentication()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseAuthentication(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseDeadLetterQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseDeadLetterQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseEncryption()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseEncryption(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseJournalQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseJournalQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseTracing()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseTracing(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void ClearAll()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void SetDefaults()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void SetAll()
+		{
+			ret
+		}
+		.method public virtual hidebysig newslot 
+			instance object Clone()
+		{
+			ret
+		}
+		.property instance bool AcknowledgeType()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_AcknowledgeType()
+			.set instance void System.Messaging.MessagePropertyFilter::set_AcknowledgeType(bool)
+		}
+		.property instance bool Acknowledgment()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Acknowledgment()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Acknowledgment(bool)
+		}
+		.property instance bool AdministrationQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_AdministrationQueue()
+			.set instance void System.Messaging.MessagePropertyFilter::set_AdministrationQueue(bool)
+		}
+		.property instance bool AppSpecific()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_AppSpecific()
+			.set instance void System.Messaging.MessagePropertyFilter::set_AppSpecific(bool)
+		}
+		.property instance bool ArrivedTime()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_ArrivedTime()
+			.set instance void System.Messaging.MessagePropertyFilter::set_ArrivedTime(bool)
+		}
+		.property instance bool AttachSenderId()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_AttachSenderId()
+			.set instance void System.Messaging.MessagePropertyFilter::set_AttachSenderId(bool)
+		}
+		.property instance bool Authenticated()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Authenticated()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Authenticated(bool)
+		}
+		.property instance bool AuthenticationProviderName()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_AuthenticationProviderName()
+			.set instance void System.Messaging.MessagePropertyFilter::set_AuthenticationProviderName(bool)
+		}
+		.property instance bool AuthenticationProviderType()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_AuthenticationProviderType()
+			.set instance void System.Messaging.MessagePropertyFilter::set_AuthenticationProviderType(bool)
+		}
+		.property instance bool Body()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Body()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Body(bool)
+		}
+		.property instance bool ConnectorType()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_ConnectorType()
+			.set instance void System.Messaging.MessagePropertyFilter::set_ConnectorType(bool)
+		}
+		.property instance bool CorrelationId()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_CorrelationId()
+			.set instance void System.Messaging.MessagePropertyFilter::set_CorrelationId(bool)
+		}
+		.property instance int32 DefaultBodySize()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(int32) = { int32(1024) }
+			.get instance int32 System.Messaging.MessagePropertyFilter::get_DefaultBodySize()
+			.set instance void System.Messaging.MessagePropertyFilter::set_DefaultBodySize(int32)
+		}
+		.property instance int32 DefaultExtensionSize()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(int32) = { int32(255) }
+			.get instance int32 System.Messaging.MessagePropertyFilter::get_DefaultExtensionSize()
+			.set instance void System.Messaging.MessagePropertyFilter::set_DefaultExtensionSize(int32)
+		}
+		.property instance int32 DefaultLabelSize()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(int32) = { int32(255) }
+			.get instance int32 System.Messaging.MessagePropertyFilter::get_DefaultLabelSize()
+			.set instance void System.Messaging.MessagePropertyFilter::set_DefaultLabelSize(int32)
+		}
+		.property instance bool DestinationQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_DestinationQueue()
+			.set instance void System.Messaging.MessagePropertyFilter::set_DestinationQueue(bool)
+		}
+		.property instance bool DestinationSymmetricKey()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_DestinationSymmetricKey()
+			.set instance void System.Messaging.MessagePropertyFilter::set_DestinationSymmetricKey(bool)
+		}
+		.property instance bool DigitalSignature()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_DigitalSignature()
+			.set instance void System.Messaging.MessagePropertyFilter::set_DigitalSignature(bool)
+		}
+		.property instance bool EncryptionAlgorithm()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_EncryptionAlgorithm()
+			.set instance void System.Messaging.MessagePropertyFilter::set_EncryptionAlgorithm(bool)
+		}
+		.property instance bool Extension()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Extension()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Extension(bool)
+		}
+		.property instance bool HashAlgorithm()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_HashAlgorithm()
+			.set instance void System.Messaging.MessagePropertyFilter::set_HashAlgorithm(bool)
+		}
+		.property instance bool Id()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Id()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Id(bool)
+		}
+		.property instance bool IsFirstInTransaction()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_IsFirstInTransaction()
+			.set instance void System.Messaging.MessagePropertyFilter::set_IsFirstInTransaction(bool)
+		}
+		.property instance bool IsLastInTransaction()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_IsLastInTransaction()
+			.set instance void System.Messaging.MessagePropertyFilter::set_IsLastInTransaction(bool)
+		}
+		.property instance bool Label()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Label()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Label(bool)
+		}
+		.property instance bool LookupId()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_LookupId()
+			.set instance void System.Messaging.MessagePropertyFilter::set_LookupId(bool)
+		}
+		.property instance bool MessageType()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_MessageType()
+			.set instance void System.Messaging.MessagePropertyFilter::set_MessageType(bool)
+		}
+		.property instance bool Priority()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Priority()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Priority(bool)
+		}
+		.property instance bool Recoverable()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_Recoverable()
+			.set instance void System.Messaging.MessagePropertyFilter::set_Recoverable(bool)
+		}
+		.property instance bool ResponseQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_ResponseQueue()
+			.set instance void System.Messaging.MessagePropertyFilter::set_ResponseQueue(bool)
+		}
+		.property instance bool SenderCertificate()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_SenderCertificate()
+			.set instance void System.Messaging.MessagePropertyFilter::set_SenderCertificate(bool)
+		}
+		.property instance bool SenderId()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_SenderId()
+			.set instance void System.Messaging.MessagePropertyFilter::set_SenderId(bool)
+		}
+		.property instance bool SenderVersion()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_SenderVersion()
+			.set instance void System.Messaging.MessagePropertyFilter::set_SenderVersion(bool)
+		}
+		.property instance bool SentTime()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_SentTime()
+			.set instance void System.Messaging.MessagePropertyFilter::set_SentTime(bool)
+		}
+		.property instance bool SourceMachine()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_SourceMachine()
+			.set instance void System.Messaging.MessagePropertyFilter::set_SourceMachine(bool)
+		}
+		.property instance bool TimeToBeReceived()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_TimeToBeReceived()
+			.set instance void System.Messaging.MessagePropertyFilter::set_TimeToBeReceived(bool)
+		}
+		.property instance bool TimeToReachQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_TimeToReachQueue()
+			.set instance void System.Messaging.MessagePropertyFilter::set_TimeToReachQueue(bool)
+		}
+		.property instance bool TransactionId()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_TransactionId()
+			.set instance void System.Messaging.MessagePropertyFilter::set_TransactionId(bool)
+		}
+		.property instance bool TransactionStatusQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_TransactionStatusQueue()
+			.set instance void System.Messaging.MessagePropertyFilter::set_TransactionStatusQueue(bool)
+		}
+		.property instance bool UseAuthentication()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_UseAuthentication()
+			.set instance void System.Messaging.MessagePropertyFilter::set_UseAuthentication(bool)
+		}
+		.property instance bool UseDeadLetterQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_UseDeadLetterQueue()
+			.set instance void System.Messaging.MessagePropertyFilter::set_UseDeadLetterQueue(bool)
+		}
+		.property instance bool UseEncryption()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_UseEncryption()
+			.set instance void System.Messaging.MessagePropertyFilter::set_UseEncryption(bool)
+		}
+		.property instance bool UseJournalQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(true) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_UseJournalQueue()
+			.set instance void System.Messaging.MessagePropertyFilter::set_UseJournalQueue(bool)
+		}
+		.property instance bool UseTracing()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessagePropertyFilter::get_UseTracing()
+			.set instance void System.Messaging.MessagePropertyFilter::set_UseTracing(bool)
+		}
+	}
+	.class public MessageQueue
+		extends [System]System.ComponentModel.Component
+		implements [mscorlib]System.Collections.IEnumerable
+	{
+		.custom instance void [System]System.ComponentModel.DefaultEventAttribute::.ctor(string) = { string('ReceiveCompleted') }
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string path)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string path, valuetype System.Messaging.QueueAccessMode accessMode)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string path, bool sharedModeDenyReceive)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string path, bool sharedModeDenyReceive, bool enableCache)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string path, bool sharedModeDenyReceive, bool enableCache, valuetype System.Messaging.QueueAccessMode accessMode)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.QueueAccessMode get_AccessMode()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Authenticate()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Authenticate(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int16 get_BasePriority()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_BasePriority(int16 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_CanRead()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_CanWrite()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.Guid get_Category()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Category(valuetype [mscorlib]System.Guid 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_CreateTime()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.DefaultPropertiesToSend get_DefaultPropertiesToSend()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DefaultPropertiesToSend(class System.Messaging.DefaultPropertiesToSend 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_DenySharedReceive()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_DenySharedReceive(bool 'value')
+		{
+			ret
+		}
+		.method public static hidebysig specialname 
+			bool get_EnableConnectionCache()
+		{
+			ret
+		}
+		.method public static hidebysig specialname 
+			void set_EnableConnectionCache(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.EncryptionRequired get_EncryptionRequired()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_EncryptionRequired(valuetype System.Messaging.EncryptionRequired 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_FormatName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.IMessageFormatter get_Formatter()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Formatter(class System.Messaging.IMessageFormatter 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.Guid get_Id()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Label(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_LastModifyTime()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_MachineName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MachineName(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int64 get_MaximumJournalSize()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MaximumJournalSize(int64 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int64 get_MaximumQueueSize()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MaximumQueueSize(int64 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessagePropertyFilter get_MessageReadPropertyFilter()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MessageReadPropertyFilter(class System.Messaging.MessagePropertyFilter 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_MulticastAddress()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MulticastAddress(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Path()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Path(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_QueueName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_QueueName(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance native int get_ReadHandle()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class [System]System.ComponentModel.ISynchronizeInvoke get_SynchronizingObject()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SynchronizingObject(class [System]System.ComponentModel.ISynchronizeInvoke 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Transactional()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseJournalQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseJournalQueue(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance native int get_WriteHandle()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void add_PeekCompleted(class System.Messaging.PeekCompletedEventHandler 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void remove_PeekCompleted(class System.Messaging.PeekCompletedEventHandler 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void add_ReceiveCompleted(class System.Messaging.ReceiveCompletedEventHandler 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void remove_ReceiveCompleted(class System.Messaging.ReceiveCompletedEventHandler 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginPeek()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginPeek(valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginPeek(valuetype [mscorlib]System.TimeSpan timeout, object stateObject)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginPeek(valuetype [mscorlib]System.TimeSpan timeout, object stateObject, class [mscorlib]System.AsyncCallback callback)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginPeek(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.Cursor cursor, valuetype System.Messaging.PeekAction action, object state, class [mscorlib]System.AsyncCallback callback)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginReceive()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginReceive(valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginReceive(valuetype [mscorlib]System.TimeSpan timeout, object stateObject)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginReceive(valuetype [mscorlib]System.TimeSpan timeout, object stateObject, class [mscorlib]System.AsyncCallback callback)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class [mscorlib]System.IAsyncResult BeginReceive(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.Cursor cursor, object state, class [mscorlib]System.AsyncCallback callback)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			void ClearConnectionCache()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Close()
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue Create(string path)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue Create(string path, bool transactional)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Cursor CreateCursor()
+		{
+			ret
+		}
+		.method public static hidebysig 
+			void Delete(string path)
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void Dispose(bool disposing)
+		{
+			.permissionset linkcheck = (2E 01 80 80 53 79 73 74 65 6D 2E 53 65 63 75 72 69 74 79 2E 50 65 72 6D 69 73 73 69 6F 6E 73 2E 48 6F 73 74 50 72 6F 74 65 63 74 69 6F 6E 41 74 74 72 69 62 75 74 65 2C 20 6D 73 63 6F 72 6C 69 62 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 37 37 61 35 63 35 36 31 39 33 34 65 30 38 39 10 01 54 02 0B 53 68 61 72 65 64 53 74 61 74 65 01)
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message EndPeek(class [mscorlib]System.IAsyncResult asyncResult)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message EndReceive(class [mscorlib]System.IAsyncResult asyncResult)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			bool Exists(string path)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message[] GetAllMessages()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance class [mscorlib]System.Collections.IEnumerator GetEnumerator()
+		{
+			.custom instance void [mscorlib]System.ObsoleteAttribute::.ctor(string) = { string('This method returns a MessageEnumerator that implements RemoveCurrent family of methods incorrectly. Please use GetMessageEnumerator2 instead.') }
+			ret
+		}
+		.method public static hidebysig 
+			valuetype [mscorlib]System.Guid GetMachineId(string machineName)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.SecurityContext GetSecurityContext()
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueueEnumerator GetMessageQueueEnumerator()
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueueEnumerator GetMessageQueueEnumerator(class System.Messaging.MessageQueueCriteria criteria)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.MessageEnumerator GetMessageEnumerator()
+		{
+			.custom instance void [mscorlib]System.ObsoleteAttribute::.ctor(string) = { string('This method returns a MessageEnumerator that implements RemoveCurrent family of methods incorrectly. Please use GetMessageEnumerator2 instead.') }
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.MessageEnumerator GetMessageEnumerator2()
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue[] GetPrivateQueuesByMachine(string machineName)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue[] GetPublicQueues()
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue[] GetPublicQueues(class System.Messaging.MessageQueueCriteria criteria)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue[] GetPublicQueuesByCategory(valuetype [mscorlib]System.Guid category)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue[] GetPublicQueuesByLabel(string label)
+		{
+			ret
+		}
+		.method public static hidebysig 
+			class System.Messaging.MessageQueue[] GetPublicQueuesByMachine(string machineName)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Peek()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Peek(valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Peek(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.Cursor cursor, valuetype System.Messaging.PeekAction action)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message PeekById(string id)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message PeekById(string id, valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message PeekByCorrelationId(string correlationId)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message PeekByCorrelationId(string correlationId, valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Purge()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.Cursor cursor)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(valuetype [mscorlib]System.TimeSpan timeout, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.Cursor cursor, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message Receive(valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.Cursor cursor, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveById(string id)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveById(string id, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveById(string id, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveById(string id, valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveById(string id, valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveById(string id, valuetype [mscorlib]System.TimeSpan timeout, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByCorrelationId(string correlationId)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByCorrelationId(string correlationId, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByCorrelationId(string correlationId, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByCorrelationId(string correlationId, valuetype [mscorlib]System.TimeSpan timeout)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByCorrelationId(string correlationId, valuetype [mscorlib]System.TimeSpan timeout, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByCorrelationId(string correlationId, valuetype [mscorlib]System.TimeSpan timeout, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByLookupId(int64 lookupId)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByLookupId(valuetype System.Messaging.MessageLookupAction action, int64 lookupId, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message ReceiveByLookupId(valuetype System.Messaging.MessageLookupAction action, int64 lookupId, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message PeekByLookupId(int64 lookupId)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance class System.Messaging.Message PeekByLookupId(valuetype System.Messaging.MessageLookupAction action, int64 lookupId)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Refresh()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Send(object obj)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Send(object obj, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Send(object obj, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Send(object obj, string label)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Send(object obj, string label, class System.Messaging.MessageQueueTransaction transaction)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Send(object obj, string label, valuetype System.Messaging.MessageQueueTransactionType transactionType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void ResetPermissions()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void SetPermissions(string user, valuetype System.Messaging.MessageQueueAccessRights rights)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void SetPermissions(string user, valuetype System.Messaging.MessageQueueAccessRights rights, valuetype System.Messaging.AccessControlEntryType entryType)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void SetPermissions(class System.Messaging.MessageQueueAccessControlEntry ace)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void SetPermissions(class System.Messaging.AccessControlList dacl)
+		{
+			ret
+		}
+		.field static public initonly int64 InfiniteQueueSize
+		.field static public initonly valuetype [mscorlib]System.TimeSpan InfiniteTimeout
+		.event System.Messaging.PeekCompletedEventHandler PeekCompleted
+		{
+			.addon instance void System.Messaging.MessageQueue::add_PeekCompleted(class System.Messaging.PeekCompletedEventHandler)
+			.removeon instance void System.Messaging.MessageQueue::remove_PeekCompleted(class System.Messaging.PeekCompletedEventHandler)
+		}
+		.event System.Messaging.ReceiveCompletedEventHandler ReceiveCompleted
+		{
+			.addon instance void System.Messaging.MessageQueue::add_ReceiveCompleted(class System.Messaging.ReceiveCompletedEventHandler)
+			.removeon instance void System.Messaging.MessageQueue::remove_ReceiveCompleted(class System.Messaging.ReceiveCompletedEventHandler)
+		}
+		.property instance valuetype System.Messaging.QueueAccessMode AccessMode()
+		{
+			.get instance valuetype System.Messaging.QueueAccessMode System.Messaging.MessageQueue::get_AccessMode()
+		}
+		.property instance bool Authenticate()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.MessageQueue::get_Authenticate()
+			.set instance void System.Messaging.MessageQueue::set_Authenticate(bool)
+		}
+		.property instance int16 BasePriority()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance int16 System.Messaging.MessageQueue::get_BasePriority()
+			.set instance void System.Messaging.MessageQueue::set_BasePriority(int16)
+		}
+		.property instance bool CanRead()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.MessageQueue::get_CanRead()
+		}
+		.property instance bool CanWrite()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.MessageQueue::get_CanWrite()
+		}
+		.property instance valuetype [mscorlib]System.Guid Category()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.Guid System.Messaging.MessageQueue::get_Category()
+			.set instance void System.Messaging.MessageQueue::set_Category(valuetype [mscorlib]System.Guid)
+		}
+		.property instance valuetype [mscorlib]System.DateTime CreateTime()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.MessageQueue::get_CreateTime()
+		}
+		.property instance class System.Messaging.DefaultPropertiesToSend DefaultPropertiesToSend()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(2) }
+			.get instance class System.Messaging.DefaultPropertiesToSend System.Messaging.MessageQueue::get_DefaultPropertiesToSend()
+			.set instance void System.Messaging.MessageQueue::set_DefaultPropertiesToSend(class System.Messaging.DefaultPropertiesToSend)
+		}
+		.property instance bool DenySharedReceive()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessageQueue::get_DenySharedReceive()
+			.set instance void System.Messaging.MessageQueue::set_DenySharedReceive(bool)
+		}
+		.property bool EnableConnectionCache()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.get bool System.Messaging.MessageQueue::get_EnableConnectionCache()
+			.set void System.Messaging.MessageQueue::set_EnableConnectionCache(bool)
+		}
+		.property instance valuetype System.Messaging.EncryptionRequired EncryptionRequired()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype System.Messaging.EncryptionRequired System.Messaging.MessageQueue::get_EncryptionRequired()
+			.set instance void System.Messaging.MessageQueue::set_EncryptionRequired(valuetype System.Messaging.EncryptionRequired)
+		}
+		.property instance string FormatName()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.MessageQueue::get_FormatName()
+		}
+		.property instance class System.Messaging.IMessageFormatter Formatter()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string(nullref) }
+			.get instance class System.Messaging.IMessageFormatter System.Messaging.MessageQueue::get_Formatter()
+			.set instance void System.Messaging.MessageQueue::set_Formatter(class System.Messaging.IMessageFormatter)
+		}
+		.property instance valuetype [mscorlib]System.Guid Id()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.Guid System.Messaging.MessageQueue::get_Id()
+		}
+		.property instance string Label()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.MessageQueue::get_Label()
+			.set instance void System.Messaging.MessageQueue::set_Label(string)
+		}
+		.property instance valuetype [mscorlib]System.DateTime LastModifyTime()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.MessageQueue::get_LastModifyTime()
+		}
+		.property instance string MachineName()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.MessageQueue::get_MachineName()
+			.set instance void System.Messaging.MessageQueue::set_MachineName(string)
+		}
+		.property instance int64 MaximumJournalSize()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance int64 System.Messaging.MessageQueue::get_MaximumJournalSize()
+			.set instance void System.Messaging.MessageQueue::set_MaximumJournalSize(int64)
+		}
+		.property instance int64 MaximumQueueSize()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance int64 System.Messaging.MessageQueue::get_MaximumQueueSize()
+			.set instance void System.Messaging.MessageQueue::set_MaximumQueueSize(int64)
+		}
+		.property instance class System.Messaging.MessagePropertyFilter MessageReadPropertyFilter()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(2) }
+			.get instance class System.Messaging.MessagePropertyFilter System.Messaging.MessageQueue::get_MessageReadPropertyFilter()
+			.set instance void System.Messaging.MessageQueue::set_MessageReadPropertyFilter(class System.Messaging.MessagePropertyFilter)
+		}
+		.property instance string MulticastAddress()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string('') }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.MessageQueue::get_MulticastAddress()
+			.set instance void System.Messaging.MessageQueue::set_MulticastAddress(string)
+		}
+		.property instance string Path()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string('') }
+			.get instance string System.Messaging.MessageQueue::get_Path()
+			.set instance void System.Messaging.MessageQueue::set_Path(string)
+		}
+		.property instance string QueueName()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance string System.Messaging.MessageQueue::get_QueueName()
+			.set instance void System.Messaging.MessageQueue::set_QueueName(string)
+		}
+		.property instance native int ReadHandle()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance native int System.Messaging.MessageQueue::get_ReadHandle()
+		}
+		.property instance class [System]System.ComponentModel.ISynchronizeInvoke SynchronizingObject()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string(nullref) }
+			.get instance class [System]System.ComponentModel.ISynchronizeInvoke System.Messaging.MessageQueue::get_SynchronizingObject()
+			.set instance void System.Messaging.MessageQueue::set_SynchronizingObject(class [System]System.ComponentModel.ISynchronizeInvoke)
+		}
+		.property instance bool Transactional()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.MessageQueue::get_Transactional()
+		}
+		.property instance bool UseJournalQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance bool System.Messaging.MessageQueue::get_UseJournalQueue()
+			.set instance void System.Messaging.MessageQueue::set_UseJournalQueue(bool)
+		}
+		.property instance native int WriteHandle()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance native int System.Messaging.MessageQueue::get_WriteHandle()
+		}
+	}
+	.class public MessageQueueAccessControlEntry
+		extends System.Messaging.AccessControlEntry
+	{
+		.method public hidebysig specialname 
+			instance void .ctor(class System.Messaging.Trustee trustee, valuetype System.Messaging.MessageQueueAccessRights rights)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(class System.Messaging.Trustee trustee, valuetype System.Messaging.MessageQueueAccessRights rights, valuetype System.Messaging.AccessControlEntryType entryType)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessageQueueAccessRights get_MessageQueueAccessRights()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MessageQueueAccessRights(valuetype System.Messaging.MessageQueueAccessRights 'value')
+		{
+			ret
+		}
+		.property instance valuetype System.Messaging.MessageQueueAccessRights MessageQueueAccessRights()
+		{
+			.get instance valuetype System.Messaging.MessageQueueAccessRights System.Messaging.MessageQueueAccessControlEntry::get_MessageQueueAccessRights()
+			.set instance void System.Messaging.MessageQueueAccessControlEntry::set_MessageQueueAccessRights(valuetype System.Messaging.MessageQueueAccessRights)
+		}
+	}
+	.class public sealed MessageQueueAccessRights
+		extends [mscorlib]System.Enum
+	{
+		.custom instance void [mscorlib]System.FlagsAttribute::.ctor() = { }
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights ChangeQueuePermissions = int32(0x00040000)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights DeleteJournalMessage = int32(0x00000008)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights DeleteMessage = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights DeleteQueue = int32(0x00010000)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights FullControl = int32(0x000F003F)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights GenericRead = int32(0x0002002B)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights GenericWrite = int32(0x00020024)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights GetQueuePermissions = int32(0x00020000)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights GetQueueProperties = int32(0x00000020)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights PeekMessage = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights ReceiveJournalMessage = int32(0x0000000A)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights ReceiveMessage = int32(0x00000003)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights SetQueueProperties = int32(0x00000010)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights TakeQueueOwnership = int32(0x00080000)
+		.field static public literal valuetype System.Messaging.MessageQueueAccessRights WriteMessage = int32(0x00000004)
+	}
+	.class public MessageQueueCriteria
+		extends [mscorlib]System.Object
+	{
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_CreatedAfter()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_CreatedAfter(valuetype [mscorlib]System.DateTime 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_CreatedBefore()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_CreatedBefore(valuetype [mscorlib]System.DateTime 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Label(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_MachineName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MachineName(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_ModifiedAfter()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ModifiedAfter(valuetype [mscorlib]System.DateTime 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.DateTime get_ModifiedBefore()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_ModifiedBefore(valuetype [mscorlib]System.DateTime 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.Guid get_Category()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Category(valuetype [mscorlib]System.Guid 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void ClearAll()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.property instance valuetype [mscorlib]System.Guid Category()
+		{
+			.get instance valuetype [mscorlib]System.Guid System.Messaging.MessageQueueCriteria::get_Category()
+			.set instance void System.Messaging.MessageQueueCriteria::set_Category(valuetype [mscorlib]System.Guid)
+		}
+		.property instance valuetype [mscorlib]System.DateTime CreatedAfter()
+		{
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.MessageQueueCriteria::get_CreatedAfter()
+			.set instance void System.Messaging.MessageQueueCriteria::set_CreatedAfter(valuetype [mscorlib]System.DateTime)
+		}
+		.property instance valuetype [mscorlib]System.DateTime CreatedBefore()
+		{
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.MessageQueueCriteria::get_CreatedBefore()
+			.set instance void System.Messaging.MessageQueueCriteria::set_CreatedBefore(valuetype [mscorlib]System.DateTime)
+		}
+		.property instance string Label()
+		{
+			.get instance string System.Messaging.MessageQueueCriteria::get_Label()
+			.set instance void System.Messaging.MessageQueueCriteria::set_Label(string)
+		}
+		.property instance string MachineName()
+		{
+			.get instance string System.Messaging.MessageQueueCriteria::get_MachineName()
+			.set instance void System.Messaging.MessageQueueCriteria::set_MachineName(string)
+		}
+		.property instance valuetype [mscorlib]System.DateTime ModifiedAfter()
+		{
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.MessageQueueCriteria::get_ModifiedAfter()
+			.set instance void System.Messaging.MessageQueueCriteria::set_ModifiedAfter(valuetype [mscorlib]System.DateTime)
+		}
+		.property instance valuetype [mscorlib]System.DateTime ModifiedBefore()
+		{
+			.get instance valuetype [mscorlib]System.DateTime System.Messaging.MessageQueueCriteria::get_ModifiedBefore()
+			.set instance void System.Messaging.MessageQueueCriteria::set_ModifiedBefore(valuetype [mscorlib]System.DateTime)
+		}
+	}
+	.class public MessageQueueEnumerator
+		extends [mscorlib]System.MarshalByRefObject
+		implements [mscorlib]System.Collections.IEnumerator, [mscorlib]System.IDisposable
+	{
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueue get_Current()
+		{
+			ret
+		}
+		.method private final virtual hidebysig newslot specialname 
+			instance object System.Collections.IEnumerator.get_Current()
+		{
+			.override [mscorlib]System.Collections.IEnumerator::get_Current
+			ret
+		}
+		.method public hidebysig 
+			instance void Close()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Dispose()
+		{
+			ret
+		}
+		.method family virtual hidebysig newslot 
+			instance void Dispose(bool disposing)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance native int get_LocatorHandle()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance bool MoveNext()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Reset()
+		{
+			ret
+		}
+		.property instance class System.Messaging.MessageQueue Current()
+		{
+			.get instance class System.Messaging.MessageQueue System.Messaging.MessageQueueEnumerator::get_Current()
+		}
+		.property instance native int LocatorHandle()
+		{
+			.get instance native int System.Messaging.MessageQueueEnumerator::get_LocatorHandle()
+		}
+		.property instance object System.Collections.IEnumerator.Current()
+		{
+			.get instance object System.Messaging.MessageQueueEnumerator::System.Collections.IEnumerator.get_Current()
+		}
+	}
+	.class public sealed MessageQueueErrorCode
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode AccessDenied = int32(0xC00E0025)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode BadSecurityContext = int32(0xC00E0035)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode Base = int32(0xC00E0000)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode BufferOverflow = int32(0xC00E001A)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotCreateCertificateStore = int32(0xC00E006F)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotCreateHashEx = int32(0xC00E0081)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotCreateOnGlobalCatalog = int32(0xC00E0077)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotGetDistinguishedName = int32(0xC00E007E)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotGrantAddGuid = int32(0xC00E0072)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotHashDataEx = int32(0xC00E007F)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotImpersonateClient = int32(0xC00E0024)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotJoinDomain = int32(0xC00E0076)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotLoadMsmqOcm = int32(0xC00E0073)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotOpenCertificateStore = int32(0xC00E0070)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotSetCryptographicSecurityDescriptor = int32(0xC00E006C)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CannotSignDataEx = int32(0xC00E0080)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CertificateNotProvided = int32(0xC00E006D)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode ComputerDoesNotSupportEncryption = int32(0xC00E0033)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CorruptedInternalCertificate = int32(0xC00E002D)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CorruptedPersonalCertStore = int32(0xC00E0031)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CorruptedQueueWasDeleted = int32(0xC00E0068)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CorruptedSecurityData = int32(0xC00E0030)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CouldNotGetAccountInfo = int32(0xC00E0037)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode CouldNotGetUserSid = int32(0xC00E0036)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode DeleteConnectedNetworkInUse = int32(0xC00E0048)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode DependentClientLicenseOverflow = int32(0xC00E0067)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode DsError = int32(0xC00E0043)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode DsIsFull = int32(0xC00E0042)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode DtcConnect = int32(0xC00E004C)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode EncryptionProviderNotSupported = int32(0xC00E006B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode FailVerifySignatureEx = int32(0xC00E0082)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode FormatNameBufferTooSmall = int32(0xC00E001F)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode Generic = int32(0xC00E0001)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode GuidNotMatching = int32(0xC00E0078)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IOTimeout = int32(0xC00E001B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalContext = int32(0xC00E005B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalCriteriaColumns = int32(0xC00E0038)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalCursorAction = int32(0xC00E001C)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalEnterpriseOperation = int32(0xC00E0071)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalFormatName = int32(0xC00E001E)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalMessageProperties = int32(0xC00E0041)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalOperation = int32(0xC00E0064)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalPrivateProperties = int32(0xC00E007B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalPropertyId = int32(0xC00E0039)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalPropertySize = int32(0xC00E003B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalPropertyValue = int32(0xC00E0018)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalPropertyVt = int32(0xC00E0019)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalQueuePathName = int32(0xC00E0014)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalQueueProperties = int32(0xC00E003D)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalRelation = int32(0xC00E003A)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalRestrictionPropertyId = int32(0xC00E003C)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalSecurityDescriptor = int32(0xC00E0021)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalSort = int32(0xC00E0010)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalSortPropertyId = int32(0xC00E005C)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode IllegalUser = int32(0xC00E0011)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode InsufficientProperties = int32(0xC00E003F)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode InsufficientResources = int32(0xC00E0027)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode InvalidCertificate = int32(0xC00E002C)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode InvalidHandle = int32(0xC00E0007)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode InvalidOwner = int32(0xC00E0044)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode InvalidParameter = int32(0xC00E0006)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode LabelBufferTooSmall = int32(0xC00E005E)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MachineExists = int32(0xC00E0040)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MachineNotFound = int32(0xC00E000D)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MessageAlreadyReceived = int32(0xC00E001D)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MessageNotFound = int32(0xC00E0088)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MessageStorageFailed = int32(0xC00E002A)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MissingConnectorType = int32(0xC00E0055)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MqisReadOnlyMode = int32(0xC00E0060)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode MqisServerEmpty = int32(0xC00E005F)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode NoDs = int32(0xC00E0013)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode NoEntryPointMsmqOcm = int32(0xC00E0074)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode NoGlobalCatalogInDomain = int32(0xC00E007C)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode NoInternalUserCertificate = int32(0xC00E002F)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode NoMsmqServersOnDc = int32(0xC00E0075)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode NoMsmqServersOnGlobalCatalog = int32(0xC00E007D)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode NoResponseFromObjectServer = int32(0xC00E0049)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode ObjectServerNotAvailable = int32(0xC00E004A)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode OperationCanceled = int32(0xC00E0008)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode PrivilegeNotHeld = int32(0xC00E0026)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode Property = int32(0xC00E0002)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode PropertyNotAllowed = int32(0xC00E003E)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode ProviderNameBufferTooSmall = int32(0xC00E0063)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode PublicKeyDoesNotExist = int32(0xC00E007A)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode PublicKeyNotFound = int32(0xC00E0079)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode QDnsPropertyNotSupported = int32(0xC00E006E)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode QueueDeleted = int32(0xC00E005A)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode QueueExists = int32(0xC00E0005)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode QueueNotAvailable = int32(0xC00E004B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode QueueNotFound = int32(0xC00E0003)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode RemoteMachineNotAvailable = int32(0xC00E0069)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode ResultBufferTooSmall = int32(0xC00E0046)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode SecurityDescriptorBufferTooSmall = int32(0xC00E0023)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode SenderCertificateBufferTooSmall = int32(0xC00E002B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode SenderIdBufferTooSmall = int32(0xC00E0022)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode ServiceNotAvailable = int32(0xC00E000B)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode SharingViolation = int32(0xC00E0009)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode SignatureBufferTooSmall = int32(0xC00E0062)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode StaleHandle = int32(0xC00E0056)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode SymmetricKeyBufferTooSmall = int32(0xC00E0061)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode TransactionEnlist = int32(0xC00E0058)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode TransactionImport = int32(0xC00E004E)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode TransactionSequence = int32(0xC00E0051)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode TransactionUsage = int32(0xC00E0050)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode UnsupportedAccessMode = int32(0xC00E0045)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode UnsupportedFormatNameOperation = int32(0xC00E0020)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode UnsupportedOperation = int32(0xC00E006A)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode UserBufferTooSmall = int32(0xC00E0028)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode WksCantServeClient = int32(0xC00E0066)
+		.field static public literal valuetype System.Messaging.MessageQueueErrorCode WriteNotAllowed = int32(0xC00E0065)
+	}
+	.class public serializable MessageQueueException
+		extends [mscorlib]System.Runtime.InteropServices.ExternalException
+		implements [mscorlib]System.Runtime.Serialization.ISerializable
+	{
+		.method family hidebysig specialname 
+			instance void .ctor(class [mscorlib]System.Runtime.Serialization.SerializationInfo info, valuetype [mscorlib]System.Runtime.Serialization.StreamingContext context)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessageQueueErrorCode get_MessageQueueErrorCode()
+		{
+			ret
+		}
+		.method public virtual hidebysig specialname 
+			instance string get_Message()
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance void GetObjectData(class [mscorlib]System.Runtime.Serialization.SerializationInfo info, valuetype [mscorlib]System.Runtime.Serialization.StreamingContext context)
+		{
+			.custom instance void [mscorlib]System.Security.SecurityCriticalAttribute::.ctor() = { }
+			ret
+		}
+		.property instance string Message()
+		{
+			.get instance string System.Messaging.MessageQueueException::get_Message()
+		}
+		.property instance valuetype System.Messaging.MessageQueueErrorCode MessageQueueErrorCode()
+		{
+			.get instance valuetype System.Messaging.MessageQueueErrorCode System.Messaging.MessageQueueException::get_MessageQueueErrorCode()
+		}
+	}
+	.class public MessageQueueInstaller
+		extends [System.Configuration.Install]System.Configuration.Install.ComponentInstaller
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(class System.Messaging.MessageQueue componentToCopy)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Authenticate()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Authenticate(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int16 get_BasePriority()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_BasePriority(int16 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [mscorlib]System.Guid get_Category()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Category(valuetype [mscorlib]System.Guid 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.EncryptionRequired get_EncryptionRequired()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_EncryptionRequired(valuetype System.Messaging.EncryptionRequired 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Label(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int64 get_MaximumJournalSize()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MaximumJournalSize(int64 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance int64 get_MaximumQueueSize()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MaximumQueueSize(int64 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_MulticastAddress()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MulticastAddress(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Path()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Path(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.AccessControlList get_Permissions()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Permissions(class System.Messaging.AccessControlList 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_Transactional()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Transactional(bool 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype [System.Configuration.Install]System.Configuration.Install.UninstallAction get_UninstallAction()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UninstallAction(valuetype [System.Configuration.Install]System.Configuration.Install.UninstallAction 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance bool get_UseJournalQueue()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_UseJournalQueue(bool 'value')
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance void Commit(class [mscorlib]System.Collections.IDictionary savedState)
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance void CopyFromComponent(class [System]System.ComponentModel.IComponent component)
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance void Install(class [mscorlib]System.Collections.IDictionary stateSaver)
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance bool IsEquivalentInstaller(class [System.Configuration.Install]System.Configuration.Install.ComponentInstaller otherInstaller)
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance void Rollback(class [mscorlib]System.Collections.IDictionary savedState)
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance void Uninstall(class [mscorlib]System.Collections.IDictionary savedState)
+		{
+			ret
+		}
+		.property instance bool Authenticate()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessageQueueInstaller::get_Authenticate()
+			.set instance void System.Messaging.MessageQueueInstaller::set_Authenticate(bool)
+		}
+		.property instance int16 BasePriority()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(int32) = { int32(0) }
+			.get instance int16 System.Messaging.MessageQueueInstaller::get_BasePriority()
+			.set instance void System.Messaging.MessageQueueInstaller::set_BasePriority(int16)
+		}
+		.property instance valuetype [mscorlib]System.Guid Category()
+		{
+			.get instance valuetype [mscorlib]System.Guid System.Messaging.MessageQueueInstaller::get_Category()
+			.set instance void System.Messaging.MessageQueueInstaller::set_Category(valuetype [mscorlib]System.Guid)
+		}
+		.property instance valuetype System.Messaging.EncryptionRequired EncryptionRequired()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 23 53 79 73 74 65 6D 2E 4D 65 73 73 61 67 69 6E 67 2E 45 6E 63 72 79 70 74 69 6F 6E 52 65 71 75 69 72 65 64 01 00 00 00 00 00)
+			.get instance valuetype System.Messaging.EncryptionRequired System.Messaging.MessageQueueInstaller::get_EncryptionRequired()
+			.set instance void System.Messaging.MessageQueueInstaller::set_EncryptionRequired(valuetype System.Messaging.EncryptionRequired)
+		}
+		.property instance string Label()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string('') }
+			.get instance string System.Messaging.MessageQueueInstaller::get_Label()
+			.set instance void System.Messaging.MessageQueueInstaller::set_Label(string)
+		}
+		.property instance int64 MaximumJournalSize()
+		{
+			.get instance int64 System.Messaging.MessageQueueInstaller::get_MaximumJournalSize()
+			.set instance void System.Messaging.MessageQueueInstaller::set_MaximumJournalSize(int64)
+		}
+		.property instance int64 MaximumQueueSize()
+		{
+			.get instance int64 System.Messaging.MessageQueueInstaller::get_MaximumQueueSize()
+			.set instance void System.Messaging.MessageQueueInstaller::set_MaximumQueueSize(int64)
+		}
+		.property instance string MulticastAddress()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string('') }
+			.get instance string System.Messaging.MessageQueueInstaller::get_MulticastAddress()
+			.set instance void System.Messaging.MessageQueueInstaller::set_MulticastAddress(string)
+		}
+		.property instance string Path()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(string) = { string('') }
+			.get instance string System.Messaging.MessageQueueInstaller::get_Path()
+			.set instance void System.Messaging.MessageQueueInstaller::set_Path(string)
+		}
+		.property instance class System.Messaging.AccessControlList Permissions()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class System.Messaging.AccessControlList System.Messaging.MessageQueueInstaller::get_Permissions()
+			.set instance void System.Messaging.MessageQueueInstaller::set_Permissions(class System.Messaging.AccessControlList)
+		}
+		.property instance bool Transactional()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessageQueueInstaller::get_Transactional()
+			.set instance void System.Messaging.MessageQueueInstaller::set_Transactional(bool)
+		}
+		.property instance valuetype [System.Configuration.Install]System.Configuration.Install.UninstallAction UninstallAction()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(object) = (01 00 55 80 8D 53 79 73 74 65 6D 2E 43 6F 6E 66 69 67 75 72 61 74 69 6F 6E 2E 49 6E 73 74 61 6C 6C 2E 55 6E 69 6E 73 74 61 6C 6C 41 63 74 69 6F 6E 2C 20 53 79 73 74 65 6D 2E 43 6F 6E 66 69 67 75 72 61 74 69 6F 6E 2E 49 6E 73 74 61 6C 6C 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 30 33 66 35 66 37 66 31 31 64 35 30 61 33 61 00 00 00 00 00 00)
+			.get instance valuetype [System.Configuration.Install]System.Configuration.Install.UninstallAction System.Messaging.MessageQueueInstaller::get_UninstallAction()
+			.set instance void System.Messaging.MessageQueueInstaller::set_UninstallAction(valuetype [System.Configuration.Install]System.Configuration.Install.UninstallAction)
+		}
+		.property instance bool UseJournalQueue()
+		{
+			.custom instance void [System]System.ComponentModel.DefaultValueAttribute::.ctor(bool) = { bool(false) }
+			.get instance bool System.Messaging.MessageQueueInstaller::get_UseJournalQueue()
+			.set instance void System.Messaging.MessageQueueInstaller::set_UseJournalQueue(bool)
+		}
+	}
+	.class public sealed serializable MessageQueuePermission
+		extends [mscorlib]System.Security.CodeAccessPermission
+		implements [mscorlib]System.Security.Permissions.IUnrestrictedPermission
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(valuetype [mscorlib]System.Security.Permissions.PermissionState state)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(valuetype System.Messaging.MessageQueuePermissionAccess permissionAccess, string path)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(valuetype System.Messaging.MessageQueuePermissionAccess permissionAccess, string machineName, string label, string category)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(class System.Messaging.MessageQueuePermissionEntry[] permissionAccessEntries)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueuePermissionEntryCollection get_PermissionEntries()
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance class [mscorlib]System.Security.IPermission Copy()
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance void FromXml(class [mscorlib]System.Security.SecurityElement securityElement)
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance class [mscorlib]System.Security.IPermission Intersect(class [mscorlib]System.Security.IPermission target)
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance bool IsSubsetOf(class [mscorlib]System.Security.IPermission target)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance bool IsUnrestricted()
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance class [mscorlib]System.Security.SecurityElement ToXml()
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance class [mscorlib]System.Security.IPermission Union(class [mscorlib]System.Security.IPermission target)
+		{
+			ret
+		}
+		.property instance class System.Messaging.MessageQueuePermissionEntryCollection PermissionEntries()
+		{
+			.get instance class System.Messaging.MessageQueuePermissionEntryCollection System.Messaging.MessageQueuePermission::get_PermissionEntries()
+		}
+	}
+	.class public sealed serializable MessageQueuePermissionAccess
+		extends [mscorlib]System.Enum
+	{
+		.custom instance void [mscorlib]System.FlagsAttribute::.ctor() = { }
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessageQueuePermissionAccess Administer = int32(0x0000003E)
+		.field static public literal valuetype System.Messaging.MessageQueuePermissionAccess Browse = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.MessageQueuePermissionAccess None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.MessageQueuePermissionAccess Peek = int32(0x0000000A)
+		.field static public literal valuetype System.Messaging.MessageQueuePermissionAccess Receive = int32(0x0000001A)
+		.field static public literal valuetype System.Messaging.MessageQueuePermissionAccess Send = int32(0x00000006)
+	}
+	.class public serializable MessageQueuePermissionAttribute
+		extends [mscorlib]System.Security.Permissions.CodeAccessSecurityAttribute
+	{
+		.custom instance void [mscorlib]System.AttributeUsageAttribute::.ctor(valuetype [mscorlib]System.AttributeTargets) = { int32(621) property bool AllowMultiple = bool(true) property bool Inherited = bool(false) }
+		.method public hidebysig specialname 
+			instance void .ctor(valuetype [mscorlib]System.Security.Permissions.SecurityAction action)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Category()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Category(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Label(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_MachineName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_MachineName(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Path()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Path(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessageQueuePermissionAccess get_PermissionAccess()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_PermissionAccess(valuetype System.Messaging.MessageQueuePermissionAccess 'value')
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance class [mscorlib]System.Security.IPermission CreatePermission()
+		{
+			ret
+		}
+		.property instance string Category()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionAttribute::get_Category()
+			.set instance void System.Messaging.MessageQueuePermissionAttribute::set_Category(string)
+		}
+		.property instance string Label()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionAttribute::get_Label()
+			.set instance void System.Messaging.MessageQueuePermissionAttribute::set_Label(string)
+		}
+		.property instance string MachineName()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionAttribute::get_MachineName()
+			.set instance void System.Messaging.MessageQueuePermissionAttribute::set_MachineName(string)
+		}
+		.property instance string Path()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionAttribute::get_Path()
+			.set instance void System.Messaging.MessageQueuePermissionAttribute::set_Path(string)
+		}
+		.property instance valuetype System.Messaging.MessageQueuePermissionAccess PermissionAccess()
+		{
+			.get instance valuetype System.Messaging.MessageQueuePermissionAccess System.Messaging.MessageQueuePermissionAttribute::get_PermissionAccess()
+			.set instance void System.Messaging.MessageQueuePermissionAttribute::set_PermissionAccess(valuetype System.Messaging.MessageQueuePermissionAccess)
+		}
+	}
+	.class public serializable MessageQueuePermissionEntry
+		extends [mscorlib]System.Object
+	{
+		.method public hidebysig specialname 
+			instance void .ctor(valuetype System.Messaging.MessageQueuePermissionAccess permissionAccess, string path)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(valuetype System.Messaging.MessageQueuePermissionAccess permissionAccess, string machineName, string label, string category)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Category()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Label()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_MachineName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Path()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessageQueuePermissionAccess get_PermissionAccess()
+		{
+			ret
+		}
+		.property instance string Category()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionEntry::get_Category()
+		}
+		.property instance string Label()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionEntry::get_Label()
+		}
+		.property instance string MachineName()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionEntry::get_MachineName()
+		}
+		.property instance string Path()
+		{
+			.get instance string System.Messaging.MessageQueuePermissionEntry::get_Path()
+		}
+		.property instance valuetype System.Messaging.MessageQueuePermissionAccess PermissionAccess()
+		{
+			.get instance valuetype System.Messaging.MessageQueuePermissionAccess System.Messaging.MessageQueuePermissionEntry::get_PermissionAccess()
+		}
+	}
+	.class public serializable MessageQueuePermissionEntryCollection
+		extends [mscorlib]System.Collections.CollectionBase
+	{
+		.custom instance void [mscorlib]System.Reflection.DefaultMemberAttribute::.ctor(string) = { string('Item') }
+		.method public hidebysig specialname 
+			instance class System.Messaging.MessageQueuePermissionEntry get_Item(int32 index)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Item(int32 index, class System.Messaging.MessageQueuePermissionEntry 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance int32 Add(class System.Messaging.MessageQueuePermissionEntry 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void AddRange(class System.Messaging.MessageQueuePermissionEntry[] 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void AddRange(class System.Messaging.MessageQueuePermissionEntryCollection 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance bool Contains(class System.Messaging.MessageQueuePermissionEntry 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void CopyTo(class System.Messaging.MessageQueuePermissionEntry[] 'array', int32 index)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance int32 IndexOf(class System.Messaging.MessageQueuePermissionEntry 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Insert(int32 index, class System.Messaging.MessageQueuePermissionEntry 'value')
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Remove(class System.Messaging.MessageQueuePermissionEntry 'value')
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void OnClear()
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void OnInsert(int32 index, object 'value')
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void OnRemove(int32 index, object 'value')
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void OnSet(int32 index, object oldValue, object newValue)
+		{
+			ret
+		}
+		.property instance class System.Messaging.MessageQueuePermissionEntry Item(int32)
+		{
+			.get instance class System.Messaging.MessageQueuePermissionEntry System.Messaging.MessageQueuePermissionEntryCollection::get_Item(int32)
+			.set instance void System.Messaging.MessageQueuePermissionEntryCollection::set_Item(int32, class System.Messaging.MessageQueuePermissionEntry)
+		}
+	}
+	.class public MessageQueueTransaction
+		extends [mscorlib]System.Object
+		implements [mscorlib]System.IDisposable
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.MessageQueueTransactionStatus get_Status()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Abort()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Begin()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void Commit()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Dispose()
+		{
+			ret
+		}
+		.method family virtual hidebysig newslot 
+			instance void Dispose(bool disposing)
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void Finalize()
+		{
+			.override [mscorlib]System.Object::Finalize
+			ret
+		}
+		.property instance valuetype System.Messaging.MessageQueueTransactionStatus Status()
+		{
+			.get instance valuetype System.Messaging.MessageQueueTransactionStatus System.Messaging.MessageQueueTransaction::get_Status()
+		}
+	}
+	.class public sealed MessageQueueTransactionStatus
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessageQueueTransactionStatus Aborted = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.MessageQueueTransactionStatus Committed = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.MessageQueueTransactionStatus Initialized = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.MessageQueueTransactionStatus Pending = int32(0x00000003)
+	}
+	.class public sealed MessageQueueTransactionType
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessageQueueTransactionType Automatic = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.MessageQueueTransactionType None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.MessageQueueTransactionType Single = int32(0x00000003)
+	}
+	.class public sealed MessageType
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.MessageType Acknowledgment = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.MessageType Normal = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.MessageType Report = int32(0x00000003)
+	}
+	.class public MessagingDescriptionAttribute
+		extends [System]System.ComponentModel.DescriptionAttribute
+	{
+		.custom instance void [mscorlib]System.AttributeUsageAttribute::.ctor(valuetype [mscorlib]System.AttributeTargets) = { int32(32767) }
+		.method public hidebysig specialname 
+			instance void .ctor(string description)
+		{
+			ret
+		}
+		.method public virtual hidebysig specialname 
+			instance string get_Description()
+		{
+			.permissionset linkcheck = (2E 01 80 80 53 79 73 74 65 6D 2E 53 65 63 75 72 69 74 79 2E 50 65 72 6D 69 73 73 69 6F 6E 73 2E 48 6F 73 74 50 72 6F 74 65 63 74 69 6F 6E 41 74 74 72 69 62 75 74 65 2C 20 6D 73 63 6F 72 6C 69 62 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 37 37 61 35 63 35 36 31 39 33 34 65 30 38 39 10 01 54 02 0B 53 68 61 72 65 64 53 74 61 74 65 01)
+			ret
+		}
+		.property instance string Description()
+		{
+			.get instance string System.Messaging.MessagingDescriptionAttribute::get_Description()
+		}
+	}
+	.class public sealed PeekAction
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.PeekAction Current = int32(0x80000000)
+		.field static public literal valuetype System.Messaging.PeekAction Next = int32(0x80000001)
+	}
+	.class public PeekCompletedEventArgs
+		extends [mscorlib]System.EventArgs
+	{
+		.method public hidebysig specialname 
+			instance class [mscorlib]System.IAsyncResult get_AsyncResult()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AsyncResult(class [mscorlib]System.IAsyncResult 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.Message get_Message()
+		{
+			ret
+		}
+		.property instance class [mscorlib]System.IAsyncResult AsyncResult()
+		{
+			.get instance class [mscorlib]System.IAsyncResult System.Messaging.PeekCompletedEventArgs::get_AsyncResult()
+			.set instance void System.Messaging.PeekCompletedEventArgs::set_AsyncResult(class [mscorlib]System.IAsyncResult)
+		}
+		.property instance class System.Messaging.Message Message()
+		{
+			.get instance class System.Messaging.Message System.Messaging.PeekCompletedEventArgs::get_Message()
+		}
+	}
+	.class public sealed PeekCompletedEventHandler
+		extends [mscorlib]System.MulticastDelegate
+	{
+		.method public hidebysig specialname 
+			instance void .ctor(object 'object', native int 'method')
+			runtime 
+		{
+		}
+		.method public virtual hidebysig newslot 
+			instance void Invoke(object sender, class System.Messaging.PeekCompletedEventArgs e)
+			runtime 
+		{
+		}
+		.method public virtual hidebysig newslot 
+			instance class [mscorlib]System.IAsyncResult BeginInvoke(object sender, class System.Messaging.PeekCompletedEventArgs e, class [mscorlib]System.AsyncCallback callback, object 'object')
+			runtime 
+		{
+		}
+		.method public virtual hidebysig newslot 
+			instance void EndInvoke(class [mscorlib]System.IAsyncResult result)
+			runtime 
+		{
+		}
+	}
+	.class public sealed QueueAccessMode
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.QueueAccessMode Peek = int32(0x00000020)
+		.field static public literal valuetype System.Messaging.QueueAccessMode PeekAndAdmin = int32(0x000000A0)
+		.field static public literal valuetype System.Messaging.QueueAccessMode Receive = int32(0x00000001)
+		.field static public literal valuetype System.Messaging.QueueAccessMode ReceiveAndAdmin = int32(0x00000081)
+		.field static public literal valuetype System.Messaging.QueueAccessMode Send = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.QueueAccessMode SendAndReceive = int32(0x00000003)
+	}
+	.class public ReceiveCompletedEventArgs
+		extends [mscorlib]System.EventArgs
+	{
+		.method public hidebysig specialname 
+			instance class [mscorlib]System.IAsyncResult get_AsyncResult()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_AsyncResult(class [mscorlib]System.IAsyncResult 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class System.Messaging.Message get_Message()
+		{
+			ret
+		}
+		.property instance class [mscorlib]System.IAsyncResult AsyncResult()
+		{
+			.get instance class [mscorlib]System.IAsyncResult System.Messaging.ReceiveCompletedEventArgs::get_AsyncResult()
+			.set instance void System.Messaging.ReceiveCompletedEventArgs::set_AsyncResult(class [mscorlib]System.IAsyncResult)
+		}
+		.property instance class System.Messaging.Message Message()
+		{
+			.get instance class System.Messaging.Message System.Messaging.ReceiveCompletedEventArgs::get_Message()
+		}
+	}
+	.class public sealed ReceiveCompletedEventHandler
+		extends [mscorlib]System.MulticastDelegate
+	{
+		.method public hidebysig specialname 
+			instance void .ctor(object 'object', native int 'method')
+			runtime 
+		{
+		}
+		.method public virtual hidebysig newslot 
+			instance void Invoke(object sender, class System.Messaging.ReceiveCompletedEventArgs e)
+			runtime 
+		{
+		}
+		.method public virtual hidebysig newslot 
+			instance class [mscorlib]System.IAsyncResult BeginInvoke(object sender, class System.Messaging.ReceiveCompletedEventArgs e, class [mscorlib]System.AsyncCallback callback, object 'object')
+			runtime 
+		{
+		}
+		.method public virtual hidebysig newslot 
+			instance void EndInvoke(class [mscorlib]System.IAsyncResult result)
+			runtime 
+		{
+		}
+	}
+	.class public sealed SecurityContext
+		extends [mscorlib]System.Object
+		implements [mscorlib]System.IDisposable
+	{
+		.method public final virtual hidebysig newslot 
+			instance void Dispose()
+		{
+			ret
+		}
+	}
+	.class public sealed StandardAccessRights
+		extends [mscorlib]System.Enum
+	{
+		.custom instance void [mscorlib]System.FlagsAttribute::.ctor() = { }
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.StandardAccessRights All = int32(0x001F0000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights Delete = int32(0x00010000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights Execute = int32(0x00020000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights ModifyOwner = int32(0x00080000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights None = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights Read = int32(0x00020000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights ReadSecurity = int32(0x00020000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights Required = int32(0x000D0000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights Synchronize = int32(0x00100000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights Write = int32(0x00020000)
+		.field static public literal valuetype System.Messaging.StandardAccessRights WriteSecurity = int32(0x00040000)
+	}
+	.class public Trustee
+		extends [mscorlib]System.Object
+	{
+		.method public hidebysig specialname 
+			instance string get_Name()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_Name(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_SystemName()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_SystemName(string 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance valuetype System.Messaging.TrusteeType get_TrusteeType()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TrusteeType(valuetype System.Messaging.TrusteeType 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string name)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string name, string systemName)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string name, string systemName, valuetype System.Messaging.TrusteeType trusteeType)
+		{
+			ret
+		}
+		.property instance string Name()
+		{
+			.get instance string System.Messaging.Trustee::get_Name()
+			.set instance void System.Messaging.Trustee::set_Name(string)
+		}
+		.property instance string SystemName()
+		{
+			.get instance string System.Messaging.Trustee::get_SystemName()
+			.set instance void System.Messaging.Trustee::set_SystemName(string)
+		}
+		.property instance valuetype System.Messaging.TrusteeType TrusteeType()
+		{
+			.get instance valuetype System.Messaging.TrusteeType System.Messaging.Trustee::get_TrusteeType()
+			.set instance void System.Messaging.Trustee::set_TrusteeType(valuetype System.Messaging.TrusteeType)
+		}
+	}
+	.class public sealed TrusteeType
+		extends [mscorlib]System.Enum
+	{
+		.field public rtspecialname specialname int32 value__
+		.field static public literal valuetype System.Messaging.TrusteeType Alias = int32(0x00000004)
+		.field static public literal valuetype System.Messaging.TrusteeType Computer = int32(0x00000005)
+		.field static public literal valuetype System.Messaging.TrusteeType Domain = int32(0x00000003)
+		.field static public literal valuetype System.Messaging.TrusteeType Group = int32(0x00000002)
+		.field static public literal valuetype System.Messaging.TrusteeType Unknown = int32(0x00000000)
+		.field static public literal valuetype System.Messaging.TrusteeType User = int32(0x00000001)
+	}
+	.class public XmlMessageFormatter
+		extends [mscorlib]System.Object
+		implements System.Messaging.IMessageFormatter, [mscorlib]System.ICloneable
+	{
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(string[] targetTypeNames)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(class [mscorlib]System.Type[] targetTypes)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string[] get_TargetTypeNames()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TargetTypeNames(string[] 'value')
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance class [mscorlib]System.Type[] get_TargetTypes()
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void set_TargetTypes(class [mscorlib]System.Type[] 'value')
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance bool CanRead(class System.Messaging.Message message)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance object Clone()
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance object Read(class System.Messaging.Message message)
+		{
+			ret
+		}
+		.method public final virtual hidebysig newslot 
+			instance void Write(class System.Messaging.Message message, object obj)
+		{
+			ret
+		}
+		.property instance string[] TargetTypeNames()
+		{
+			.get instance string[] System.Messaging.XmlMessageFormatter::get_TargetTypeNames()
+			.set instance void System.Messaging.XmlMessageFormatter::set_TargetTypeNames(string[])
+		}
+		.property instance class [mscorlib]System.Type[] TargetTypes()
+		{
+			.custom instance void [System]System.ComponentModel.BrowsableAttribute::.ctor(bool) = { bool(false) }
+			.custom instance void [System]System.ComponentModel.DesignerSerializationVisibilityAttribute::.ctor(valuetype [System]System.ComponentModel.DesignerSerializationVisibility) = { int32(0) }
+			.get instance class [mscorlib]System.Type[] System.Messaging.XmlMessageFormatter::get_TargetTypes()
+			.set instance void System.Messaging.XmlMessageFormatter::set_TargetTypes(class [mscorlib]System.Type[])
+		}
+	}
+}
+.namespace System.Messaging.Design
+{
+	.class public QueuePathDialog
+		extends [System.Windows.Forms]System.Windows.Forms.Form
+	{
+		.method public hidebysig specialname 
+			instance void .ctor(class [mscorlib]System.IServiceProvider provider)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor(class [System.Windows.Forms]System.Windows.Forms.Design.IUIService uiService)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance string get_Path()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void ChoosePath()
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void DoubleClicked(object source, class [mscorlib]System.EventArgs e)
+		{
+			ret
+		}
+		.method public hidebysig 
+			instance void SelectQueue(class System.Messaging.MessageQueue queue)
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void OnFormClosing(class [System.Windows.Forms]System.Windows.Forms.FormClosingEventArgs e)
+		{
+			ret
+		}
+		.method family virtual hidebysig 
+			instance void OnHandleCreated(class [mscorlib]System.EventArgs e)
+		{
+			ret
+		}
+		.property instance string Path()
+		{
+			.get instance string System.Messaging.Design.QueuePathDialog::get_Path()
+		}
+	}
+	.class public QueuePathEditor
+		extends [System.Drawing]System.Drawing.Design.UITypeEditor
+	{
+		.permissionset inheritcheck = (2E 01 7F 53 79 73 74 65 6D 2E 53 65 63 75 72 69 74 79 2E 50 65 72 6D 69 73 73 69 6F 6E 73 2E 50 65 72 6D 69 73 73 69 6F 6E 53 65 74 41 74 74 72 69 62 75 74 65 2C 20 6D 73 63 6F 72 6C 69 62 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 37 37 61 35 63 35 36 31 39 33 34 65 30 38 39 12 01 54 0E 04 4E 61 6D 65 09 46 75 6C 6C 54 72 75 73 74)
+		.permissionset linkcheck = (2E 01 7F 53 79 73 74 65 6D 2E 53 65 63 75 72 69 74 79 2E 50 65 72 6D 69 73 73 69 6F 6E 73 2E 50 65 72 6D 69 73 73 69 6F 6E 53 65 74 41 74 74 72 69 62 75 74 65 2C 20 6D 73 63 6F 72 6C 69 62 2C 20 56 65 72 73 69 6F 6E 3D 34 2E 30 2E 30 2E 30 2C 20 43 75 6C 74 75 72 65 3D 6E 65 75 74 72 61 6C 2C 20 50 75 62 6C 69 63 4B 65 79 54 6F 6B 65 6E 3D 62 37 37 61 35 63 35 36 31 39 33 34 65 30 38 39 12 01 54 0E 04 4E 61 6D 65 09 46 75 6C 6C 54 72 75 73 74)
+		.method public virtual hidebysig 
+			instance object EditValue(class [System]System.ComponentModel.ITypeDescriptorContext context, class [mscorlib]System.IServiceProvider provider, object 'value')
+		{
+			ret
+		}
+		.method public virtual hidebysig 
+			instance valuetype [System.Drawing]System.Drawing.Design.UITypeEditorEditStyle GetEditStyle(class [System]System.ComponentModel.ITypeDescriptorContext context)
+		{
+			ret
+		}
+		.method public hidebysig specialname 
+			instance void .ctor()
+		{
+			ret
+		}
+	}
+}
