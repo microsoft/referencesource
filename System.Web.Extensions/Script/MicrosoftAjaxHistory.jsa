@@ -1,0 +1,13 @@
+//!-----------------------------------------------------------------------
+//! Copyright (C) Microsoft Corporation. All rights reserved.
+//!-----------------------------------------------------------------------
+//! MicrosoftAjaxHistory.js
+//! Microsoft AJAX Framework Application History.
+
+//!/ <reference name="MicrosoftAjaxComponentModel.js" />
+//!/ <reference name="MicrosoftAjaxSerialization.js" />
+
+Type._registerScript("MicrosoftAjaxHistory.js", ["MicrosoftAjaxComponentModel.js", "MicrosoftAjaxSerialization.js"]);
+
+#include "Sys\HistoryEventArgs.js"
+#include "Sys\Application.History.js"

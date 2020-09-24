@@ -1,0 +1,11 @@
+//!-----------------------------------------------------------------------
+//! Copyright (C) Microsoft Corporation. All rights reserved.
+//!-----------------------------------------------------------------------
+
+// **********************************************
+// ** Date.HijriCalendar.js
+// **********************************************
+
+Type._registerScript("Date.HijriCalendar.js", ["MicrosoftAjaxGlobalization.js"]);
+
+#include "Date.HijriCalendar.js"
