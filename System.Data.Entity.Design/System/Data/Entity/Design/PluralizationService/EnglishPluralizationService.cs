@@ -164,7 +164,7 @@ namespace System.Data.Entity.Design.PluralizationServices
                         {"stylus", "styli"}, {"uterus", "uteri"}, {"stimulus", "stimuli"}, {"apparatus", "apparatus"}, 
                         {"impetus", "impetus"}, {"prospectus", "prospectus"}, {"cantus", "cantus"}, 
                         {"nexus", "nexus"}, {"sinus", "sinus"}, {"coitus", "coitus"}, {"plexus", "plexus"}, 
-                        {"status", "status"}, {"hiatus", "hiatus"}, {"afreet", "afreeti"}, 
+                        {"status", "statuses"}, {"hiatus", "hiatus"}, {"afreet", "afreeti"}, 
                         {"afrit", "afriti"}, {"efreet", "efreeti"}, {"cherub", "cherubim"}, 
                         {"goy", "goyim"}, {"seraph", "seraphim"}, {"alumnus", "alumni"}
                     };
