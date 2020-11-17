@@ -1,0 +1,41 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  <PropertyGroup>
+    <AssemblyName>xsd</AssemblyName>
+    <OutputType>EXE</OutputType>
+
+    <GenerateAssemblyRefs>true</GenerateAssemblyRefs>
+    <PlatformSpecificBuild>true</PlatformSpecificBuild>
+    <RCSuppressManifest>true</RCSuppressManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TextStringResource Include="XsdRes.txt">
+      <ResFile>XsdRes</ResFile>
+      <Sealed>true</Sealed>
+      <Visibility>internal</Visibility>
+      <GenerateResource>true</GenerateResource>
+      <FullClassName>Microsoft.DevApps.WebServices.XsdResources.Res</FullClassName>
+    </TextStringResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Microsoft\DevApps\Xsd\xsd.cs" />
+  </ItemGroup>
+
+
+  <PropertyGroup>
+
+    <!-- unlike with sources file, the project file is not picking up $(CLDfines) equivalent -->
+    <RawClDefines Condition="'$(BuildArchitecture)' == 'amd64'">_AMD64_</RawClDefines>
+    <RawClDefines Condition="'$(BuildArchitecture)' == 'ia64'">_IA64_=1</RawClDefines>
+    <RawClDefines Condition="'$(BuildArchitecture)' == 'i386'">_X86_=1</RawClDefines>
+  </PropertyGroup>
+</Project>
