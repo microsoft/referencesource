@@ -1,0 +1,117 @@
+
+; Resources for System.Configuration.Install component
+; Copyright (c) 2000 Microsoft Corporation
+
+
+; Exceptions messages
+
+InstallAbort=Aborting installation for {0}.
+InstallException=An exception occurred while trying to find the installers in the {0} assembly.
+InstallLogContent=See the contents of the log file for the {0} assembly's progress.
+InstallFileLocation=The file is located at {0}.
+InstallLogParameters=Affected parameters are:
+InstallLogNone=(none)
+InstallNoPublicInstallers=No public installers with the RunInstallerAttribute.Yes attribute could be found in the {0} assembly.
+InstallFileNotFound=The {0} file could not be found.
+InstallNoInstallerTypes=Unable to get installer types in the {0} assembly.
+InstallCannotCreateInstance=Unable to create an instance of the {0} installer type.
+InstallBadParent=An installer's parent cannot be equal to itself.
+InstallRecursiveParent=You cannot set an installer's Parent to an installer that creates a circular dependency.
+InstallNullParameter=The {0} parameter cannot be null.
+InstallDictionaryMissingValues=The {0} dictionary does not contain the expected values and might have been corrupted.
+InstallDictionaryCorrupted=The {0} dictionary contains inconsistent data and might have been corrupted.
+InstallCommitException=An exception occurred during the Commit phase of the installation. This exception will be ignored and installation will continue. However, the application might not function correctly after installation is complete.
+InstallRollbackException=An exception occurred during the Rollback phase of the installation. This exception will be ignored and the rollback will continue. However, the machine might not fully revert to its initial state after the rollback is complete.
+InstallUninstallException=An exception occurred while uninstalling. This exception will be ignored and the uninstall will continue. However, the application might not be fully uninstalled after the uninstall is complete.
+InstallEventException=An exception occurred in the {0} event handler of {1}.
+InstallInstallerNotFound=The given item could not be found in the collection.
+InstallSeverityError=Error!
+InstallSeverityWarning=Warning!
+InstallLogInner=The inner exception {0} was thrown with the following error message: {1}.
+InstallLogError=An exception occurred in the {1} event handler of {2}.
+InstallLogCommitException=An exception occurred during the Commit phase of the {0} installer.
+InstallLogRollbackException=An exception occurred during the Rollback phase of the {0} installer.
+InstallLogUninstallException=An exception occurred during the uninstallation of the {0} installer.
+InstallRollback=The installation failed, and the rollback has been performed.
+InstallAssemblyHelp=Options for installing any assembly:\r\n/AssemblyName\r\n The assembly parameter will be interpreted as an assembly name (Name,\r\n Locale, PublicKeyToken, Version). The default is to interpret the\r\n assembly parameter as the filename of the assembly on disk.\r\n\r\n/LogFile=[filename]\r\n File to write progress to. If empty, do not write log. Default\r\n is <assemblyname>.InstallLog\r\n\r\n/LogToConsole={true|false}\r\n If false, suppresses output to the console.\r\n\r\n/ShowCallStack\r\n If an exception occurs at any point during installation, the call\r\n stack will be printed to the log.\r\n\r\n/InstallStateDir=[directoryname]\r\n Directory in which the .InstallState file will be stored. Default\r\n is the directory of the assembly.
+InstallActivityRollingBack=Rolling back assembly '{0}'.
+InstallActivityUninstalling=Uninstalling assembly '{0}'.
+InstallActivityCommitting=Committing assembly '{0}'.
+InstallActivityInstalling=Installing assembly '{0}'.
+InstallInfoTransacted=Running a transacted installation.
+InstallInfoBeginInstall=Beginning the Install phase of the installation.
+InstallInfoException=An exception occurred during the Install phase.
+InstallInfoBeginRollback=The Rollback phase of the installation is beginning.
+InstallInfoRollbackDone=The Rollback phase completed successfully.
+InstallInfoBeginCommit=The Install phase completed successfully, and the Commit phase is beginning.
+InstallInfoCommitDone=The Commit phase completed successfully.
+InstallInfoTransactedDone=The transacted install has completed.
+InstallInfoBeginUninstall=The uninstall is beginning.
+InstallInfoUninstallDone=The uninstall has completed.
+InstallSavedStateFileCorruptedWarning=The file containing the saved state for the {0} assembly, located at {1}, could not be read, and the file might have been corrupted. The uninstall will continue without the saved information.
+IncompleteEventLog=Log and Source properties must be set on the EventLog to create an installer.
+IncompletePerformanceCounter=CategoryName property must be set on the PerformanceCounter to create an installer.
+PerfInvalidCategoryName=Invalid category name. Its length must be in the range between '{0}' and '{1}'. Double quotes, control characters and leading or trailing spaces are not allowed.
+NotCustomPerformanceCategory=You cannot create an installer for a system or a nonextensible PerformanceCategory.
+RemovingInstallState=Remove InstallState file because there are no installers.
+InstallUnableDeleteFile=Unable to delete file {0}.
+InstallInitializeException=Exception occurred while initializing the installation:\r\n{0}: {1}.
+InstallFileDoesntExist=File {0} does not exist.
+InstallFileDoesntExistCommandLine=File {0} does not exist. If this parameter is used as an installer option, the format must be /key=[value].
+WinNTRequired=Feature requires Windows NT.
+
+; string constants
+
+WrappedExceptionSource=Wrapped Exception from System.Configuration.Install.Installer
+
+InvalidProperty=Invalid value {1} for property {0}
+InstallRollbackNtRun=Running Rollback phase of non-transacted install.
+InstallCommitNtRun=Running Commit phase of non-transacted install.
+InstallUninstallNtRun=Running Uninstall phase of non-transacted install
+InstallInstallNtRun=Running Install phase of non-transacted install
+
+InstallHelpMessageStart=Usage: InstallUtil [/u | /uninstall] [option [...]] assembly [[option [...]] assembly] [...]]\r\n\r\nInstallUtil executes the installers in each given assembly.\r\nIf the /u or /uninstall switch is specified, it uninstalls\r\nthe assemblies, otherwise it installs them. Unlike other\r\noptions, /u applies to all assemblies, regardless of where it\r\nappears on the command line.\r\n\r\nInstallation is done in a transactioned way: If one of the\r\nassemblies fails to install, the installations of all other\r\nassemblies are rolled back. Uninstall is not transactioned.\r\n\r\nOptions take the form /switch=[value]. Any option that occurs\r\nbefore the name of an assembly will apply to that assembly's\r\ninstallation. Options are cumulative but overridable - options\r\nspecified for one assembly will apply to the next as well unless\r\nthe option is specified with a new value. The default for all\r\noptions is empty or false unless otherwise specified.\r\n\r\nOptions recognized:
+
+InstallHelpMessageEnd=\r\nIndividual installers used within an assembly may recognize other\r\noptions. To learn about these options, run InstallUtil with the paths\r\nof the assemblies on the command line along with the /? or /help option.\r\n
+CantAddSelf=An installer cannot be added to its own collection.
+
+
+; property window descriptions
+Desc_Installer_HelpText=The help text for all the installers in the installer collection
+Desc_Installer_Parent=The installer containing the collection that this installer belongs to
+Desc_AssemblyInstaller_Assembly=The assembly to install
+Desc_AssemblyInstaller_CommandLine=The command line to use when creating a new InstallContext object for the assembly's installation
+Desc_AssemblyInstaller_Path=The path of the assembly to install
+Desc_AssemblyInstaller_UseNewContext=Value indicating whether to create a new InstallContext object for the assembly's installation
+
+
+; EventLogInstaller strings
+NotAnEventLog=EventLogInstaller cannot copy properties from components that are not EventLogs.
+CreatingEventLog=Creating EventLog source {0} in log {1}...
+RestoringEventLog=Restoring event log to previous state for source {0}.
+RemovingEventLog=Removing EventLog source {0}.
+DeletingEventLog=Deleting event log {0}.
+LocalSourceNotRegisteredWarning=Warning: The source {0} is not registered on the local machine.
+Desc_CategoryResourceFile=The path to the dll containing category names. 
+Desc_CategoryCount=The number of categories contained in the CategoryResourceFile. 
+Desc_Log=The name of the log to read from and write to.
+Desc_MessageResourceFile=The path to the resource dll containing event messages.
+Desc_ParameterResourceFile=The path to the dll containing the parameter replacement strings.
+Desc_Source=The application name (source name) to use when writing to the event log.
+Desc_UninstallAction=The action to take on the Log on uninstall. 
+
+; PerformanceCounterInstaller strings
+NotAPerformanceCounter=PerformanceCounterInstaller can only be used to install objects of type PerformanceCounter.
+NewCategory=PerformanceCounterInstaller can only install multiple counters in the same category. To install this counter, create a new instance of PerformanceCounterInstaller.
+RestoringPerformanceCounter=Restoring performance counter data to previous state for performance counter category {0}.
+CreatingPerformanceCounter=Creating performance counter category {0}.
+RemovingPerformanceCounter=Removing performance counter category {0}.
+PCCategoryName=Category name of the performance counter object.
+PCCounterName=Counter name of the performance counter object.
+PCInstanceName=Instance name of the performance counter object.
+PCMachineName=Specifies the machine from where to read the performance data.
+PCI_CategoryHelp=Help information about this category.
+PCI_Counters=The set of counters to install with this category.
+PCI_IsMultiInstance=Whether this category is a multi-instance or single-instance category.
+PCI_UninstallAction=Determines behavior of the installer at uninstall time.
+
