@@ -92,8 +92,8 @@ namespace System.Web {
 
         public override HttpStaticObjectsCollectionBase StaticObjects {
             get {
-                // method returns an empty collection rather than null
-                return new HttpStaticObjectsCollectionWrapper(_session.StaticObjects);
+                // HttpStaticObjectsCollectionWrapper will throw ArgumentNullException if _session.StaticObjects is null
+                return new HttpStaticObjectsCollectionWrapper(_session.StaticObjects ?? new HttpStaticObjectsCollection());
             }
         }
 
