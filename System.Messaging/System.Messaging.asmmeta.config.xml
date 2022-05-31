@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<root>
-    <assembly preserveInternals="0" publish="$(ADP_REF_PATH2)\System.Messaging.dll"/>
-    <features useAssemblyInfo="0" respectInternalsVisibleTo="0" mergableCustomAttributes="1" suppressUnneededQuotes="1" />
-</root>

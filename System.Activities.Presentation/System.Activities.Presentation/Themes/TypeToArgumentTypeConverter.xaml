@@ -1,6 +1,0 @@
-<? Copyright (c) Microsoft Corporation.  All rights reserved.?>
-<ResourceDictionary x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:System.Activities.Presentation.View">
-    <local:TypeToArgumentTypeConverter x:Uid="local:TypeToArgumentTypeConverter_1" x:Key="TypeToArgumentTypeConverter"/>
-</ResourceDictionary>

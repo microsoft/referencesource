@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<root phase="2">
-  <assembly publish="$(NDP_FX_REF_PATH)\System.Web.RegularExpressions.dll" preserveInternals="1"/>
-  <exclude type="FXAssembly" />
-  <exclude type="ThisAssembly" />
-  <exclude type="AssemblyRef" />
-</root>
