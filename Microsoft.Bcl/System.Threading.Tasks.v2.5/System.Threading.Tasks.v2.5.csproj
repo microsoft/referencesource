@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{56E3CCC8-C2C4-422F-942D-A8058AA43756}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>System</RootNamespace>
+    <AssemblyName>System.Threading.Tasks</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile37</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <BclVersion25>true</BclVersion25>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;VARIANCE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\System.Threading.Tasks.xml</DocumentationFile>
+    <CodeAnalysisRuleSet>SecurityRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;VARIANCE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\System.Threading.Tasks.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <ExternallyShipping>true</ExternallyShipping>
+    <AssemblyOriginatorKeyFile>..\CodePlexKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .NET Framework is automatically included -->
+    <ProjectReference Include="..\System.Runtime.v2.5\System.Runtime.v2.5.csproj">
+      <Project>{64a2361b-9b62-4d21-8012-e3317696327e}</Project>
+      <Name>System.Runtime.v2.5</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Lightup\ExecutionContextLightup.cs">
+      <Link>System\Lightup\ExecutionContextLightup.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Lightup\Lightup.cs">
+      <Link>System\Lightup\Lightup.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Lightup\LightupType.cs">
+      <Link>System\Lightup\LightupType.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\AsyncMethodBuilderCore.cs">
+      <Link>System\Runtime\CompilerServices\AsyncMethodBuilderCore.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\AsyncMethodTaskCacheOfTResult.cs">
+      <Link>System\Runtime\CompilerServices\AsyncMethodTaskCacheOfTResult.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\AsyncServices.cs">
+      <Link>System\Runtime\CompilerServices\AsyncServices.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\AsyncTaskMethodBuilder.cs">
+      <Link>System\Runtime\CompilerServices\AsyncTaskMethodBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\AsyncTaskMethodBuilderOfTResult.cs">
+      <Link>System\Runtime\CompilerServices\AsyncTaskMethodBuilderOfTResult.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\AsyncVoidMethodBuilder.cs">
+      <Link>System\Runtime\CompilerServices\AsyncVoidMethodBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\IAsyncMethodBuilder.cs">
+      <Link>System\Runtime\CompilerServices\IAsyncMethodBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\IAsyncStateMachine.cs">
+      <Link>System\Runtime\CompilerServices\IAsyncStateMachine.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\ICriticalNotifyCompletion.cs">
+      <Link>System\Runtime\CompilerServices\ICriticalNotifyCompletion.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\INotifyCompletion.cs">
+      <Link>System\Runtime\CompilerServices\INotifyCompletion.cs</Link>
+    </Compile>
+    <Compile Include="..\System.Threading.Tasks.v1.5\System\Runtime\CompilerServices\VoidTaskResult.cs">
+      <Link>System\Runtime\CompilerServices\VoidTaskResult.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
