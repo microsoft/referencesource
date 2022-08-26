@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{7835b9e8-7e4e-42bc-ba8e-09309362af70}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.ServiceModel.Internals</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="System\Runtime\ActionItem.cs" />
+    <Compile Include="System\Runtime\AssertHelper.cs" />
+    <Compile Include="System\Runtime\AsyncCompletionResult.cs" />
+    <Compile Include="System\Runtime\AsyncEventArgs.cs" />
+    <Compile Include="System\Runtime\AsyncEventArgsCallback.cs" />
+    <Compile Include="System\Runtime\AsyncResult.cs" />
+    <Compile Include="System\Runtime\AsyncWaitHandle.cs" />
+    <Compile Include="System\Runtime\BackoffTimeoutHelper.cs" />
+    <Compile Include="System\Runtime\BufferedOutputStream.cs" />
+    <Compile Include="System\Runtime\CallbackException.cs" />
+    <Compile Include="System\Runtime\Collections\HopperCache.cs" />
+    <Compile Include="System\Runtime\Collections\NullableKeyDictionary.cs" />
+    <Compile Include="System\Runtime\Collections\ObjectCache.cs" />
+    <Compile Include="System\Runtime\Collections\ObjectCacheItem.cs" />
+    <Compile Include="System\Runtime\Collections\ObjectCacheSettings.cs" />
+    <Compile Include="System\Runtime\Collections\OrderedDictionary.cs" />
+    <Compile Include="System\Runtime\Collections\ValidatingCollection.cs" />
+    <Compile Include="System\Runtime\CompletedAsyncResult.cs" />
+    <Compile Include="System\Runtime\ComputerNameFormat.cs" />
+    <Compile Include="System\Runtime\Diagnostics\ActivityControl.cs" />
+    <Compile Include="System\Runtime\Diagnostics\DiagnosticEventProvider.cs" />
+    <Compile Include="System\Runtime\Diagnostics\DiagnosticTraceBase.cs" />
+    <Compile Include="System\Runtime\Diagnostics\DiagnosticTraceSource.cs" />
+    <Compile Include="System\Runtime\Diagnostics\DictionaryTraceRecord.cs" />
+    <Compile Include="System\Runtime\Diagnostics\EtwDiagnosticTrace.cs" />
+    <Compile Include="System\Runtime\Diagnostics\EtwProvider.cs" />
+    <Compile Include="System\Runtime\Diagnostics\EventDescriptor.cs" />
+    <Compile Include="System\Runtime\Diagnostics\EventLogCategory.cs" />
+    <Compile Include="System\Runtime\Diagnostics\EventLogEventId.cs" />
+    <Compile Include="System\Runtime\Diagnostics\EventLogger.cs" />
+    <Compile Include="System\Runtime\Diagnostics\EventTraceActivity.cs" />
+    <Compile Include="System\Runtime\Diagnostics\ITraceSourceStringProvider.cs" />
+    <Compile Include="System\Runtime\Diagnostics\PerformanceCounterNameAttribute.cs" />
+    <Compile Include="System\Runtime\Diagnostics\StringTraceRecord.cs" />
+    <Compile Include="System\Runtime\Diagnostics\TraceRecord.cs" />
+    <Compile Include="System\Runtime\DiagnosticStrings.cs" />
+    <Compile Include="System\Runtime\DuplicateDetector.cs" />
+    <Compile Include="System\Runtime\ExceptionTrace.cs" />
+    <Compile Include="System\Runtime\FastAsyncCallback.cs" />
+    <Compile Include="System\Runtime\FatalException.cs" />
+    <Compile Include="System\Runtime\Fx.cs" />
+    <Compile Include="System\Runtime\FxCop.cs" />
+    <Compile Include="System\Runtime\HashHelper.cs" />
+    <Compile Include="System\Runtime\IAsyncEventArgs.cs" />
+    <Compile Include="System\Runtime\InputQueue.cs" />
+    <Compile Include="System\Runtime\InternalBufferManager.cs" />
+    <Compile Include="System\Runtime\Interop\SafeEventLogWriteHandle.cs" />
+    <Compile Include="System\Runtime\Interop\UnsafeNativeMethods.cs" />
+    <Compile Include="System\Runtime\IOThreadCancellationTokenSource.cs" />
+    <Compile Include="System\Runtime\IOThreadScheduler.cs" />
+    <Compile Include="System\Runtime\IOThreadTimer.cs" />
+    <Compile Include="System\Runtime\MruCache.cs" />
+    <Compile Include="System\Runtime\NameGenerator.cs" />
+    <Compile Include="System\Runtime\PartialTrustHelpers.cs" />
+    <Compile Include="System\Runtime\ReadOnlyDictionaryInternal.cs" />
+    <Compile Include="System\Runtime\ReadOnlyKeyedCollection.cs" />
+    <Compile Include="System\Runtime\ScheduleActionItemAsyncResult.cs" />
+    <Compile Include="System\Runtime\SignalGate.cs" />
+    <Compile Include="System\Runtime\SynchronizedPool.cs" />
+    <Compile Include="System\Runtime\TaskExtensions.cs" />
+    <Compile Include="System\Runtime\ThreadNeutralSemaphore.cs" />
+    <Compile Include="System\Runtime\Ticks.cs" />
+    <Compile Include="System\Runtime\TimeoutHelper.cs" />
+    <Compile Include="System\Runtime\TraceChannel.cs" />
+    <Compile Include="System\Runtime\TraceEventLevel.cs" />
+    <Compile Include="System\Runtime\TraceEventOpcode.cs" />
+    <Compile Include="System\Runtime\TraceLevelHelper.cs" />
+    <Compile Include="System\Runtime\TracePayload.cs" />
+    <Compile Include="System\Runtime\TypedAsyncResult.cs" />
+    <Compile Include="System\Runtime\TypeHelper.cs" />
+    <Compile Include="System\Runtime\UrlUtility.cs" />
+    <Compile Include="System\Runtime\WaitCallbackActionItem.cs" />
+    <Compile Include="TraceCore.Designer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

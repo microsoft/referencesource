@@ -1,0 +1,29 @@
+﻿<Grid
+  x:Uid="Grid_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Internal="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing" 
+  x:Class="System.Activities.Presentation.Internal.PropertyEditing.PropertyValueDialogControl"
+  x:ClassModifier="internal"
+  >
+  
+  <Grid.RowDefinitions>
+	  <RowDefinition x:Uid="RowDefinition_1" Height="*"/>
+	  <RowDefinition x:Uid="RowDefinition_2" Height="Auto"/>
+  </Grid.RowDefinitions>
+  
+  <ContentControl x:Uid="ContentControl_1" x:Name="_contentControl" Grid.Row="0"/>
+	
+  <StackPanel x:Uid="StackPanel_1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+    <Button x:Uid="Button_1" x:Name="_OKButton" Content="OK" Margin="0,8,8,8" Width="75" IsDefault="True"
+            FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+            FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}" 
+            FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+    />
+    <Button x:Uid="Button_2" x:Name="_cancelButton" Content="Cancel" Margin="0,8,8,8" Width="75" IsCancel="True"
+            FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+            FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}" 
+            FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+    />
+  </StackPanel>
+  
+</Grid>

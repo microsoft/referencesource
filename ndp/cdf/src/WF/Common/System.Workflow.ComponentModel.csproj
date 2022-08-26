@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{69e6110b-4655-4e1d-9850-4bc95e76e67c}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Workflow.ComponentModel</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Core\System.Core.csproj">
+      <Project>{b656cf4b-8938-4bc8-b777-68da792be27d}</Project>
+      <Name>System.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.Drawing.csproj">
+      <Project>{a95f2aef-5047-4d45-9480-b0476b85b958}</Project>
+      <Name>System.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Transactions\System.Transactions.csproj">
+      <Project>{6ad0de06-77fa-4a5d-9f96-d36654a60e80}</Project>
+      <Name>System.Transactions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Web.Services\System.Web.Services.csproj">
+      <Project>{9065040b-0061-4561-918e-49917268b40a}</Project>
+      <Name>System.Web.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.Windows.Forms.csproj">
+      <Project>{aaa1520f-406f-413a-9190-71a073168135}</Project>
+      <Name>System.Windows.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.Workflow.Compiler" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AuthoringOM\ActivitiesCollection.cs" />
+    <Compile Include="AuthoringOM\Activity.cs" />
+    <Compile Include="AuthoringOM\ActivityExecutionContext.cs" />
+    <Compile Include="AuthoringOM\ActivityExecutionContextCollection.cs" />
+    <Compile Include="AuthoringOM\ActivityExecutor.cs" />
+    <Compile Include="AuthoringOM\ActivityExecutorDelegateInfo.cs" />
+    <Compile Include="AuthoringOM\ActivityExecutorOperation.cs" />
+    <Compile Include="AuthoringOM\ActivityInterfaces.cs" />
+    <Compile Include="AuthoringOM\ActivityStatusChangeEventArgs.cs" />
+    <Compile Include="AuthoringOM\AssemblyInfo.cs" />
+    <Compile Include="AuthoringOM\Behaviors\CancellationHandler.cs" />
+    <Compile Include="AuthoringOM\Behaviors\CancellationHandlerDesigner.cs" />
+    <Compile Include="AuthoringOM\Behaviors\CompensatableTransactionScopeActivity.cs" />
+    <Compile Include="AuthoringOM\Behaviors\CompensatableTransactionScopeActivityDesigner.cs" />
+    <Compile Include="AuthoringOM\Behaviors\Compensate.cs" />
+    <Compile Include="AuthoringOM\Behaviors\CompensateDesigner.cs" />
+    <Compile Include="AuthoringOM\Behaviors\Compensation.cs" />
+    <Compile Include="AuthoringOM\Behaviors\CompensationDesigner.cs" />
+    <Compile Include="AuthoringOM\Behaviors\ExceptionHandler.cs" />
+    <Compile Include="AuthoringOM\Behaviors\ExceptionHandlerDesigner.cs" />
+    <Compile Include="AuthoringOM\Behaviors\ExceptionHandlers.cs" />
+    <Compile Include="AuthoringOM\Behaviors\ExceptionHandlersDesigner.cs" />
+    <Compile Include="AuthoringOM\Behaviors\SynchronizationScope.cs" />
+    <Compile Include="AuthoringOM\Behaviors\TransactionScope.cs" />
+    <Compile Include="AuthoringOM\Behaviors\TransactionScopeDesigner.cs" />
+    <Compile Include="AuthoringOM\Behaviors\WorkflowTransactionOptions.cs" />
+    <Compile Include="AuthoringOM\Bind.cs" />
+    <Compile Include="AuthoringOM\Compiler\CodeGeneration\ActivityCodeGenerator.cs" />
+    <Compile Include="AuthoringOM\Compiler\CodeGeneration\CodeGenerationManager.cs" />
+    <Compile Include="AuthoringOM\Compiler\CodeGeneration\CodeGeneratorAttribute.cs" />
+    <Compile Include="AuthoringOM\Compiler\CodeGeneration\CompositeActivityCodeGenerator.cs" />
+    <Compile Include="AuthoringOM\Compiler\CompileXomlTask.cs" />
+    <Compile Include="AuthoringOM\Compiler\Configuration.cs" />
+    <Compile Include="AuthoringOM\Compiler\PDBReader.cs" />
+    <Compile Include="AuthoringOM\Compiler\ReferencedAssemblyResolver.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\AssemblyLoader.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\AttributeInfo.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\CodeDomLoader.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\DesignTimeType.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\EventInfo.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\FieldInfo.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\Helper.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\Interfaces.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\MethodInfo.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\ParameterInfo.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\PropertyInfo.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\RTTypeWrapper.cs" />
+    <Compile Include="AuthoringOM\Compiler\TypeSystem\TypeProvider.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\ActivityValidator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\BindValidationContext.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\BindValidator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\CompositeActivityValidator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\ConditionValidator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\DependencyObjectValidator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\PropertyValidationContext.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\SynchronizationValidator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\TransactionContextValidator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\ValidationError.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\ValidationErrorCollection.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\ValidationManager.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\ValidationVisibilityAttribute.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\Validator.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\ValidatorAttribute.cs" />
+    <Compile Include="AuthoringOM\Compiler\Validation\WorkflowValidationFailedException.cs" />
+    <Compile Include="AuthoringOM\Compiler\XomlCompiler.cs" />
+    <Compile Include="AuthoringOM\Compiler\XomlCompilerError.cs" />
+    <Compile Include="AuthoringOM\Compiler\XomlCompilerHelpers.cs" />
+    <Compile Include="AuthoringOM\Compiler\XomlCompilerParameters.cs" />
+    <Compile Include="AuthoringOM\Compiler\XomlCompilerResults.cs" />
+    <Compile Include="AuthoringOM\ComponentFactoryHelpers.cs" />
+    <Compile Include="AuthoringOM\DependencyObject.cs" />
+    <Compile Include="AuthoringOM\DependencyProperty.cs" />
+    <Compile Include="AuthoringOM\Design\ActivityDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\ActivityDesignerAccessibleObject.cs" />
+    <Compile Include="AuthoringOM\Design\ActivityDesignerLayoutSerializers.cs" />
+    <Compile Include="AuthoringOM\Design\ActivityPreviewDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\CommandSet.cs" />
+    <Compile Include="AuthoringOM\Design\ComponentSerializationService.cs" />
+    <Compile Include="AuthoringOM\Design\CompositeActivityDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\CompositeDesignerAccessibleObject.cs" />
+    <Compile Include="AuthoringOM\Design\Connector.cs" />
+    <Compile Include="AuthoringOM\Design\CustomActivityDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\DesignerHelpers.cs" />
+    <Compile Include="AuthoringOM\Design\DesignerInterfaces.cs" />
+    <Compile Include="AuthoringOM\Design\DesignerResources.cs" />
+    <Compile Include="AuthoringOM\Design\DesignerView.cs" />
+    <Compile Include="AuthoringOM\Design\DesignerWidgets.cs" />
+    <Compile Include="AuthoringOM\Design\Dialogs\ActivityBindForm.cs" />
+    <Compile Include="AuthoringOM\Design\Dialogs\ActivityBindForm.Designer.cs" />
+    <Compile Include="AuthoringOM\Design\Dialogs\ThemeConfigurationDialog.cs" />
+    <Compile Include="AuthoringOM\Design\Dialogs\TypeBrowserDialog.cs" />
+    <Compile Include="AuthoringOM\Design\Dialogs\WorkflowPageSetupDialog.cs" />
+    <Compile Include="AuthoringOM\Design\DocumentOutline.cs" />
+    <Compile Include="AuthoringOM\Design\ExtenderHelpers.cs" />
+    <Compile Include="AuthoringOM\Design\FreeFormDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\CommentGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\ConfigErrorGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\ConnectionPointGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\ConnectorDragDropGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\ConnectorSelectionGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\LockedActivityGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\NonPrimarySelectionGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\PrimarySelectionGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\ReadOnlyActivityGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\SelectionGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\Glyphs\ShadowGlyph.cs" />
+    <Compile Include="AuthoringOM\Design\IdentifierCreationService.cs" />
+    <Compile Include="AuthoringOM\Design\MenuCommands.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\AutoScrollExpandMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\ConnectionManager.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\DragDropManager.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\DragSelectionMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\DynamicActionMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\FreeFormDragDropManager.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\GlyphManager.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\MagnificationMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\PanningMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\ReadonlyMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\ResizingMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\WindowManager.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\WorkflowDesignerMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\MessageFilters\ZoomingMessageFilter.cs" />
+    <Compile Include="AuthoringOM\Design\ParallelActivityDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\PropertyDescriptors.cs" />
+    <Compile Include="AuthoringOM\Design\ReferenceService.cs" />
+    <Compile Include="AuthoringOM\Design\SecondaryViewProvider.cs" />
+    <Compile Include="AuthoringOM\Design\SequenceDesignerAccessibleObject.cs" />
+    <Compile Include="AuthoringOM\Design\SequentialActivityDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\SequentialWorkflowHeaderFooter.cs" />
+    <Compile Include="AuthoringOM\Design\SequentialWorkflowRootDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\StructuredCompositeActivityDesigner.cs" />
+    <Compile Include="AuthoringOM\Design\Themes.cs" />
+    <Compile Include="AuthoringOM\Design\TypeConverters.cs" />
+    <Compile Include="AuthoringOM\Design\UITypeEditors.cs" />
+    <Compile Include="AuthoringOM\Design\WinOEToolBoxItem.cs" />
+    <Compile Include="AuthoringOM\Design\WorkflowInlining.cs" />
+    <Compile Include="AuthoringOM\Design\WorkflowLayouts.cs" />
+    <Compile Include="AuthoringOM\Design\WorkflowPrinting.cs" />
+    <Compile Include="AuthoringOM\Design\WorkflowView.cs" />
+    <Compile Include="AuthoringOM\Design\XomlDesignerLoader.cs" />
+    <Compile Include="AuthoringOM\Fault.cs" />
+    <Compile Include="AuthoringOM\FaultDesigner.cs" />
+    <Compile Include="AuthoringOM\Filters\ActivityExecutionFilter.cs" />
+    <Compile Include="AuthoringOM\Filters\CompensationHandlingFilter.cs" />
+    <Compile Include="AuthoringOM\Filters\FaultHandlingFilter.cs" />
+    <Compile Include="AuthoringOM\Filters\SynchronizationFilter.cs" />
+    <Compile Include="AuthoringOM\Filters\TransactionFilter.cs" />
+    <Compile Include="AuthoringOM\Helpers.cs" />
+    <Compile Include="AuthoringOM\Interfaces.cs" />
+    <Compile Include="AuthoringOM\ItemList.cs" />
+    <Compile Include="AuthoringOM\ParameterBinding.cs" />
+    <Compile Include="AuthoringOM\PropertyMetadata.cs" />
+    <Compile Include="AuthoringOM\RuleDeclaration.cs" />
+    <Compile Include="AuthoringOM\ScheduleChanges.cs" />
+    <Compile Include="AuthoringOM\Sequence.cs" />
+    <Compile Include="AuthoringOM\SequenceDesigner.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityCodeDomReferenceService.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityCodeDomSerializationManager.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityCodeDomSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityCollectionMarkupSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityExecutorSurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityMarkupSerializationProvider.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityMarkupSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivitySurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivitySurrogateSelector.cs" />
+    <Compile Include="AuthoringOM\Serializer\ActivityTypeCodeDomSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\BindMarkupExtensionSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\CodeTypeReferenceSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\CollectionMarkupSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\CompositeActivityMarkupSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\CompositeActivityTypeDescriptor.cs" />
+    <Compile Include="AuthoringOM\Serializer\CompositeActivityTypeDescriptorProvider.cs" />
+    <Compile Include="AuthoringOM\Serializer\DependencyObjectCodeDomSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\DependencyStoreSurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\DictionaryMarkupSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\DictionarySurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\ExtendedPropertyInfo.cs" />
+    <Compile Include="AuthoringOM\Serializer\FormatterServicesNoSerializableCheck.cs" />
+    <Compile Include="AuthoringOM\Serializer\GenericQueueSurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\ListSurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\MarkupExtensionSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\ModifyActivitiesPropertyDescriptor.cs" />
+    <Compile Include="AuthoringOM\Serializer\PrimitiveCodeDomSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\PropertySegmentSerializationProvider.cs" />
+    <Compile Include="AuthoringOM\Serializer\PropertySegmentSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\QueueSurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\SerializableTypeCodeDomSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\SimpleTypesSurrogate.cs" />
+    <Compile Include="AuthoringOM\Serializer\StringCollectionMarkupSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\SynchronizationHandlesCodeDomSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\TypeExtensionSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\WorkflowMarkupElementEventArgs.cs" />
+    <Compile Include="AuthoringOM\Serializer\WorkflowMarkupSerializationException.cs" />
+    <Compile Include="AuthoringOM\Serializer\WorkflowMarkupSerializationManager.cs" />
+    <Compile Include="AuthoringOM\Serializer\WorkflowMarkupSerializationProvider.cs" />
+    <Compile Include="AuthoringOM\Serializer\WorkflowMarkupSerializer.cs" />
+    <Compile Include="AuthoringOM\Serializer\WorkflowMarkupSerializerMapping.cs" />
+    <Compile Include="AuthoringOM\Serializer\XamlInterfaces.cs" />
+    <Compile Include="AuthoringOM\Serializer\XmlDocumentSurrogate.cs" />
+    <Compile Include="AuthoringOM\SR.cs" />
+    <Compile Include="AuthoringOM\Suspend.cs" />
+    <Compile Include="AuthoringOM\SuspendDesigner.cs" />
+    <Compile Include="AuthoringOM\Terminate.cs" />
+    <Compile Include="AuthoringOM\TerminateDesigner.cs" />
+    <Compile Include="AuthoringOM\Trace.cs" />
+    <Compile Include="AuthoringOM\Utility.cs" />
+    <Compile Include="Shared\AssemblyRef.cs" />
+    <Compile Include="Shared\BasePropertyDescriptor.cs" />
+    <Compile Include="Shared\CompilerHelpers.cs" />
+    <Compile Include="Shared\CompModHelpers.cs" />
+    <Compile Include="Shared\DelegateTypeInfo.cs" />
+    <Compile Include="Shared\ErrorNumbers.cs" />
+    <Compile Include="Shared\NativeMethods.cs" />
+    <Compile Include="Shared\TypeSystemHelpers.cs" />
+    <Compile Include="Shared\UserDataKeys.cs" />
+    <Compile Include="Shared\ValidationHelpers.cs" />
+    <Compile Include="Shared\Walker.cs" />
+    <Compile Include="Shared\XomlSerializationHelpers.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

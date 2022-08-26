@@ -1,0 +1,519 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{460e944d-165f-4389-816f-eebef8e2b44a}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Activities</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Core\System.Core.csproj">
+      <Project>{b656cf4b-8938-4bc8-b777-68da792be27d}</Project>
+      <Name>System.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Runtime.DurableInstancing\System.Runtime.DurableInstancing.csproj">
+      <Project>{7819c9a4-5600-4dee-9314-6828ffb287c5}</Project>
+      <Name>System.Runtime.DurableInstancing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WCF\Serialization\System.Runtime.Serialization.csproj">
+      <Project>{ce33578b-efc6-4bf5-b038-e6aebb7fa3b9}</Project>
+      <Name>System.Runtime.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\clr\src\managedlibraries\security\System.Security.csproj">
+      <Project>{42151cfd-485b-404b-ae9c-2b98ce973704}</Project>
+      <Name>System.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.ServiceModel.Internals\System.ServiceModel.Internals.csproj">
+      <Project>{7835b9e8-7e4e-42bc-ba8e-09309362af70}</Project>
+      <Name>System.ServiceModel.Internals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Transactions\System.Transactions.csproj">
+      <Project>{6ad0de06-77fa-4a5d-9f96-d36654a60e80}</Project>
+      <Name>System.Transactions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\XLinq\System.Xml.Linq.csproj">
+      <Project>{7d9e7e4a-0708-4544-ad26-4ff98f07b082}</Project>
+      <Name>System.Xml.Linq</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.Activities.Compiler" />
+    <Reference Include="System.Xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EtwTrackingParticipantTrackRecords.Designer.cs" />
+    <Compile Include="Microsoft\CSharp\Activities\CSharpReference.cs" />
+    <Compile Include="Microsoft\CSharp\Activities\CSharpValue.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasic.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasicDesignerHelper.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasicHelper.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasicImportReference.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasicNameShadowingConstraint.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasicReference.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasicSettings.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\VisualBasicValue.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\XamlIntegration\VisualBasicExpressionConverter.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\XamlIntegration\VisualBasicSettingsConverter.cs" />
+    <Compile Include="Microsoft\VisualBasic\Activities\XamlIntegration\VisualBasicSettingsValueSerializer.cs" />
+    <Compile Include="SuppressMessages.cs" />
+    <Compile Include="System\Activities\Activity.cs" />
+    <Compile Include="System\Activities\ActivityAction.cs" />
+    <Compile Include="System\Activities\ActivityBuilder.cs" />
+    <Compile Include="System\Activities\ActivityCollectionType.cs" />
+    <Compile Include="System\Activities\ActivityContext.cs" />
+    <Compile Include="System\Activities\ActivityDefaults.cs" />
+    <Compile Include="System\Activities\ActivityDelegate.cs" />
+    <Compile Include="System\Activities\ActivityFunc.cs" />
+    <Compile Include="System\Activities\ActivityInstance.cs" />
+    <Compile Include="System\Activities\ActivityInstanceState.cs" />
+    <Compile Include="System\Activities\ActivityLocationReferenceEnvironment.cs" />
+    <Compile Include="System\Activities\ActivityMetadata.cs" />
+    <Compile Include="System\Activities\ActivityPropertyReference.cs" />
+    <Compile Include="System\Activities\ActivityUtilities.cs" />
+    <Compile Include="System\Activities\ActivityWithResult.cs" />
+    <Compile Include="System\Activities\ActivityWithResultWrapper.cs" />
+    <Compile Include="System\Activities\Argument.cs" />
+    <Compile Include="System\Activities\ArgumentDirection.cs" />
+    <Compile Include="System\Activities\ArgumentDirectionHelper.cs" />
+    <Compile Include="System\Activities\AssemblyInfo.cs" />
+    <Compile Include="System\Activities\AsyncCodeActivity.cs" />
+    <Compile Include="System\Activities\AsyncCodeActivityContext.cs" />
+    <Compile Include="System\Activities\AsyncInvokeContext.cs" />
+    <Compile Include="System\Activities\AsyncInvokeOperation.cs" />
+    <Compile Include="System\Activities\AsyncOperationContext.cs" />
+    <Compile Include="System\Activities\Bookmark.cs" />
+    <Compile Include="System\Activities\BookmarkCallback.cs" />
+    <Compile Include="System\Activities\BookmarkOptions.cs" />
+    <Compile Include="System\Activities\BookmarkOptionsHelper.cs" />
+    <Compile Include="System\Activities\BookmarkResumptionResult.cs" />
+    <Compile Include="System\Activities\BookmarkScope.cs" />
+    <Compile Include="System\Activities\BookmarkScopeHandle.cs" />
+    <Compile Include="System\Activities\CodeActivity.cs" />
+    <Compile Include="System\Activities\CodeActivityContext.cs" />
+    <Compile Include="System\Activities\CodeActivityMetadata.cs" />
+    <Compile Include="System\Activities\CodeActivityPublicEnvironmentAccessor.cs" />
+    <Compile Include="System\Activities\CompletionCallback.cs" />
+    <Compile Include="System\Activities\Debugger\BinarySearchResult.cs" />
+    <Compile Include="System\Activities\Debugger\CharacterSpottingTextReader.cs" />
+    <Compile Include="System\Activities\Debugger\CharacterSpottingTextReader.UnitTest.cs" />
+    <Compile Include="System\Activities\Debugger\DebugController.cs" />
+    <Compile Include="System\Activities\Debugger\DebugInfo.cs" />
+    <Compile Include="System\Activities\Debugger\DebugManager.cs" />
+    <Compile Include="System\Activities\Debugger\DocumentLocation.cs" />
+    <Compile Include="System\Activities\Debugger\DocumentRange.cs" />
+    <Compile Include="System\Activities\Debugger\ICharacterSpottingTextReaderForUnitTest.cs" />
+    <Compile Include="System\Activities\Debugger\IDebuggableWorkflowTree.cs" />
+    <Compile Include="System\Activities\Debugger\InstrumentationTracker.cs" />
+    <Compile Include="System\Activities\Debugger\ListExtensions.cs" />
+    <Compile Include="System\Activities\Debugger\LocalsItemDescription.cs" />
+    <Compile Include="System\Activities\Debugger\OneBasedCounter.cs" />
+    <Compile Include="System\Activities\Debugger\SourceLocation.cs" />
+    <Compile Include="System\Activities\Debugger\SourceLocationFoundEventArgs.cs" />
+    <Compile Include="System\Activities\Debugger\SourceLocationMember.cs" />
+    <Compile Include="System\Activities\Debugger\SourceLocationProvider.cs" />
+    <Compile Include="System\Activities\Debugger\State.cs" />
+    <Compile Include="System\Activities\Debugger\StateManager.cs" />
+    <Compile Include="System\Activities\Debugger\Symbol\ActivitySymbol.cs" />
+    <Compile Include="System\Activities\Debugger\Symbol\DebugSymbol.cs" />
+    <Compile Include="System\Activities\Debugger\Symbol\SymbolHelper.cs" />
+    <Compile Include="System\Activities\Debugger\Symbol\WorkflowSymbol.cs" />
+    <Compile Include="System\Activities\Debugger\ThreadWorkerController.cs" />
+    <Compile Include="System\Activities\Debugger\UnitTestUtility.cs" />
+    <Compile Include="System\Activities\Debugger\VirtualStackFrame.cs" />
+    <Compile Include="System\Activities\Debugger\XamlDebuggerXmlReader.cs" />
+    <Compile Include="System\Activities\Debugger\XamlMemberExtensions.cs" />
+    <Compile Include="System\Activities\Debugger\XamlNode.cs" />
+    <Compile Include="System\Activities\Debugger\XmlReaderWithSourceLocation.cs" />
+    <Compile Include="System\Activities\Debugger\XmlWrappingReader.cs" />
+    <Compile Include="System\Activities\DelegateArgument.cs" />
+    <Compile Include="System\Activities\DelegateCompletionCallback.cs" />
+    <Compile Include="System\Activities\DelegateInArgument.cs" />
+    <Compile Include="System\Activities\DelegateOutArgument.cs" />
+    <Compile Include="System\Activities\DurableInstancing\ActivatableWorkflowsQueryResult.cs" />
+    <Compile Include="System\Activities\DurableInstancing\CreateWorkflowOwnerCommand.cs" />
+    <Compile Include="System\Activities\DurableInstancing\CreateWorkflowOwnerWithIdentityCommand.cs" />
+    <Compile Include="System\Activities\DurableInstancing\DeleteWorkflowOwnerCommand.cs" />
+    <Compile Include="System\Activities\DurableInstancing\HasActivatableWorkflowEvent.cs" />
+    <Compile Include="System\Activities\DurableInstancing\HasRunnableWorkflowEvent.cs" />
+    <Compile Include="System\Activities\DurableInstancing\LoadWorkflowByInstanceKeyCommand.cs" />
+    <Compile Include="System\Activities\DurableInstancing\LoadWorkflowCommand.cs" />
+    <Compile Include="System\Activities\DurableInstancing\PersistenceIOParticipant.cs" />
+    <Compile Include="System\Activities\DurableInstancing\PersistenceParticipant.cs" />
+    <Compile Include="System\Activities\DurableInstancing\QueryActivatableWorkflowsCommand.cs" />
+    <Compile Include="System\Activities\DurableInstancing\SaveWorkflowCommand.cs" />
+    <Compile Include="System\Activities\DurableInstancing\TryLoadRunnableWorkflowCommand.cs" />
+    <Compile Include="System\Activities\DynamicActivity.cs" />
+    <Compile Include="System\Activities\DynamicActivityProperty.cs" />
+    <Compile Include="System\Activities\DynamicActivityTypeDescriptor.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\ActivityBlockingUpdate.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\ActivityComparer.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\ArgumentInfo.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\DynamicUpdateInfo.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\DynamicUpdateMap.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\DynamicUpdateMapBuilder.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\DynamicUpdateMapEntry.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\DynamicUpdateMapItem.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\DynamicUpdateMapQuery.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\DynamicUpdateServices.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\EnvironmentUpdateMap.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\EnvironmentUpdateMapEntry.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\IInstanceUpdatable.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\InstanceUpdateException.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\NativeActivityUpdateContext.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\NativeActivityUpdateMapMetadata.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\UpdateBlockedReason.cs" />
+    <Compile Include="System\Activities\DynamicUpdate\UpdateMapMetadata.cs" />
+    <Compile Include="System\Activities\ExceptionPersistenceExtension.cs" />
+    <Compile Include="System\Activities\ExclusiveHandle.cs" />
+    <Compile Include="System\Activities\ExecutionProperties.cs" />
+    <Compile Include="System\Activities\ExpressionParser\SourceExpressionException.cs" />
+    <Compile Include="System\Activities\Expressions\Add.cs" />
+    <Compile Include="System\Activities\Expressions\And.cs" />
+    <Compile Include="System\Activities\Expressions\AndAlso.cs" />
+    <Compile Include="System\Activities\Expressions\ArgumentReference.cs" />
+    <Compile Include="System\Activities\Expressions\ArgumentValue.cs" />
+    <Compile Include="System\Activities\Expressions\ArrayItemReference.cs" />
+    <Compile Include="System\Activities\Expressions\ArrayItemValue.cs" />
+    <Compile Include="System\Activities\Expressions\As.cs" />
+    <Compile Include="System\Activities\Expressions\AssemblyNameEqualityComparer.cs" />
+    <Compile Include="System\Activities\Expressions\AssemblyReference.cs" />
+    <Compile Include="System\Activities\Expressions\BinaryExpressionHelper.cs" />
+    <Compile Include="System\Activities\Expressions\Cast.cs" />
+    <Compile Include="System\Activities\Expressions\CompiledExpressionInvoker.cs" />
+    <Compile Include="System\Activities\Expressions\DelegateArgumentReference.cs" />
+    <Compile Include="System\Activities\Expressions\DelegateArgumentValue.cs" />
+    <Compile Include="System\Activities\Expressions\Divide.cs" />
+    <Compile Include="System\Activities\Expressions\EnvironmentLocationReference.cs" />
+    <Compile Include="System\Activities\Expressions\EnvironmentLocationValue.cs" />
+    <Compile Include="System\Activities\Expressions\Equal.cs" />
+    <Compile Include="System\Activities\Expressions\ExpressionServices.cs" />
+    <Compile Include="System\Activities\Expressions\FieldReference.cs" />
+    <Compile Include="System\Activities\Expressions\FieldValue.cs" />
+    <Compile Include="System\Activities\Expressions\GreaterThan.cs" />
+    <Compile Include="System\Activities\Expressions\GreaterThanOrEqual.cs" />
+    <Compile Include="System\Activities\Expressions\ILocationReferenceExpression.cs" />
+    <Compile Include="System\Activities\Expressions\ILocationReferenceWrapper.cs" />
+    <Compile Include="System\Activities\Expressions\IndexerHelper.cs" />
+    <Compile Include="System\Activities\Expressions\IndexerReference.cs" />
+    <Compile Include="System\Activities\Expressions\InvokeFunc.cs" />
+    <Compile Include="System\Activities\Expressions\InvokeMethod.cs" />
+    <Compile Include="System\Activities\Expressions\ITextExpression.cs" />
+    <Compile Include="System\Activities\Expressions\LambdaReference.cs" />
+    <Compile Include="System\Activities\Expressions\LambdaSerializationException.cs" />
+    <Compile Include="System\Activities\Expressions\LambdaValue.cs" />
+    <Compile Include="System\Activities\Expressions\LessThan.cs" />
+    <Compile Include="System\Activities\Expressions\LessThanOrEqual.cs" />
+    <Compile Include="System\Activities\Expressions\Literal.cs" />
+    <Compile Include="System\Activities\Expressions\LocationReferenceValue.cs" />
+    <Compile Include="System\Activities\Expressions\MemberExpressionHelper.cs" />
+    <Compile Include="System\Activities\Expressions\MethodCallExpressionHelper.cs" />
+    <Compile Include="System\Activities\Expressions\MultidimensionalArrayItemReference.cs" />
+    <Compile Include="System\Activities\Expressions\Multiply.cs" />
+    <Compile Include="System\Activities\Expressions\New.cs" />
+    <Compile Include="System\Activities\Expressions\NewArray.cs" />
+    <Compile Include="System\Activities\Expressions\Not.cs" />
+    <Compile Include="System\Activities\Expressions\NotEqual.cs" />
+    <Compile Include="System\Activities\Expressions\OperatorPermissionHelper.cs" />
+    <Compile Include="System\Activities\Expressions\Or.cs" />
+    <Compile Include="System\Activities\Expressions\OrElse.cs" />
+    <Compile Include="System\Activities\Expressions\PropertyReference.cs" />
+    <Compile Include="System\Activities\Expressions\PropertyValue.cs" />
+    <Compile Include="System\Activities\Expressions\Subtract.cs" />
+    <Compile Include="System\Activities\Expressions\TextExpression.cs" />
+    <Compile Include="System\Activities\Expressions\UnaryExpressionHelper.cs" />
+    <Compile Include="System\Activities\Expressions\ValueTypeFieldReference.cs" />
+    <Compile Include="System\Activities\Expressions\ValueTypeIndexerReference.cs" />
+    <Compile Include="System\Activities\Expressions\ValueTypePropertyReference.cs" />
+    <Compile Include="System\Activities\Expressions\VariableReference.cs" />
+    <Compile Include="System\Activities\Expressions\VariableValue.cs" />
+    <Compile Include="System\Activities\ExpressionUtilities.cs" />
+    <Compile Include="System\Activities\FaultCallback.cs" />
+    <Compile Include="System\Activities\Handle.cs" />
+    <Compile Include="System\Activities\HandleInitializationContext.cs" />
+    <Compile Include="System\Activities\Hosting\BookmarkInfo.cs" />
+    <Compile Include="System\Activities\Hosting\BookmarkScopeInfo.cs" />
+    <Compile Include="System\Activities\Hosting\IWorkflowInstanceExtension.cs" />
+    <Compile Include="System\Activities\Hosting\LocationInfo.cs" />
+    <Compile Include="System\Activities\Hosting\SymbolResolver.cs" />
+    <Compile Include="System\Activities\Hosting\WorkflowInstance.cs" />
+    <Compile Include="System\Activities\Hosting\WorkflowInstanceExtensionCollection.cs" />
+    <Compile Include="System\Activities\Hosting\WorkflowInstanceExtensionManager.cs" />
+    <Compile Include="System\Activities\Hosting\WorkflowInstanceExtensionProvider.cs" />
+    <Compile Include="System\Activities\Hosting\WorkflowInstanceProxy.cs" />
+    <Compile Include="System\Activities\Hosting\WorkflowInstanceState.cs" />
+    <Compile Include="System\Activities\HybridCollection.cs" />
+    <Compile Include="System\Activities\HybridDictionary.cs" />
+    <Compile Include="System\Activities\IAsyncCodeActivity.cs" />
+    <Compile Include="System\Activities\IdSpace.cs" />
+    <Compile Include="System\Activities\IDynamicActivity.cs" />
+    <Compile Include="System\Activities\IExecutionProperty.cs" />
+    <Compile Include="System\Activities\IExpressionContainer.cs" />
+    <Compile Include="System\Activities\IInstanceNotificationListener.cs" />
+    <Compile Include="System\Activities\InArgument.cs" />
+    <Compile Include="System\Activities\InlinedLocationReference.cs" />
+    <Compile Include="System\Activities\InOutArgument.cs" />
+    <Compile Include="System\Activities\InvalidWorkflowException.cs" />
+    <Compile Include="System\Activities\InvokeCompletedEventArgs.cs" />
+    <Compile Include="System\Activities\IPropertyRegistrationCallback.cs" />
+    <Compile Include="System\Activities\Location.cs" />
+    <Compile Include="System\Activities\LocationFactory.cs" />
+    <Compile Include="System\Activities\LocationReference.cs" />
+    <Compile Include="System\Activities\LocationReferenceEnvironment.cs" />
+    <Compile Include="System\Activities\NativeActivity.cs" />
+    <Compile Include="System\Activities\NativeActivityAbortContext.cs" />
+    <Compile Include="System\Activities\NativeActivityContext.cs" />
+    <Compile Include="System\Activities\NativeActivityFaultContext.cs" />
+    <Compile Include="System\Activities\NativeActivityMetadata.cs" />
+    <Compile Include="System\Activities\NativeActivityTransactionContext.cs" />
+    <Compile Include="System\Activities\NoPersistHandle.cs" />
+    <Compile Include="System\Activities\NoPersistProperty.cs" />
+    <Compile Include="System\Activities\OutArgument.cs" />
+    <Compile Include="System\Activities\OverloadGroupAttribute.cs" />
+    <Compile Include="System\Activities\PersistableIdleAction.cs" />
+    <Compile Include="System\Activities\ProcessActivityTreeOptions.cs" />
+    <Compile Include="System\Activities\Quack.cs" />
+    <Compile Include="System\Activities\QualifiedId.cs" />
+    <Compile Include="System\Activities\RegistrationContext.cs" />
+    <Compile Include="System\Activities\RequiredArgumentAttribute.cs" />
+    <Compile Include="System\Activities\Runtime\ActivityCompletionCallbackWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\ActivityExecutionWorkItem.cs" />
+    <Compile Include="System\Activities\Runtime\ActivityExecutor.cs" />
+    <Compile Include="System\Activities\Runtime\ActivityInstanceMap.cs" />
+    <Compile Include="System\Activities\Runtime\ActivityInstanceReference.cs" />
+    <Compile Include="System\Activities\Runtime\BookmarkCallbackWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\BookmarkList.cs" />
+    <Compile Include="System\Activities\Runtime\BookmarkManager.cs" />
+    <Compile Include="System\Activities\Runtime\BookmarkScopeManager.cs" />
+    <Compile Include="System\Activities\Runtime\BookmarkWorkItem.cs" />
+    <Compile Include="System\Activities\Runtime\CallbackWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\CollapseTemporaryResolutionLocationWorkItem.cs" />
+    <Compile Include="System\Activities\Runtime\CompletionBookmark.cs" />
+    <Compile Include="System\Activities\Runtime\CompletionCallbackWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\DelegateCompletionCallbackWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\EmptyWithCancelationCheckWorkItem.cs" />
+    <Compile Include="System\Activities\Runtime\EmptyWorkItem.cs" />
+    <Compile Include="System\Activities\Runtime\ExclusiveHandleList.cs" />
+    <Compile Include="System\Activities\Runtime\ExecuteSynchronousExpressionWorkItem.cs" />
+    <Compile Include="System\Activities\Runtime\ExecutionPropertyManager.cs" />
+    <Compile Include="System\Activities\Runtime\FaultBookmark.cs" />
+    <Compile Include="System\Activities\Runtime\FaultCallbackWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\FaultContext.cs" />
+    <Compile Include="System\Activities\Runtime\FuncCompletionCallbackWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\LocationEnvironment.cs" />
+    <Compile Include="System\Activities\Runtime\MappableObjectManager.cs" />
+    <Compile Include="System\Activities\Runtime\Pool.cs" />
+    <Compile Include="System\Activities\Runtime\ResolveNextArgumentWorkItem.cs" />
+    <Compile Include="System\Activities\Runtime\Scheduler.cs" />
+    <Compile Include="System\Activities\Runtime\TypedLocationWrapper.cs" />
+    <Compile Include="System\Activities\Runtime\WorkItem.cs" />
+    <Compile Include="System\Activities\RuntimeArgument.cs" />
+    <Compile Include="System\Activities\RuntimeDelegateArgument.cs" />
+    <Compile Include="System\Activities\RuntimeTransactionHandle.cs" />
+    <Compile Include="System\Activities\Statements\AddToCollection.cs" />
+    <Compile Include="System\Activities\Statements\Assign.cs" />
+    <Compile Include="System\Activities\Statements\BookmarkTable.cs" />
+    <Compile Include="System\Activities\Statements\CancellationScope.cs" />
+    <Compile Include="System\Activities\Statements\Catch.cs" />
+    <Compile Include="System\Activities\Statements\ClearCollection.cs" />
+    <Compile Include="System\Activities\Statements\CompensableActivity.cs" />
+    <Compile Include="System\Activities\Statements\Compensate.cs" />
+    <Compile Include="System\Activities\Statements\CompensationActivityStrings.cs" />
+    <Compile Include="System\Activities\Statements\CompensationBookmarkName.cs" />
+    <Compile Include="System\Activities\Statements\CompensationExtension.cs" />
+    <Compile Include="System\Activities\Statements\CompensationParticipant.cs" />
+    <Compile Include="System\Activities\Statements\CompensationState.cs" />
+    <Compile Include="System\Activities\Statements\CompensationToken.cs" />
+    <Compile Include="System\Activities\Statements\CompensationTokenData.cs" />
+    <Compile Include="System\Activities\Statements\Confirm.cs" />
+    <Compile Include="System\Activities\Statements\CreateBookmarkScope.cs" />
+    <Compile Include="System\Activities\Statements\DefaultCompensation.cs" />
+    <Compile Include="System\Activities\Statements\DefaultConfirmation.cs" />
+    <Compile Include="System\Activities\Statements\Delay.cs" />
+    <Compile Include="System\Activities\Statements\DeleteBookmarkScope.cs" />
+    <Compile Include="System\Activities\Statements\DoWhile.cs" />
+    <Compile Include="System\Activities\Statements\DurableTimerExtension.cs" />
+    <Compile Include="System\Activities\Statements\ExecutionTracker.cs" />
+    <Compile Include="System\Activities\Statements\ExistsInCollection.cs" />
+    <Compile Include="System\Activities\Statements\Flowchart.cs" />
+    <Compile Include="System\Activities\Statements\FlowDecision.cs" />
+    <Compile Include="System\Activities\Statements\FlowNode.cs" />
+    <Compile Include="System\Activities\Statements\FlowStep.cs" />
+    <Compile Include="System\Activities\Statements\FlowSwitch.cs" />
+    <Compile Include="System\Activities\Statements\ForEach.cs" />
+    <Compile Include="System\Activities\Statements\HandleScope.cs" />
+    <Compile Include="System\Activities\Statements\If.cs" />
+    <Compile Include="System\Activities\Statements\IFlowSwitch.cs" />
+    <Compile Include="System\Activities\Statements\InternalCompensate.cs" />
+    <Compile Include="System\Activities\Statements\InternalConfirm.cs" />
+    <Compile Include="System\Activities\Statements\InternalState.cs" />
+    <Compile Include="System\Activities\Statements\InternalTransition.cs" />
+    <Compile Include="System\Activities\Statements\InvokeAction.cs" />
+    <Compile Include="System\Activities\Statements\InvokeDelegate.cs" />
+    <Compile Include="System\Activities\Statements\InvokeMethod.cs" />
+    <Compile Include="System\Activities\Statements\MethodExecutor.cs" />
+    <Compile Include="System\Activities\Statements\MethodResolver.cs" />
+    <Compile Include="System\Activities\Statements\NoPersistScope.cs" />
+    <Compile Include="System\Activities\Statements\Parallel.cs" />
+    <Compile Include="System\Activities\Statements\ParallelForEach.cs" />
+    <Compile Include="System\Activities\Statements\Persist.cs" />
+    <Compile Include="System\Activities\Statements\Pick.cs" />
+    <Compile Include="System\Activities\Statements\PickBranch.cs" />
+    <Compile Include="System\Activities\Statements\RemoveFromCollection.cs" />
+    <Compile Include="System\Activities\Statements\Rethrow.cs" />
+    <Compile Include="System\Activities\Statements\Sequence.cs" />
+    <Compile Include="System\Activities\Statements\State.cs" />
+    <Compile Include="System\Activities\Statements\StateMachine.cs" />
+    <Compile Include="System\Activities\Statements\StateMachineEventManager.cs" />
+    <Compile Include="System\Activities\Statements\StateMachineExtension.cs" />
+    <Compile Include="System\Activities\Statements\StateMachineIdHelper.cs" />
+    <Compile Include="System\Activities\Statements\Switch.cs" />
+    <Compile Include="System\Activities\Statements\TerminateWorkflow.cs" />
+    <Compile Include="System\Activities\Statements\Throw.cs" />
+    <Compile Include="System\Activities\Statements\TimerExtension.cs" />
+    <Compile Include="System\Activities\Statements\TimerTable.cs" />
+    <Compile Include="System\Activities\Statements\Tracking\StateMachineStateQuery.cs" />
+    <Compile Include="System\Activities\Statements\Tracking\StateMachineStateRecord.cs" />
+    <Compile Include="System\Activities\Statements\TransactionScope.cs" />
+    <Compile Include="System\Activities\Statements\Transition.cs" />
+    <Compile Include="System\Activities\Statements\TransitionData.cs" />
+    <Compile Include="System\Activities\Statements\TriggerCompletedEvent.cs" />
+    <Compile Include="System\Activities\Statements\TryCatch.cs" />
+    <Compile Include="System\Activities\Statements\While.cs" />
+    <Compile Include="System\Activities\Statements\WorkflowCompensationBehavior.cs" />
+    <Compile Include="System\Activities\Statements\WorkflowTerminatedException.cs" />
+    <Compile Include="System\Activities\Statements\WriteLine.cs" />
+    <Compile Include="System\Activities\SynchronizationContextHelper.cs" />
+    <Compile Include="System\Activities\Tracking\ActivityInfo.cs" />
+    <Compile Include="System\Activities\Tracking\ActivityScheduledQuery.cs" />
+    <Compile Include="System\Activities\Tracking\ActivityScheduledRecord.cs" />
+    <Compile Include="System\Activities\Tracking\ActivityStateQuery.cs" />
+    <Compile Include="System\Activities\Tracking\ActivityStateRecord.cs" />
+    <Compile Include="System\Activities\Tracking\ActivityStates.cs" />
+    <Compile Include="System\Activities\Tracking\BookmarkResumptionQuery.cs" />
+    <Compile Include="System\Activities\Tracking\BookmarkResumptionRecord.cs" />
+    <Compile Include="System\Activities\Tracking\CancelRequestedQuery.cs" />
+    <Compile Include="System\Activities\Tracking\CancelRequestedRecord.cs" />
+    <Compile Include="System\Activities\Tracking\CustomTrackingQuery.cs" />
+    <Compile Include="System\Activities\Tracking\CustomTrackingRecord.cs" />
+    <Compile Include="System\Activities\Tracking\EtwTrackingParticipant.cs" />
+    <Compile Include="System\Activities\Tracking\FaultPropagationQuery.cs" />
+    <Compile Include="System\Activities\Tracking\FaultPropagationRecord.cs" />
+    <Compile Include="System\Activities\Tracking\ImplementationVisibility.cs" />
+    <Compile Include="System\Activities\Tracking\RuntimeTrackingProfile.cs" />
+    <Compile Include="System\Activities\Tracking\TrackingParticipant.cs" />
+    <Compile Include="System\Activities\Tracking\TrackingProfile.cs" />
+    <Compile Include="System\Activities\Tracking\TrackingProvider.cs" />
+    <Compile Include="System\Activities\Tracking\TrackingQuery.cs" />
+    <Compile Include="System\Activities\Tracking\TrackingRecord.cs" />
+    <Compile Include="System\Activities\Tracking\TrackingRecordPreFilter.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceAbortedRecord.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceQuery.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceRecord.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceStates.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceSuspendedRecord.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceTerminatedRecord.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceUnhandledExceptionRecord.cs" />
+    <Compile Include="System\Activities\Tracking\WorkflowInstanceUpdatedRecord.cs" />
+    <Compile Include="System\Activities\UnhandledExceptionAction.cs" />
+    <Compile Include="System\Activities\Validation\ActivityValidationServices.cs" />
+    <Compile Include="System\Activities\Validation\AddValidationError.cs" />
+    <Compile Include="System\Activities\Validation\AssertValidation.cs" />
+    <Compile Include="System\Activities\Validation\Constraint.cs" />
+    <Compile Include="System\Activities\Validation\ExtensionMethods.cs" />
+    <Compile Include="System\Activities\Validation\GetChildSubtree.cs" />
+    <Compile Include="System\Activities\Validation\GetParentChain.cs" />
+    <Compile Include="System\Activities\Validation\GetWorkflowTree.cs" />
+    <Compile Include="System\Activities\Validation\ValidationContext.cs" />
+    <Compile Include="System\Activities\Validation\ValidationError.cs" />
+    <Compile Include="System\Activities\Validation\ValidationHelper.cs" />
+    <Compile Include="System\Activities\Validation\ValidationResults.cs" />
+    <Compile Include="System\Activities\Validation\ValidationSettings.cs" />
+    <Compile Include="System\Activities\ValidationException.cs" />
+    <Compile Include="System\Activities\Variable.cs" />
+    <Compile Include="System\Activities\VariableModifiers.cs" />
+    <Compile Include="System\Activities\VariableModifiersHelper.cs" />
+    <Compile Include="System\Activities\VersionMismatchException.cs" />
+    <Compile Include="System\Activities\WorkflowApplication.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationAbortedEventArgs.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationAbortedException.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationCompletedEventArgs.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationCompletedException.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationEventArgs.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationException.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationIdleEventArgs.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationInstance.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationTerminatedException.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationUnhandledExceptionEventArgs.cs" />
+    <Compile Include="System\Activities\WorkflowApplicationUnloadedException.cs" />
+    <Compile Include="System\Activities\WorkflowDataContext.cs" />
+    <Compile Include="System\Activities\WorkflowIdentity.cs" />
+    <Compile Include="System\Activities\WorkflowIdentityFilter.cs" />
+    <Compile Include="System\Activities\WorkflowInspectionServices.cs" />
+    <Compile Include="System\Activities\WorkflowInvoker.cs" />
+    <Compile Include="System\Activities\WorkflowPersistenceContext.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ActivityBuilderXamlWriter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ActivityWithResultConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ActivityWithResultValueSerializer.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ActivityXamlServices.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ActivityXamlServicesSettings.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ArgumentValueSerializer.cs" />
+    <Compile Include="System\Activities\XamlIntegration\AssemblyReferenceConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\CompiledDataContext.cs" />
+    <Compile Include="System\Activities\XamlIntegration\CompiledExpressionActivityVisitor.cs" />
+    <Compile Include="System\Activities\XamlIntegration\CompiledLocation.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ConcatenatingXamlReader.cs" />
+    <Compile Include="System\Activities\XamlIntegration\DynamicActivityXamlReader.cs" />
+    <Compile Include="System\Activities\XamlIntegration\DynamicUpdateMapConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\DynamicUpdateMapExtension.cs" />
+    <Compile Include="System\Activities\XamlIntegration\DynamicUpdateMapItemConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ExpressionTreeRewriter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\FuncFactory.cs" />
+    <Compile Include="System\Activities\XamlIntegration\FuncTypeConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ICompiledExpressionRoot.cs" />
+    <Compile Include="System\Activities\XamlIntegration\ImplementationVersionConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\InArgumentConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\InOutArgumentConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\IValueSerializableExpression.cs" />
+    <Compile Include="System\Activities\XamlIntegration\NamespaceTable.cs" />
+    <Compile Include="System\Activities\XamlIntegration\NetDataContractXmlSerializable.cs" />
+    <Compile Include="System\Activities\XamlIntegration\OutArgumentConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\PropertyReferenceExtension.cs" />
+    <Compile Include="System\Activities\XamlIntegration\SerializableFuncDeferringLoader.cs" />
+    <Compile Include="System\Activities\XamlIntegration\TextExpressionCompiler.cs" />
+    <Compile Include="System\Activities\XamlIntegration\TextExpressionCompilerError.cs" />
+    <Compile Include="System\Activities\XamlIntegration\TextExpressionCompilerHelper.cs" />
+    <Compile Include="System\Activities\XamlIntegration\TextExpressionCompilerResults.cs" />
+    <Compile Include="System\Activities\XamlIntegration\TextExpressionCompilerSettings.cs" />
+    <Compile Include="System\Activities\XamlIntegration\TypeConverterBase.cs" />
+    <Compile Include="System\Activities\XamlIntegration\WorkflowIdentityConverter.cs" />
+    <Compile Include="System\Activities\XamlIntegration\XamlWriterExtensions.cs" />
+    <Compile Include="System\Activities\XD.cs" />
+    <Compile Include="TD.Designer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

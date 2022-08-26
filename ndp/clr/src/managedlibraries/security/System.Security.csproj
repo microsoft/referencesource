@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{42151cfd-485b-404b-ae9c-2b98ce973704}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Security</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;FEATURE_APPDOMAINMANAGER_INITOPTIONS;FEATURE_APPDOMAIN_RESOURCE_MONITORING;FEATURE_APPX;FEATURE_APPX_BINDER;FEATURE_APTCA;FEATURE_ASCII;FEATURE_ASYNC_IO;FEATURE_BCL_FORMATTING;FEATURE_CAS_POLICY;FEATURE_CLASSIC_COMINTEROP;FEATURE_CLICKONCE;FEATURE_CODEPAGES_FILE;FEATURE_COLLECTIBLE_TYPES;FEATURE_COMINTEROP;FEATURE_COMINTEROP_APARTMENT_SUPPORT;FEATURE_COMINTEROP_MANAGED_ACTIVATION;FEATURE_COMINTEROP_UNMANAGED_ACTIVATION;FEATURE_COMINTEROP_WINRT_MANAGED_ACTIVATION;FEATURE_COMINTEROP_WINRT_DESKTOP_HOST;FEATURE_COMPRESSEDSTACK;FEATURE_CORRUPTING_EXCEPTIONS;FEATURE_CRYPTO;FEATURE_DISPLAY_CULTURE_INFO;FEATURE_DISPLAY_REGION_INFO;FEATURE_ENCODINGNLS;FEATURE_EXCEPTIONDISPATCHINFO;FEATURE_EXCEPTION_NOTIFICATIONS;FEATURE_FUSION;FEATURE_HOSTED_BINDER;FEATURE_HOSTING;FEATURE_IDENTITY_REFERENCE;FEATURE_IMPERSONATION;FEATURE_INCLUDE_ALL_INTERFACES;FEATURE_ISOLATED_STORAGE_QUOTA_ENFORCEMENT;FEATURE_ISOSTORE;FEATURE_LATIN1;FEATURE_LEAK_CULTURE_INFO;FEATURE_LOADER_OPTIMIZATION;FEATURE_MACL;FEATURE_MANAGED_ETW;FEATURE_MANAGED_ETW_CHANNELS;FEATURE_METHOD_RENTAL;FEATURE_MULTIMODULE_ASSEMBLIES;FEATURE_NONGENERIC_COLLECTIONS;FEATURE_PERFMON;FEATURE_PLS;FEATURE_RANDOMIZED_STRING_HASHING;FEATURE_REFLECTION_ONLY_LOAD;FEATURE_REMOTING;FEATURE_RWLOCK;FEATURE_SERIALIZATION;FEATURE_SORT_TABLES;FEATURE_STRONGNAME_MIGRATION;FEATURE_SYNCHRONIZATIONCONTEXT_WAIT;FEATURE_SYNTHETIC_CULTURES;FEATURE_TYPEEQUIVALENCE;FEATURE_USE_LCID;FEATURE_UTF32;FEATURE_UTF7;FEATURE_VALIDATOR;FEATURE_WIN32_REGISTRY;FEATURE_X509;FEATURE_X509_SECURESTRINGS;PROFILING_SUPPORTED;FEATURE_MULTICOREJIT;FEATURE_USE_ASM_GC_WRITE_BARRIERS;FEATURE_SYMDIFF;FEATURE_WIN_DB_APPCOMPAT;FEATURE_READYTORUN;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>system</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="system\security\cryptography\bigint.cs" />
+    <Compile Include="system\security\cryptography\cryptoapi.cs" />
+    <Compile Include="system\security\cryptography\cryptographicattribute.cs" />
+    <Compile Include="system\security\cryptography\dataprotection.cs" />
+    <Compile Include="system\security\cryptography\dataprotector.cs" />
+    <Compile Include="system\security\cryptography\dpapidataprotector.cs" />
+    <Compile Include="system\security\cryptography\pkcs\envelopedpkcs7.cs" />
+    <Compile Include="system\security\cryptography\pkcs\pkcs7recipient.cs" />
+    <Compile Include="system\security\cryptography\pkcs\pkcs7signer.cs" />
+    <Compile Include="system\security\cryptography\pkcs\pkcs9attribute.cs" />
+    <Compile Include="system\security\cryptography\pkcs\pkcsmisc.cs" />
+    <Compile Include="system\security\cryptography\pkcs\pkcsutils.cs" />
+    <Compile Include="system\security\cryptography\pkcs\recipientinfo.cs" />
+    <Compile Include="system\security\cryptography\pkcs\signedpkcs7.cs" />
+    <Compile Include="system\security\cryptography\pkcs\signerinfo.cs" />
+    <Compile Include="system\security\cryptography\x509\x509ui.cs" />
+    <Compile Include="system\security\cryptography\x509\x509utils.cs" />
+    <Compile Include="system\security\cryptography\xml\c14nutil.cs" />
+    <Compile Include="system\security\cryptography\xml\canonicalxml.cs" />
+    <Compile Include="system\security\cryptography\xml\cipherdata.cs" />
+    <Compile Include="system\security\cryptography\xml\dataobject.cs" />
+    <Compile Include="system\security\cryptography\xml\encrypteddata.cs" />
+    <Compile Include="system\security\cryptography\xml\encryptedkey.cs" />
+    <Compile Include="system\security\cryptography\xml\encryptedreference.cs" />
+    <Compile Include="system\security\cryptography\xml\encryptedtype.cs" />
+    <Compile Include="system\security\cryptography\xml\encryptedxml.cs" />
+    <Compile Include="system\security\cryptography\xml\exccanonicalxml.cs" />
+    <Compile Include="system\security\cryptography\xml\keyinfo.cs" />
+    <Compile Include="system\security\cryptography\xml\reference.cs" />
+    <Compile Include="system\security\cryptography\xml\signature.cs" />
+    <Compile Include="system\security\cryptography\xml\signedinfo.cs" />
+    <Compile Include="system\security\cryptography\xml\signedxml.cs" />
+    <Compile Include="system\security\cryptography\xml\SignedXmlDebugLog.cs" />
+    <Compile Include="system\security\cryptography\xml\symmetrickeywrap.cs" />
+    <Compile Include="system\security\cryptography\xml\transform.cs" />
+    <Compile Include="system\security\cryptography\xml\utils.cs" />
+    <Compile Include="system\security\permissions\dataprotectionpermission.cs" />
+    <Compile Include="system\security\permissions\dataprotectionpermissionattribute.cs" />
+    <Compile Include="system\security\permissions\dataprotectionpermissionflags.cs" />
+    <Compile Include="system\security\securityresources.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

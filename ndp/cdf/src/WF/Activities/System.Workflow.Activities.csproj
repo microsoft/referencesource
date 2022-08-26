@@ -1,0 +1,245 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{ad732ebd-245c-443c-9d68-e8a09dc78dbc}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Workflow.Activities</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\System.Data.csproj">
+      <Project>{9f39d5c4-50fa-4c2b-8511-41a6346f44fc}</Project>
+      <Name>System.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.Drawing.csproj">
+      <Project>{a95f2aef-5047-4d45-9480-b0476b85b958}</Project>
+      <Name>System.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Transactions\System.Transactions.csproj">
+      <Project>{6ad0de06-77fa-4a5d-9f96-d36654a60e80}</Project>
+      <Name>System.Transactions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\xsp\system\Web\System.Web.csproj">
+      <Project>{a0341765-8edd-4fbc-9ff8-e5fa04131891}</Project>
+      <Name>System.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\xsp\system\ApplicationServices\System.Web.ApplicationServices.csproj">
+      <Project>{878002a4-63d5-4c79-a11e-37fde48a30a8}</Project>
+      <Name>System.Web.ApplicationServices</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Web.Services\System.Web.Services.csproj">
+      <Project>{9065040b-0061-4561-918e-49917268b40a}</Project>
+      <Name>System.Web.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.Windows.Forms.csproj">
+      <Project>{aaa1520f-406f-413a-9190-71a073168135}</Project>
+      <Name>System.Windows.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\System.Workflow.ComponentModel.csproj">
+      <Project>{69e6110b-4655-4e1d-9850-4bc95e76e67c}</Project>
+      <Name>System.Workflow.ComponentModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ActivityTrace.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Code.cs" />
+    <Compile Include="CodeExpressionRuleDeclaration.cs" />
+    <Compile Include="Common\AssemblyRef.cs" />
+    <Compile Include="Common\BasePropertyDescriptor.cs" />
+    <Compile Include="Common\CompilerHelpers.cs" />
+    <Compile Include="Common\CompModHelpers.cs" />
+    <Compile Include="Common\DelegateTypeInfo.cs" />
+    <Compile Include="Common\ErrorNumbers.cs" />
+    <Compile Include="Common\NativeMethods.cs" />
+    <Compile Include="Common\TypeSystemHelpers.cs" />
+    <Compile Include="Common\UserDataKeys.cs" />
+    <Compile Include="Common\ValidationHelpers.cs" />
+    <Compile Include="Common\Walker.cs" />
+    <Compile Include="CompensatableSequenceActivity.cs" />
+    <Compile Include="Conditional.cs" />
+    <Compile Include="ConditionalBranch.cs" />
+    <Compile Include="ConstrainedGroup.cs" />
+    <Compile Include="CorrelationValidator.cs" />
+    <Compile Include="Delay.cs" />
+    <Compile Include="Designers\ActivityDesignerResources.cs" />
+    <Compile Include="Designers\CAGDesigner.cs" />
+    <Compile Include="Designers\CodeDesigner.cs" />
+    <Compile Include="Designers\ConditionalDesigner.cs" />
+    <Compile Include="Designers\ConditionedDesigner.cs" />
+    <Compile Include="Designers\DelayDesigner.cs" />
+    <Compile Include="Designers\EventDrivenDesigner.cs" />
+    <Compile Include="Designers\EventHandlersDesigner.cs" />
+    <Compile Include="Designers\EventSinkActivityDesigner.cs" />
+    <Compile Include="Designers\InvokeMethodActivityDesigner.cs" />
+    <Compile Include="Designers\InvokeWebServiceDesigner.cs" />
+    <Compile Include="Designers\ListenDesigner.cs" />
+    <Compile Include="Designers\ParallelDesigner.cs" />
+    <Compile Include="Designers\PolicyDesigner.cs" />
+    <Compile Include="Designers\ScopeDesigner.cs" />
+    <Compile Include="Designers\SequenceDesigner.cs" />
+    <Compile Include="Designers\ServiceDesigner.cs" />
+    <Compile Include="Designers\SetStateDesigner.cs" />
+    <Compile Include="Designers\StateDesigner.CommentLayoutGlyph.cs" />
+    <Compile Include="Designers\StateDesigner.cs" />
+    <Compile Include="Designers\StateDesigner.Helpers.cs" />
+    <Compile Include="Designers\StateDesigner.Layouts.cs" />
+    <Compile Include="Designers\StateDesigner.LayoutSelectionGlyph.cs" />
+    <Compile Include="Designers\StateDesigner.TransitionInfo.cs" />
+    <Compile Include="Designers\StateDesignerConnector.cs" />
+    <Compile Include="Designers\StateFinalizationDesigner.cs" />
+    <Compile Include="Designers\StateInitializationDesigner.cs" />
+    <Compile Include="Designers\StateMachineDesignerPaint.cs" />
+    <Compile Include="Designers\StateMachineWorkflowDesigner.cs" />
+    <Compile Include="Designers\TaskDesigner.cs" />
+    <Compile Include="Designers\WebServiceFaultDesigner.cs" />
+    <Compile Include="Designers\WebServiceReceiveDesigner.cs" />
+    <Compile Include="Designers\WebServiceResponseDesigner.cs" />
+    <Compile Include="Designers\WhileDesigner.cs" />
+    <Compile Include="EventDriven.cs" />
+    <Compile Include="EventHandlers.cs" />
+    <Compile Include="EventHandlingScope.cs" />
+    <Compile Include="EventSinkActivity.cs" />
+    <Compile Include="Executors\Helpers.cs" />
+    <Compile Include="Executors\InboundActivityHelper.cs" />
+    <Compile Include="Executors\InvokeBase.cs" />
+    <Compile Include="Executors\WorkflowWebService.cs" />
+    <Compile Include="Interfaces.cs" />
+    <Compile Include="InvokeMethodActivity.cs" />
+    <Compile Include="InvokeSchedule.cs" />
+    <Compile Include="InvokeWebService.cs" />
+    <Compile Include="Listen.cs" />
+    <Compile Include="LocalService\CorrelationResolver.cs" />
+    <Compile Include="LocalService\CorrelationService.cs" />
+    <Compile Include="LocalService\CorrelationTokenInvalidatedHandler.cs" />
+    <Compile Include="LocalService\CorrelationTokenTypeConvertor.cs" />
+    <Compile Include="LocalService\DataExchangeServiceBinder.cs" />
+    <Compile Include="LocalService\ExternalDataExchangeService.cs" />
+    <Compile Include="LocalService\FollowerQueueCreator.cs" />
+    <Compile Include="LocalService\LogicalCallContext.cs" />
+    <Compile Include="LocalService\MessageEventSubscriptionService.cs" />
+    <Compile Include="LocalService\MessageQueueKey.cs" />
+    <Compile Include="LocalService\MethodMessage.cs" />
+    <Compile Include="LocalService\WorkflowMessageEventArgs.cs" />
+    <Compile Include="LocalService\WorkflowMessageEventHandler.cs" />
+    <Compile Include="Parallel.cs" />
+    <Compile Include="Policy.cs" />
+    <Compile Include="Role\ADRole.cs" />
+    <Compile Include="Role\ADRoleFactory.cs" />
+    <Compile Include="Role\ADRoleFactoryConfiguration.cs" />
+    <Compile Include="Role\DirectoryGroupQuery.cs" />
+    <Compile Include="Role\DirectoryLocalQuery.cs" />
+    <Compile Include="Role\DirectoryQueryOperation.cs" />
+    <Compile Include="Role\DirectoryRedirect.cs" />
+    <Compile Include="Role\DirectoryRootQuery.cs" />
+    <Compile Include="Role\IDirectoryOperation.cs" />
+    <Compile Include="Role\RoleExceptions.cs" />
+    <Compile Include="Role\WebWorkflowRole.cs" />
+    <Compile Include="Rules\ArithmeticLiteral.cs" />
+    <Compile Include="Rules\CodeDomDecompiler.cs" />
+    <Compile Include="Rules\ConditionChanges.cs" />
+    <Compile Include="Rules\DeclarativeConditionsCollection.cs" />
+    <Compile Include="Rules\DeclarativeExpressionConditionDeclaration.cs" />
+    <Compile Include="Rules\Design\DesignerHelpers.cs" />
+    <Compile Include="Rules\Design\Dialogs\BasicBrowserDialog.cs" />
+    <Compile Include="Rules\Design\Dialogs\BasicBrowserDialog.Designer.cs" />
+    <Compile Include="Rules\Design\Dialogs\ConditionBrowserDialog.cs" />
+    <Compile Include="Rules\Design\Dialogs\IntellisenseTextBox.cs" />
+    <Compile Include="Rules\Design\Dialogs\IntellisenseTextBox.Designer.cs" />
+    <Compile Include="Rules\Design\Dialogs\RenameRuleObjectDialog.cs" />
+    <Compile Include="Rules\Design\Dialogs\RenameRuleObjectDialog.Designer.cs" />
+    <Compile Include="Rules\Design\Dialogs\RuleConditionDialog.cs" />
+    <Compile Include="Rules\Design\Dialogs\RuleConditionDialog.Designer.cs" />
+    <Compile Include="Rules\Design\Dialogs\RuleSetBrowserDialog.cs" />
+    <Compile Include="Rules\Design\Dialogs\RuleSetDialog.cs" />
+    <Compile Include="Rules\Design\Dialogs\RuleSetDialog.Designer.cs" />
+    <Compile Include="Rules\Design\LogicalExpressionEditor.cs" />
+    <Compile Include="Rules\Design\LogicalExpressionTypeConverter.cs" />
+    <Compile Include="Rules\Exceptions.cs" />
+    <Compile Include="Rules\Executor.cs" />
+    <Compile Include="Rules\Expressions.cs" />
+    <Compile Include="Rules\Helpers.cs" />
+    <Compile Include="Rules\Literal.cs" />
+    <Compile Include="Rules\Parser\Exceptions.cs" />
+    <Compile Include="Rules\Parser\Intellisense.cs" />
+    <Compile Include="Rules\Parser\Parser.cs" />
+    <Compile Include="Rules\Parser\Scanner.cs" />
+    <Compile Include="Rules\Parser\Symbol.cs" />
+    <Compile Include="Rules\Parser\Token.cs" />
+    <Compile Include="Rules\References.cs" />
+    <Compile Include="Rules\Rule.cs" />
+    <Compile Include="Rules\RuleAction.cs" />
+    <Compile Include="Rules\RuleAttributes.cs" />
+    <Compile Include="Rules\RuleDefinitions.cs" />
+    <Compile Include="Rules\RuleEngine.cs" />
+    <Compile Include="Rules\RuleSet.cs" />
+    <Compile Include="Rules\RuleSetCollection.cs" />
+    <Compile Include="Rules\RuleSetReference.cs" />
+    <Compile Include="Rules\RuleValidation.cs" />
+    <Compile Include="Rules\Statements.cs" />
+    <Compile Include="Rules\Tracer.cs" />
+    <Compile Include="Rules\UserDataKeys.cs" />
+    <Compile Include="Rules\Walker.cs" />
+    <Compile Include="Schedule.cs" />
+    <Compile Include="Scope.cs" />
+    <Compile Include="Sequence.cs" />
+    <Compile Include="SetState.cs" />
+    <Compile Include="SetStateEventArgs.cs" />
+    <Compile Include="SR.cs" />
+    <Compile Include="State.cs" />
+    <Compile Include="StateFinalizationActivity.cs" />
+    <Compile Include="StateInitialization.cs" />
+    <Compile Include="StateMachineAction.cs" />
+    <Compile Include="StateMachineExecutionState.cs" />
+    <Compile Include="StateMachineHelpers.cs" />
+    <Compile Include="StateMachineSubscription.cs" />
+    <Compile Include="StateMachineSubscriptionManager.cs" />
+    <Compile Include="StateMachineWorkflow.cs" />
+    <Compile Include="StateMachineWorkflowInstance.cs" />
+    <Compile Include="StateValidator.cs" />
+    <Compile Include="Task.cs" />
+    <Compile Include="WebServiceFault.cs" />
+    <Compile Include="WebServiceReceive.cs" />
+    <Compile Include="WebServiceResponse.cs" />
+    <Compile Include="While.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{a4661609-a0a8-43cc-a95b-72641e7fafa2}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.AddIn</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;FEATURE_LEGACYSURFACEAREA;FEATURE_UTF32;FEATURE_UTF7;PRODUCTION_BUILD;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Contract\System.AddIn.Contract.csproj">
+      <Project>{36bbf57d-1575-460b-aab3-f8a5ef34bef6}</Project>
+      <Name>System.AddIn.Contract</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\clr\src\managedlibraries\remoting\System.Runtime.Remoting.csproj">
+      <Project>{688a2a6d-d399-4248-860d-0bebea7ce269}</Project>
+      <Name>System.Runtime.Remoting</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="misc\AssemblyAttributes.cs" />
+    <Compile Include="System\Addin\AddInAttribute.cs" />
+    <Compile Include="System\Addin\Hosting\ActivationWorker.cs" />
+    <Compile Include="System\Addin\Hosting\AddInActivator.cs" />
+    <Compile Include="System\Addin\Hosting\AddInController.cs" />
+    <Compile Include="System\Addin\Hosting\AddInControllerImpl.cs" />
+    <Compile Include="System\Addin\Hosting\AddInDeploymentState.cs" />
+    <Compile Include="System\Addin\Hosting\AddInEnvironment.cs" />
+    <Compile Include="System\Addin\Hosting\AddInIpcChannel.cs" />
+    <Compile Include="System\Addin\Hosting\AddInProcess.cs" />
+    <Compile Include="System\Addin\Hosting\AddInSecurityLevel.cs" />
+    <Compile Include="System\Addin\Hosting\AddInSegmentDirectoryNotFoundException.cs" />
+    <Compile Include="System\Addin\Hosting\AddInSegmentType.cs" />
+    <Compile Include="System\Addin\Hosting\AddInServer.cs" />
+    <Compile Include="System\Addin\Hosting\AddInStore.cs" />
+    <Compile Include="System\Addin\Hosting\AddInToken.cs" />
+    <Compile Include="System\Addin\Hosting\ContravarianceAdapter.cs" />
+    <Compile Include="System\Addin\Hosting\DeploymentState.cs" />
+    <Compile Include="System\Addin\Hosting\InspectionWorker.cs" />
+    <Compile Include="System\Addin\Hosting\InvalidPipelineStoreException.cs" />
+    <Compile Include="System\Addin\Hosting\PartialToken.cs" />
+    <Compile Include="System\Addin\Hosting\PipelineDeploymentState.cs" />
+    <Compile Include="System\Addin\Hosting\PipelineStoreLocation.cs" />
+    <Compile Include="System\Addin\Hosting\QualificationDataItem.cs" />
+    <Compile Include="System\Addin\Hosting\ReadOnlyDictionary.cs" />
+    <Compile Include="System\Addin\Hosting\RemotingHelper.cs" />
+    <Compile Include="System\Addin\Hosting\Store\AddIn.cs" />
+    <Compile Include="System\Addin\Hosting\Store\AddInAdapter.cs" />
+    <Compile Include="System\Addin\Hosting\Store\AddInBase.cs" />
+    <Compile Include="System\Addin\Hosting\Store\ContractComponent.cs" />
+    <Compile Include="System\Addin\Hosting\Store\HostAdapter.cs" />
+    <Compile Include="System\Addin\Hosting\Store\PipelineComponent.cs" />
+    <Compile Include="System\Addin\Hosting\Utils.cs" />
+    <Compile Include="System\Addin\MiniReflection\GenericsNotImplementedException.cs" />
+    <Compile Include="System\Addin\MiniReflection\MetadataReader\AssemblyInfo.cs" />
+    <Compile Include="System\Addin\MiniReflection\MetadataReader\Enums.cs" />
+    <Compile Include="System\Addin\MiniReflection\MetadataReader\Metadata.cs" />
+    <Compile Include="System\Addin\MiniReflection\MetadataReader\PEFileReader.cs" />
+    <Compile Include="System\Addin\MiniReflection\MiniAssembly.cs" />
+    <Compile Include="System\Addin\MiniReflection\MiniConstructorInfo.cs" />
+    <Compile Include="System\Addin\MiniReflection\MiniCustomAttributeInfo.cs" />
+    <Compile Include="System\Addin\MiniReflection\MiniModule.cs" />
+    <Compile Include="System\Addin\MiniReflection\MiniParameterInfo.cs" />
+    <Compile Include="System\Addin\MiniReflection\TypeInfo.cs" />
+    <Compile Include="System\Addin\NativeMethods.cs" />
+    <Compile Include="System\Addin\Pipeline\AddInPipelineAttributes.cs" />
+    <Compile Include="System\Addin\Pipeline\CollectionAdapters.cs" />
+    <Compile Include="System\Addin\Pipeline\ContractAdapter.cs" />
+    <Compile Include="System\Addin\Pipeline\ContractBase.cs" />
+    <Compile Include="System\Addin\Pipeline\ContractHandle.cs" />
+    <Compile Include="System\Addin\Pipeline\ContractListAdapter.cs" />
+    <Compile Include="System\Addin\Pipeline\ListContractAdapter.cs" />
+    <Compile Include="System\Addin\ResourceProvider.cs" />
+    <Compile Include="System\Addin\ResourceState.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

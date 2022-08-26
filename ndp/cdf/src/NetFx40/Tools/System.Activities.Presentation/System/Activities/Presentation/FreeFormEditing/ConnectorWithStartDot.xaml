@@ -1,0 +1,247 @@
+﻿<local:Connector x:Uid="root" x:Class="System.Activities.Presentation.FreeFormEditing.ConnectorWithStartDot"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:sap="clr-namespace:System.Activities.Presentation"
+    xmlns:local="clr-namespace:System.Activities.Presentation.FreeFormEditing" x:Name="root"
+    IsTabStop="True">
+    <local:Connector.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+              <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+              <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:ConnectorPointsToSegmentsConverter x:Uid="local:ConnectorPointsToSegmentsConverter_1" x:Key="ConnectorPointsToSegmentsConverter"/>
+            <local:ConnectorPointsToArrowMarginConverter x:Uid="local:ConnectorPointsToArrowMarginConverter_1" x:Key="ConnectorPointsToArrowMarginConverter"/>
+            <local:ConnectorPointsToArrowTransformConverter x:Uid="local:ConnectorPointsToArrowTransformConverter_1" x:Key="ConnectorPointsToArrowTransformConverter"/>
+            <local:ConnectorLabelMarginConverter x:Uid="local:ConnectorLabelMarginConverter_1" x:Key="ConnectorLabelMarginConverter"/>
+            <local:ConnectorLabelVisibilityConverter x:Uid="local:ConnectorLabelVisibilityConverter_1" x:Key="ConnectorLabelVisibilityConverter"/>
+            <local:ConnectorStartDotConverter x:Uid="local:ConnectorStartDotConverter_1" x:Key="ConnectorStartDotConverter"/>
+            <local:ConnectorIdentityConverter x:Uid="local:ConnectorIdentityConverter_1" x:Key="ConnectorIdentityConverter"/>
+        </ResourceDictionary>
+    </local:Connector.Resources>
+  <AutomationProperties.AutomationId>
+    <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource ConnectorIdentityConverter}">
+      <Binding x:Uid="Binding_1" Mode="OneWay" ElementName="root" Path="Identity" />
+      <Binding x:Uid="Binding_2" Mode="OneWay" ElementName="root" Path="Points" />
+    </MultiBinding>
+  </AutomationProperties.AutomationId>
+    <Grid x:Uid="rootGrid" x:Name="rootGrid">
+        <Path x:Uid="BottomLine" Stroke="Transparent" SnapsToDevicePixels="True" StrokeThickness="8" Fill="{x:Null}" StrokeLineJoin="Round" x:Name="BottomLine" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Path.Data>
+                <PathGeometry x:Uid="PathGeometry_1">
+                    <PathGeometry.Figures>
+                        <PathFigure x:Uid="PathFigure_1" StartPoint="{Binding ElementName=root,Path=Points[0]}" Segments="{Binding ElementName=root, Path=Points, Converter={StaticResource ConnectorPointsToSegmentsConverter}}" />
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+        <Path x:Uid="TopLine" SnapsToDevicePixels="True" Fill="{x:Null}" StrokeLineJoin="Round" x:Name="TopLine" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Path.Data>
+                <PathGeometry x:Uid="PathGeometry_2">
+                    <PathGeometry.Figures>
+                        <PathFigure x:Uid="PathFigure_2" StartPoint="{Binding ElementName=root,Path=Points[0]}" Segments="{Binding ElementName=root, Path=Points, Converter={StaticResource ConnectorPointsToSegmentsConverter}}" />
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+            <Path.Style>
+                <Style x:Uid="Style_1" TargetType="{x:Type Path}">
+                    <Setter x:Uid="Setter_1" Property="Path.Stroke" Value="{DynamicResource WorkflowViewElementBorderBrush}" />
+                    <Setter x:Uid="Setter_2" Property="StrokeThickness" Value="2"/>
+                    <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=IsSelected, ElementName=root}" Value="True">
+                            <Setter x:Uid="Setter_3" Property="Path.Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}" />
+                        </DataTrigger>
+                        <MultiDataTrigger x:Uid="MultiDataTrigger_1">
+                            <MultiDataTrigger.Conditions>
+                                <Condition x:Uid="Condition_1" Binding="{Binding Path=IsMouseOver, ElementName=BottomLine}" Value="True"/>
+                                <Condition x:Uid="Condition_2" Binding="{Binding Path=HighlightOnHover, ElementName=root}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter x:Uid="Setter_4" Property="StrokeThickness" Value="4"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger x:Uid="MultiDataTrigger_2">
+                            <MultiDataTrigger.Conditions>
+                                <Condition x:Uid="Condition_3" Binding="{Binding Path=IsMouseOver, ElementName=TopLine}" Value="True"/>
+                                <Condition x:Uid="Condition_4" Binding="{Binding Path=HighlightOnHover, ElementName=root}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter x:Uid="Setter_5" Property="StrokeThickness" Value="4"/>
+                        </MultiDataTrigger>
+                        <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=IsHighlightedForAutoSplit, ElementName=root}" Value="True">
+                            <Setter x:Uid="Setter_17" Property="Path.Stroke" Value="SteelBlue"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Path.Style>
+        </Path>
+        <Grid x:Uid="startDotGrid" x:Name="startDotGrid">
+            <Path x:Uid="startDotForHitTest" x:Name="startDotForHitTest" Stroke="Transparent" SnapsToDevicePixels="True" StrokeThickness="1" Fill="Transparent">
+                <Path.Data>
+                    <PathGeometry x:Uid="PathGeometry_3">
+                        <PathGeometry.Figures>
+                            <PathFigureCollection x:Uid="PathFigureCollection_1">
+                                <PathFigure x:Uid="PathFigure_3">
+                                    <PathFigure.StartPoint>
+                                        <Binding x:Uid="Binding_14" ElementName="root" Path="Points[0]" Converter="{StaticResource ConnectorStartDotConverter}">
+                                            <Binding.ConverterParameter>
+                                                <x:Array x:Uid="x:Array_1" Type="sys:Boolean">
+                                                    <sys:Boolean x:Uid="sys:Boolean_1">True</sys:Boolean>
+                                                    <sys:Boolean x:Uid="sys:Boolean_2">True</sys:Boolean>
+                                                </x:Array>
+                                            </Binding.ConverterParameter>
+                                        </Binding>
+                                    </PathFigure.StartPoint>
+                                    <PathFigure.Segments>
+                                        <PathSegmentCollection x:Uid="PathSegmentCollection_1">
+                                            <ArcSegment x:Uid="ArcSegment_1" Size="4,4" IsLargeArc="True">
+                                                <ArcSegment.Point>
+                                                    <Binding  x:Uid="Binding_15" ElementName="root" Path="Points[0]" Converter="{StaticResource ConnectorStartDotConverter}">
+                                                        <Binding.ConverterParameter>
+                                                            <x:Array x:Uid="x:Array_2" Type="sys:Boolean">
+                                                                <sys:Boolean x:Uid="sys:Boolean_3">False</sys:Boolean>
+                                                                <sys:Boolean x:Uid="sys:Boolean_4">True</sys:Boolean>
+                                                            </x:Array>
+                                                        </Binding.ConverterParameter>
+                                                    </Binding>
+                                                </ArcSegment.Point>
+                                            </ArcSegment>
+                                            <ArcSegment x:Uid="ArcSegment_2" Size="4,4" IsLargeArc="False">
+                                                <ArcSegment.Point>
+                                                    <Binding  x:Uid="Binding_3" ElementName="root" Path="Points[0]" Converter="{StaticResource ConnectorStartDotConverter}">
+                                                        <Binding.ConverterParameter>
+                                                            <x:Array x:Uid="x:Array_3" Type="sys:Boolean">
+                                                                <sys:Boolean x:Uid="sys:Boolean_5">True</sys:Boolean>
+                                                                <sys:Boolean x:Uid="sys:Boolean_6">True</sys:Boolean>
+                                                            </x:Array>
+                                                        </Binding.ConverterParameter>
+                                                    </Binding>
+                                                </ArcSegment.Point>
+                                            </ArcSegment>
+                                        </PathSegmentCollection>
+                                    </PathFigure.Segments>
+                                </PathFigure>
+                            </PathFigureCollection>
+                        </PathGeometry.Figures>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+            <Path x:Uid="startDot" x:Name="startDot" SnapsToDevicePixels="True">
+                <Path.Style>
+                    <Style x:Uid="Style_3" TargetType="{x:Type Path}">
+                        <Setter x:Uid="Setter_9" Property="StrokeThickness" Value="1"/>
+                        <Setter x:Uid="Setter_10" Property="Stroke" Value="{DynamicResource WorkflowViewElementBorderBrush}"/>
+                        <Setter x:Uid="Setter_11" Property="Fill" Value="{DynamicResource WorkflowViewElementBackground}"/>
+                        <Style.Triggers>
+                            <DataTrigger x:Uid="DataTrigger_7" Binding="{Binding Path=IsSelected, ElementName=root}" Value="True">
+                                <Setter x:Uid="Setter_12" Property="Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}"/>
+                                <Setter x:Uid="Setter_13" Property="Fill" Value="{DynamicResource WorkflowViewElementSelectedBackground}"/>
+                            </DataTrigger>
+                            <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Path=IsMouseOver, ElementName=startDotForHitTest}" Value="True">
+                                <Setter x:Uid="Setter_20" Property="Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}"/>
+                                <Setter x:Uid="Setter_21" Property="Fill" Value="{DynamicResource WorkflowViewElementSelectedBackground}"/>
+                            </DataTrigger>
+                            <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Path=IsMouseOver, ElementName=startDot}" Value="True">
+                                <Setter x:Uid="Setter_22" Property="Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}"/>
+                                <Setter x:Uid="Setter_23" Property="Fill" Value="{DynamicResource WorkflowViewElementSelectedBackground}"/>
+                            </DataTrigger>
+                            <MultiDataTrigger x:Uid="MultiDataTrigger_3">
+                                <MultiDataTrigger.Conditions>
+                                    <Condition x:Uid="Condition_5" Binding="{Binding Path=IsMouseOver, ElementName=BottomLine}" Value="True"/>
+                                    <Condition x:Uid="Condition_6" Binding="{Binding Path=HighlightOnHover, ElementName=root}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter x:Uid="Setter_24" Property="Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}"/>
+                                <Setter x:Uid="Setter_25" Property="Fill" Value="{DynamicResource WorkflowViewElementSelectedBackground}"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger x:Uid="MultiDataTrigger_4">
+                                <MultiDataTrigger.Conditions>
+                                    <Condition x:Uid="Condition_7" Binding="{Binding Path=IsMouseOver, ElementName=TopLine}" Value="True"/>
+                                    <Condition x:Uid="Condition_8" Binding="{Binding Path=HighlightOnHover, ElementName=root}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter x:Uid="Setter_26" Property="Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}"/>
+                                <Setter x:Uid="Setter_27" Property="Fill" Value="{DynamicResource WorkflowViewElementSelectedBackground}"/>
+                            </MultiDataTrigger>
+                            <DataTrigger x:Uid="DataTrigger_8" Binding="{Binding Path=IsHighlightedForAutoSplit, ElementName=root}" Value="True">
+                                <Setter x:Uid="Setter_19" Property="Stroke" Value="SteelBlue"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+                <Path.Data>
+                    <PathGeometry x:Uid="PathGeometry_4">
+                        <PathGeometry.Figures>
+                            <PathFigureCollection x:Uid="PathFigureCollection_2">
+                                <PathFigure x:Uid="PathFigure_4">
+                                    <PathFigure.StartPoint>
+                                        <Binding x:Uid="Binding_4" ElementName="root" Path="Points[0]" Converter="{StaticResource ConnectorStartDotConverter}">
+                                            <Binding.ConverterParameter>
+                                                <x:Array x:Uid="x:Array_4" Type="sys:Boolean">
+                                                    <sys:Boolean x:Uid="sys:Boolean_7">True</sys:Boolean>
+                                                    <sys:Boolean x:Uid="sys:Boolean_8">False</sys:Boolean>
+                                                </x:Array>
+                                            </Binding.ConverterParameter>
+                                        </Binding>
+                                    </PathFigure.StartPoint>
+                                    <PathFigure.Segments>
+                                        <PathSegmentCollection x:Uid="PathSegmentCollection_2">
+                                            <ArcSegment x:Uid="ArcSegment_3" Size="4,4" IsLargeArc="True">
+                                                <ArcSegment.Point>
+                                                    <Binding  x:Uid="Binding_5" ElementName="root" Path="Points[0]" Converter="{StaticResource ConnectorStartDotConverter}">
+                                                        <Binding.ConverterParameter>
+                                                            <x:Array x:Uid="x:Array_5" Type="sys:Boolean">
+                                                                <sys:Boolean x:Uid="sys:Boolean_9">False</sys:Boolean>
+                                                                <sys:Boolean x:Uid="sys:Boolean_10">False</sys:Boolean>
+                                                            </x:Array>
+                                                        </Binding.ConverterParameter>
+                                                    </Binding>
+                                                </ArcSegment.Point>
+                                            </ArcSegment>
+                                            <ArcSegment x:Uid="ArcSegment_4" Size="4,4" IsLargeArc="False">
+                                                <ArcSegment.Point>
+                                                    <Binding  x:Uid="Binding_6" ElementName="root" Path="Points[0]" Converter="{StaticResource ConnectorStartDotConverter}">
+                                                        <Binding.ConverterParameter>
+                                                            <x:Array x:Uid="x:Array_6" Type="sys:Boolean">
+                                                                <sys:Boolean x:Uid="sys:Boolean_11">True</sys:Boolean>
+                                                                <sys:Boolean x:Uid="sys:Boolean_12">False</sys:Boolean>
+                                                            </x:Array>
+                                                        </Binding.ConverterParameter>
+                                                    </Binding>
+                                                </ArcSegment.Point>
+                                            </ArcSegment>
+                                        </PathSegmentCollection>
+                                    </PathFigure.Segments>
+                                </PathFigure>
+                            </PathFigureCollection>
+                        </PathGeometry.Figures>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+
+        <Rectangle x:Uid="arrowShape" x:Name="arrowShape" Width="10" Height="10" Visibility="Visible" VerticalAlignment="Top" HorizontalAlignment="Left" Fill="{StaticResource ArrowEndPoint}" RenderTransform="{Binding ElementName=root, Path=Points, Mode=OneWay, Converter={StaticResource ConnectorPointsToArrowTransformConverter}, ConverterParameter=5}">
+            <Rectangle.Margin>
+                <MultiBinding x:Uid="MultiBinding_4" Converter ="{StaticResource ConnectorPointsToArrowMarginConverter}" ConverterParameter="5" Mode="OneWay">
+                    <Binding x:Uid="Binding_7" ElementName="root" Path="Points"/>
+                    <Binding x:Uid="Binding_8" RelativeSource="{RelativeSource Self}" Path="RenderTransform"/>
+                </MultiBinding>
+            </Rectangle.Margin>
+        </Rectangle>
+
+        <Border x:Uid="LayoutRoot" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="LayoutRoot" Background="{DynamicResource DesignerViewBackground}" BorderBrush="#FFCCCCCC"
+                BorderThickness="1,1,1,1" CornerRadius="10,10,10,10" Padding="4,1,4,1" Height="20"  Width="Auto" >
+            <TextBlock x:Uid="labelTextBlock" Text="{Binding ElementName=root, Path=LabelText}" Margin="0,-2,0,0" TextTrimming="CharacterEllipsis" MaxWidth="80" x:Name="labelTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource WorkflowViewElementCaptionBrush}"/>
+            <Border.Visibility>
+                <MultiBinding x:Uid="MultiBinding_2" Converter="{StaticResource ConnectorLabelVisibilityConverter}" Mode="OneWay">
+                    <Binding x:Uid="Binding_9" ElementName="labelTextBlock" Path="Text" />
+                    <Binding x:Uid="Binding_10" ElementName="root" Path="Points" />
+                </MultiBinding>
+            </Border.Visibility>
+            <Border.Margin>
+                <MultiBinding x:Uid="MultiBinding_3" Converter="{StaticResource ConnectorLabelMarginConverter}" Mode="OneWay">
+                    <Binding x:Uid="Binding_11" ElementName="root" Path="Points" />
+                    <Binding x:Uid="Binding_12" ElementName="labelTextBlock" Path="ActualWidth" />
+                    <Binding x:Uid="Binding_13" ElementName="labelTextBlock" Path="ActualHeight" />
+                </MultiBinding>
+            </Border.Margin>
+        </Border>
+    </Grid>
+</local:Connector>

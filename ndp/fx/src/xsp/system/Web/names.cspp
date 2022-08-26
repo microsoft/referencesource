@@ -1,0 +1,104 @@
+//------------------------------------------------------------------------------
+/// <copyright from='1997' to='2001' company='Microsoft Corporation'>           
+///    Copyright (c) Microsoft Corporation. All Rights Reserved.                
+///    Information Contained Herein is Proprietary and Confidential.            
+/// </copyright>                                                                
+//------------------------------------------------------------------------------
+
+#include "names.h"
+
+namespace System.Web {
+    class ModName {
+        ModName() {}
+
+#ifdef FEATURE_PAL // These names are not hardcoded in FEATURE_PAL
+        internal const string ISAPI_FULL_NAME      = "ROTORTODO";
+        internal const string ISAPI_BASE_NAME      = ISAPI_MODULE_BASE_NAME;
+
+        internal const string WP_FULL_NAME         = "ROTORTODO";
+        internal const string WP_BASE_NAME         = WP_MODULE_BASE_NAME;
+
+        internal const string STATE_FULL_NAME      = "ROTORTODO";
+        internal const string STATE_BASE_NAME      = STATE_MODULE_BASE_NAME;
+#else // FEATURE_PAL
+
+        internal const string ENGINE_FULL_NAME      = ENGINE_MODULE_FULL_NAME;
+        internal const string ENGINE_BASE_NAME      = ENGINE_MODULE_BASE_NAME;
+
+        internal const string FILTER_FULL_NAME     = FILTER_MODULE_FULL_NAME;
+                                                                      
+        internal const string ISAPI_FULL_NAME      = ISAPI_MODULE_FULL_NAME;
+        internal const string ISAPI_BASE_NAME      = ISAPI_MODULE_BASE_NAME;
+
+        internal const string WP_FULL_NAME         = WP_MODULE_FULL_NAME;
+        internal const string WP_BASE_NAME         = WP_MODULE_BASE_NAME;
+                                                                      
+        internal const string STATE_FULL_NAME      = STATE_MODULE_FULL_NAME;
+        internal const string STATE_BASE_NAME      = STATE_MODULE_BASE_NAME;
+
+#endif // FEATURE_PAL                                                                      
+        internal const string PERF_FULL_NAME       = PERF_MODULE_FULL_NAME;
+        internal const string PERF_BASE_NAME       = PERF_MODULE_BASE_NAME;
+                                                                      
+        internal const string RC_FULL_NAME         = RC_MODULE_FULL_NAME;
+        internal const string RC_BASE_NAME         = RC_MODULE_BASE_NAME;
+                                                                      
+        internal const string WEB_FULL_NAME        = WEB_MODULE_FULL_NAME;
+        internal const string WEB_BASE_NAME        = WEB_MODULE_BASE_NAME;
+
+        internal const string MGDENG_FULL_NAME     = MGDENGINE_MODULE_FULL_NAME;
+        internal const string MGDENG_BASE_NAME     = MGDENGINE_MODULE_BASE_NAME;
+
+#ifdef FEATURE_PAL // FEATURE_PAL supports different library suffixes across different platforms
+ #if !PLATFORM_UNIX
+        internal const String DLLPREFIX = "";
+        internal const String DLLSUFFIX = ".dll";
+ #else // !PLATFORM_UNIX
+  #if __APPLE__
+        internal const String DLLPREFIX = "lib";
+        internal const String DLLSUFFIX = ".dylib";
+  #elif _AIX
+        internal const String DLLPREFIX = "lib";
+        internal const String DLLSUFFIX = ".a";
+  #elif __hppa__ || IA64
+        internal const String DLLPREFIX = "lib";
+        internal const String DLLSUFFIX = ".sl";
+  #else
+        internal const String DLLPREFIX = "lib";
+        internal const String DLLSUFFIX = ".so";
+  #endif
+ #endif // !PLATFORM_UNIX
+        internal const string ADVAPI32_FULL_NAME   = DLLPREFIX + "rotor_pal" + DLLSUFFIX;
+
+        internal const string KERNEL32_FULL_NAME   = DLLPREFIX + "rotor_pal" + DLLSUFFIX;
+
+        internal const string USER32_FULL_NAME     = DLLPREFIX + "rotor_pal" + DLLSUFFIX;
+
+        internal const string WININET_FULL_NAME    = DLLPREFIX + "rotor_pal" + DLLSUFFIX;
+
+        internal const string NETAPI32_FULL_NAME   = DLLPREFIX + "rotor_pal" + DLLSUFFIX;
+        
+        internal const string MSCORWKS_FULL_NAME   = DLLPREFIX + "sscoree" + DLLSUFFIX;
+#else // FEATURE_PAL
+
+        internal const string ADVAPI32_FULL_NAME   = "advapi32.dll";
+
+        internal const string KERNEL32_FULL_NAME   = "kernel32.dll";
+
+        internal const string USER32_FULL_NAME     = "user32.dll";
+
+        internal const string WININET_FULL_NAME    = "wininet.dll";
+
+        internal const string MSCORWKS_FULL_NAME   = "clr.dll";
+
+#endif // FEATURE_PAL
+        internal const string REG_MACHINE_APP      = REGPATH_MACHINE_APP;
+
+        internal const string W3WP_FULL_NAME       = "w3wp.exe";
+
+        internal const string NETAPI32_FULL_NAME   = "netapi32.dll";
+        
+        internal const string OLE32_FULL_NAME      = "ole32.dll";
+    }
+}
+

@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{8fae6ff9-2d3f-4350-a231-a9a28dbb2cad}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>SMSvcHost</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;SERVICEMODEL_DEPENDENT;SMDIAGNOSTICS_EVENTLOG;SMDIAGNOSTICS_TRACING;SMDIAGNOSTICS_TRACING_EXTENDED;SMDIAGNOSTICS_FAILFAST;NONAPTCA;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMDiagnostics\SMDiagnostics.csproj">
+      <Project>{b9807cc8-1745-4e4d-b4d0-7ce74ae96e1e}</Project>
+      <Name>SMDiagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Core\System.Core.csproj">
+      <Project>{b656cf4b-8938-4bc8-b777-68da792be27d}</Project>
+      <Name>System.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IdentityModel\System.IdentityModel.csproj">
+      <Project>{c5907c00-eec5-4b0b-94b5-aee96ac5c6ba}</Project>
+      <Name>System.IdentityModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Messaging\System.Messaging.csproj">
+      <Project>{c8005b38-59c7-4c05-af4a-201aa046492f}</Project>
+      <Name>System.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServiceModel\System.ServiceModel.csproj">
+      <Project>{853a7165-f1ef-45a9-9081-e584debe6bba}</Project>
+      <Name>System.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.ServiceModel.Activation\System.ServiceModel.Activation.csproj">
+      <Project>{c0bdd118-e3a6-49d4-b5fd-020eb9cf7fbc}</Project>
+      <Name>System.ServiceModel.Activation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.ServiceModel.Internals\System.ServiceModel.Internals.csproj">
+      <Project>{7835b9e8-7e4e-42bc-ba8e-09309362af70}</Project>
+      <Name>System.ServiceModel.Internals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\xsp\system\Web\System.Web.csproj">
+      <Project>{a0341765-8edd-4fbc-9ff8-e5fa04131891}</Project>
+      <Name>System.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.ServiceProcess" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="System\ServiceModel\Activation\ActivatedMessageQueue.cs" />
+    <Compile Include="System\ServiceModel\Activation\ActivationService.cs" />
+    <Compile Include="System\ServiceModel\Activation\App.cs" />
+    <Compile Include="System\ServiceModel\Activation\AppAction.cs" />
+    <Compile Include="System\ServiceModel\Activation\AppManager.cs" />
+    <Compile Include="System\ServiceModel\Activation\AppPool.cs" />
+    <Compile Include="System\ServiceModel\Activation\ConnectionHandleDuplicated.cs" />
+    <Compile Include="System\ServiceModel\Activation\DebuggableService.cs" />
+    <Compile Include="System\ServiceModel\Activation\Diagnostics\ListenerPerfCounters.cs" />
+    <Compile Include="System\ServiceModel\Activation\Diagnostics\ListenerTraceCode.cs" />
+    <Compile Include="System\ServiceModel\Activation\Diagnostics\ListenerTraceUtility.cs" />
+    <Compile Include="System\ServiceModel\Activation\DupHandleConnectionReader.cs" />
+    <Compile Include="System\ServiceModel\Activation\IActivatedMessageQueue.cs" />
+    <Compile Include="System\ServiceModel\Activation\IActivationService.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerAdapter.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerAdapterBase.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerConfig.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerConnectionDemuxer.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerConnectionModeReader.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerSessionConnection.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerSessionConnectionReader.cs" />
+    <Compile Include="System\ServiceModel\Activation\ListenerSingletonConnectionReader.cs" />
+    <Compile Include="System\ServiceModel\Activation\MessageQueue.cs" />
+    <Compile Include="System\ServiceModel\Activation\MsmqActivation.cs" />
+    <Compile Include="System\ServiceModel\Activation\NamedPipeActivation.cs" />
+    <Compile Include="System\ServiceModel\Activation\NamedPipeWorkerProcess.cs" />
+    <Compile Include="System\ServiceModel\Activation\NetPipeSectionData.cs" />
+    <Compile Include="System\ServiceModel\Activation\NetTcpSectionData.cs" />
+    <Compile Include="System\ServiceModel\Activation\RoutingTable.cs" />
+    <Compile Include="System\ServiceModel\Activation\SharingService.cs" />
+    <Compile Include="System\ServiceModel\Activation\SMSvcHost.cs" />
+    <Compile Include="System\ServiceModel\Activation\SocketSettings.cs" />
+    <Compile Include="System\ServiceModel\Activation\TcpActivation.cs" />
+    <Compile Include="System\ServiceModel\Activation\TcpPortSharing.cs" />
+    <Compile Include="System\ServiceModel\Activation\TcpWorkerProcess.cs" />
+    <Compile Include="System\ServiceModel\Activation\TransportListener.cs" />
+    <Compile Include="System\ServiceModel\Activation\TransportType.cs" />
+    <Compile Include="System\ServiceModel\Activation\WebHostUnsafeNativeMethods.cs" />
+    <Compile Include="System\ServiceModel\Activation\WorkerProcess.cs" />
+    <Compile Include="TD.Designer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,74 @@
+﻿<sad:WorkflowViewElement x:Uid="sad:WorkflowViewElement_1" x:Class="System.Activities.Core.Presentation.FlowSwitchDesigner"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadm="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    x:Name="controlRoot">
+
+  <sad:WorkflowViewElement.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <local:ExpressionToExpressionTextConverter x:Uid="local:ExpressionToExpressionTextConverter_1" x:Key="ExpressionToExpressionTextConverter"/>
+    </ResourceDictionary>
+  </sad:WorkflowViewElement.Resources>
+
+  <Grid x:Uid="Grid_1" x:Name="rootGrid" MaxWidth="160" Background="{DynamicResource DesignerViewBackground}">
+    <Grid.RowDefinitions>
+      <RowDefinition x:Uid="RowDefinition_1" MinHeight="0" />
+      <RowDefinition x:Uid="RowDefinition_2" />
+    </Grid.RowDefinitions>
+
+    <Grid x:Uid="Grid_2" Grid.Row="1" Height="87" MinWidth="70">
+      <Rectangle x:Uid="Rectangle_2" HorizontalAlignment="Center" Width="40" Height="40" Margin="0,5,0,20" Fill="{x:Static sad:WorkflowDesignerIcons+Activities.FlowSwitchNode}" />
+      <TextBox x:Name="displayNameTextBox" x:Uid="TextBlock_1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="{Binding Path=ModelItem.DisplayName, Mode=TwoWay}" BorderThickness="0" ContextMenu="{x:Null}"
+                   AutomationProperties.AutomationId="DisplayNameTextBox"
+                   AutomationProperties.Name="{Binding Path=ModelItem.DisplayName, Mode=TwoWay}"
+                   Foreground="{DynamicResource WorkflowViewElementCaptionBrush}"
+                   FontFamily="{DynamicResource {x:Static local:FlowchartDesigner.FlowNodeCaptionFontFamily}}"
+                   FontSize="{DynamicResource {x:Static local:FlowchartDesigner.FlowNodeCaptionFontSize}}"
+                   FontStyle="{DynamicResource {x:Static local:FlowchartDesigner.FlowNodeCaptionFontStyle}}" />
+      <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <Button x:Uid="Button_1" Width="8" Height="8" Visibility="{Binding ExpressionButtonVisibility}" Background="{Binding ExpressionButtonColor}"
+                Template="{DynamicResource FlowchartExpressionButtonTemplate}" Click="OnExpressionButtonClicked" Margin="3" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+        <Button x:Name="defaultAnnotationIndicator" x:Uid="Button_2" Width="16" Height="16" Margin="3" HorizontalAlignment="Right" VerticalAlignment="Top">
+          <Button.Style>
+            <Style x:Uid="Style_35">
+              <Style.Triggers>
+                <DataTrigger x:Uid="DataTrigger_240" Binding="{Binding Path=ModelItem.AnnotationText}" Value="{x:Null}">
+                  <Setter x:Uid="Setter_1202" Property="Button.Visibility" Value="Collapsed" />
+                </DataTrigger>
+              </Style.Triggers>
+            </Style>
+          </Button.Style>
+          <Button.Template>
+            <ControlTemplate x:Uid="ControlTemplate_5">
+              <Rectangle x:Uid="Rectangle_3" Fill="{x:Static sad:WorkflowDesignerIcons+DesignerItems.Annotation}" />
+            </ControlTemplate>
+          </Button.Template>
+        </Button>
+      </StackPanel>
+    </Grid>
+
+    <Border x:Uid="Border_1" Grid.RowSpan="2" BorderThickness="1" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}" CornerRadius="4" />
+    <Rectangle x:Uid="Rectangle_1" Grid.RowSpan="2">
+      <Rectangle.Style>
+        <Style x:Uid="Style_1">
+          <Setter x:Uid="Setter_1" Property="Rectangle.Visibility" Value="Hidden" />
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ModelItem.IsSelection}" Value="True">
+              <Setter x:Uid="Setter_2" Property="Rectangle.Visibility" Value="Visible" />
+              <Setter x:Uid="Setter_12" Property="Rectangle.Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Rectangle.Style>
+    </Rectangle>
+  </Grid>
+
+</sad:WorkflowViewElement>

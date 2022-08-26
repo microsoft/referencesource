@@ -1,0 +1,161 @@
+﻿<swd:DialogWindow x:Uid="controlRoot" x:Class="System.Activities.Presentation.View.TypeBrowser"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation"
+    x:ClassModifier="internal"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:swdv="clr-namespace:System.Activities.Presentation.View"
+    x:Name ="controlRoot"
+    Title="{DynamicResource typeBrowserWindowTitle}" 
+    MinWidth="270" 
+    MinHeight="200"     
+    Grid.IsSharedSizeScope="True"
+    AutomationProperties.AutomationId="TypeBrowserWindow"
+    ShowInTaskbar="False"
+    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    Style="{DynamicResource WorkflowWindowStyle}">
+    
+    <Window.Resources>
+
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            
+            <ResourceDictionary.MergedDictionaries>
+                <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+                <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Uid="BooleanToVisibilityConverter_1" x:Key="BooleanToVisibilityConverter" />
+            <swd:TextFormattingConverter x:Uid="swd:TextFormattingConverter_1" x:Key="textFormattingConverter"/>
+          
+            <sys:String x:Uid="TypeBrowserAutomationName" x:Key="TypeBrowserAutomationName">Type Browser</sys:String>
+
+            <HierarchicalDataTemplate x:Uid="HierarchicalDataTemplate_1" DataType="{x:Type swdv:TypeBrowser+AssemblyNode}" ItemsSource="{Binding Path=Namespaces}">
+                <TextBlock x:Uid="TextBlock_7" Text="{Binding Path=DisplayName}"/>
+            </HierarchicalDataTemplate>
+
+            <HierarchicalDataTemplate x:Uid="HierarchicalDataTemplate_2" DataType="{x:Type swdv:TypeBrowser+NamespaceNode}" ItemsSource="{Binding Path=Types}">
+                <TextBlock x:Uid="TextBlock_8" Text="{Binding Path=DisplayName}"/>
+            </HierarchicalDataTemplate>
+
+            <DataTemplate x:Uid="DataTemplate_3" DataType="{x:Type swdv:TypeBrowser+TypeNode}">
+                <TextBlock x:Uid="TextBlock_2" Text="{Binding Path=DisplayName}"/>
+            </DataTemplate>
+
+            <!-- tree view item style - required to support context search -->
+            <Style x:Uid="Style_1" TargetType="{x:Type TreeViewItem}">
+                <Style.Triggers>
+                  <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding RelativeSource={RelativeSource Self}, Path=Header.Visibility}" Value="Collapsed">
+                    <Setter x:Uid="Setter_1" Property="Visibility" Value="Collapsed"/>
+                    <Setter x:Uid="Setter_2" Property="IsEnabled" Value="false"/>
+                  </DataTrigger>
+                </Style.Triggers>
+                <EventSetter x:Uid="EventSetter_1" Event="MouseDoubleClick" Handler="OnTypeDoubleClick"/>
+                <EventSetter x:Uid="EventSetter_2" Event="PreviewMouseLeftButtonDown" Handler="OnTypeBrowserClickStart"/>
+                <EventSetter x:Uid="EventSetter_3" Event="PreviewMouseLeftButtonUp" Handler="OnTypeBrowserClickEnd"/>                              
+                <Setter x:Uid="Setter_4" Property="AutomationProperties.AutomationId" Value="{Binding RelativeSource={RelativeSource Self}, Path=Header.Data, Mode=OneWay}"/>
+                <Setter x:Uid="Setter_15" Property="AutomationProperties.Name" Value="{Binding RelativeSource={RelativeSource Self}, Path=Header.Data, Mode=OneWay}"/>
+                <Setter x:Uid="Setter_5" Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                <Setter x:Uid="Setter_13" Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />                
+            </Style>
+            
+            <Style x:Uid="Style_2" TargetType="{x:Type swdv:TypePresenter}" x:Key="typePresenterStyle">
+                <Setter x:Uid="Setter_6" Property="Type" Value="{Binding Path=TargetType, Mode=TwoWay, ValidatesOnExceptions=True}"/>
+                <Setter x:Uid="Setter_7" Property="Context" Value="{Binding Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type swdv:TypeBrowser}}, Path=Context}"/>
+                <Setter x:Uid="Setter_9" Property="ToolTip" Value="{Binding Path=TargetType.FullName}"/>
+                <Setter x:Uid="Setter_10" Property="BrowseTypeDirectly" Value="False"/>
+                <Setter x:Uid="Setter_11" Property="MinWidth" Value="60"/>
+            </Style>
+            
+            <DataTemplate x:Uid="DataTemplate_2" x:Key="listItemTemplate">
+                <swdv:TypePresenter x:Uid="swdv:TypePresenter_1" VerticalAlignment="Center" Style="{StaticResource typePresenterStyle}" AutomationProperties.AutomationId="TypePresenter"  CenterTypeBrowserDialog="false"/>
+            </DataTemplate>
+            
+        </ResourceDictionary>
+      
+    </Window.Resources>
+    <Grid x:Uid="Grid_2" > 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Uid="ColumnDefinition_3" Width="*" SharedSizeGroup="typeName"/>
+            <ColumnDefinition x:Uid="ColumnDefinition_4" Width="2*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+            <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+            <RowDefinition x:Uid="RowDefinition_3" Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Uid="Grid_3" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Margin="12,12,12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Uid="ColumnDefinition_5" Width="Auto"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_6" Width="2*"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_7" Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition x:Uid="RowDefinition_4" Height="Auto"/>
+                <RowDefinition x:Uid="RowDefinition_5" Height="*"/>
+            </Grid.RowDefinitions>
+            <DockPanel x:Uid="dockPanelName" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Name="dockPanelName" Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
+                <Label x:Uid="TextBlock_4" VerticalAlignment="Center" Content="{DynamicResource searchAssemblyLabel}" Target="{Binding ElementName=typeEntryTextBox}" />
+                <TextBox x:Uid="typeEntryTextBox" x:Name="typeEntryTextBox" VerticalAlignment="Center" Margin="10,0,0,0" HorizontalAlignment="Stretch" TextChanged="OnTypeSearchTextChanged" ToolTip="{Binding ElementName=controlRoot, Path=SelectedType.FullName, Mode=OneWay}" AutomationProperties.AutomationId="TypeSearchBox"
+                         AutomationProperties.Name="Type name"/>
+            </DockPanel>
+            <StackPanel x:Uid="genericPanel" x:Name="genericPanel" Visibility="{Binding ElementName=controlRoot, Path=HasGenericTypes, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Row="1"  Margin="0,6,0,0" Height="Auto" VerticalAlignment="Top" Orientation="Horizontal">
+                <TextBlock x:Uid="textBlock1" VerticalAlignment="Center" Height="Auto" Name="textBlock1" Width="Auto" Text="{Binding ElementName=controlRoot, Path=GenericTypeName, Mode=OneWay}" />
+                <ItemsControl x:Uid="myItemsControl" IsTabStop="False" VerticalAlignment="Center" x:Name="myItemsControl" ItemTemplate="{StaticResource listItemTemplate}" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type swdv:TypeBrowser}}, Path=GenericTypeMapping}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style x:Uid="Style_4">
+                            <Setter x:Uid="Setter_14" Property="AutomationProperties.Name" Value="Generic argument"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate x:Uid="ItemsPanelTemplate_1">
+                            <WrapPanel x:Uid="WrapPanel_1" IsItemsHost="True" Width="Auto" MaxWidth="200" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>       
+                </ItemsControl>                
+                <TextBlock x:Uid="textBox1" VerticalAlignment="Center" Height="Auto" Name="textBox1" Width="Auto" Localization.Attributes="$Content(Unreadable Unmodifiable)">&gt;</TextBlock>
+        </StackPanel>
+        </Grid>
+                
+        <!-- tree view - by default displays two tree items - types defined in local assembly, and types
+             defined in referenced assemblies -->
+        <TreeView x:Uid="typesTreeView" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}" 
+                  SelectedItemChanged="OnSelectedItemChanged"
+                  AutomationProperties.AutomationId="TypesTreeView"
+                  AutomationProperties.Name="Available types"
+                  Name="typesTreeView"
+                  VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="12,6,12,0">
+            <TreeViewItem x:Uid="LocalAssembly" ItemsSource="{Binding Path=LocalAssemblies}" IsExpanded="True" AutomationProperties.AutomationId="LocalAssembly" Name="LocalAssembly"
+                          AutomationProperties.Name="Current project">
+                <TreeViewItem.Header>
+                    <TextBlock x:Uid="TextBlock_5" Text="{DynamicResource localAssemblyHeader}"/>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+            <TreeViewItem x:Uid="ReferencedAssemblies" ItemsSource="{Binding Path=ReferenceAssemblies}" IsExpanded="True" AutomationProperties.AutomationId="ReferenceAssemblies" Name="ReferencedAssemblies"
+                          AutomationProperties.Name="Referenced assemblies">
+                <TreeViewItem.Header>
+                    <TextBlock x:Uid="TextBlock_6" Text="{DynamicResource referenceAssemblyHeader}"/>
+                </TreeViewItem.Header>
+            </TreeViewItem>
+        </TreeView>
+        
+        <DockPanel x:Uid="DockPanel_1" LastChildFill="False" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="2" Margin="12,6,12,12">
+            <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal" DockPanel.Dock="Right">
+                <Button x:Uid="Button_2" Content="{DynamicResource okButtonLabel}" Margin="0,0,3,0" Click="OnOkClick" AutomationProperties.AutomationId="OkButton" MinWidth="75">
+                    <Button.Style>
+                        <Style x:Uid="Style_3" TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                              <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding ElementName=controlRoot, Path=SelectedType}" Value="{x:Null}">
+                                  <Setter x:Uid="Setter_12" Property="IsEnabled" Value="False"/>
+                              </DataTrigger>
+                          </Style.Triggers>
+                      </Style>
+                    </Button.Style>
+                </Button>
+                <Button x:Uid="Button_1" Content="{DynamicResource cancelButtonLabel}" Margin="3,0,0,0" Click="OnCancelClick" AutomationProperties.AutomationId="CancelButton" MinWidth="75"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</swd:DialogWindow>

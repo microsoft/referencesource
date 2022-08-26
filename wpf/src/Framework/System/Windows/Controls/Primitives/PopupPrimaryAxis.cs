@@ -1,0 +1,31 @@
+using System;
+
+namespace System.Windows.Controls.Primitives
+{
+    /// <summary>
+    ///     Describes how a popup should be nudged on-screen.
+    /// </summary>
+    public enum PopupPrimaryAxis
+    {
+        /// <summary>
+        ///     When a popup is nudged on-screen, it will be done using the
+        ///     coordinate space of the screen.
+        /// </summary>
+        None,
+
+        /// <summary>
+        ///     When a popup is nudged on-screen, it will be done using the
+        ///     horizontal axis of the popup coordinate space
+        ///     before using the coordinate space of the screen.
+        /// </summary>
+        Horizontal,
+
+        /// <summary>
+        ///     When a popup is nudged on-screen, it will be done using the
+        ///     vertical axis of the popup coordinate space
+        ///     before using the coordinate space of the screen.
+        /// </summary>
+        Vertical,
+
+    }
+}

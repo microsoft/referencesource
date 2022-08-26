@@ -1,0 +1,52 @@
+﻿<ResourceDictionary   x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation">
+    <ControlTemplate x:Uid="ControlTemplate_1" x:Key="WorkflowViewElementDefaultTemplate" TargetType="swd:WorkflowViewElement">
+        <Border x:Uid="ShapeBorder" MinHeight="{TemplateBinding MinHeight}" MinWidth="{TemplateBinding MinWidth}" x:Name="ShapeBorder" BorderBrush="{TemplateBinding BorderBrush}"  BorderThickness="0" CornerRadius="3,3,3,3" >
+            <Border.Style>
+                <Style x:Uid="Style_1">
+                    <Setter x:Uid="Setter_1" Property="Border.Background" Value="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}"/>
+                    <Setter x:Uid="Setter_2" Property="Border.Padding" Value="0"/>
+                    <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ModelItem.IsCurrentContext, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+                            <Setter x:Uid="Setter_3" Property="Border.Background" Value="{DynamicResource WorkflowViewElementCurrentContextBackground}" />
+                            <Setter x:Uid="Setter_4" Property="Border.Padding" Value="8"/>
+                            <Setter x:Uid="Setter_5" Property="AutomationProperties.AutomationId" Value="CurrentContext" />
+                        </DataTrigger>
+                        <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ModelItem.IsCurrentLocation, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+                            <Setter x:Uid="Setter_6" Property="Border.Background" Value="{DynamicResource WorkflowViewElementCurrentLocationBackground}" />
+                            <Setter x:Uid="Setter_7" Property="Border.Padding" Value="8"/>
+                            <Setter x:Uid="Setter_8" Property="AutomationProperties.AutomationId" Value="CurrentLocation" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid x:Uid="Grid_1">
+                <Grid x:Uid="Grid_2" Background="{DynamicResource WorkflowViewElementBackground}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+                        <RowDefinition x:Uid="RowDefinition_2" />
+                    </Grid.RowDefinitions>
+                    <Rectangle x:Uid="Rectangle_1" Fill="{DynamicResource DesignerViewBackground}" Grid.RowSpan="2"  RadiusX="2" RadiusY="2">
+                        <Rectangle.Style>
+                            <Style x:Uid="Style_2">
+                                <Setter x:Uid="Setter_9" Property="Rectangle.Stroke" Value="{DynamicResource WorkflowViewElementBorderBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=ModelItem.IsPrimarySelection, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+                                        <Setter x:Uid="Setter_10" Property="Rectangle.Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}" />
+                                        <Setter x:Uid="Setter_11" Property="Rectangle.StrokeThickness" Value="1"/>
+                                    </DataTrigger>
+                                    <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Path=ModelItem.IsSelection, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+                                        <Setter x:Uid="Setter_12" Property="Rectangle.Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}" />
+                                        <Setter x:Uid="Setter_13" Property="Rectangle.StrokeThickness" Value="1"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                </Grid>
+                <ContentPresenter x:Uid="ContentPresenter_1" Margin="7" Content="{Binding Path=Content, RelativeSource={RelativeSource AncestorType={x:Type swd:WorkflowViewElement}}}" />
+            </Grid>
+        </Border>
+    </ControlTemplate>
+</ResourceDictionary>

@@ -1,0 +1,73 @@
+﻿<UserControl x:Uid="namespaceDisplay"
+			 x:Class="System.Activities.Presentation.View.NamespaceDisplay"
+			 x:ClassModifier="internal"
+			 x:Name="namespaceDisplay"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:sap="clr-namespace:System.Activities.Presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<UserControl.Resources>
+		<ResourceDictionary x:Uid="ResourceDictionary_2">
+			<ResourceDictionary.MergedDictionaries>
+				<sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_1"
+													   Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+
+			<Style x:Uid="Style_4"
+				   x:Key="errorStyle"
+				   TargetType="{x:Type Rectangle}">
+				<Setter x:Uid="Setter_47"
+						Property="Visibility"
+						Value="Collapsed"/>
+				<Setter x:Uid="Setter_48"
+						Property="Fill"
+						Value="{x:Null}"/>
+				<Setter x:Uid="Setter_49"
+						Property="HorizontalAlignment"
+						Value="Right"/>
+				<Setter x:Uid="Setter_56"
+						Property="VerticalAlignment"
+						Value="Top"/>
+				<Setter x:Uid="Setter_57"
+						Property="ToolTipService.ShowOnDisabled"
+						Value="True"/>
+				<Style.Triggers>
+					<DataTrigger x:Uid="DataTrigger_9"
+								 Binding="{Binding Path=IsInvalid}"
+								 Value="True">
+						<Setter x:Uid="Setter_50"
+								Property="Visibility"
+								Value="Visible"/>
+						<Setter x:Uid="Setter_51"
+								Property="ToolTip"
+								Value="{Binding Path=ErrorMessage}" />
+						<Setter x:Uid="Setter_52"
+								Property="Fill"
+								Value="{x:Static sap:WorkflowDesignerIcons+DesignerItems.TextBoxErrorValidation}"/>
+						<Setter x:Uid="Setter_53"
+								Property="Width"
+								Value="12"/>
+						<Setter x:Uid="Setter_54"
+								Property="Height"
+								Value="12"/>
+						<Setter x:Uid="Setter_55"
+								Property="Margin"
+								Value="2,2,2,0"/>
+					</DataTrigger>
+				</Style.Triggers>
+			</Style>
+
+		</ResourceDictionary>
+	</UserControl.Resources>
+	
+	<DockPanel x:Uid="DockPanel_1"
+			   LastChildFill="True">
+		<Rectangle x:Uid="Rectangle_2"
+				   Style="{StaticResource errorStyle}"
+				   DockPanel.Dock="Right"/>
+		<TextBlock x:Uid="TextBlock_1"
+				   Text="{Binding Path=Namespace}"
+				   VerticalAlignment="Center"
+				   DockPanel.Dock="Left"/>
+	</DockPanel>
+
+</UserControl>

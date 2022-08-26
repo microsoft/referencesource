@@ -1,0 +1,64 @@
+﻿<swd:ActivityDesigner x:Uid="swd:WorkflowElementDesigner_1" x:Class="System.Activities.Core.Presentation.WhileDesigner"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:swdv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:swdm="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:sw="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:local="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Icon="{x:Static swd:WorkflowDesignerIcons+Activities.While}"
+    x:ClassModifier="internal">
+    
+  <swd:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <DataTemplate x:Uid="DataTemplate_1" x:Key="ExpandedWhileTemplate">
+        <Grid x:Uid="Grid_1" Width="Auto">
+          <Grid.ColumnDefinitions>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_1" Height="Auto" />
+            <RowDefinition x:Uid="RowDefinition_2" Height="Auto" />
+            <RowDefinition x:Uid="RowDefinition_3" Height="Auto" />
+            <RowDefinition x:Uid="RowDefinition_4" Height="Auto" />
+          </Grid.RowDefinitions>
+          
+          <TextBlock Margin="0,4,0,4" Grid.Row="0" x:Uid="Label_1" HorizontalAlignment="Left" Text="Condition" Localization.Attributes="Text(Unreadable Unmodifiable)" />
+          <TextBlock Margin="0,4,0,4" Grid.Row="2" x:Uid="Label_2" HorizontalAlignment="Left" Text="Body" Localization.Attributes="Text(Unreadable Unmodifiable)" />
+
+          <Border x:Uid="Border_3" BorderThickness ="0" Grid.Row= "1" HorizontalAlignment="Left" BorderBrush="{StaticResource WorkflowViewElementBorderBrush}">
+            <swdv:ExpressionTextBox  x:Uid="conditionBox" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" x:Name="conditionBox"
+              MinLines="1" MaxLines="1" MaxWidth="450" MinWidth="450"
+              Expression="{Binding Path=ModelItem.Condition, Mode=TwoWay}"
+              ExpressionType="{x:Type TypeName=sys:Boolean}"
+              OwnerActivity="{Binding Path=ModelItem, Mode=OneWay}"
+              AutomationProperties.Name="Condition expression"/>
+          </Border>
+          <Border x:Uid="Border_4" CornerRadius="2" BorderThickness ="1" Grid.Row= "3" BorderBrush="{StaticResource WorkflowViewElementBorderBrush}">
+            <swd:WorkflowItemPresenter
+                x:Uid="swd:WorkflowItemPresenter_1" AutomationProperties.AutomationId="Body" Item="{Binding Path=ModelItem.Body, Mode=TwoWay}"
+                AllowedItemType="{x:Type sw:Activity}"
+                IsDefaultContainer="True"
+                HintText="{DynamicResource dropActivityHint}"
+                MinWidth="100" MinHeight="100"  Margin="5,5,5,5"
+                AutomationProperties.Name="Body: Drop activity here"/>
+          </Border>
+        </Grid>
+      </DataTemplate>
+      <Style x:Uid="Style_1" x:Key="WhileStyle" TargetType="{x:Type ContentPresenter}">
+        <Setter x:Uid="Setter_1" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowExpanded}" Value="true">
+            <Setter x:Uid="Setter_2" Property="ContentTemplate" Value="{DynamicResource ExpandedWhileTemplate}"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </swd:ActivityDesigner.Resources>
+  <ContentPresenter x:Uid="ContentPresenter_1" Style="{DynamicResource WhileStyle}" Content="{Binding}" />
+
+</swd:ActivityDesigner>

@@ -1,0 +1,36 @@
+﻿<sap:DialogWindow x:Class="System.Activities.Presentation.View.AnnotationDialog"
+    x:ClassModifier="internal"
+    x:Uid="root"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sap="clr-namespace:System.Activities.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    AutomationProperties.AutomationId="TextDialog"
+    ShowInTaskbar="False"
+    MinWidth="350"
+    Width="350"
+    MinHeight="185"
+    Height="185"
+    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    Style="{DynamicResource WorkflowWindowStyle}">
+
+  <Window.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+        <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+  <Grid x:Uid="Grid_1" Margin="12" FocusManager.FocusedElement="{Binding ElementName=annotationTextBox}">
+    <Grid.RowDefinitions>
+      <RowDefinition x:Uid="RowDefinition_1" Height="*" />
+      <RowDefinition x:Uid="RowDefinition_2" Height="Auto" />
+    </Grid.RowDefinitions>
+    <TextBox x:Uid="textBox" x:Name="annotationTextBox" Grid.Row="0" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+    <StackPanel x:Uid="StackPanel_1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button x:Uid="Button_2" Content="{DynamicResource okButtonLabel}" Margin="0,6,6,0" Click="OnOkClick" AutomationProperties.AutomationId="OkButton" MinWidth="75" MinHeight="23" />
+      <Button x:Uid="Button_3" Content="{DynamicResource cancelButtonLabel}" Margin="0,6,0,0" Click="OnCancelClick" AutomationProperties.AutomationId="CancelButton" MinWidth="75" MinHeight="23" />
+    </StackPanel>
+  </Grid>
+</sap:DialogWindow>

@@ -1,0 +1,300 @@
+﻿<ContentControl x:Uid="UserControl_1" x:Class="System.Activities.Presentation.View.ArgumentDesigner"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sw="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:swd="clr-namespace:System.Activities.Presentation"
+    xmlns:swdm="clr-namespace:System.Activities.Presentation.Model"
+    xmlns:swdc="clr-namespace:System.Activities.Presentation.Converters"
+    xmlns:proj="clr-namespace:System.Activities.Presentation.View"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    AutomationProperties.AutomationId="ArgumentDesigner"
+    IsVisibleChanged="OnVisibleChanged"
+    x:Name="argumentDesigner">
+  <ContentControl.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+
+      <ResourceDictionary.MergedDictionaries>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_5" Source="/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+
+      <proj:ContextMenuIconProvider x:Uid="proj:ContextMenuIconProvider_1" x:Key="contextMenuIconProvider"/>
+
+      <swdc:ModelItemToAnnotationEnabledConverter x:Uid="ModelItemToAnnotationEnabledConverter_1" x:Key="modelItemToAnnotationEnabledConverter" />
+      <swd:TypeNameConverter x:Uid="TypeNameConverter_1" x:Key="typeNameConverter" />
+      <swdc:ModelToObjectValueConverter x:Uid="swdm:ModelToObjectValueConverter_1" x:Key="ModelToObjectConverter" />
+      <swd:GenericTypeParameterConverter x:Uid="swd:GenericTypeParameterConverter_1" x:Key="TypeParameterConverter"/>
+      <swd:NullToBooleanConverter x:Uid="swd:NullToBooleanConverter" x:Key="nullToBooleanConverter"/>
+      <swd:NotConverter x:Uid="swd:NotConverter" x:Key="NotConverter"/>
+      <swdc:ModelPropertyEntryToOwnerActivityConverter x:Uid="propertyEntryConverter" x:Key="propertyEntryConverter"/>
+      <sys:Boolean x:Uid="sys:Boolean_1" x:Key="getParentConverterParameter">False</sys:Boolean>
+
+
+      <!--Default Row Style-->
+      <Style x:Uid="Style_1" x:Key="defaultRowStyle" TargetType="{x:Type DataGridRow}"  BasedOn="{StaticResource baseDataRowStyle}">
+        <Setter x:Uid="Setter_15" Property="AutomationProperties.AutomationId" Value="{Binding Path=Item.Content.AutomationId, RelativeSource={RelativeSource Mode=Self}, Mode=OneWay }" />
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding}" Value="{x:Static CollectionView.NewItemPlaceholder}">
+            <Setter x:Uid="Setter_35" Property="AutomationProperties.Name" Value="{StaticResource addNewArgumentTitle}" />
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+
+
+      <!--Custom style for TypePresenter-->
+      <Style x:Uid="Style_4" TargetType="{x:Type proj:TypePresenter}" x:Key="typePresenterStyle">
+        <Setter x:Uid="Setter_4" Property="Type" Value="{Binding Path=Content.ArgumentType, Mode=TwoWay, ValidatesOnExceptions=True, Converter={StaticResource ModelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_5" Property="Context" Value="{Binding Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type proj:ArgumentDesigner}}, Path=Context}"/>
+        <Setter x:Uid="Setter_7" Property="ToolTip" Value="{Binding Path=Content.ArgumentType.FullName}"/>
+        <Setter x:Uid="Setter_8" Property="BrowseTypeDirectly" Value="False"/>
+      </Style>
+
+      <!-- style for direction combobox - depending on choosen value, display rather 
+               text description than enum's value -->
+      <Style x:Uid="Style_5" x:Key="directionTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Setter x:Uid="Setter_9" Property="Text" Value="&lt;NULL&gt;"/>
+        <Style.Triggers>
+          <Trigger x:Uid="Trigger_2" Property="Tag">
+            <Trigger.Value>
+              <proj:PropertyKind x:Uid="proj:PropertyKind_1">InArgument</proj:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_10" Property="Text" Value="{StaticResource inArgumentTitle}"/>
+          </Trigger>
+          <Trigger x:Uid="Trigger_3" Property="Tag">
+            <Trigger.Value>
+              <proj:PropertyKind x:Uid="proj:PropertyKind_2">OutArgument</proj:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_11" Property="Text" Value="{StaticResource outArgumentTitle}"/>
+          </Trigger>
+          <Trigger x:Uid="Trigger_4" Property="Tag">
+            <Trigger.Value>
+              <proj:PropertyKind x:Uid="proj:PropertyKind_3">InOutArgument</proj:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_34" Property="Text" Value="{StaticResource inOutArgumentTitle}"/>
+          </Trigger>
+          <Trigger x:Uid="Trigger_5" Property="Tag">
+            <Trigger.Value>
+              <proj:PropertyKind x:Uid="proj:PropertyKind_4">Property</proj:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_13" Property="Text" Value="{StaticResource propertyArgumentTitle}"/>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <!-- data template for combo box item - the content of the combo box item is always an enum, 
+           displayed value is displayed as text block however (enables localization) -->
+      <Style x:Uid="Style_6" TargetType="{x:Type ComboBoxItem}" x:Key="argumentDirectionItemStyle">
+        <Setter x:Uid="Setter_14" Property="ContentTemplate">
+          <Setter.Value>
+            <DataTemplate x:Uid="DataTemplate_2">
+              <TextBlock x:Uid="TextBlock_2" Tag="{Binding}" Style="{StaticResource directionTextBlockStyle}"/>
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <Style TargetType="{x:Type proj:ExpressionTextBox}" x:Key="argumentValueETBStyle" x:Uid="ETBStyle">
+        <Setter x:Uid="Setter_19" Property="Expression" Value="{Binding Path=Content.Value, Mode=TwoWay}"/>
+        <Setter x:Uid="Setter_20" Property="ExpressionType" Value="{Binding Path=Content.ArgumentType, Mode=OneWay, Converter={StaticResource ModelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_21" Property="OwnerActivity" Value="{Binding Path=ReflectedObject.Parent.Parent, Mode=OneWay}"/>
+        <Setter x:Uid="Setter_22" Property="UseLocationExpression" Value="{Binding Path=Content.IsOutputArgument, Converter={StaticResource ModelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_23" Property="MinWidth" Value="40"/>
+        <Setter x:Uid="Setter_24" Property="MaxLines" Value="1"/>
+        <Setter x:Uid="Setter_25" Property="BorderBrush" Value="{x:Null}"/>
+        <Setter x:Uid="Setter_26" Property="BorderThickness" Value="0,0,0,0"/>
+        <Setter x:Uid="Setter_27" Property="AutomationProperties.AutomationId" Value="ArgumentValueExpressionTextBox"/>
+        <Setter x:Uid="Setter_28" Property="AcceptsReturn" Value="False"/>
+        <Setter x:Uid="Setter_29" Property="AcceptsTab" Value="False"/>
+      </Style>
+
+      <Style x:Uid="Style_10" x:Key="defaultValueTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter x:Uid="Setter_32" Property="AutomationProperties.AutomationId" Value="defaultArgumentValueTB"/>
+        <Setter x:Uid="Setter_33" Property="Text" Value="{Binding Path=Content.Value, Mode=TwoWay, Converter={StaticResource ModelToObjectConverter}, ValidatesOnExceptions=True}"/>
+      </Style>
+
+
+      <!-- editable direction template - combobox displaying available directions -->
+
+      <DataTemplate x:Uid="ArgumentNameEditableTemplate" x:Key="argumentNameEditableTemplate">
+        <proj:NoContextMenuGrid x:Uid="proj:NoContextMenuGrid_1">
+          <proj:VBIdentifierDesigner x:Uid="VBIdentifierDesigner_1" Identifier="{Binding Path=Content.Name, Mode=TwoWay, Converter={StaticResource ModelToObjectConverter}}" IsReadOnly="False" MinWidth="75" VerticalAlignment="Center" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="ArgumentNameTextBox"
+            Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded"
+            AutomationProperties.Name="{StaticResource argumentNameHeader}"/>
+        </proj:NoContextMenuGrid>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="ArgumentNameReadonlyTemplate" x:Key="argumentNameReadonlyTemplate">
+        <Grid x:Uid="Grid_5">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Uid="ColumnDefinition_1" />
+            <ColumnDefinition x:Uid="ColumnDefinition_2" Width="16" />
+          </Grid.ColumnDefinitions>
+          <proj:VBIdentifierDesigner x:Uid="VBIdentifierDesigner_2" Grid.Column="0" Identifier="{Binding Path=Content.Name, Converter={StaticResource ModelToObjectConverter}}"  IsReadOnly="True" VerticalAlignment="Center" AutomationProperties.AutomationId="ArgumentNameTextBlock"/>
+          <Button x:Uid="Button_1" Grid.Column="1" ToolTip="{Binding Path=Content.DesignTimeArgumentAnnotationText}" Height="16" Width="16" HorizontalAlignment="Right">
+            <Button.Style>
+              <Style x:Uid="Style_35">
+                <Style.Triggers>
+                  <DataTrigger x:Uid="DataTrigger_240" Binding="{Binding Path=Content.DesignTimeArgumentAnnotationText}" Value="{x:Null}">
+                    <Setter x:Uid="Setter_1202" Property="Button.Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                  <DataTrigger x:Uid="DataTrigger_241" Binding="{Binding Path=Content, Converter={StaticResource modelItemToAnnotationEnabledConverter}}"  Value="False">
+                    <Setter x:Uid="Setter_1203" Property="Button.Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Button.Style>
+            <Button.Template>
+              <ControlTemplate x:Uid="ControlTemplate_6">
+                <Rectangle x:Uid="Rectangle_28" Fill="{x:Static swd:WorkflowDesignerIcons+DesignerItems.Annotation}" />
+              </ControlTemplate>
+            </Button.Template>
+          </Button>
+        </Grid>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="ArgumentDirectionEditableTemplate" x:Key="argumentDirectionEditableTemplate">
+        <proj:NoContextMenuGrid x:Uid="proj:NoContextMenuGrid_2">
+          <ComboBox x:Uid="ComboBox_1" SelectedValue="{Binding Path=Content.Direction, ValidatesOnExceptions=True}" SelectedValuePath="Content" AutomationProperties.AutomationId="ArgDirectionComboBox"
+            Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded"
+            AutomationProperties.Name="{StaticResource argumentDirectionHeader}">
+            <ComboBox.Items>
+              <ComboBoxItem x:Uid="ComboBoxItem_1" AutomationProperties.AutomationId="InArgument" Style="{StaticResource argumentDirectionItemStyle}">
+                <proj:PropertyKind x:Uid="proj:PropertyKind_5">InArgument</proj:PropertyKind>
+              </ComboBoxItem>
+              <ComboBoxItem x:Uid="ComboBoxItem_2" AutomationProperties.AutomationId="OutArgument" Style="{StaticResource argumentDirectionItemStyle}">
+                <proj:PropertyKind x:Uid="proj:PropertyKind_6">OutArgument</proj:PropertyKind>
+              </ComboBoxItem>
+              <ComboBoxItem x:Uid="ComboBoxItem_3" AutomationProperties.AutomationId="InOutArgument" Style="{StaticResource argumentDirectionItemStyle}">
+                <proj:PropertyKind x:Uid="proj:PropertyKind_7">InOutArgument</proj:PropertyKind>
+              </ComboBoxItem>
+              <ComboBoxItem x:Uid="ComboBoxItem_4" AutomationProperties.AutomationId="Property" Style="{StaticResource argumentDirectionItemStyle}">
+                <proj:PropertyKind x:Uid="proj:PropertyKind_8">Property</proj:PropertyKind>
+              </ComboBoxItem>
+            </ComboBox.Items>
+          </ComboBox>
+        </proj:NoContextMenuGrid>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="ArgumentDirectionReadonlyTemplate" x:Key="argumentDirectionReadonlyTemplate">
+        <TextBlock x:Uid="TextBlock_4" Tag="{Binding Path=Content.Direction}" Style="{StaticResource directionTextBlockStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="ArgumentDirectionTextBlock"/>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="ArgumentTypeEditableTemplate" x:Key="argumentTypeEditableTemplate">
+        <proj:NoContextMenuGrid x:Uid="proj:NoContextMenuGrid_3">
+          <proj:TypePresenter x:Uid="addVariableTypePresenter" x:Name="addVariableTypePresenter" VerticalAlignment="Center" Style="{StaticResource typePresenterStyle}" AutomationProperties.AutomationId="ArgumentTypeTypePresenter" Loaded="OnArgumentTypeTypePresenterLoaded" Unloaded="OnArgumentTypeTypePresenterUnloaded"
+            Label="{StaticResource argumentTypeHeader}"/>
+        </proj:NoContextMenuGrid>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="ArgumentTypeReadonlyTemplate" x:Key="argumentTypeReadonlyTemplate">
+        <TextBlock x:Uid="TextBlock_5" Text="{Binding Path=Content.ArgumentType, Converter={StaticResource TypeParameterConverter}}" ToolTip="{Binding Path=Content.ArgumentType, Converter={StaticResource typeNameConverter}, ConverterParameter=True}" VerticalAlignment="Center" AutomationProperties.AutomationId="ArgumentTypeTextBlock"/>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_3" x:Key="argumentExpressionEditableTemplate">
+        <proj:ExpressionTextBox x:Uid="defaultExpressionTextBox" x:Name="defaultExpressionTextBox" Style="{StaticResource argumentValueETBStyle}" AutomationProperties.Name="{StaticResource argumentValueHeader}" Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded" />
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_4" x:Key="argumentExpressionReadOnlyTemplate">
+        <proj:ExpressionTextBox x:Uid="proj:ExpressionTextBox_1" x:Name="defaultExpressionTextBox" Style="{StaticResource argumentValueETBStyle}" IsReadOnly="True" Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded" />
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_5" x:Key="argumentPropertyEditableTemplate">
+        <Grid x:Uid="Grid_1">
+          <TextBox x:Uid="editor" Style="{StaticResource defaultValueTextBoxStyle}" Name="editor" Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded" />
+          <TextBlock x:Uid="TextBlock_6" Text="{StaticResource enterPropertyValueHint}" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=editor, Mode=OneTime}"/>
+        </Grid>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_6" x:Key="argumentPropertyReadOnlyTemplate">
+        <Border x:Uid="Border_1" BorderThickness="1" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}" Padding="2">
+          <Grid x:Uid="Grid_4">
+            <TextBlock x:Uid="TextBlock_7" Text="{Binding Path=Content.Value, Mode=OneWay, Converter={StaticResource ModelToObjectConverter}, ValidatesOnExceptions=True}" AutomationProperties.AutomationId="defaultArgumentValueTBlock" VerticalAlignment="Center" Name="editor">
+              <TextBlock.Style>
+                <Style x:Uid="Style_8">
+                  <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Source={x:Static swd:LocalAppContextSwitches.UseLegacyAccessibilityFeatures3}}" Value="True">
+                      <Setter x:Uid="Setter_16" Property="TextBlock.Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </TextBlock.Style>
+            </TextBlock>
+            <TextBlock x:Uid="TextBlock_8" Text="{StaticResource enterPropertyValueHint}" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=editor, Mode=OneTime}"/>
+          </Grid>
+        </Border>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_7" x:Key="argumentOutputValueTemplate">
+        <Border x:Uid="Border_2" BorderThickness="1" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}" Padding="2">
+          <Grid x:Uid="Grid_3">
+            <TextBlock x:Uid="TextBlock_9" Name="editor"/>
+            <TextBlock x:Uid="TextBlock_10" Text="{StaticResource defaultValueNotSupported}" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=editor, Mode=OneTime}"/>
+          </Grid>
+        </Border>
+      </DataTemplate>
+
+    </ResourceDictionary>
+  </ContentControl.Resources>
+
+  <ContentControl.CommandBindings>
+    <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static ApplicationCommands.Delete}" CanExecute="OnDeleteCommandCanExecute" Executed="OnDeleteCommandExecuted" />
+    <CommandBinding x:Uid="CommandBinding_2" Command="{x:Static proj:DesignerView.AddAnnotationCommand}" CanExecute="OnAddAnnotationCommandCanExecute" Executed="OnAddAnnotationCommandExecuted" />
+    <CommandBinding x:Uid="CommandBinding_3" Command="{x:Static proj:DesignerView.EditAnnotationCommand}" CanExecute="OnEditAnnotationCommandCanExecute" Executed="OnEditAnnotationCommandExecuted" />
+    <CommandBinding x:Uid="CommandBinding_4" Command="{x:Static proj:DesignerView.DeleteAnnotationCommand}" CanExecute="OnDeleteAnnotationCommandCanExecute" Executed="OnDeleteAnnotationCommandExecuted" />
+  </ContentControl.CommandBindings>
+
+  <ContentControl.ContextMenu>
+    <ContextMenu x:Uid="ContextMenu_1">
+            <MenuItem x:Uid="MenuItem_1" Command="{x:Static ApplicationCommands.Delete}" Header="{StaticResource menuItemDelete}" AutomationProperties.AutomationId="DeleteMenuItem" Style="{StaticResource menuItemStyle}" >
+        <MenuItem.Icon>
+          <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource contextMenuIconProvider}" ConverterParameter="Delete">
+            <Binding x:Uid="Binding_1" RelativeSource="{RelativeSource Self}" Mode="OneTime"/>
+            <Binding x:Uid="Binding_2" RelativeSource="{RelativeSource Self}" Mode="OneWay" Path="IsEnabled"/>
+          </MultiBinding>
+        </MenuItem.Icon>
+      </MenuItem>
+      <Separator x:Uid="Separator_1" Loaded="OnAnnotationSeparatorLoaded" Style="{StaticResource separatorStyle}" />
+      <MenuItem x:Uid="MenuItem_2" Command="{x:Static proj:DesignerView.AddAnnotationCommand}" Loaded="OnAddAnnotationMenuLoaded" Header="_Add Annotation" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="AddAnnotationMenuItem" />
+      <MenuItem x:Uid="MenuItem_3" Command="{x:Static proj:DesignerView.EditAnnotationCommand}" Loaded="OnEditAnnotationMenuLoaded" Header="_Edit Annotation" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="EditAnnotationMenuItem" />
+      <MenuItem x:Uid="MenuItem_4" Command="{x:Static proj:DesignerView.DeleteAnnotationCommand}" Loaded="OnDeleteAnnotationMenuLoaded" Header="De_lete Annotation" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="DeleteAnnotationMenuItem"/>
+    </ContextMenu>
+  </ContentControl.ContextMenu>
+
+  <DataGrid x:Uid="argumentsDataGrid" x:Name="argumentsDataGrid" Grid.Row="0"
+    CanUserAddRows="{Binding Mode=OneWay, ElementName=argumentDesigner, Path=ActivitySchema, Converter={StaticResource nullToBooleanConverter}}" 
+    RowStyle="{StaticResource defaultRowStyle}"
+    DataGridCell.GotFocus="OnDataGridCellGotFocus"
+    CellStyle="{StaticResource baseDataCellStyle}"
+    IsReadOnly="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}"
+    AutomationProperties.AutomationId="ArgumentDataGrid">
+
+    <DataGrid.Columns>
+      <DataGridTemplateColumn 
+        x:Uid="DataGridTemplateColumn_1" 
+        Header="{StaticResource argumentNameHeader}" MinWidth="100" Width="3*" CanUserSort="True" SortMemberPath="Content.Name.IdentifierName"
+        CellEditingTemplate="{StaticResource argumentNameEditableTemplate}"
+        CellTemplate="{StaticResource argumentNameReadonlyTemplate}"/>
+
+      <DataGridTemplateColumn 
+        x:Uid="DataGridTemplateColumn_2" 
+        Header="{StaticResource argumentDirectionHeader}" MinWidth="75" Width="*" CanUserSort="True" SortMemberPath="Content.Direction"
+        CellEditingTemplate="{StaticResource argumentDirectionEditableTemplate}"
+        CellTemplate="{StaticResource argumentDirectionReadonlyTemplate}"/>
+
+      <DataGridTemplateColumn 
+        x:Uid="DataGridTemplateColumn_3" 
+        Header="{StaticResource argumentTypeHeader}" MinWidth="100" Width="*" CanUserSort="True" SortMemberPath="Content.ArgumentType.Name"
+        CellEditingTemplate="{StaticResource argumentTypeEditableTemplate}"
+        CellTemplate="{StaticResource argumentTypeReadonlyTemplate}"/>
+
+      <DataGridTemplateColumn
+        x:Uid="DataGridTemplateColumn_4"
+        Header="{StaticResource argumentValueHeader}" MinWidth="100" Width="2*" 
+        CellEditingTemplate="{x:Static proj:DataGridHelper.DynamicCellContentTemplate}"
+        CellTemplate="{x:Static proj:DataGridHelper.DynamicCellContentTemplate}"/>
+
+    </DataGrid.Columns>
+  </DataGrid>
+</ContentControl>

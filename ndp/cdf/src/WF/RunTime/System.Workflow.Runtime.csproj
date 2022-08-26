@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{8c268b5c-9d61-42bc-b756-9846bb90213c}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Workflow.Runtime</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx40\System.Activities\System.Activities.csproj">
+      <Project>{460e944d-165f-4389-816f-eebef8e2b44a}</Project>
+      <Name>System.Activities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Core\System.Core.csproj">
+      <Project>{b656cf4b-8938-4bc8-b777-68da792be27d}</Project>
+      <Name>System.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\System.Data.csproj">
+      <Project>{9f39d5c4-50fa-4c2b-8511-41a6346f44fc}</Project>
+      <Name>System.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Messaging\System.Messaging.csproj">
+      <Project>{c8005b38-59c7-4c05-af4a-201aa046492f}</Project>
+      <Name>System.Messaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx40\System.Runtime.DurableInstancing\System.Runtime.DurableInstancing.csproj">
+      <Project>{7819c9a4-5600-4dee-9314-6828ffb287c5}</Project>
+      <Name>System.Runtime.DurableInstancing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\clr\src\managedlibraries\remoting\System.Runtime.Remoting.csproj">
+      <Project>{688a2a6d-d399-4248-860d-0bebea7ce269}</Project>
+      <Name>System.Runtime.Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WCF\Serialization\System.Runtime.Serialization.csproj">
+      <Project>{ce33578b-efc6-4bf5-b038-e6aebb7fa3b9}</Project>
+      <Name>System.Runtime.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Transactions\System.Transactions.csproj">
+      <Project>{6ad0de06-77fa-4a5d-9f96-d36654a60e80}</Project>
+      <Name>System.Transactions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\xsp\system\Web\System.Web.csproj">
+      <Project>{a0341765-8edd-4fbc-9ff8-e5fa04131891}</Project>
+      <Name>System.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Activities\System.Workflow.Activities.csproj">
+      <Project>{ad732ebd-245c-443c-9d68-e8a09dc78dbc}</Project>
+      <Name>System.Workflow.Activities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\System.Workflow.ComponentModel.csproj">
+      <Project>{69e6110b-4655-4e1d-9850-4bc95e76e67c}</Project>
+      <Name>System.Workflow.ComponentModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\XLinq\System.Xml.Linq.csproj">
+      <Project>{7d9e7e4a-0708-4544-ad26-4ff98f07b082}</Project>
+      <Name>System.Xml.Linq</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Design" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Common\Shared\DigestComparer.cs" />
+    <Compile Include="AmbientEnvironment.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Configuration\WorkflowRuntimeSection.cs" />
+    <Compile Include="Configuration\WorkflowRuntimeServiceElement.cs" />
+    <Compile Include="Configuration\WorkflowRuntimeServiceElementCollection.cs" />
+    <Compile Include="ContextActivityUtils.cs" />
+    <Compile Include="CorrelationToken.cs" />
+    <Compile Include="CreationContext.cs" />
+    <Compile Include="DbRetry.cs" />
+    <Compile Include="DebugEngine\ActivityHandlerDescriptor.cs" />
+    <Compile Include="DebugEngine\BreakSafeBase.cs" />
+    <Compile Include="DebugEngine\DebugController.cs" />
+    <Compile Include="DebugEngine\DebugControllerThread.cs" />
+    <Compile Include="DebugEngine\IExpressionEvaluationFrame.cs" />
+    <Compile Include="DebugEngine\IInstanceTable.cs" />
+    <Compile Include="DebugEngine\IWorkflowDebugger.cs" />
+    <Compile Include="DebugEngine\IWorkflowDebuggerService.cs" />
+    <Compile Include="DebugEngine\NativeMethods.cs" />
+    <Compile Include="DebugEngine\ProgramNode.cs" />
+    <Compile Include="DebugEngine\ProgramPublisher.cs" />
+    <Compile Include="DebugEngine\WorkflowDebuggerSteppingAttribute.cs" />
+    <Compile Include="EventQueueState.cs" />
+    <Compile Include="ExecutorLocksHeldException.cs" />
+    <Compile Include="Hosting\DbResourceAllocator.cs" />
+    <Compile Include="Hosting\DefaultWorkflowLoaderService.cs" />
+    <Compile Include="Hosting\DefaultWorkflowSchedulerService.cs" />
+    <Compile Include="Hosting\DefaultWorkflowTransactionService.cs" />
+    <Compile Include="Hosting\LocalTransaction.cs" />
+    <Compile Include="Hosting\ManualWorkflowSchedulerService.cs" />
+    <Compile Include="Hosting\PersistenceException.cs" />
+    <Compile Include="Hosting\SharedConnectionInfo.cs" />
+    <Compile Include="Hosting\SharedConnectionWorkflowTransactionService.cs" />
+    <Compile Include="Hosting\SqlPersistenceWorkflowInstanceDescription.cs" />
+    <Compile Include="Hosting\SqlWorkflowPersistenceService.cs" />
+    <Compile Include="Hosting\WorkflowLoaderService.cs" />
+    <Compile Include="Hosting\WorkflowPersistenceService.cs" />
+    <Compile Include="Hosting\WorkflowRuntimeService.cs" />
+    <Compile Include="Hosting\WorkflowSchedulerService.cs" />
+    <Compile Include="Hosting\WorkflowTimerService.cs" />
+    <Compile Include="Hosting\WorkflowTransactionService.cs" />
+    <Compile Include="Hosting\WorkflowWebHostingModule.cs" />
+    <Compile Include="IPendingWork.cs" />
+    <Compile Include="ISupportInterop.cs" />
+    <Compile Include="IWorkBatch.cs" />
+    <Compile Include="KeyedPriorityQueue.cs" />
+    <Compile Include="Lock.cs" />
+    <Compile Include="MD5HashHelper.cs" />
+    <Compile Include="PerformanceCounterManager.cs" />
+    <Compile Include="QueueException.cs" />
+    <Compile Include="RTTrackingProfile.cs" />
+    <Compile Include="Scheduler.cs" />
+    <Compile Include="ServicesExceptionNotHandledEventArgs.cs" />
+    <Compile Include="System\Activities\Statements\Interop.cs" />
+    <Compile Include="System\Activities\Statements\InteropEnvironment.cs" />
+    <Compile Include="System\Activities\Statements\InteropExecutor.cs" />
+    <Compile Include="System\Activities\Tracking\InteropTrackingRecord.cs" />
+    <Compile Include="TimerEventSubscription.cs" />
+    <Compile Include="TimerEventSubscriptionCollection.cs" />
+    <Compile Include="Tracking.cs" />
+    <Compile Include="Tracking\ExtractCollection.cs" />
+    <Compile Include="Tracking\IProfileNotification.cs" />
+    <Compile Include="Tracking\PreviousTrackingServiceAttribute.cs" />
+    <Compile Include="Tracking\ProfileEventArgs.cs" />
+    <Compile Include="Tracking\PropertyHelper.cs" />
+    <Compile Include="Tracking\SqlTrackingQuery.cs" />
+    <Compile Include="Tracking\SqlTrackingService.cs" />
+    <Compile Include="Tracking\SqlTrackingWorkflowInstance.cs" />
+    <Compile Include="Tracking\TrackingAnnotationCollection.cs" />
+    <Compile Include="Tracking\TrackingChannel.cs" />
+    <Compile Include="Tracking\TrackingCondition.cs" />
+    <Compile Include="Tracking\TrackingConditionCollection.cs" />
+    <Compile Include="Tracking\TrackingDataItem.cs" />
+    <Compile Include="Tracking\TrackingDataItemValue.cs" />
+    <Compile Include="Tracking\TrackingExtract.cs" />
+    <Compile Include="Tracking\TrackingLocation.cs" />
+    <Compile Include="Tracking\TrackingLocationCollection.cs" />
+    <Compile Include="Tracking\TrackingParameters.cs" />
+    <Compile Include="Tracking\TrackingProfile.cs" />
+    <Compile Include="Tracking\TrackingProfileCache.cs" />
+    <Compile Include="Tracking\TrackingProfileDeserializationException.cs" />
+    <Compile Include="Tracking\TrackingProfileSerializer.cs" />
+    <Compile Include="Tracking\TrackingRecord.cs" />
+    <Compile Include="Tracking\TrackingService.cs" />
+    <Compile Include="Tracking\TrackingWorkflowEvent.cs" />
+    <Compile Include="Tracking\TrackingWorkflowEventArgs.cs" />
+    <Compile Include="Tracking\TrackPoint.cs" />
+    <Compile Include="Tracking\TrackPointCollection.cs" />
+    <Compile Include="TransactionalProperties.cs" />
+    <Compile Include="VolatileResourceManager.cs" />
+    <Compile Include="WorkBatch.cs" />
+    <Compile Include="WorkflowDefinitionDispenser.cs" />
+    <Compile Include="WorkflowEnvironment.cs" />
+    <Compile Include="WorkflowEventArgs.cs" />
+    <Compile Include="WorkflowEventInternal.cs" />
+    <Compile Include="WorkflowExecutor.cs" />
+    <Compile Include="WorkflowInstance.cs" />
+    <Compile Include="WorkflowOwnershipException.cs" />
+    <Compile Include="WorkflowQueue.cs" />
+    <Compile Include="WorkflowQueueInfo.cs" />
+    <Compile Include="WorkflowQueuingService.cs" />
+    <Compile Include="WorkflowRuntime.cs" />
+    <Compile Include="WorkflowStateRollbackService.cs" />
+    <Compile Include="WorkflowStatus.cs" />
+    <Compile Include="WorkflowTraceTransfer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

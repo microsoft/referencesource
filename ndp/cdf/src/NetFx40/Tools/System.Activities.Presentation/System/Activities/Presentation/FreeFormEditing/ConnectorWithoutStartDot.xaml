@@ -1,0 +1,125 @@
+<local:Connector x:Uid="root" x:Class="System.Activities.Presentation.FreeFormEditing.ConnectorWithoutStartDot"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:sap="clr-namespace:System.Activities.Presentation"
+    xmlns:local="clr-namespace:System.Activities.Presentation.FreeFormEditing" x:Name="root"
+    IsTabStop="True">
+    <local:Connector.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+                <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:ConnectorPointsToSegmentsConverter x:Uid="local:ConnectorPointsToSegmentsConverter_1" x:Key="ConnectorPointsToSegmentsConverter"/>
+            <local:ConnectorPointsToArrowMarginConverter x:Uid="local:ConnectorPointsToArrowMarginConverter_1" x:Key="ConnectorPointsToArrowMarginConverter"/>
+            <local:ConnectorPointsToArrowTransformConverter x:Uid="local:ConnectorPointsToArrowTransformConverter_1" x:Key="ConnectorPointsToArrowTransformConverter"/>
+            <local:ConnectorLabelMarginConverter x:Uid="local:ConnectorLabelMarginConverter_1" x:Key="ConnectorLabelMarginConverter"/>
+            <local:ConnectorLabelVisibilityConverter x:Uid="local:ConnectorLabelVisibilityConverter_1" x:Key="ConnectorLabelVisibilityConverter"/>
+            <local:ConnectorStartDotConverter x:Uid="local:ConnectorStartDotConverter_1" x:Key="ConnectorStartDotConverter"/>
+            <local:ConnectorIdentityConverter x:Uid="local:ConnectorIdentityConverter_1" x:Key="ConnectorIdentityConverter"/>            
+            <local:ConnectorAutomationNameConverter x:Uid="local:ConnectorAutomationNameConverter_1" x:Key="ConnectorAutomationNameConverter"/>
+        </ResourceDictionary>
+    </local:Connector.Resources>
+    <local:Connector.Style>
+      <Style x:Uid="Style_2">
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+            <Setter x:Uid="Setter_11" Property="AutomationProperties.Name" Value="{Binding Path=AutomationName, ElementName=root, Mode=OneWay}"/>
+          </DataTrigger>
+          <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Source={x:Static sap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures3}}" Value="false">
+            <Setter x:Uid="Setter_12" Property="AutomationProperties.Name">
+                <Setter.Value>
+                    <MultiBinding x:Uid="MultiBinding_5" Converter="{StaticResource ConnectorAutomationNameConverter}">
+                        <Binding x:Uid="Binding_5" Mode="OneWay" ElementName="root" Path="AutomationName"/>
+                        <Binding x:Uid="Binding_6" Mode="OneWay" ElementName="root" Path="LabelText"/>
+                    </MultiBinding>
+                </Setter.Value>
+            </Setter>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </local:Connector.Style>
+    <AutomationProperties.AutomationId>
+        <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource ConnectorIdentityConverter}">
+            <Binding x:Uid="Binding_1" Mode="OneWay" ElementName="root" Path="Identity" />
+            <Binding x:Uid="Binding_2" Mode="OneWay" ElementName="root" Path="Points" />
+        </MultiBinding>
+    </AutomationProperties.AutomationId>
+    <Grid x:Uid="rootGrid" x:Name="rootGrid">
+        <Path x:Uid="BottomLine" Stroke="Transparent" SnapsToDevicePixels="True" StrokeThickness="8" Fill="{x:Null}" StrokeLineJoin="Round" x:Name="BottomLine" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Path.Data>
+                <PathGeometry x:Uid="PathGeometry_1">
+                    <PathGeometry.Figures>
+                        <PathFigure x:Uid="PathFigure_1" StartPoint="{Binding ElementName=root,Path=Points[0]}" Segments="{Binding ElementName=root, Path=Points, Converter={StaticResource ConnectorPointsToSegmentsConverter}}" />
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+        </Path>
+        <Path x:Uid="TopLine" SnapsToDevicePixels="True" Fill="{x:Null}" StrokeLineJoin="Round" x:Name="TopLine" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Path.Data>
+                <PathGeometry x:Uid="PathGeometry_2">
+                    <PathGeometry.Figures>
+                        <PathFigure x:Uid="PathFigure_2" StartPoint="{Binding ElementName=root,Path=Points[0]}" Segments="{Binding ElementName=root, Path=Points, Converter={StaticResource ConnectorPointsToSegmentsConverter}}" />
+                    </PathGeometry.Figures>
+                </PathGeometry>
+            </Path.Data>
+            <Path.Style>
+                <Style x:Uid="Style_1" TargetType="{x:Type Path}">
+                    <Setter x:Uid="Setter_1" Property="Path.Stroke" Value="{DynamicResource FlowchartConnectorColor}" />
+                    <Setter x:Uid="Setter_2" Property="StrokeThickness" Value="2"/>
+                    <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=IsSelected, ElementName=root}" Value="True">
+                            <Setter x:Uid="Setter_3" Property="Path.Stroke" Value="{DynamicResource WorkflowViewElementSelectedBorder}" />
+                        </DataTrigger>
+                        <MultiDataTrigger x:Uid="MultiDataTrigger_1">
+                            <MultiDataTrigger.Conditions>
+                                <Condition x:Uid="Condition_1" Binding="{Binding Path=IsMouseOver, ElementName=BottomLine}" Value="True"/>
+                                <Condition x:Uid="Condition_2" Binding="{Binding Path=HighlightOnHover, ElementName=root}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter x:Uid="Setter_4" Property="StrokeThickness" Value="4"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger x:Uid="MultiDataTrigger_2">
+                            <MultiDataTrigger.Conditions>
+                                <Condition x:Uid="Condition_3" Binding="{Binding Path=IsMouseOver, ElementName=TopLine}" Value="True"/>
+                                <Condition x:Uid="Condition_4" Binding="{Binding Path=HighlightOnHover, ElementName=root}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter x:Uid="Setter_5" Property="StrokeThickness" Value="4"/>
+                        </MultiDataTrigger>
+                        <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=IsHighlightedForAutoSplit, ElementName=root}" Value="True">
+                            <Setter x:Uid="Setter_17" Property="Path.Stroke" Value="SteelBlue"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Path.Style>
+        </Path>
+
+        <Rectangle x:Uid="arrowShape" x:Name="arrowShape" Width="10" Height="10" Visibility="Visible" VerticalAlignment="Top" HorizontalAlignment="Left" Fill="{StaticResource ArrowEndPoint}" RenderTransform="{Binding ElementName=root, Path=Points, Mode=OneWay, Converter={StaticResource ConnectorPointsToArrowTransformConverter}, ConverterParameter=5}">
+            <Rectangle.Margin>
+                <MultiBinding x:Uid="MultiBinding_4" Converter ="{StaticResource ConnectorPointsToArrowMarginConverter}" ConverterParameter="5" Mode="OneWay">
+                    <Binding x:Uid="Binding_7" ElementName="root" Path="Points"/>
+                    <Binding x:Uid="Binding_8" RelativeSource="{RelativeSource Self}" Path="RenderTransform"/>
+                </MultiBinding>
+            </Rectangle.Margin>
+        </Rectangle>
+
+        <Border x:Uid="LayoutRoot" HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="LayoutRoot" Background="{DynamicResource DesignerViewBackground}" BorderBrush="#FFCCCCCC"
+                BorderThickness="1,1,1,1" CornerRadius="10,10,10,10" Padding="4,1,4,1" Height="20"  Width="Auto" >
+            <TextBlock x:Uid="labelTextBlock" Text="{Binding ElementName=root, Path=LabelText}" Margin="0,-2,0,0" TextTrimming="CharacterEllipsis" MaxWidth="80" x:Name="labelTextBlock" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource WorkflowViewElementCaptionBrush}"/>
+            <Border.Visibility>
+                <MultiBinding x:Uid="MultiBinding_2" Converter="{StaticResource ConnectorLabelVisibilityConverter}" Mode="OneWay">
+                    <Binding x:Uid="Binding_9" ElementName="labelTextBlock" Path="Text" />
+                    <Binding x:Uid="Binding_10" ElementName="root" Path="Points" />
+                </MultiBinding>
+            </Border.Visibility>
+            <Border.Margin>
+                <MultiBinding x:Uid="MultiBinding_3" Converter="{StaticResource ConnectorLabelMarginConverter}" Mode="OneWay">
+                    <Binding x:Uid="Binding_11" ElementName="root" Path="Points" />
+                    <Binding x:Uid="Binding_12" ElementName="labelTextBlock" Path="ActualWidth" />
+                    <Binding x:Uid="Binding_13" ElementName="labelTextBlock" Path="ActualHeight" />
+                </MultiBinding>
+            </Border.Margin>
+        </Border>
+    </Grid>
+</local:Connector>

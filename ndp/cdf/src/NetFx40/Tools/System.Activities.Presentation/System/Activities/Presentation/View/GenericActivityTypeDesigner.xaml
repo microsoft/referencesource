@@ -1,0 +1,19 @@
+﻿<sap:WorkflowViewElement
+   x:Uid="genericActivityTypeDesignerElement" 
+   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   xmlns:sap="clr-namespace:System.Activities.Presentation"
+   x:Class="System.Activities.Presentation.View.GenericActivityTypeDesigner"
+   x:ClassModifier="internal"
+   x:Name="genericActivityTypeDesignerElement"
+   MinHeight="50" MinWidth="150"	Margin="10" IsTabStop="False" >
+    <Grid x:Uid="Grid_1" Background="{DynamicResource DesignerViewBackground}">
+        <Border x:Uid="Border_1" BorderBrush="LightGray" BorderThickness="0" Padding="10" CornerRadius="1">
+           <TextBlock x:Uid="TextBlock_1" 
+                      HorizontalAlignment="Left" 
+                      ContextMenu="{x:Null}"
+                      Text="Activity&lt;T&gt; cannot be designed with workflow designer." VerticalAlignment="Top" 
+                      FontSize="24"/>
+        </Border>
+    </Grid>
+</sap:WorkflowViewElement>

@@ -1,0 +1,166 @@
+﻿<Grid
+  x:Uid="Grid_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  x:ClassModifier="internal"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:Internal="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing"
+  xmlns:ValueEditors="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.ValueEditors"
+  xmlns:Data="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+  xmlns:InternalResources="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Resources"
+  xmlns:State="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.State"
+  x:Class="System.Activities.Presentation.Internal.PropertyEditing.PropertyInspector"
+  xmlns:sys="clr-namespace:System;assembly=mscorlib"
+  AutomationProperties.AutomationId="PropertyInspector"
+  >
+  <Grid.Resources>
+    <sys:String x:Uid="sys:String_1" x:Key="editingDisabledHint">Editing is disabled when designer is in read only mode</sys:String>
+  </Grid.Resources>
+  <Border x:Uid="Main_Border"
+          BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BorderBrushKey}}"
+          Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"
+          SnapsToDevicePixels="True" BorderThickness="1">
+    <Grid x:Uid="Grid_PI_1">
+
+      <Grid.Resources>
+        
+        <!-- Converters -->
+        <Data:VisibilityAndConverter x:Uid="Data:VisibilityAndConverter_1" x:Key="VisibilityAndConverter"/>
+        <Data:BoolToVisibilityCollapsedConverter x:Uid="Data:BoolToVisibilityCollapsedConverter_1" x:Key="InverseBoolToCollapsedConverter" InvertBoolean="True"/>
+        <Data:IntegerToVisibilityConverter x:Uid="Data:IntegerToVisibilityConverter_1" x:Key="ZeroToCollapsedConverter" ZeroValue="Collapsed" NonzeroValue="Visible"/>
+        <Data:IntegerToVisibilityConverter x:Uid="Data:IntegerToVisibilityConverter_2" x:Key="NonzeroToCollapsedConverter" ZeroValue="Visible" NonzeroValue="Collapsed"/>
+        
+      </Grid.Resources>
+
+      <Grid.RowDefinitions>
+        <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+        <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+      </Grid.RowDefinitions>
+
+      <!-- Header -->
+      <StackPanel x:Uid="StackPanel_1" Orientation="Vertical" Grid.Row="0" Grid.IsSharedSizeScope="True">
+
+        <Border x:Uid="Border_2" Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.PaneBrushKey}}">
+          
+          <!-- Name, Type, Icon -->
+          <Grid x:Uid="Grid_2" Margin="0,4,0,4" Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.PaneBrushKey}}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition x:Uid="ColumnDefinition_1" Width="Auto" SharedSizeGroup="IconColumn"/>
+              <ColumnDefinition x:Uid="ColumnDefinition_2" Width="Auto"/>
+              <ColumnDefinition x:Uid="ColumnDefinition_3" Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition x:Uid="RowDefinition_3" Height="*"/>
+              <RowDefinition x:Uid="RowDefinition_4" Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Image -->
+            <!-- Removing Icon based on PS 73338 - Please change the Column in Type to 1 if reenabling this
+            <Border
+              x:Uid="Border_1" Grid.RowSpan="2"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Margin="6,0,6,0"
+              Width="42"
+              Height="42"
+              BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BorderBrushKey}}"
+              BorderThickness="1"
+              Background="White"
+              SnapsToDevicePixels="True"
+              CornerRadius="2">
+              <ContentPresenter x:Uid="ContentPresenter_1" HorizontalAlignment="Center" VerticalAlignment="Center" Content="{Binding SelectionIcon}"/>
+            </Border>
+            -->
+              
+            <!-- Type -->
+            <TextBlock x:Uid="TextBlock_1" x:Name="_typeLabel" Grid.Column="0" Grid.ColumnSpan="3" Margin="2,0,6,4"
+               VerticalAlignment="Center" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+               Text="{Binding SelectionTypeName, Mode=OneWay}" ToolTip="{Binding SelectionTypeName, Mode=OneWay}"
+               Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"
+               FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+               FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}" 
+               FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+               />
+
+            <!-- Name -->
+            <!--<TextBlock x:Uid="TextBlock_2" x:Name="_nameLabel" Grid.Row="1" Grid.Column="1"
+               Margin="0,0,2,5"
+               VerticalAlignment="Bottom" SnapsToDevicePixels="True"
+               Text="{x:Static InternalResources:PropertyInspectorResources.NamePropertyHeader}"
+               Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"
+               FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+               FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}" 
+               FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+               />
+            <ValueEditors:StringEditor x:Uid="ValueEditors:StringEditor_1" x:Name="_nameEditor" MinHeight="19" 
+               FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+               FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+               FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+               BorderBrush="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BorderBrushKey}}"
+               Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"
+               Grid.Row="1" Grid.Column="2"
+               VerticalAlignment="Bottom" Margin="0,0,4,2"
+               VerticalContentAlignment="Bottom" SnapsToDevicePixels="True"
+               Value="{Binding SelectionName}" IsReadOnly="{Binding IsInfoBarNameReadOnly}"/>-->
+          </Grid>
+
+        </Border>
+
+        <!-- Search/View ToolBar -->
+        <Internal:PropertyToolBar x:Uid="_propertyToolBar"
+                                  x:Name="_propertyToolBar"
+                                  PersistenceId="{x:Static State:PropertyViewManagerStateContainer.RootPropertyInspectorPersistenceId}"
+                                  CategoryList="{Binding ElementName=_categoryList, Mode=OneWay}"/>
+
+        <!-- Informational text that shows up when something is selected but none of its properties 
+                     match the currently specified filter -->
+        <TextBlock x:Uid="TextBlock_3"
+          x:Name="_noSearchResultsLabel"
+          Focusable="true"
+          Text="No properties match the search criteria."
+          Grid.Row="2"
+          HorizontalAlignment="Center" VerticalAlignment="Top"
+          Margin="4,48,4,4"
+          TextWrapping="Wrap"
+          TextAlignment="Center"
+          FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+          FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+          FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+          Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"
+          Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"
+          >
+          <TextBlock.Visibility>
+            <MultiBinding x:Uid="MultiBinding_1" Mode="OneWay" Converter="{StaticResource VisibilityAndConverter}">
+              <Binding x:Uid="Binding_1" Path="HasAnyFilterMatches" ElementName="_categoryList" Converter="{StaticResource InverseBoolToCollapsedConverter}" />
+              <Binding x:Uid="Binding_2" Path="Items.Count" ElementName="_categoryList" Converter="{StaticResource ZeroToCollapsedConverter}" />
+            </MultiBinding>
+          </TextBlock.Visibility>
+        
+        </TextBlock>
+
+        <!-- Informational text that shows up when nothing is selected -->
+        <TextBlock x:Uid="TextBlock_4"
+          x:Name="_uninitializedLabel"
+          Focusable="true"
+          Text="Property editing not available"
+          Grid.Row="2"
+          HorizontalAlignment="Center" VerticalAlignment="Top"
+          Margin="4,48,4,4" TextWrapping="Wrap" TextAlignment="Center"
+          FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+          FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+          FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}"
+          Foreground="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.TextBrushKey}}"
+          Background="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.BackgroundBrushKey}}"
+          Visibility="{Binding Path=Items.Count, ElementName=_categoryList, Converter={StaticResource NonzeroToCollapsedConverter}}"/>
+        
+      </StackPanel>
+
+      <!-- List of Categories -->
+      <ScrollViewer x:Uid="ScrollViewer_1" Grid.Row="1" VerticalScrollBarVisibility="Auto" 
+                    FontSize="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontSizeKey}}"
+                    FontFamily="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontFamilyKey}}"
+                    FontWeight="{DynamicResource {x:Static Internal:PropertyInspectorMergedResources.FontWeightKey}}">
+        <Internal:CategoryList x:Uid="Internal:CategoryList_1" x:Name="_categoryList"/>
+      </ScrollViewer>
+
+    </Grid>
+  </Border>
+</Grid>

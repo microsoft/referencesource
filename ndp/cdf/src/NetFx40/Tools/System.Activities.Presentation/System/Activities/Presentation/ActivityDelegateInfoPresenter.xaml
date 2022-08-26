@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="System.Activities.Presentation.ActivityDelegateInfoPresenter"
+             x:ClassModifier="internal"
+             x:Uid="root"
+             x:Name="root"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:sap="clr-namespace:System.Activities.Presentation"
+             xmlns:sapv="clr-namespace:System.Activities.Presentation.View"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid x:Uid="Grid_1">
+    <Grid.RowDefinitions>
+      <RowDefinition x:Uid="RowDefinition_1" Height="Auto" />
+      <RowDefinition x:Uid="RowDefinition_2" Height="Auto" MinHeight="0" />
+    </Grid.RowDefinitions>
+
+    <Rectangle x:Uid="Rectangle_1" Grid.RowSpan="2">
+      <Rectangle.Stroke>
+        <LinearGradientBrush x:Uid="LinearGradientBrush_1" StartPoint="0.5, 0" EndPoint="0.5, 1">
+          <GradientStop x:Uid="GradientStop_1" Color="{x:Static sap:WorkflowDesignerColors.WorkflowViewElementBorderColor}" Offset="0"/>
+          <GradientStop x:Uid="GradientStop_2" Color="Transparent" Offset="0.5"/>
+        </LinearGradientBrush>
+      </Rectangle.Stroke>
+    </Rectangle>
+
+    <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal" Margin="0,3" Grid.Row="0">
+      <TextBlock x:Uid="TextBlock_2" Text="Delegate: " FontWeight="Bold" VerticalAlignment="Center" />
+      <TextBlock x:Uid="TextBlock_1" Text="{Binding Path=DelegateInfo.PropertyName, ElementName=root}" FontWeight="Bold" VerticalAlignment="Center" />
+    </StackPanel>
+
+    <sap:ActivityDelegatePresenter x:Uid="ActivityDelegatePresenter" x:Name="activityDelegatePresenter" Grid.Row="1"
+                                   Factory="{Binding Path=DelegateInfo, ElementName=root}"
+                                   EditingContext="{Binding Path=DelegateInfo.EditingContext, ElementName=root}">
+    </sap:ActivityDelegatePresenter>
+
+  </Grid>
+</UserControl>

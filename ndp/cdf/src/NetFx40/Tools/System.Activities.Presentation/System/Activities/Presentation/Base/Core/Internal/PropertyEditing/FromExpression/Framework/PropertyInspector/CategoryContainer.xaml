@@ -1,0 +1,118 @@
+﻿<ContentControl x:Uid="ContentControlRoot" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:fwdata="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Data"
+				xmlns:fwctl="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.Controls"
+				xmlns:fwpi="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.PropertyInspector" 
+                xmlns:automation="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Diagnostics.Automation"
+				xmlns:sys="clr-namespace:System;assembly=Mscorlib"
+				x:Name="UserControlSelf"
+				x:Class="System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.PropertyInspector.CategoryContainer" 
+                x:ClassModifier="internal"
+				>
+	<Grid Width="Auto" Height="Auto" x:Uid="Grid_1" >
+		<Grid.Resources>
+			<fwdata:BoolToVisibilityConverter x:Uid="fwdata:BoolToVisibilityConverter_1" x:Key="BooleanToVisibilityConverter" />
+			<fwdata:NullToBoolConverter x:Uid="fwdata:NullToBoolConverter_1" x:Key="NullToBoolConverter" />
+			<fwdata:AppendSuffixConverter x:Uid="fwdata:AppendSuffixConverter_1" Localization.Attributes="Suffix(Unreadable Unmodifiable)" Suffix="Category" x:Key="CategoryNameConverter" />
+			<fwdata:AppendSuffixConverter x:Uid="fwdata:AppendSuffixConverter_2" Localization.Attributes="Suffix(Unreadable Unmodifiable)" Suffix="CategoryCaption" x:Key="CategoryCaptionNameConverter" />
+
+			<fwdata:ComposingConverter x:Uid="fwdata:ComposingConverter_3" x:Key="PopupHostIsNullConverter">
+				<fwdata:ComposingConverter.Converters>
+					<fwdata:NullToBoolConverter x:Uid="fwdata:NullToBoolConverter_2"/>
+					<fwdata:NotConverter x:Uid="fwdata:NotConverter_1" />
+				</fwdata:ComposingConverter.Converters>
+			</fwdata:ComposingConverter>
+
+			<ControlTemplate x:Uid="ControlTemplate_13" x:Key="CategoryExpander" TargetType="{x:Type Expander}">
+				<Border x:Uid="Border_23" SnapsToDevicePixels="True" CornerRadius="4">
+					<Grid x:Uid="Grid_17">
+						<Grid.RowDefinitions>
+							<RowDefinition x:Uid="RowDefinition_11" Height="18"/>
+							<RowDefinition x:Uid="RowDefinition_12" Height="Auto"/>
+						</Grid.RowDefinitions>
+						<ToggleButton x:Uid="ToggleButton_1" automation:AutomationElement.Id="CategoryCheckBox" IsEnabled="{Binding Path=PopupHost, Converter={StaticResource PopupHostIsNullConverter}}" MinHeight="0" MinWidth="0" x:Name="HeaderSite" Focusable="False" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontStretch="{TemplateBinding FontStretch}" FontStyle="{TemplateBinding FontStyle}" FontWeight="{TemplateBinding FontWeight}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+							<ToggleButton.Style>
+								<Style x:Uid="Style_7" TargetType="{x:Type ToggleButton}">
+									<Setter x:Uid="Setter_56" Property="Template">
+										<Setter.Value>
+											<ControlTemplate x:Uid="ControlTemplate_14" TargetType="{x:Type ToggleButton}">
+												<Grid x:Uid="Grid_18" IsHitTestVisible="True" Background="Transparent">
+													<Rectangle x:Uid="ExpandCollapseIcon" Name="ExpandCollapseIcon" Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="8,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5" Width="8" Height="8" Fill="{DynamicResource PaneExpanderIcon}"/>
+													<TextBlock x:Uid="TextBlock_7" Name="Text" automation:AutomationElement.Id="{Binding Path=Category.CategoryName,Converter={StaticResource CategoryCaptionNameConverter}}"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20,1,0,0"  
+																			Text="{TemplateBinding Content}" Foreground="{DynamicResource Text1Brush}" FontFamily="{DynamicResource {x:Static SystemFonts.CaptionFontFamilyKey}}" FontSize="{DynamicResource {x:Static SystemFonts.CaptionFontSizeKey}}" FontWeight="{DynamicResource {x:Static SystemFonts.CaptionFontWeightKey}}" IsHitTestVisible="False"/>
+												</Grid>
+												<ControlTemplate.Triggers>
+													<Trigger x:Uid="Trigger_23" Property="IsChecked" Value="True">
+														<Setter x:Uid="Setter_64" Property="RenderTransform" TargetName="ExpandCollapseIcon">
+															<Setter.Value>
+																<RotateTransform x:Uid="RotateTransform_2" Angle="90" />
+															</Setter.Value>
+														</Setter>
+													</Trigger>
+													<Trigger x:Uid="Trigger_28" Property="IsMouseOver" Value="True">
+														<Setter x:Uid="Setter_73" Property="Foreground" Value="{DynamicResource WhiteBrush}" TargetName="Text"/>
+													</Trigger>
+												</ControlTemplate.Triggers>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</ToggleButton.Style>
+						</ToggleButton>
+						<ContentPresenter x:Uid="ContentPresenter_10" Visibility="Collapsed" x:Name="ExpandSite" Focusable="False" DockPanel.Dock="Bottom" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Grid.RowSpan="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1"/>
+					</Grid>
+				</Border>
+				<ControlTemplate.Triggers>
+					<Trigger x:Uid="Trigger_26" Property="IsExpanded" Value="True">
+						<Setter x:Uid="Setter_69" TargetName="ExpandSite" Property="Visibility" Value="Visible"/>
+						<Setter x:Uid="Setter_70" TargetName="HeaderSite" Property="ToolTip" Value="Collapse category" Localization.Attributes="Value(Readable Modifiable)"/>
+					</Trigger>
+					<Trigger x:Uid="Trigger_27" Property="IsExpanded" Value="False">
+						<Setter x:Uid="Setter_71" TargetName="HeaderSite" Property="ToolTip" Value="Expand category" Localization.Attributes="Value(Readable Modifiable)"/>
+					</Trigger>
+				</ControlTemplate.Triggers>
+			</ControlTemplate>
+
+			<fwdata:IntegerToVisibilityConverter x:Uid="fwdata:IntegerToVisibilityConverter_1" x:Key="IntegerToVisibilityConverter"/>
+			<fwdata:BoolToVisibilityHiddenConverter x:Uid="fwdata:BoolToVisibilityHiddenConverter_1" InvertBoolean="True"  x:Key="InverseVisibilityConverter"/>
+
+			<ControlTemplate x:Uid="ControlTemplate_15" x:Key="CategoryLayoutContainerTemplate">
+				<ItemsPresenter x:Uid="ItemsPresenter_1"/>
+			</ControlTemplate>
+		</Grid.Resources>
+
+		<Grid.RowDefinitions>
+			<RowDefinition x:Uid="RowDefinition_9" Height="Auto" />
+			<RowDefinition x:Uid="RowDefinition_10" Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition x:Uid="ColumnDefinition_11" Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<Border x:Uid="Border_22" Background="{DynamicResource PaletteBrush}" CornerRadius="4" x:Name="PaletteBGrec" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,1,3" Grid.RowSpan="2">
+			<Expander x:Uid="Expander_1" automation:AutomationElement.Id="{Binding Path=Category.CategoryName, Converter={StaticResource CategoryNameConverter}}"
+				IsExpanded ="{Binding Path=Expanded, Mode=TwoWay}"
+				DataContext="{Binding ElementName=UserControlSelf}"
+				Template="{StaticResource CategoryExpander}" 
+				Header="{Binding Path=Category.CategoryName}">
+				<StackPanel x:Uid="StackPanel_1">
+					<fwpi:CategoryLayoutContainer x:Uid="fwpi:CategoryLayoutContainer_1" x:Name="_basicEditors" 
+												Template="{StaticResource CategoryLayoutContainerTemplate}" 
+												ItemsSource="{Binding ElementName=UserControlSelf, Path=BasicCategoryEditors}"
+												automation:AutomationElement.Id="BasicCategoryEditorsSection"
+												Focusable="False" Margin="4,0,4,0" />
+					<fwpi:StandardCategoryLayout x:Name="_basicProperties" x:Uid="fwpi:StandardCategoryLayout_1" Margin="4,0,4,4" automation:AutomationElement.Id="UnconsumedBasicPropertiesSection" ItemsSource="{Binding ElementName=UserControlSelf, Path=UnconsumedBasicProperties}"/>
+					<Expander x:Uid="PopupHost" IsExpanded="{Binding AdvancedSectionPinned, Mode=TwoWay}" Visibility="{Binding ShowAdvancedHeader, Converter={StaticResource BooleanToVisibilityConverter}}"
+						Template="{DynamicResource ExpressionAdvancedOptionsExpander}" HorizontalAlignment="Stretch" 
+						Name="PopupHost" Focusable="False"
+						automation:AutomationElement.Id="AdvancedSectionExpander" >
+						<StackPanel x:Uid="StackPanel_2">
+							<fwpi:CategoryLayoutContainer x:Name="_advancedEditors" x:Uid="fwpi:CategoryLayoutContainer_2" Template="{StaticResource CategoryLayoutContainerTemplate}" ItemsSource="{Binding ElementName=UserControlSelf, Path=AdvancedCategoryEditors}" automation:AutomationElement.Id="AdvancedCategoryEditorsSection" Focusable="False" />
+							<fwpi:StandardCategoryLayout x:Name="_advancedProperties" x:Uid="fwpi:StandardCategoryLayout_2" Margin="4,0,4,4" automation:AutomationElement.Id="UnconsumedAdvancedPropertiesSection" ItemsSource="{Binding ElementName=UserControlSelf, Path=UnconsumedAdvancedProperties}"/>
+						</StackPanel>
+					</Expander>
+				</StackPanel>
+			</Expander>
+		</Border>
+	</Grid>
+</ContentControl>

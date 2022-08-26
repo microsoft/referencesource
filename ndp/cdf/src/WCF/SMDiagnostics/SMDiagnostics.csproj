@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{b9807cc8-1745-4e4d-b4d0-7ce74ae96e1e}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>SMDiagnostics</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.ServiceModel.Internals\System.ServiceModel.Internals.csproj">
+      <Project>{7835b9e8-7e4e-42bc-ba8e-09309362af70}</Project>
+      <Name>System.ServiceModel.Internals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Transactions\System.Transactions.csproj">
+      <Project>{6ad0de06-77fa-4a5d-9f96-d36654a60e80}</Project>
+      <Name>System.Transactions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="System\ServiceModel\Diagnostics\Activity.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\DiagnosticsTraceCode.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\DiagnosticStrings.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\DiagnosticTraceSource.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\EncodingFallbackAwareXmlTextWriter.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\EventLogCategory.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\EventLogEventId.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\EventLogger.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\ExceptionUtility.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\LegacyDiagnosticTrace.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\MachineSettingsSection.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\NativeMethods.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\PiiTraceSource.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\PlainXmlWriter.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\SafeEventLogWriteHandle.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\TraceSourceKind.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\TraceXPathNavigator.cs" />
+    <Compile Include="System\ServiceModel\Diagnostics\Utility.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,137 @@
+//------------------------------------------------------------------------------
+/// <copyright from='2004' to='2005' company='Microsoft Corporation'>
+///    Copyright (c) Microsoft Corporation. All Rights Reserved.
+///    Information Contained Herein is Proprietary and Confidential.
+/// </copyright>
+//------------------------------------------------------------------------------
+
+#define DECLARE_DATATYPE(TYPE)\
+[SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes")]\
+[Serializable]\
+public struct TYPE
+
+#define DECLARE_PROPERTY(TYPE, NAME)\
+[SuppressMessage("Microsoft.Design", "CA1051:DoNotDeclareVisibleInstanceFields")]\
+public TYPE NAME;
+
+#define DECLARE_PROPERTY_INIT(TYPE, NAME) DECLARE_PROPERTY(TYPE, NAME)
+#define DECLARE_METHOD(TYPE, NAME) DECLARE_PROPERTY(TYPE, NAME)
+
+using System;
+using System.AddIn.Contract.Collections;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Reflection;
+
+namespace System.AddIn.Contract.Automation
+{
+    DECLARE_DATATYPE(RemoteMemberData)
+    {
+        [SuppressMessage("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
+        DECLARE_PROPERTY(IRemoteTypeContract, DeclaringType)
+        DECLARE_PROPERTY(string, Name)
+    }
+
+    DECLARE_DATATYPE(RemoteTypeData)
+    {
+        DECLARE_PROPERTY_INIT(RemoteMemberData, MemberData)
+        DECLARE_PROPERTY(TypeAttributes, Attributes)
+        DECLARE_PROPERTY(TypeCode, TypeCode)
+        DECLARE_PROPERTY(string, AssemblyName)
+        DECLARE_PROPERTY(string, FullName)
+        DECLARE_PROPERTY(string, AssemblyQualifiedName)
+        DECLARE_PROPERTY(bool, IsByRef)
+        DECLARE_PROPERTY(bool, IsArray)
+        DECLARE_PROPERTY(int, ArrayRank)
+        [SuppressMessage("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
+        DECLARE_PROPERTY(IRemoteTypeContract, ElementType)
+        [SuppressMessage("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
+        DECLARE_PROPERTY(IRemoteTypeContract, BaseType)
+    }
+
+    DECLARE_DATATYPE(RemoteMethodData)
+    {
+        DECLARE_PROPERTY_INIT(RemoteMemberData, MemberData)
+        DECLARE_PROPERTY(MethodAttributes, Attributes)
+        DECLARE_METHOD(RemoteParameterData[], Parameters)
+        DECLARE_PROPERTY_INIT(RemoteParameterData, ReturnParameter)
+    }
+
+    DECLARE_DATATYPE(RemotePropertyData)
+    {
+        DECLARE_PROPERTY_INIT(RemoteMemberData, MemberData)
+        DECLARE_PROPERTY(PropertyAttributes, Attributes)
+        DECLARE_METHOD(RemoteParameterData[], IndexParameters)
+        [SuppressMessage("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
+        DECLARE_PROPERTY(IRemoteTypeContract, PropertyType)
+        DECLARE_PROPERTY(bool, CanRead)
+        DECLARE_PROPERTY(bool, CanWrite)
+    }
+
+    DECLARE_DATATYPE(RemoteFieldData)
+    {
+        DECLARE_PROPERTY_INIT(RemoteMemberData, MemberData)
+        DECLARE_PROPERTY(FieldAttributes, Attributes)
+        [SuppressMessage("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
+        DECLARE_PROPERTY(IRemoteTypeContract, FieldType)
+    }
+
+    DECLARE_DATATYPE(RemoteParameterData)
+    {
+        DECLARE_PROPERTY(ParameterAttributes, Attributes)
+        DECLARE_PROPERTY(string, Name)
+        DECLARE_PROPERTY(int, Position)
+        DECLARE_PROPERTY(bool, IsByRef)
+        [SuppressMessage("Microsoft.Usage", "CA2235:MarkAllNonSerializableFields")]
+        DECLARE_PROPERTY(IRemoteTypeContract, ParameterType)
+        DECLARE_PROPERTY(RemoteArgument, DefaultValue)
+        DECLARE_PROPERTY(bool, IsParameterArray)
+    }
+}
+
+namespace System.AddIn.Contract.Collections
+{
+    DECLARE_DATATYPE(RemoteArgumentDictionaryEntry)
+    {
+        public RemoteArgumentDictionaryEntry(RemoteArgument key, RemoteArgument value)
+        {
+            this.Key = key;
+            this.Value = value;
+        }
+
+        DECLARE_PROPERTY(RemoteArgument, Key)
+        DECLARE_PROPERTY(RemoteArgument, Value)
+    }
+}
+
+namespace System.AddIn.Contract
+{
+    /// <summary>
+    /// This data represents static data about the serializable object
+    /// that may be necessary for deserialization.
+    /// The only member guaranteed to be set is the object id.
+    /// parentId is set if this is a non-root object in the tree.
+    /// memberName is set then as well, unless isArrayElem is true, q.v.
+    /// isArray is true if this object is an array. If true,
+    /// then dimensionLengths will be set, as well as 
+    /// dimensionlowerBounds. 
+    /// if isArrayElement is true, then this object is an element in an array,
+    /// parentId represents the array, and memberName is null.
+    /// elementIndexes is the indices into the parent array where this element
+    /// falls. 
+    /// It is possible for both isArray and isArrayElem to be true, for
+    /// jagged arrays.
+    /// </summary>
+    DECLARE_DATATYPE(SerializableObjectData)
+    {
+        DECLARE_PROPERTY(long, ObjectId)
+        DECLARE_PROPERTY(long, ParentId)
+        DECLARE_PROPERTY(string, MemberName)
+        DECLARE_PROPERTY(bool, IsArray)
+        DECLARE_METHOD(int[], DimensionLengths)
+        DECLARE_METHOD(int[], DimensionLowerBounds)
+        DECLARE_PROPERTY(bool, IsArrayElement)
+        DECLARE_METHOD(int[], ElementIndexes)
+    }
+}

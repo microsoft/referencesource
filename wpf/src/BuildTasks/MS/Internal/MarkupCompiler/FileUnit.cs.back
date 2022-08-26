@@ -1,0 +1,51 @@
+using System;
+using System.Security.Permissions;
+
+namespace MS.Internal
+{
+    ///<summary>
+    /// The FileUnit class
+    ///</summary> 
+    [Serializable]
+    internal struct FileUnit
+    {
+        public FileUnit(string path, string lin----as, string logicalName)
+        {
+            _path = path;
+            _lin----as = lin----as;
+            _logicalName = logicalName;
+        }
+        
+        public string Path 
+        { 
+            get { return _path; }
+        }
+        
+        public string Lin----as 
+        { 
+            get { return _lin----as; }
+        }
+
+        public string LogicalName 
+        { 
+            get { return _logicalName; }
+        }
+
+        public static FileUnit Empty
+        {
+            get { return _empty; }
+        }
+
+        public override string ToString()
+        {
+            return _path;
+        }
+
+        private string _path;
+        private string _lin----as;
+        private string _logicalName;
+        
+        private static FileUnit _empty = new FileUnit(String.Empty, String.Empty, String.Empty);
+    }
+}
+

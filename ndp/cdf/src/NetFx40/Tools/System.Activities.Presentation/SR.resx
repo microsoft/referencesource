@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CollectionAddEditingScopeDescription" xml:space="preserve">
+    <value>Collection Add</value>
+  </data>
+  <data name="CollectionClearEditingScopeDescription" xml:space="preserve">
+    <value>Collection Clear</value>
+  </data>
+  <data name="CollectionRemoveEditingScopeDescription" xml:space="preserve">
+    <value>Collection Remove</value>
+  </data>
+  <data name="DictionaryAddEditingScopeDescription" xml:space="preserve">
+    <value>Dictionary Add</value>
+  </data>
+  <data name="DictionaryClearEditingScopeDescription" xml:space="preserve">
+    <value>Dictionary Clear</value>
+  </data>
+  <data name="DictionaryEditEditingScopeDescription" xml:space="preserve">
+    <value>Dictionary Edit</value>
+  </data>
+  <data name="DictionaryRemoveEditingScopeDescription" xml:space="preserve">
+    <value>Dictionary Remove</value>
+  </data>
+  <data name="DuplicateArgumentName" xml:space="preserve">
+    <value>There is already an argument named '{0}' defined. Please choose a different name.</value>
+  </data>
+  <data name="DuplicateVariableName" xml:space="preserve">
+    <value>There is already a variable named '{0}'  in this scope. Please choose a different name.</value>
+  </data>
+  <data name="EmptyArgumentName" xml:space="preserve">
+    <value>Argument cannot have empty name.</value>
+  </data>
+  <data name="EmptyVariableName" xml:space="preserve">
+    <value>Variable cannot have empty name.</value>
+  </data>
+  <data name="ExpressionDefaultText" xml:space="preserve">
+    <value>Enter a VB expression</value>
+  </data>
+  <data name="MoveEditingScopeDescription" xml:space="preserve">
+    <value>Item Move</value>
+  </data>
+  <data name="PropertyChangeEditingScopeDescription" xml:space="preserve">
+    <value>Property Change</value>
+  </data>
+  <data name="TypeResolverError" xml:space="preserve">
+    <value>Not all generic types could be resolved.</value>
+  </data>
+  <data name="TypeResolverWindowTitle" xml:space="preserve">
+    <value>Select Types</value>
+  </data>
+  <data name="WorkflowDesignerErrorPresenterTitle" xml:space="preserve">
+    <value>Workflow Designer</value>
+  </data>
+  <data name="ViewStateUndoUnitDescription" xml:space="preserve">
+    <value>View State Change</value>
+  </data>
+  <data name="PasteUndoDescription" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="DuplicateKey" xml:space="preserve">
+    <value>An item with the same key has already been added.</value>
+  </data>
+  <data name="UndoEngine_NotDisposedBookmark" xml:space="preserve">
+    <value>Bookmark is garbage collected without being committed or rolled back.</value>
+  </data>
+  <data name="UndoEngine_OperationNotAllowed" xml:space="preserve">
+    <value>Operation '{0}' not allowed on disposed object.</value>
+  </data>
+  <data name="ChildValidationError" xml:space="preserve">
+    <value>One or more children have validation errors or warnings.</value>
+  </data>
+  <data name="CouldNotGenerateView" xml:space="preserve">
+    <value>Could not generate view for {0}.</value>
+  </data>
+  <data name="CutOperationEditingScopeDescription" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="DeleteOperationEditingScopeDescription" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="NonSupportedModelPropertyPathExpanderConverterConvertBack" xml:space="preserve">
+    <value>ModelPropertyPathExpanderConverter doesn't support converting path string back to ModelProperty.</value>
+  </data>
+  <data name="CollectionIsReadOnly" xml:space="preserve">
+    <value>Collection is read-only.</value>
+  </data>
+  <data name="ModelItemPathArrayShouldNotBeEmpty" xml:space="preserve">
+    <value>"path" should contain at least one element.</value>
+  </data>
+  <data name="InvalidConstructorCall" xml:space="preserve">
+    <value>Parameterless construction is not supported.</value>
+  </data>
+  <data name="BoundsMustBeNonZero" xml:space="preserve">
+    <value>Bounds must have non zero width and height.</value>
+  </data>
+  <data name="CannotResolveNamespace" xml:space="preserve">
+    <value>Namespace '{0}' cannot be resolved.</value>
+  </data>
+  <data name="ElementRepresentationExpected" xml:space="preserve">
+    <value>Element representation expected</value>
+  </data>
+  <data name="ElementRepresentationExpectedAt" xml:space="preserve">
+    <value>Element representation expected at {0}, {1}</value>
+  </data>
+  <data name="WorkflowDesignerLoadShouldBeCalledOnlyOnce" xml:space="preserve">
+    <value>Load should be called only once during the lifetime of a workflow designer object.</value>
+  </data>
+  <data name="WorkflowDesignerTextShouldNotBeNull" xml:space="preserve">
+    <value>Value of Text property should not be empty or null.</value>
+  </data>
+  <data name="InvalidFlagName" xml:space="preserve">
+    <value>{0} is not a valid value for {1}.</value>
+  </data>
+  <data name="CutCopyRequiresDesignerView" xml:space="preserve">
+    <value>Cut-copy-paste feature requires DesignerView to be present.</value>
+  </data>
+  <data name="UnsupportedExpressionHintText" xml:space="preserve">
+    <value>Value was set in XAML.</value>
+  </data>
+  <data name="DuplicateIdentifier" xml:space="preserve">
+    <value>'{0}' is already declared in this scope. Identifiers are case-insensitive.</value>
+  </data>
+  <data name="InvalidIdentifier" xml:space="preserve">
+    <value>'{0}' is not a valid identifier. It may contain invalid characters or it is a reserved keyword.</value>
+  </data>
+  <data name="ToolboxItemFrozenDescription" xml:space="preserve">
+    <value>Cannot modify ToolName or AssemblyName of already initialized ToolboxItem.</value>
+  </data>
+  <data name="DefaultHelpUrl" xml:space="preserve">
+    <value>http://msdn.microsoft.com/library/dd489402.aspx</value>
+  </data>
+  <data name="NamespaceListArgumentMustBeNamespaceData" xml:space="preserve">
+    <value>Element of NamespaceList must be NamespaceData.</value>
+  </data>
+  <data name="NamespaceListNoDuplicate" xml:space="preserve">
+    <value>NamespaceList could not accept duplicate namespaces.</value>
+  </data>
+  <data name="AttachedPropertyNameShouldNotBeEmpty" xml:space="preserve">
+    <value>Attached property's name should not be empty or null.</value>
+  </data>
+  <data name="InvalidXamlMemberName" xml:space="preserve">
+    <value>'{0}' is not a valid XAML member name.</value>
+  </data>
+  <data name="NonSupportedModelItemCollectionOrDictionary" xml:space="preserve">
+    <value>Data input of the dialog is neither ModelItemCollection nor ModelItemDictionary.</value>
+  </data>
+  <data name="UpdateDynamicArgumentsDescription" xml:space="preserve">
+    <value>Update parameters</value>
+  </data>
+  <data name="WarningFormat" xml:space="preserve">
+    <value>Warning: {0}</value>
+  </data>
+  <data name="DesignTimeValidationFeatureOnlyAppliesToType" xml:space="preserve">
+    <value>DesignTimeValidationFeature '{0}' could only apply to type '{1}', not type '{2}'.</value>
+  </data>
+  <data name="PropertyIsReadOnly" xml:space="preserve">
+    <value>Property is read-only.</value>
+  </data>
+  <data name="NonSupportedDynamicArgumentKeyType" xml:space="preserve">
+    <value>Argument key is not of type string.</value>
+  </data>
+  <data name="NonSupportedDynamicArgumentType" xml:space="preserve">
+    <value>Argument type of parameters is not supported.</value>
+  </data>
+  <data name="WorkflowDesignerLoadShouldBeCalledFirst" xml:space="preserve">
+    <value>Load should be called before calling this method.</value>
+  </data>
+  <data name="PropertyDoesntExistFormatString" xml:space="preserve">
+    <value>Property '{0}' does not exist</value>
+  </data>
+  <data name="NoDefaultCtorError" xml:space="preserve">
+    <value>Default parameterless constructor not found.</value>
+  </data>
+  <data name="NotSupportedToolboxTypeFormatString" xml:space="preserve">
+    <value>Type '{0}' is not a valid toolbox type. Reason: {1}</value>
+  </data>
+  <data name="TypeBrowserErrorMessageTitle" xml:space="preserve">
+    <value>Type Browser</value>
+  </data>
+  <data name="TypeResolverErrorMessageTitle" xml:space="preserve">
+    <value>Type Resolver</value>
+  </data>
+  <data name="UnresolvedMember" xml:space="preserve">
+    <value>Could not find member '{0}' in type '{1}'.</value>
+    <comment>This should be the same as SR.UnresolvedMember in XamlBuildTask.dll</comment>
+  </data>
+  <data name="UnresolvedTypeInAssembly" xml:space="preserve">
+    <value>Could not find type '{0}' in assembly '{1}'.</value>
+  </data>
+  <data name="UnresolvedTypeInNamespace" xml:space="preserve">
+    <value>Could not find type '{0}' in namespace '{1}'.</value>
+  </data>
+  <data name="UnresolvedGenericType" xml:space="preserve">
+    <value>Could not resolve type '{0}' because could not find one or more of its type arguments.</value>
+    <comment>This should be the same as SR.UnresolvedGenericType in XamlBuildTask.dll</comment>
+  </data>
+  <data name="SeeErrorWindow" xml:space="preserve">
+    <value>See the Error List window for more details.</value>
+  </data>
+  <data name="UnknownContent" xml:space="preserve">
+    <value>Type '{0}' does not have a suitable TypeConverter or content property to handle this content.</value>
+    <comment>This should be the same as SR.MemberUnknownContect in XamlBuildTask.dll</comment>
+  </data>
+  <data name="ActivityLoadError" xml:space="preserve">
+    <value>Activity could not be loaded because of errors in the XAML.</value>
+  </data>
+  <data name="DuplicateName" xml:space="preserve">
+    <value>Duplicate name: '{0}'.</value>
+  </data>
+  <data name="UnresolvedName" xml:space="preserve">
+    <value>Could not resolve name: '{0}'.</value>
+  </data>
+  <data name="UnassignableCollection" xml:space="preserve">
+    <value>Type '{0}' is not assignable to item type '{1}' nor any other content type of collection '{2}'.</value>
+    <comment>This should be the same as SR.UnassignableCollection in XamlBuildTask.dll</comment>
+  </data>
+  <data name="UnassignableObject" xml:space="preserve">
+    <value>Type '{0}' is not assignable to type '{1}' of member '{2}'.</value>
+    <comment>This should be the same as SR.UnassignableTypesObject in XamlBuildTask.dll</comment>
+  </data>
+  <data name="MemberCanOnlyBeSetOnce" xml:space="preserve">
+    <value>Member '{0}' already has content.</value>
+  </data>
+  <data name="DuplicateMember" xml:space="preserve">
+    <value>Member '{0}' has already been set on this object.</value>
+  </data>
+  <data name="MemberOnBadTargetType" xml:space="preserve">
+    <value>Incorrect Xaml Encountered. Attachable member '{0}' can only be set on types assignable from '{1}'</value>
+    <comment>This should be the same as SR.UnexpectedXamlAttachableMember in XamlBuildTask.dll</comment>
+  </data>
+  <data name="NoTypeConverter" xml:space="preserve">
+    <value>Type '{0}' cannot be initialized with text content because it does not have a TypeConverter.</value>
+  </data>
+  <data name="NoTextInCollection" xml:space="preserve">
+    <value>Collection '{0}' does not support text content.</value>
+  </data>
+  <data name="NoTextInProperty" xml:space="preserve">
+    <value>Type '{0}' is not assignable to type '{1}' of member '{2}' and there is no TypeConverter defined on the member.</value>
+    <comment>This should be the same as SR.UnassignableTypes in XamlBuildTask.dll</comment>
+  </data>
+  <data name="ValidationDisabledWarning" xml:space="preserve">
+    <value>Design time validation is turned off. Validation occurs only at runtime. To validate your workflow, either enable validation by modifying the registry key[HKCU\Software\Microsoft\.NETFramework\v[assembly version]\System.Activities.Presentation\DisableValidateOnModelItemChanged] and reopening the designer or call ActivityValidationServices.Validate() on an instance of your workflow.</value>
+  </data>
+  <data name="CutCopyErrorActivityMessage" xml:space="preserve">
+    <value>Activities that cannot be rendered in the designer cannot be cut or copied.</value>
+  </data>
+  <data name="TypeBrowserError" xml:space="preserve">
+    <value>The selected type could not be created.</value>
+  </data>
+  <data name="CannotCreateInstance" xml:space="preserve">
+    <value>Cannot create an instance of "{0}".</value>
+  </data>
+  <data name="CannotPreserveDefaultValue" xml:space="preserve">
+    <value>The default value will be cleared with this change, do you want to continue?</value>
+  </data>
+  <data name="CannotMorphExpression" xml:space="preserve">
+    <value>Some data would be lost by changing type argument. Do you want to continue?</value>
+  </data>
+  <data name="CannotConstructConnectionSegment" xml:space="preserve">
+    <value>Cannot construct line segment between point {0} and point {1}.</value>
+  </data>
+  <data name="InvalidExpressionEditorName" xml:space="preserve">
+    <value>{0} is not a valid expression editor name, which cannot be null or white spaces only.</value>
+  </data>
+  <data name="InvalidExpressionEditorType" xml:space="preserve">
+    <value>{0} is not a valid expression editor type, which must be a derived class of {1}.</value>
+  </data>
+  <data name="InvalidExpressionMorphHelperType" xml:space="preserve">
+    <value>{0} is not a valid type, which must be a derive class of {1}.</value>
+  </data>
+  <data name="NonRegisteredExpressionEditor" xml:space="preserve">
+    <value>Cannot find an expression editor named '{0}'. </value>
+  </data>
+  <data name="ExpressionActivityEditorRequiresDefaultConstructor" xml:space="preserve">
+    <value>'{0}' doesn't have public default constructor which is required for a valid custom ExpressionActivityEditor.</value>
+  </data>
+  <data name="InvalidExpressionEditorNameToSet" xml:space="preserve">
+    <value>{0} is not a valid expression editor name, which cannot be white spaces only.</value>
+  </data>
+  <data name="ExpressionTypeDonnotMatch" xml:space="preserve">
+    <value>Cannot convert the generated expression from type ‘{0}’ to ‘{1}’.</value>
+  </data>
+  <data name="SearchHintText" xml:space="preserve">
+    <value>Found in property '{0}'</value>
+  </data>
+  <data name="AddAnnotationTitle" xml:space="preserve">
+    <value>Add Annotation</value>
+  </data>
+  <data name="DeleteAllAnnotationMessage" xml:space="preserve">
+    <value>Are you sure you want to delete all annotations in the workflow?</value>
+  </data>
+  <data name="DeleteAnnotationTitle" xml:space="preserve">
+    <value>Delete Annotation</value>
+  </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>Edit Annotation</value>
+  </data>
+  <data name="DraggingMulitpleItemsError" xml:space="preserve">
+    <value>Multiple items are dragged and dropped. DragDropHelper.SetDragDropMovedViewElements should have been called to indicate the WorkflowViewElements that are moved.</value>
+  </data>
+  <data name="PropertyReferenceChangeEditingScopeDescription" xml:space="preserve">
+    <value>Property Reference Change</value>
+  </data>
+  <data name="CouldNotChangeValueAfterInitialization" xml:space="preserve">
+    <value>Could not change value after initialization.</value>
+  </data>
+  <data name="CouldNotSetPropertyAfterLoad" xml:space="preserve">
+    <value>This property could not be set after workflow designer is loaded. To fix the problem, please set this property before loading the workflow designer.</value>
+  </data>
+  <data name="NotifyAnnotationTextChangedDescription" xml:space="preserve">
+    <value>Notify Annotation Text Changed</value>
+  </data>
+  <data name="DeleteAllAnnotationsDescription" xml:space="preserve">
+    <value>Delete All Annotations</value>
+  </data>
+  <data name="WrapInSequenceDescription" xml:space="preserve">
+    <value>Wrap in Sequence</value>
+  </data>
+  <data name="CantEnableAnnotationBefore45" xml:space="preserve">
+    <value>Cannot enable annotation when target framework is lower than 4.5</value>
+  </data>
+  <data name="AddAnnotationDescription" xml:space="preserve">
+    <value>Add Annotation</value>
+  </data>
+  <data name="DeleteAnnotationDescription" xml:space="preserve">
+    <value>Delete Annotation</value>
+  </data>
+  <data name="Error_BadOutputFromSortSelectedItems" xml:space="preserve">
+    <value>Invalidate return value from SortSelectedItems. The items returned must be the same as the items passed in except the order</value>
+  </data>
+  <data name="Error_CantFindItemInWIsP" xml:space="preserve">
+    <value>Trying to sort some item that is not in the view.</value>
+  </data>
+  <data name="Error_MovingMoreThanOneItemsFromICompositeView" xml:space="preserve">
+    <value>Moving more than one items from ICompositeView. Implement OnItemsMoved in ICompositeView.</value>
+  </data>
+  <data name="KeyNotFound" xml:space="preserve">
+    <value>The given key was not present in the dictionary</value>
+  </data>
+  <data name="PromotedPropertyNotFound" xml:space="preserve">
+    <value>Cannot find ShowInOutlineViewAttribute promoted property '{0}' on type: '{1}'. Specify an existing property of type: '{1}' as promoted property. If this promoted property is not required, remove it from ShowInOutlineViewAttribute() constructor.</value>
+  </data>
+  <data name="UntrustedSourceDetected" xml:space="preserve">
+    <value>The file '{0}' may have come from a location that isn't fully trusted. It could present a security risk by opening the file that could cause damage to your computer or compromise your private information.
+To avoid this exception, please do the security check first (you can refer this link http://msdn.microsoft.com/library/system.security.permissionset.aspx to get information about IsUnrestricted check) and turn on LoadingFromUntrustedSourceEnabled by setting DesignerConfigurationService.LoadingFromUntrustedSourceEnabled = true from workflow designer.</value>
+  </data>
+  <data name="ArgumentAccessorGetterThrewException" xml:space="preserve">
+    <value>The Getter method of an Argument Accessor for Activity '{0}' threw an exception:
+{1}</value>
+  </data>
+  <data name="ArgumentAccessorSetterThrewException" xml:space="preserve">
+    <value>The Setter method of an Argument Accessor for Activity '{0}' threw an exception:
+{1}</value>
+  </data>
+  <data name="CannotGetArgumentAccessorsForActivity" xml:space="preserve">
+    <value>Failed to get Argument Accessors from Activity '{0}'
+{1}.</value>
+  </data>
+  <data name="TypeDoesNotInheritFromActivity" xml:space="preserve">
+    <value>The supplied type '{0}' does not inherit from System.Activities.Activity.</value>
+  </data>
+  <data name="InvalidNestedModelItemBeginEditExceptionMessage" xml:space="preserve">
+    <value>Call to BeginEdit() with shouldApplyChangesImmediately=true cannot be nested inside another EditingScope or another call to BeginEdit().</value>
+  </data>
+  <data name="TypeResolvingOptionsArgumentExceptionMessage" xml:space="preserve">
+    <value>defaultTypes should not contain null.</value>
+  </data>
+  <data name="SourceReferenceIdNotFoundInWorkflow" xml:space="preserve">
+    <value>The provided SourceReferenceID '{0}' could not be found in the workflow.</value>
+  </data>
+  <data name="NotSupportedFrameworkVersion" xml:space="preserve">
+    <value>The .Net Framework {0} is not supported in the workflow designer.</value>
+  </data>
+  <data name="NotSupportedFrameworkIdentifier" xml:space="preserve">
+    <value>The framework identifier '{0}' is not supported in the workflow designer. Please use '.NET Framework' or '.NETFramework' as identifier.</value>
+  </data>
+  <data name="NotSupportedFrameworkProfile" xml:space="preserve">
+    <value>The framework profile '{0}' is not supported in the workflow designer. Please use empty or 'Client' as profile value.</value>
+  </data>
+  <data name="Error_ItemNotOnView" xml:space="preserve">
+    <value>Item '{0}' is not on view.</value>
+  </data>
+  <data name="BreadCrumbObjectSeparator" xml:space="preserve">
+    <value>Arrow</value>
+  </data>
+  <data name="DesignerContextMenuAutomationName" xml:space="preserve">
+    <value>Workflow Designer Context Menu</value>
+  </data>
+  <data name="ConnectorOfActivitiesAutomationName" xml:space="preserve">
+    <value>Connector of Activities</value>
+  </data>
+  <data name="ConnectorWithLabelAutomationName" xml:space="preserve">
+    <value>Connector with label '{0}'</value>
+  </data>
+  <data name="ZoomPickerEditorAutomationName" xml:space="preserve">
+    <value>Enter a zoom ratio</value>
+  </data>
+  <data name="ExpandAllCollapseAllHelpTextFormat" xml:space="preserve">
+    <value>Click to {0}</value>
+  </data>
+</root>

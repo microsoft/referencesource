@@ -1,0 +1,44 @@
+﻿<swdv:DesignerWithHeader
+	x:Uid="activityTypeDesignerElement" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:xs="clr-namespace:System.Xaml.Schema;assembly=System.Xaml"
+        xmlns:sw="clr-namespace:System.Activities;assembly=System.Activities"
+        xmlns:swd="clr-namespace:System.Activities.Presentation"
+        xmlns:swdv="clr-namespace:System.Activities.Presentation.View"
+ 	x:Class="System.Activities.Presentation.View.ActivityTypeDesigner"
+ 	x:ClassModifier="internal"
+    x:Name="activityTypeDesignerElement"
+	MinHeight="50" MinWidth="150"	Margin="10" IsTabStop="False" >
+    <swdv:DesignerWithHeader.CommandBindings>
+        <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static swdv:DesignerView.AddAnnotationCommand}" CanExecute="OnAddAnnotationCommandCanExecute" />
+        <CommandBinding x:Uid="CommandBinding_2" Command="{x:Static swdv:DesignerView.EditAnnotationCommand}" CanExecute="OnEditAnnotationCommandCanExecute" />
+        <CommandBinding x:Uid="CommandBinding_3" Command="{x:Static swdv:DesignerView.DeleteAnnotationCommand}" CanExecute="OnDeleteAnnotationCommandCanExecute" />
+    </swdv:DesignerWithHeader.CommandBindings>
+    
+    <Grid x:Uid="Grid_1" Background="{DynamicResource DesignerViewBackground}">
+        <Border x:Uid="Border_1" BorderBrush="LightGray" BorderThickness="0" Padding="10" CornerRadius="1">
+          <swd:WorkflowItemPresenter x:Uid="swd:WorkflowItemPresenter_1" AllowedItemType="{x:Type sw:Activity}" Background="Transparent"
+            HintText="Drop activity here" Localization.Attributes="HintText(Readable Modifiable Text)" Item="{Binding Path=ModelItem.Implementation, Mode=TwoWay}"
+            IsDefaultContainer="True">
+            <swd:WorkflowItemPresenter.Style>
+              <Style x:Uid="Style_1" TargetType="{x:Type swd:WorkflowItemPresenter}">
+                <Style.Triggers>
+                  <Trigger x:Uid="Trigger_1" Property="Item" Value="{x:Null}">
+                    <Setter x:Uid="Setter_2" Property="MinHeight" Value="400" />
+                    <Setter x:Uid="Setter_3" Property="MinWidth" Value="400" />
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </swd:WorkflowItemPresenter.Style>
+          </swd:WorkflowItemPresenter>
+        </Border>
+    </Grid>
+    <swdv:DesignerWithHeader.Header>
+        <DataTemplate x:Uid="DataTemplate_1">
+            <!--<swdv:SchemaPropertyDesigner RootDesigner="{Binding}"/>-->
+        </DataTemplate>
+
+    </swdv:DesignerWithHeader.Header>
+
+</swdv:DesignerWithHeader>

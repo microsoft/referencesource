@@ -1,0 +1,50 @@
+﻿<ContentControl x:Uid="controlRoot" x:Class="System.Activities.Presentation.View.TypePresenter"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:sad="clr-namespace:System.Activities.Presentation"
+    xmlns:proj="clr-namespace:System.Activities.Presentation.View"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Name="controlRoot" Focusable="True" IsHitTestVisible="True" IsEnabled="True"
+    FontFamily="{DynamicResource {x:Static sad:WorkflowDesignerColors.FontFamilyKey}}"
+    FontSize="{DynamicResource {x:Static sad:WorkflowDesignerColors.FontSizeKey}}"
+    FontWeight="{DynamicResource {x:Static sad:WorkflowDesignerColors.FontWeightKey}}">
+
+  <ContentControl.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1" x:Key="ResourceDictionary">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+
+    <s:String x:Uid="s:String_1" x:Key="BrowseTypeString" >Browse for Types ...</s:String>
+    <s:String x:Uid="s:String_2" x:Key="Hint">Click to browse...</s:String>
+
+    <Style x:Uid="Style_1" TargetType="{x:Type ComboBoxItem}">
+      <Setter x:Uid="Setter_1" Property="AutomationProperties.AutomationId" Value="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Tag}"/>
+    </Style>
+
+    </ResourceDictionary>
+  </ContentControl.Resources>
+
+  <StackPanel x:Uid="StackPanel_1">
+    <TextBlock x:Uid="typeTextBlock" Focusable="False" Margin="10,2" x:Name="typeTextBlock" AutomationProperties.AutomationId="TypeTextBox" >
+      <TextBlock.Style>
+        <Style x:Uid="Style_2" TargetType="{x:Type TextBlock}">
+          <Style.Triggers>
+            <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=Type, ElementName=controlRoot}" Value="{x:Null}">
+              <Setter x:Uid="Setter_2" Property="Text" Value="{StaticResource Hint}"/>
+              <Setter x:Uid="Setter_3" Property="FontStyle" Value="Italic"/>
+              <Setter x:Uid="Setter_5" Property="Foreground" Value="{x:Static SystemColors.GrayTextBrush}"/>
+            </DataTrigger>
+          </Style.Triggers>
+          <Setter x:Uid="Setter_4" Property="Text" Value="{Binding Path=TypeName, RelativeSource={RelativeSource AncestorType={x:Type proj:TypePresenter}}}"/>
+        </Style>
+      </TextBlock.Style>
+    </TextBlock>
+    <ComboBox x:Uid="typeComboBox" x:Name="typeComboBox" DisplayMemberPath="DisplayName" IsEditable="False" AutomationProperties.AutomationId="TypeComboBox"
+              AutomationProperties.Name="{Binding ElementName=controlRoot, Path=(AutomationProperties.Name), Mode=OneWay}">
+      <ComboBox.ItemsSource>
+        <Binding x:Uid="Binding_1" Path="Items" ElementName="controlRoot"/>
+      </ComboBox.ItemsSource>
+    </ComboBox>
+  </StackPanel>
+</ContentControl>

@@ -1,0 +1,8 @@
+﻿<UserControl x:Uid="root" x:Class="System.Activities.Presentation.View.VersionEditor"
+             x:ClassModifier="internal"
+             x:Name="root"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:sapipffv="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.FromExpression.Framework.ValueEditors"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <sapipffv:StringEditor x:Uid="StringEditor" Value="{Binding Path=ViewModel.VersionText, ElementName=root}" />
+</UserControl>

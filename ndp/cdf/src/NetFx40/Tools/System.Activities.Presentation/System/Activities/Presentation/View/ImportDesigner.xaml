@@ -1,0 +1,83 @@
+﻿<ContentControl x:Uid="ImportDesigner" x:Class="System.Activities.Presentation.View.ImportDesigner"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:swd="clr-namespace:System.Activities.Presentation"
+    xmlns:proj="clr-namespace:System.Activities.Presentation.View"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    AutomationProperties.AutomationId="ImportDesigner"    
+    IsVisibleChanged="OnVisibleChanged"
+    x:Name="variableDesigner">
+    <ContentControl.Resources>
+		<ResourceDictionary x:Uid="ResourceDictionary_1">
+
+			<ResourceDictionary.MergedDictionaries>
+				<swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2"
+													   Source="pack://application:,,,/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+				<swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3"
+													   Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+				<swd:CachedResourceDictionaryExtension x:Uid="swd:CachedResourceDictionaryExtension_1"
+													   Source="/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+                <swd:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4"
+                                                       Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        <sys:String x:Uid="inputComboBoxName" x:Key="inputComboBoxName">Import Namespaces</sys:String>
+			<!--Default Row Style-->
+			<Style x:Uid="Style_1"
+				   x:Key="defaultRowStyle"
+				   TargetType="{x:Type DataGridRow}"
+				   BasedOn="{StaticResource baseDataRowStyle}" >
+				     <Setter x:Uid="Setter_10"
+						Property="AutomationProperties.AutomationId"
+						Value="{Binding Path=Item.Namespace, RelativeSource={RelativeSource Mode=Self}, Mode=OneWay }" />
+                <Style.Triggers>
+                      <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=Item.IsInvalid, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                        <Setter x:Uid="Setter_11" Property="Background" Value="{StaticResource WorkflowViewElementBackground}" />                                          
+                      </DataTrigger>
+                    </Style.Triggers>
+            </Style>
+      
+			<swd:NotConverter x:Uid="swd:NotConverter"
+							  x:Key="NotConverter"/>
+
+
+			<!-- data template for each cell in data grid-->
+			<DataTemplate x:Uid="DataTemplate_1"
+						  x:Key="NamespaceReadonlyTemplate">
+				<proj:NamespaceDisplay x:Uid="proj:NamespaceDisplay_1" Namespace="{Binding Path=Namespace}"
+									   IsInvalid="{Binding Path=IsInvalid}"
+									   ErrorMessage="{Binding Path=ErrorMessage}" />
+			</DataTemplate>
+
+		</ResourceDictionary>
+      
+    </ContentControl.Resources>
+
+  <Grid x:Uid="Grid_1">
+    <Grid.Resources>
+      <Style x:Uid="Style_5" TargetType="{x:Type ComboBoxItem}">
+        <EventSetter x:Uid="EventSetter_1" Event="PreviewMouseLeftButtonDown" Handler="OnMouseLeftClickComboBoxItem"/>
+	     <Setter x:Uid="Setter_13" Property="AutomationProperties.Name" Value="{Binding Path=Content}" />
+      </Style>
+    </Grid.Resources>
+
+    <Grid.RowDefinitions>
+      <RowDefinition x:Uid="RowDefinition_1" Height="30" />
+      <RowDefinition x:Uid="RowDefinition_2" Height="224*" />
+    </Grid.RowDefinitions>    
+    <ComboBox x:Uid="inputComboBox" IsEditable="True" Margin="5" x:Name="inputComboBox" AutomationProperties.Name="{StaticResource inputComboBoxName}"
+              IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}, Converter={StaticResource NotConverter}}"
+              IsTextSearchEnabled="False" 
+              Grid.Row="0"/>    
+    <DataGrid x:Uid="importedNamespacesDataGrid" x:Name="importedNamespacesDataGrid" Style="{StaticResource defaultDataGridStyle}" Grid.Row="1"           
+              IsReadOnly="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}"              
+              RowStyle="{StaticResource defaultRowStyle}"
+              CellStyle="{StaticResource baseDataCellStyle}"
+              AutoGenerateColumns="False" CanUserAddRows="False" CanUserSortColumns="False"
+              AutomationProperties.AutomationId="ImportsDataGrid">
+      <DataGrid.Columns>
+        <DataGridTemplateColumn x:Uid="DataGridTemplateColumn_1" Header="{StaticResource importedNamespacesHeader}" Width="*" CellTemplate="{StaticResource NamespaceReadonlyTemplate}" IsReadOnly="true" />
+      </DataGrid.Columns>
+    </DataGrid>
+  </Grid>  
+</ContentControl>

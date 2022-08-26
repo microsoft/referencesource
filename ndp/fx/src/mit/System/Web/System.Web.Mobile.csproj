@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{70873db3-95aa-4172-9709-ce582c38c338}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Web.Mobile</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;FEATURE_LEGACYSURFACEAREA;FEATURE_UTF32;FEATURE_UTF7;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\System.Data.csproj">
+      <Project>{9f39d5c4-50fa-4c2b-8511-41a6346f44fc}</Project>
+      <Name>System.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\System.Drawing.csproj">
+      <Project>{a95f2aef-5047-4d45-9480-b0476b85b958}</Project>
+      <Name>System.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\xsp\system\Web\System.Web.csproj">
+      <Project>{a0341765-8edd-4fbc-9ff8-e5fa04131891}</Project>
+      <Name>System.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\System.Windows.Forms.csproj">
+      <Project>{aaa1520f-406f-413a-9190-71a073168135}</Project>
+      <Name>System.Windows.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Design" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Web.RegularExpressions" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="GlobalSuppressions2.cs" />
+    <Compile Include="Mobile\ConfigurationSectionHelper.cs" />
+    <Compile Include="Mobile\CookielessData.cs" />
+    <Compile Include="Mobile\DeviceFilterDictionary.cs" />
+    <Compile Include="Mobile\DeviceFiltersSection.cs" />
+    <Compile Include="Mobile\ErrorHandlerModule.cs" />
+    <Compile Include="Mobile\MobileCapabilities.cs" />
+    <Compile Include="Mobile\MobileDeviceCapabilitiesSectionHandler.cs" />
+    <Compile Include="Mobile\MobileErrorInfo.cs" />
+    <Compile Include="Mobile\MobileFormsAuthentication.cs" />
+    <Compile Include="Mobile\MobileRedirect.cs" />
+    <Compile Include="Mobile\UrlPath.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlCalendarAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlCommandAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlFormAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlImageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlLinkAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlMobileTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlPageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlPhoneCallAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlSelectionListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ChtmlTextBoxAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\ControlAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\EmptyTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlCalendarAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlCommandAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlControlAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlFormAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlImageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlLabelAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlLinkAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlLiteralTextAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlMobileTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlObjectListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlPageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlPanelAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlPhoneCallAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlSelectionListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlTextBoxAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlTextViewAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlValidationSummaryAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\HtmlValidatorAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\MobileTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\MultiPartWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\UpWmlMobileTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\UpWmlPageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlCalendarAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlCommandAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlControlAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlFormAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlImageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlLabelAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlLinkAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlLiteralTextAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlMobileTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlObjectListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlPageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlPanelAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlPhoneCallAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlPostFieldType.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlSelectionListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlTextBoxAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlTextViewAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlValidationSummaryAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\WmlValidatorAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\Constants.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicCalendarAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicCommandAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicControlAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicFormAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicImageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicLabelAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicLinkAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicLiteralTextAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicObjectListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicPageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicPanelAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicPhoneCallAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicSelectionListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicTextBoxAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicTextViewAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicValidationSummaryAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlBasicValidatorAdapter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlCssHandler.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlMobileTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Adapters\XhtmlAdapters\XhtmlStyleClass.cs" />
+    <Compile Include="UI\MobileControls\AdRotator.cs" />
+    <Compile Include="UI\MobileControls\ArrayListCollectionBase.cs" />
+    <Compile Include="UI\MobileControls\BaseValidator.cs" />
+    <Compile Include="UI\MobileControls\Calendar.cs" />
+    <Compile Include="UI\MobileControls\Command.cs" />
+    <Compile Include="UI\MobileControls\CompareValidator.cs" />
+    <Compile Include="UI\MobileControls\CompileLiteralTextParser.cs" />
+    <Compile Include="UI\MobileControls\Constants.cs" />
+    <Compile Include="UI\MobileControls\ControlPager.cs" />
+    <Compile Include="UI\MobileControls\ControlsConfig.cs" />
+    <Compile Include="UI\MobileControls\CustomValidator.cs" />
+    <Compile Include="UI\MobileControls\DataSourceHelper.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerAdapterUtil.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerAdRotatorAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerCalendarAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerCommandAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerImageAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerLabelAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerLinkAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerObjectListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerSelectionListAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerTextBoxAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerTextViewAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerTextWriter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerValidationSummaryAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\DesignerValidatorAdapter.cs" />
+    <Compile Include="UI\MobileControls\Design\Adapters\MSHTMLHostUtil.cs" />
+    <Compile Include="UI\MobileControls\Design\AdRotatorDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\AppliedDeviceFiltersDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\AppliedDeviceFiltersEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\BaseTemplatedMobileComponentEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\BaseValidatorDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\CalendarDataBindingHandler.cs" />
+    <Compile Include="UI\MobileControls\Design\CalendarDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\CommandCollectionEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\CommandDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\Constants.cs" />
+    <Compile Include="UI\MobileControls\Design\ContainmentStatus.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\ChoiceConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\DataFieldConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\DataMemberConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\DefaultCommandConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\FontNameConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\FormConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\NavigateUrlConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\StyleConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\StyleReferenceConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Converters\ValidatedMobileControlConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\DesignerCapabilities.cs" />
+    <Compile Include="UI\MobileControls\Design\DesignerForm.cs" />
+    <Compile Include="UI\MobileControls\Design\DeviceFilterEditorDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\DeviceSpecificDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\DeviceSpecificDialogCachedState.cs" />
+    <Compile Include="UI\MobileControls\Design\ExternDll.cs" />
+    <Compile Include="UI\MobileControls\Design\FieldCollectionEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\FormDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\IDeviceSpecificChoiceDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\IDeviceSpecificDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\IListDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\ImageDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\ImageUrlEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\IMobileDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\IMobileWebFormServices.cs" />
+    <Compile Include="UI\MobileControls\Design\IRefreshableDeviceSpecificEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\ItemCollectionEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\LabelDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\LinkDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\ListComponentEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\ListComponentEditorPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ListDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\ListGeneralPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ListItemsPage.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileComponentEditorPage.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileContainerDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileControlDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileControlPersister.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileResource.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileTemplatedControlDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileUITypeEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\MobileUserControlDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\NativeMethods.cs" />
+    <Compile Include="UI\MobileControls\Design\ObjectListCommandsPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ObjectListComponentEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\ObjectListDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\ObjectListFieldsPage.cs" />
+    <Compile Include="UI\MobileControls\Design\ObjectListGeneralPage.cs" />
+    <Compile Include="UI\MobileControls\Design\PanelDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\PhoneCallDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\PropertyOverridesDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\PropertyOverridesTypeEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\SafeNativeMethods.cs" />
+    <Compile Include="UI\MobileControls\Design\SelectionListComponentEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\SelectionListDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\SR.cs" />
+    <Compile Include="UI\MobileControls\Design\StylesEditorDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\StyleSheetComponentEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\StyleSheetDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\StyleSheetRefUrlEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\TableFieldsEditor.cs" />
+    <Compile Include="UI\MobileControls\Design\TemplatingOptionsDialog.cs" />
+    <Compile Include="UI\MobileControls\Design\TextBoxDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\TextViewDesigner.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\DefaultDialogButtons.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\DesignerUtility.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\EditableTreeList.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\FileReader.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\GenericUI.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\GroupLabel.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\HeaderLabel.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\HeaderPanel.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\ImageCreator.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\InterchangeableLists.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\MSHTMLHost.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\SimpleParser.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\TemporaryBitmapFile.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\UnsettableComboBox.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\WbmpConverter.cs" />
+    <Compile Include="UI\MobileControls\Design\Util\WebConfigManager.cs" />
+    <Compile Include="UI\MobileControls\Design\ValidationSummaryDesigner.cs" />
+    <Compile Include="UI\MobileControls\DesignerAdapterAttribute.cs" />
+    <Compile Include="UI\MobileControls\DesignerDeviceConfig.cs" />
+    <Compile Include="UI\MobileControls\DeviceOverridableAttribute.cs" />
+    <Compile Include="UI\MobileControls\DeviceSpecific.cs" />
+    <Compile Include="UI\MobileControls\DeviceSpecificChoice.cs" />
+    <Compile Include="UI\MobileControls\DeviceSpecificChoiceCollection.cs" />
+    <Compile Include="UI\MobileControls\ErrorFormatterPage.cs" />
+    <Compile Include="UI\MobileControls\FactoryGenerator.cs" />
+    <Compile Include="UI\MobileControls\FontInfo.cs" />
+    <Compile Include="UI\MobileControls\Form.cs" />
+    <Compile Include="UI\MobileControls\IControlAdapter.cs" />
+    <Compile Include="UI\MobileControls\IListControl.cs" />
+    <Compile Include="UI\MobileControls\Image.cs" />
+    <Compile Include="UI\MobileControls\IndividualDeviceConfig.cs" />
+    <Compile Include="UI\MobileControls\IObjectListFieldCollection.cs" />
+    <Compile Include="UI\MobileControls\IPageAdapter.cs" />
+    <Compile Include="UI\MobileControls\ItemPager.cs" />
+    <Compile Include="UI\MobileControls\ITemplateable.cs" />
+    <Compile Include="UI\MobileControls\Label.cs" />
+    <Compile Include="UI\MobileControls\Link.cs" />
+    <Compile Include="UI\MobileControls\List.cs" />
+    <Compile Include="UI\MobileControls\ListCommandEventArgs.cs" />
+    <Compile Include="UI\MobileControls\ListCommandEventHandler.cs" />
+    <Compile Include="UI\MobileControls\ListControlBuilder.cs" />
+    <Compile Include="UI\MobileControls\ListDataBindEventArgs.cs" />
+    <Compile Include="UI\MobileControls\ListDataBindEventHandler.cs" />
+    <Compile Include="UI\MobileControls\ListDataHelper.cs" />
+    <Compile Include="UI\MobileControls\LiteralLink.cs" />
+    <Compile Include="UI\MobileControls\LiteralText.cs" />
+    <Compile Include="UI\MobileControls\LiteralTextContainerControlBuilder.cs" />
+    <Compile Include="UI\MobileControls\LiteralTextParser.cs" />
+    <Compile Include="UI\MobileControls\LoadItemsEventArgs.cs" />
+    <Compile Include="UI\MobileControls\LoadItemsEventHandler.cs" />
+    <Compile Include="UI\MobileControls\MobileCategoryAttribute.cs" />
+    <Compile Include="UI\MobileControls\MobileControl.cs" />
+    <Compile Include="UI\MobileControls\MobileControlBuilder.cs" />
+    <Compile Include="UI\MobileControls\MobileControlsSection.cs" />
+    <Compile Include="UI\MobileControls\MobileControlsSectionHandler.cs" />
+    <Compile Include="UI\MobileControls\MobileControlsSectionHelper.cs" />
+    <Compile Include="UI\MobileControls\MobileListItem.cs" />
+    <Compile Include="UI\MobileControls\MobileListItemCollection.cs" />
+    <Compile Include="UI\MobileControls\MobilePage.cs" />
+    <Compile Include="UI\MobileControls\MobileSysDescriptionAttribute.cs" />
+    <Compile Include="UI\MobileControls\MobileUserControl.cs" />
+    <Compile Include="UI\MobileControls\ObjectList.cs" />
+    <Compile Include="UI\MobileControls\ObjectListCommand.cs" />
+    <Compile Include="UI\MobileControls\ObjectListCommandCollection.cs" />
+    <Compile Include="UI\MobileControls\ObjectListCommandEventArgs.cs" />
+    <Compile Include="UI\MobileControls\ObjectListCommandEventHandler.cs" />
+    <Compile Include="UI\MobileControls\ObjectListDataBindEventArgs.cs" />
+    <Compile Include="UI\MobileControls\ObjectListDataBindEventHandler.cs" />
+    <Compile Include="UI\MobileControls\ObjectListField.cs" />
+    <Compile Include="UI\MobileControls\ObjectListFieldCollection.cs" />
+    <Compile Include="UI\MobileControls\ObjectListItem.cs" />
+    <Compile Include="UI\MobileControls\ObjectListItemCollection.cs" />
+    <Compile Include="UI\MobileControls\ObjectListSelectEventArgs.cs" />
+    <Compile Include="UI\MobileControls\ObjectListSelectEventHandler.cs" />
+    <Compile Include="UI\MobileControls\ObjectListShowCommandsEventArgs.cs" />
+    <Compile Include="UI\MobileControls\ObjectListShowCommandsEventHandler.cs" />
+    <Compile Include="UI\MobileControls\ObjectListTitleAttribute.cs" />
+    <Compile Include="UI\MobileControls\PagedControl.cs" />
+    <Compile Include="UI\MobileControls\PagerStyle.cs" />
+    <Compile Include="UI\MobileControls\Panel.cs" />
+    <Compile Include="UI\MobileControls\PersistNameAttribute.cs" />
+    <Compile Include="UI\MobileControls\PhoneCall.cs" />
+    <Compile Include="UI\MobileControls\RangeValidator.cs" />
+    <Compile Include="UI\MobileControls\RegularExpressionValidator.cs" />
+    <Compile Include="UI\MobileControls\RequiredFieldValidator.cs" />
+    <Compile Include="UI\MobileControls\RuntimeLiteralTextParser.cs" />
+    <Compile Include="UI\MobileControls\SelectionList.cs" />
+    <Compile Include="UI\MobileControls\SessionViewState.cs" />
+    <Compile Include="UI\MobileControls\SR.cs" />
+    <Compile Include="UI\MobileControls\Style.cs" />
+    <Compile Include="UI\MobileControls\StyleSheet.cs" />
+    <Compile Include="UI\MobileControls\TemplateContainer.cs" />
+    <Compile Include="UI\MobileControls\TextBox.cs" />
+    <Compile Include="UI\MobileControls\TextControl.cs" />
+    <Compile Include="UI\MobileControls\TextView.cs" />
+    <Compile Include="UI\MobileControls\TextViewElement.cs" />
+    <Compile Include="UI\MobileControls\UniqueSet.cs" />
+    <Compile Include="UI\MobileControls\ValidationSummary.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

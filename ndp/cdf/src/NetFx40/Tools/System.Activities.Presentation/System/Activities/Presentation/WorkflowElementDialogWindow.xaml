@@ -1,0 +1,22 @@
+﻿<sap:DialogWindow x:Uid="Window_1" x:Class="System.Activities.Presentation.WorkflowElementDialogWindow" x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sap="clr-namespace:System.Activities.Presentation"
+    Title="WorkflowElementDialog" SizeToContent="WidthAndHeight" Closed="OnWindowClosed"
+    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False"    
+    Style="{DynamicResource WorkflowWindowStyle}">
+  <Window.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1" Source="/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+  </Window.Resources>
+    <DockPanel x:Uid="DockPanel_1" Margin="7,7,7,5">
+        <DockPanel x:Uid="buttonDockPanel" DockPanel.Dock="Bottom" Name="buttonDockPanel">
+          <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal" DockPanel.Dock="Right" Name="buttonPanel">
+            <Button x:Uid="okButton" Content="OK" Localization.Attributes="$Content(Button Readable Modifiable)" IsDefault="True" MinWidth="65" Margin="7,7,0,0" Click="OK_Click" Name="okButton" AutomationProperties.AutomationId="AcceptButton"/>
+            <Button x:Uid="cancelButton"  Content="Cancel" Localization.Attributes="$Content(Button Readable Modifiable)" IsCancel="True" MinWidth="65" Margin="7,7,0,0" Name="cancelButton" AutomationProperties.AutomationId="CancelButton"/>
+          </StackPanel>
+          <UIElement x:Uid="placeholder"/>
+        </DockPanel>
+        <Border x:Uid="payloadHolder" MinHeight="50" MinWidth="200" Name="payloadHolder" Grid.ColumnSpan="3"/>
+    </DockPanel>
+</sap:DialogWindow>

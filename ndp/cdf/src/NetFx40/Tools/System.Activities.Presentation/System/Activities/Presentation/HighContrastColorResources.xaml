@@ -1,0 +1,75 @@
+﻿<ResourceDictionary
+	x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:swd="clr-namespace:System.Activities.Presentation"
+	 >
+    <!-- high contrast colors-->
+    <SolidColorBrush x:Uid="SolidColorBrush_1" x:Key="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementBorderColorKey}" Color="{DynamicResource {x:Static SystemColors.InactiveBorderColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_2" x:Key="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_3" x:Key="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementSelectedBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_4" x:Key="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementSelectedBorderColorKey}" Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_5" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewStatusBarBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlDarkColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_8" x:Key="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementCaptionColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_9" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_59" x:Key="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementSelectedCaptionColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+
+    <SolidColorBrush x:Uid="SolidColorBrush_10" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarColorGradientBeginKey}" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_11" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarColorGradientEndKey}" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_12" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarSelectedColorGradientBeginKey}" Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_13" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarSelectedColorGradientEndKey}" Color="{DynamicResource {x:Static SystemColors.ActiveCaptionColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_14" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarHoverColorGradientBeginKey}" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_15" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarHoverColorGradientEndKey}" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_16" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarControlBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_17" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarCaptionActiveColorKey}" Color="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_18" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewShellBarCaptionColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_65" x:Key="{x:Static swd:WorkflowDesignerColors.PropertyToolBarHightlightedButtonForegroundColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_60" x:Key="{x:Static swd:WorkflowDesignerColors.ActivityDesignerSelectedTitleForegroundColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+
+    <SolidColorBrush x:Uid="SolidColorBrush_19" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuBackgroundGradientBeginColorKey}" Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_20" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuBackgroundGradientEndColorKey}" Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_21" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuIconAreaColorKey}" Color="Transparent"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_22" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuBorderColorKey}" Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_23" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuItemTextColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_24" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuMouseOverBeginColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_25" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuMouseOverMiddle1ColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_26" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuMouseOverMiddle2ColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_27" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuMouseOverEndColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_28" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuMouseOverBorderColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_29" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuItemTextHoverColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_30" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuItemTextSelectedColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_31" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuItemTextDisabledColorKey}" Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_32" x:Key="{x:Static swd:WorkflowDesignerColors.ContextMenuSeparatorColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlDarkColorKey}}"/>
+
+    <SolidColorBrush x:Uid="SolidColorBrush_66" x:Key="{x:Static swd:WorkflowDesignerColors.FlowchartConnectorColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_33" x:Key="{x:Static swd:WorkflowDesignerColors.FlowchartExpressionButtonColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_34" x:Key="{x:Static swd:WorkflowDesignerColors.FlowchartExpressionButtonMouseOverColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_35" x:Key="{x:Static swd:WorkflowDesignerColors.FlowchartExpressionButtonPressedColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_36" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewExpandAllCollapseAllButtonColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_37" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewExpandAllCollapseAllButtonMouseOverColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_38" x:Key="{x:Static swd:WorkflowDesignerColors.DesignerViewExpandAllCollapseAllPressedColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+
+  <!-- Annotation -->
+    <SolidColorBrush x:Uid="SolidColorBrush_40" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationBackgroundGradientBeginColorKey}" Color="{x:Static swd:WorkflowDesignerColors.DesignerViewBackgroundColor}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_41" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationBackgroundGradientMiddleColorKey}" Color="{x:Static swd:WorkflowDesignerColors.DesignerViewBackgroundColor}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_42" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationBackgroundGradientEndColorKey}" Color="{x:Static swd:WorkflowDesignerColors.DesignerViewBackgroundColor}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_43" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationBorderColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementBorderColor}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_44" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationDockTextColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementCaptionColor}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_45" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationUndockTextColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementCaptionColor}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_46" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationDockButtonColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementCaptionColor}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_47" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationDockButtonHoverColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightTextColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_48" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationDockButtonHoverBorderColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementBorderColor}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_49" x:Key="{x:Static swd:WorkflowDesignerColors.AnnotationDockButtonHoverBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    
+    <!-- TreeView -->
+    <SolidColorBrush x:Uid="SolidColorBrush_39" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewItemHighlightBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+    <SolidColorBrush x:Uid="SolidColorBrush_50" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewCollapsedArrowBorderColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementCaptionColor}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_51" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewCollapsedArrowHoverBorderColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_52" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewExpandedArrowColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementCaptionColor}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_53" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewExpandedArrowBorderColorKey}" Color="{x:Static swd:WorkflowDesignerColors.WorkflowViewElementCaptionColor}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_55" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewBackgroundColorKey}" Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_56" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewItemSelectedTextColorKey}" Color="{DynamicResource {x:Static  SystemColors.HighlightTextColorKey}}" />
+    <SolidColorBrush x:Uid="SolidColorBrush_57" x:Key="{x:Static swd:WorkflowDesignerColors.OutlineViewItemTextColorKey}" Color="{DynamicResource {x:Static  SystemColors.ControlTextColorKey}}"  />
+    
+    <!-- Rubber Bank -->
+    <SolidColorBrush x:Uid="SolidColorBrush_58" x:Key="{x:Static swd:WorkflowDesignerColors.RubberBandRectangleColorKey}" Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+</ResourceDictionary>

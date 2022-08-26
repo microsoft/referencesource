@@ -1,0 +1,9 @@
+﻿<UserControl x:ClassModifier="internal" x:Class="System.Activities.Presentation.View.SpacerPlaceholder"
+	x:Uid="UserControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	HorizontalAlignment="Stretch" Background="Transparent">
+  <Grid x:Uid="Grid_1">
+    <Rectangle x:Uid="dropTarget" x:Name="dropTarget" Fill="#FFE9ECEE" Height="10" Visibility="Collapsed"/>
+  </Grid>
+</UserControl>
+

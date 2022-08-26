@@ -1,0 +1,490 @@
+﻿<!-- Copyright (c) Microsoft Corporation.  All rights reserved. -->
+<ResourceDictionary x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sap="clr-namespace:System.Activities.Presentation"
+    xmlns:sapc="clr-namespace:System.Activities.Presentation.Converters"
+    xmlns:sapv="clr-namespace:System.Activities.Presentation.View"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:sapm="clr-namespace:System.Activities.Presentation.Model"
+    xmlns:sapp="clr-namespace:System.Activities.Presentation.PropertyEditing"
+    >
+
+  <ResourceDictionary.MergedDictionaries>
+    <sap:CachedResourceDictionaryExtension x:Uid="sap:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+    <sap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>    
+  </ResourceDictionary.MergedDictionaries>
+
+  <sapc:ArgumentToExpressionModelItemConverter x:Uid="sapv:ArgumentToExpressionModelItemConverter_1" x:Key="ArgumentToExpressionModelItemConverter" />
+  <sapc:ModelPropertyEntryToOwnerActivityConverter x:Uid="sapc:ModelPropertyEntryToOwnerActivityConverter_1" x:Key="ModelPropertyEntryToOwnerActivityConverter" />
+  <sapv:TypeToArgumentTypeConverter x:Uid="sapv:TypeToArgumentTypeConverter_1" x:Key="TypeToArgumentTypeConverter" />
+  <sapv:ModelPropertyPathExpanderConverter x:Uid="sapv:ModelPropertyPathExpanderConverter_1" x:Key="ModelPropertyToPathConverter" />
+  <sapc:ModelPropertyEntryToModelItemConverter x:Uid="sapc:ModelPropertyEntryToModelItemConverter_1" x:Key="ModelPropertyEntryToContainerConverter"/>
+  <sapc:ModelToObjectValueConverter x:Uid="sapc:ModelToObjectValueConverter_1" x:Key="ModelToObjectConverter" />
+  <sap:VariableExpressionConverter x:Uid="sap:VariableExpressionConverter_1" x:Key="VariableExpressionConverter" />
+  <sapc:ObjectToModelValueConverter x:Uid="sapm:ObjectToModelValueConverter_1" x:Key="ObjectToModelValueConverter" />
+  <sapv:PropertyEntryToEditorOptionConverter x:Uid="sapv:PropertyEntryToEditorOptionConverter_1" x:Key="PropertyEntryToEditorOptionConverter"/>
+  <sapv:PropertyEntryToEditingContextConverter x:Uid="sapv:PropertyEntryToEditingContextConverter_1" x:Key="PropertyEntryToEditingContextConverter"/>
+  <sap:GenericTypeParameterConverter x:Uid="TypeParameterConverter" x:Key="TypeParameterConverter"/>
+
+  <s:Boolean x:Uid="s:Boolean_4" x:Key="getParentConverterParameter">False</s:Boolean>
+  
+  <s:String x:Uid="dialogExpressionEditorTitle" x:Key="dialogExpressionEditorTitle">Expression Editor</s:String>
+  <s:String x:Uid="dialogExpressionEditorHint" x:Key="dialogExpressionEditorHintFormatString">{0} ({1})</s:String>
+  <s:String x:Uid="handleValueEditorText" x:Key="handleValueEditorText">Handle cannot be initialized</s:String>
+  <s:String x:Uid="handleValueEditorToolTipText" x:Key="handleValueEditorToolTipText">A variable or argument of type 'Handle' cannot be initialzed</s:String>
+
+
+  <Style x:Uid="Style_9" TargetType="{x:Type sapv:ExpressionTextBox}" x:Key="initializedETBStyle">
+    <Setter x:Uid="Setter_25" Property="Background" Value="Transparent"/>
+    <Setter x:Uid="Setter_26" Property="BorderBrush" Value="Transparent"/>
+    <!-- bind owner activity to ModelItem within container object-->
+    <Setter x:Uid="Setter_27" Property="OwnerActivity" Value="{Binding Path=ModelItem, Mode=OneWay}"/>
+    <!-- bind expression type to property's parent type within container object-->
+    <Setter x:Uid="Setter_28" Property="ExpressionType" Value="{Binding Path=PropertyValue.ParentProperty.PropertyType, Converter={StaticResource TypeToArgumentTypeConverter}}"/>
+    <Setter x:Uid="Setter_29" Property="Expression" Value="{x:Null}"/>
+    <Setter x:Uid="Setter_30" Property="PathToArgument" Value="{Binding Path=PropertyValue.ParentProperty, Converter={StaticResource ModelPropertyToPathConverter}}"/>
+    <Setter x:Uid="Setter_31" Property="AutomationProperties.AutomationId" Value="{Binding Path=PropertyValue.ParentProperty.PropertyName, Mode=OneTime}"/>
+    <Setter x:Uid="Setter_32" Property="AutomationProperties.Name" Value="{Binding Path=PropertyValue.ParentProperty.PropertyName, Mode=OneTime}"/>
+    <Setter x:Uid="Setter_33" Property="VerticalScrollBarVisibility" Value="Auto"/>
+    <Setter x:Uid="Setter_34" Property="MinLines" Value="1"/>
+    <Setter x:Uid="Setter_35" Property="MaxLines" Value="1"/>
+
+    <Setter x:Uid="Setter_36" Property="FontFamily" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontFamilyKey}}"/>
+    <Setter x:Uid="Setter_37" Property="FontSize" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontSizeKey}}"/>
+    <Setter x:Uid="Setter_38" Property="FontWeight" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontWeightKey}}"/>
+    <Setter x:Uid="Setter_80" Property="AcceptsReturn" Value="False"/>
+    <Setter x:Uid="Setter_81" Property="AcceptsTab" Value="False"/>
+
+    <Style.Triggers>      
+      <!-- detailed initialization for InArgument and InArgument`1 -->
+      <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=PropertyValue.ParentProperty.PropertyType.Name, Mode=OneTime}" Value="InArgument">
+        <Setter x:Uid="Setter_39" Property="Expression">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_11" Mode="TwoWay"  Converter="{StaticResource ArgumentToExpressionModelItemConverter}" ConverterParameter="In" >
+              <Binding x:Uid="Binding_21" Path="PropertyValue.Value" Mode="TwoWay"/>
+              <Binding x:Uid="Binding_22" Path="PropertyValue.ParentProperty" Mode="OneWay" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </DataTrigger>
+      <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=PropertyValue.ParentProperty.PropertyType.Name, Mode=OneTime}" Value="InArgument`1">
+        <Setter x:Uid="Setter_40" Property="Expression">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_12" Mode="TwoWay"  Converter="{StaticResource ArgumentToExpressionModelItemConverter}" ConverterParameter="In" >
+              <Binding x:Uid="Binding_23" Path="PropertyValue.Value" Mode="TwoWay"/>
+              <Binding x:Uid="Binding_24" Path="PropertyValue.ParentProperty" Mode="OneWay" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </DataTrigger>
+
+      <!-- detailed initialization for InOutArgument and InOutArgument`1 -->
+      <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=PropertyValue.ParentProperty.PropertyType.Name, Mode=OneTime}" Value="InOutArgument">
+        <Setter x:Uid="Setter_41" Property="Expression">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_13" Mode="TwoWay"  Converter="{StaticResource ArgumentToExpressionModelItemConverter}" ConverterParameter="InOut" >
+              <Binding x:Uid="Binding_25" Path="PropertyValue.Value" Mode="TwoWay"/>
+              <Binding x:Uid="Binding_26" Path="PropertyValue.ParentProperty" Mode="OneWay" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_42" Property="UseLocationExpression" Value="True"/>
+      </DataTrigger>
+      <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Path=PropertyValue.ParentProperty.PropertyType.Name, Mode=OneTime}" Value="InOutArgument`1">
+        <Setter x:Uid="Setter_43" Property="Expression">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_14" Mode="TwoWay"  Converter="{StaticResource ArgumentToExpressionModelItemConverter}" ConverterParameter="InOut" >
+              <Binding x:Uid="Binding_27" Path="PropertyValue.Value" Mode="TwoWay"/>
+              <Binding x:Uid="Binding_28" Path="PropertyValue.ParentProperty" Mode="OneWay" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_44" Property="UseLocationExpression" Value="True"/>
+      </DataTrigger>
+
+      <!-- detailed initialization for OutArgument and OutArgument`1 -->
+      <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Path=PropertyValue.ParentProperty.PropertyType.Name, Mode=OneTime}" Value="OutArgument">
+        <Setter x:Uid="Setter_45" Property="Expression">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_15" Mode="TwoWay"  Converter="{StaticResource ArgumentToExpressionModelItemConverter}" ConverterParameter="Out" >
+              <Binding x:Uid="Binding_29" Path="PropertyValue.Value" Mode="TwoWay"/>
+              <Binding x:Uid="Binding_30" Path="PropertyValue.ParentProperty" Mode="OneWay" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_46" Property="UseLocationExpression" Value="True"/>
+      </DataTrigger>
+      <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Path=PropertyValue.ParentProperty.PropertyType.Name, Mode=OneTime}" Value="OutArgument`1">
+        <Setter x:Uid="Setter_47" Property="Expression">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_16" Mode="TwoWay"  Converter="{StaticResource ArgumentToExpressionModelItemConverter}" ConverterParameter="Out" >
+              <Binding x:Uid="Binding_31" Path="PropertyValue.Value" Mode="TwoWay"/>
+              <Binding x:Uid="Binding_32" Path="PropertyValue.ParentProperty" Mode="OneWay" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_48" Property="UseLocationExpression" Value="True"/>
+      </DataTrigger>
+
+
+      <!-- detailed initialization for DesignTimeVariable -->
+      <DataTrigger x:Uid="DataTrigger_7" Binding="{Binding Path=ModelItem.ItemType.Name, Mode=OneTime}" Value="DesignTimeVariable">
+        <Setter x:Uid="Setter_49" Property="OwnerActivity" Value="{Binding Path=ModelItem.Scope, Converter={StaticResource ModelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_50" Property="ExpressionType" Value="{Binding Path=ModelItem.Type, Converter={StaticResource ModelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_51" Property="Expression" Value="{Binding Path=ModelItem.Default, Mode=TwoWay, Converter={StaticResource VariableExpressionConverter}}"/>
+      </DataTrigger>
+
+      <!-- detailed initialization for DesignTimeArgument -->
+      <DataTrigger x:Uid="DataTrigger_8" Binding="{Binding Path=ModelItem.ItemType.Name, Mode=OneTime}" Value="DesignTimeArgument">
+        <Setter x:Uid="Setter_52" Property="OwnerActivity" Value="{Binding Path=ModelItem.OwnerActivitySchemaType, Converter={StaticResource ModelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_53" Property="ExpressionType" Value="{Binding Path=ModelItem.ArgumentType, Converter={StaticResource ModelToObjectConverter}}"/>
+        <Setter x:Uid="Setter_54" Property="Expression" Value="{Binding Path=ModelItem.Value, Mode=TwoWay}"/>
+        <Setter x:Uid="Setter_55" Property="UseLocationExpression" Value="{Binding Path=ModelItem.IsOutputArgument, Converter={StaticResource ModelToObjectConverter}}"/>
+      </DataTrigger>
+
+      <!-- detailed initialziation for expressions in WorkflowElment<T> -->
+      <DataTrigger x:Uid="DataTrigger_9" Binding="{Binding Path=PropertyValue.ParentProperty.PropertyType.Name, Mode=OneTime}" Value="Activity`1">
+        <Setter x:Uid="Setter_56" Property="Expression">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_17" Mode="TwoWay"  Converter="{StaticResource ObjectToModelValueConverter}">
+              <Binding x:Uid="Binding_33" Path="PropertyValue.Value" Mode="TwoWay"/>
+              <Binding x:Uid="Binding_34" Path="PropertyValue.ParentProperty" Mode="OneWay" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </DataTrigger>
+
+    </Style.Triggers>
+
+  </Style>
+
+  <Style x:Uid="Style_10" x:Key="dialogETBStyle" BasedOn="{StaticResource initializedETBStyle}" TargetType="{x:Type sapv:ExpressionTextBox}">
+    <Setter x:Uid="Setter_57" Property="VerticalScrollBarVisibility" Value="Auto"/>
+    <Setter x:Uid="Setter_58" Property="HorizontalScrollBarVisibility" Value="Auto"/>
+    <Setter x:Uid="Setter_59" Property="MinLines" Value="1"/>
+    <Setter x:Uid="Setter_60" Property="MaxLines" Value="{x:Static s:Int32.MaxValue}"/>
+    <Setter x:Uid="Setter_61" Property="Margin" Value="0"/>
+    <Setter x:Uid="Setter_62" Property="ExplicitCommit" Value="True"/>
+    <Setter x:Uid="Setter_83" Property="AcceptsReturn" Value="True"/>
+    <Setter x:Uid="Setter_82" Property="AcceptsTab" Value="False"/>
+    <Setter x:Uid="Setter_85" Property="VerticalContentAlignment" Value="Stretch"/>
+    <Setter x:Uid="Setter_86" Property="HorizontalAlignment" Value="Stretch" />
+    <Setter x:Uid="Setter_87" Property="ClipToBounds" Value="True"/>      
+  </Style>
+
+  <!-- default expression editor template - inline edition -->
+  <DataTemplate x:Uid="DataTemplate_13" x:Key="inlineExpressionEditorTemplate">
+    <!-- setup data context to container object which exposes following properties: PropertyValue, ModelItem, Context, WorklowViewElement -->
+    <Grid x:Uid="Grid_9" DataContext="{Binding Converter={StaticResource ModelPropertyEntryToContainerConverter}}">
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_11" Width="*"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_12" Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <sapv:ExpressionTextBox x:Uid="sapv:ExpressionTextBox_1" Grid.Column="0" Style="{StaticResource initializedETBStyle}"
+                              ExpressionActivityEditor="{Binding Path=PropertyValue, Converter={StaticResource PropertyEntryToEditorOptionConverter}, ConverterParameter={x:Static sapv:ExpressionTextBox.ExpressionActivityEditorOptionName}}"
+                              IsInlinePropertyEditor ="True"/>
+      <sapp:EditModeSwitchButton x:Uid="sapp:EditModeSwitchButton_6" Grid.Column="1" AutomationProperties.AutomationId="ETBDialogButton" />
+
+    </Grid>
+  </DataTemplate>
+
+  <!-- default expression editor template - dialog box edition -->
+  <DataTemplate x:Uid="DataTemplate_14" x:Key="dialogExpressionEditorTemplate">
+    <!-- setup data context to container object which exposes following properties: PropertyValue, ModelItem, Context, WorklowViewElement -->
+    <Grid x:Uid="Grid_10" DataContext="{Binding Converter={StaticResource ModelPropertyEntryToContainerConverter}}">
+
+      <Grid.RowDefinitions>
+        <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+        <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+      </Grid.RowDefinitions>
+
+      <TextBlock x:Uid="PART_hintText" Grid.Row="0" Name="PART_hintText"/>
+      <sapv:ExpressionTextBox x:Uid="PART_expressionTextBox" Style="{StaticResource dialogETBStyle}" Grid.Row="1" Name="PART_expressionTextBox" Margin="0,7,0,0"
+                              ExpressionActivityEditor="{Binding Path=PropertyValue, Converter={StaticResource PropertyEntryToEditorOptionConverter}, ConverterParameter={x:Static sapv:ExpressionTextBox.ExpressionActivityEditorOptionName}}"/>
+
+    </Grid>
+  </DataTemplate>
+
+  <!-- inline expression editor template - custom version for DesignTimeArgument -->
+  <DataTemplate x:Uid="DataTemplate_15" x:Key="inlineExpressionEditorTemplateForDesignTimeArgument">
+    <DataTemplate.Resources>
+
+      <DataTemplate x:Uid="DataTemplate_16" x:Key="etbTemplate">
+        <Grid x:Uid="Grid_11">
+          <sapv:ExpressionTextBox x:Uid="sapv:ExpressionTextBox_2" Style="{StaticResource initializedETBStyle}" Name="editor"
+                                  IsInlinePropertyEditor="True"/>
+          <TextBlock x:Uid="TextBlock_5" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=editor, Mode=OneTime}" Text="{Binding Path=ToolTip, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}, AncestorLevel=2}, Mode=OneWay}"/>
+        </Grid>
+        <DataTemplate.Triggers>
+          <Trigger x:Uid="Trigger_6" Property="IsEnabled" Value="False" SourceName="editor">
+            <Setter x:Uid="Setter_63" Property="Visibility" Value="Hidden" TargetName="editor"/>
+          </Trigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_17" x:Key="tbTemplate">
+        <Grid x:Uid="Grid_12">
+          <sapv:PropertyValueTextBox x:Uid="TextBox_1" Text="{Binding Path=ModelItem.Value, Converter={StaticResource ModelToObjectConverter}}" AutomationProperties.AutomationId="defaultArgumentValueTB" Name="editor" Tag="{Binding Path=Text.Length, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+            <sapv:PropertyValueTextBox.Style x:Uid="Style_11">
+              <Style TargetType="{x:Type sapv:PropertyValueTextBox}" x:Uid="Style_12">
+                <Setter Property="ToolTip" Value="{Binding Path=Text, RelativeSource={RelativeSource Self}}" x:Uid="Setter_96"/>
+                <Style.Triggers>
+                  <DataTrigger x:Uid="DataTrigger_12" Binding="{Binding Path=Text, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                    <Setter x:Uid="Setter_97" Property="ToolTip" Value="{StaticResource enterPropertyValueHint}"/>
+                  </DataTrigger>
+                  <DataTrigger x:Uid="DataTrigger_13" Binding="{Binding Path=Text.Length, RelativeSource={RelativeSource Self}}" Value="0">
+                    <Setter x:Uid="Setter_98" Property="ToolTip" Value="{StaticResource enterPropertyValueHint}"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </sapv:PropertyValueTextBox.Style>
+          </sapv:PropertyValueTextBox>
+          <TextBlock x:Uid="TextBlock_6" Text="{StaticResource enterPropertyValueHint}" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=editor, Mode=OneTime}"/>
+        </Grid>
+      </DataTemplate>
+
+    </DataTemplate.Resources>
+    <!-- setup data context to container object which exposes following properties: PropertyValue, ModelItem, Context, WorklowViewElement -->
+    <Grid x:Uid="editorGrid" DataContext="{Binding Converter={StaticResource ModelPropertyEntryToContainerConverter}}" Tag="{Binding Path=ModelItem.Direction}" Name="editorGrid" Background="Transparent">
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Uid="ColumnDefinition_13" Width="*"/>
+        <ColumnDefinition x:Uid="ColumnDefinition_14" Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <ContentPresenter x:Uid="expressionEditor" Content="{Binding}" Grid.Column="0" Name="expressionEditor" ContentTemplate="{StaticResource etbTemplate}"/>
+      <sapp:EditModeSwitchButton x:Uid="switchModeButton" Grid.Column="1" Name="switchModeButton" AutomationProperties.AutomationId="ETBDialogButton" ToolTip="{Binding Path=ToolTip, ElementName=expressionEditor}" ToolTipService.ShowOnDisabled="True"/>
+
+    </Grid>
+
+    <DataTemplate.Triggers>
+      <!-- in case of plain Property - do not display ETB, value can be editet in TextBox -->
+      <Trigger x:Uid="Trigger_7" Property="Tag" Value="{x:Static sapv:PropertyKind.Property}" SourceName="editorGrid">
+        <Setter x:Uid="Setter_64" Property="ContentTemplate" Value="{StaticResource tbTemplate}" TargetName="expressionEditor"/>
+        <Setter x:Uid="Setter_65" Property="Visibility" Value="Collapsed" TargetName="switchModeButton"/>
+      </Trigger>
+
+    </DataTemplate.Triggers>
+  </DataTemplate>
+
+  <DataTemplate x:Uid="DataTemplate_22" x:Key="inlineExpressionEditorTemplateForDesignTimeArgument_ValueNotSupported">
+    <StackPanel x:Uid="StackPanel_2" Orientation="Horizontal" ToolTip="{StaticResource defaultValueNotSupported}">
+      <TextBox x:Uid="textPlaceholder" Name="textPlaceholder" Visibility="Collapsed" />
+      <TextBlock x:Uid="TextBlock_9" Text="{StaticResource defaultValueNotSupported}" IsHitTestVisible="True" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=textPlaceholder, Mode=OneTime}" Margin="3,4"/>
+    </StackPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Uid="DataTemplate_24" x:Key="inlineExpressionEditorTemplateForDesignTimeArgument_InvalidXamlMember">
+    <StackPanel x:Uid="StackPanel_3" Orientation="Horizontal" ToolTip="{StaticResource defaultValueNotSupportedForInvalidXamlMember}">
+      <TextBox x:Uid="textPlaceholder_2" Name="textPlaceholder" Visibility="Collapsed" />
+      <TextBlock x:Uid="TextBlock_10" Text="{StaticResource defaultValueNotSupported}" IsHitTestVisible="True" Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=textPlaceholder, Mode=OneTime}" Margin="3,4"/>
+    </StackPanel>
+  </DataTemplate>
+  
+  <!-- variable's scope value -->
+  <DataTemplate x:Uid="scopeEditor" x:Key="ScopeEditor_InlineEditorTemplate">
+    <DataTemplate.Resources>
+
+      <sapv:BreadCrumbTextConverter x:Uid="sapv:ScopeToNameConverter_1" x:Key="scopeToNameConverter"/>
+      <sapv:DesignTimeVariableToScopeConverter x:Uid="sapv:DesignTimeVariableToScopeConverter_1" x:Key="variableToScopeListConverter"/>
+      <s:Boolean x:Uid="s:Boolean_3" x:Key="getParentConverterParameter">False</s:Boolean>
+
+      <Style x:Uid="Style_5" TargetType="{x:Type ComboBoxItem}" x:Key="comboBoxItemStyle">
+        <Setter x:Uid="Setter_9" Property="AutomationProperties.AutomationId">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_9" Converter="{StaticResource scopeToNameConverter}">
+              <Binding x:Uid="Binding_17" Path="Scope"/>
+              <Binding x:Uid="Binding_18" Path="Scope.DisplayName"/>
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_69" Property="AutomationProperties.Name">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_18" Converter="{StaticResource scopeToNameConverter}">
+              <Binding x:Uid="Binding_35" />
+              <Binding x:Uid="Binding_36" Path="DisplayName"/>
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <!-- Custom style for combobox containing scope information -->
+      <Style x:Uid="Style_6" TargetType="{x:Type sapv:ScopeComboBox}" x:Key="ScopeComboStyle">
+        <Setter x:Uid="Setter_15" Property="IsEditable" Value="False"/>
+        <Setter x:Uid="Setter_16" Property="AutomationProperties.AutomationId" Value="ScopeComboBox"/>
+        <Setter x:Uid="Setter_17" Property="VerticalAlignment" Value="Center"/>
+        <Setter x:Uid="Setter_18" Property="ItemContainerStyle" Value="{StaticResource comboBoxItemStyle}"/>
+        <Setter x:Uid="Setter_19" Property="ItemTemplate">
+          <Setter.Value>
+            <DataTemplate x:Uid="DataTemplate_10">
+              <TextBlock x:Uid="TextBlock_4">
+                <TextBlock.Text>
+                  <MultiBinding x:Uid="MultiBinding_10" Converter="{StaticResource scopeToNameConverter}">
+                    <Binding x:Uid="Binding_19" />
+                    <Binding x:Uid="Binding_20" Path="DisplayName"/>
+                  </MultiBinding>
+                </TextBlock.Text>
+              </TextBlock>
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+        <Setter x:Uid="Setter_70" Property="FontFamily" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontFamilyKey}}"/>
+        <Setter x:Uid="Setter_71" Property="FontSize" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontSizeKey}}"/>
+        <Setter x:Uid="Setter_72" Property="FontWeight" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontWeightKey}}"/>
+        <Setter x:Uid="Setter_73" Property="ToolTip">
+          <Setter.Value>
+            <MultiBinding x:Uid="MultiBinding_19" Converter="{StaticResource scopeToNameConverter}">
+              <Binding x:Uid="Binding_37" />
+              <Binding x:Uid="Binding_38" Path="Value.DisplayName"/>
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </Style>
+    </DataTemplate.Resources>
+
+    <StackPanel x:Uid="panel" Name="panel" Tag="{Binding Path=ParentProperty, Converter={StaticResource ModelPropertyEntryToOwnerActivityConverter}, ConverterParameter={StaticResource getParentConverterParameter}}">
+      <sapv:ScopeComboBox x:Uid="editor" AutomationProperties.AutomationId="scopeEditoComboBox" ItemsSource="{Binding Path=Tag, Converter={StaticResource variableToScopeListConverter}, ElementName=panel}" SelectedItem="{Binding Path=Value, Mode=TwoWay}" Style="{StaticResource ScopeComboStyle}"
+                DisplayMemberPath="DisplayName"/>
+    </StackPanel>
+
+  </DataTemplate>
+
+  <!-- argument direction value -->
+  <DataTemplate x:Uid="directionEditor" x:Key="DirectionEditor_InlineEditorTemplate">
+    <DataTemplate.Resources>
+
+      <!-- style for direction combobox - depending on choosen value, display rather 
+               text description than enum's value -->
+      <Style x:Uid="Style_7" x:Key="directionTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Setter x:Uid="Setter_92" Property="FontFamily" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontFamilyKey}}"/>
+        <Setter x:Uid="Setter_91" Property="FontSize" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontSizeKey}}"/>
+        <Setter x:Uid="Setter_90" Property="FontWeight" Value="{DynamicResource {x:Static sap:WorkflowDesignerColors.FontWeightKey}}"/>
+        <Setter x:Uid="Setter_24" Property="Text" Value="&lt;NULL&gt;"/>
+        <Style.Triggers>
+          <Trigger x:Uid="Trigger_2" Property="Tag">
+            <Trigger.Value>
+              <sapv:PropertyKind x:Uid="proj:PropertyKind_1">InArgument</sapv:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_10" Property="Text" Value="{StaticResource inArgumentTitle}"/>
+          </Trigger>
+          <Trigger x:Uid="Trigger_3" Property="Tag">
+            <Trigger.Value>
+              <sapv:PropertyKind x:Uid="proj:PropertyKind_2">OutArgument</sapv:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_11" Property="Text" Value="{StaticResource outArgumentTitle}"/>
+          </Trigger>
+          <Trigger x:Uid="Trigger_4" Property="Tag">
+            <Trigger.Value>
+              <sapv:PropertyKind x:Uid="proj:PropertyKind_3">InOutArgument</sapv:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_12" Property="Text" Value="{StaticResource inOutArgumentTitle}"/>
+          </Trigger>          
+          <Trigger x:Uid="Trigger_5" Property="Tag">
+            <Trigger.Value>
+              <sapv:PropertyKind x:Uid="proj:PropertyKind_4">Property</sapv:PropertyKind>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_13" Property="Text" Value="{StaticResource propertyArgumentTitle}"/>
+          </Trigger>          
+        </Style.Triggers>
+      </Style>
+
+      <!-- data template for combo box item - the content of the combo box item is always an enum, 
+           displayed value is displayed as text block however (enables localization) -->
+      <Style x:Uid="Style_8" TargetType="{x:Type ComboBoxItem}" x:Key="argumentDirectionItemStyle">
+        <Setter x:Uid="Setter_14" Property="ContentTemplate">
+          <Setter.Value>
+            <DataTemplate x:Uid="DataTemplate_12">
+              <TextBlock x:Uid="TextBlock_2" Tag="{Binding}" Style="{StaticResource directionTextBlockStyle}"/>
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+    </DataTemplate.Resources>
+
+    <ComboBox x:Uid="ComboBox_1" Name="editor" SelectedValue="{Binding Path=Value}" SelectedValuePath="Content" AutomationProperties.AutomationId="ArgDirectionComboBox"
+              ToolTip="{Binding Path=Value}">
+      <ComboBox.Items>
+        <ComboBoxItem x:Uid="ComboBoxItem_1" AutomationProperties.AutomationId="InArgument" Style="{StaticResource argumentDirectionItemStyle}">
+          <sapv:PropertyKind x:Uid="proj:PropertyKind_5">InArgument</sapv:PropertyKind>
+        </ComboBoxItem>
+        <ComboBoxItem x:Uid="ComboBoxItem_2" AutomationProperties.AutomationId="OutArgument" Style="{StaticResource argumentDirectionItemStyle}">
+          <sapv:PropertyKind x:Uid="proj:PropertyKind_6">OutArgument</sapv:PropertyKind>
+        </ComboBoxItem>
+        <ComboBoxItem x:Uid="ComboBoxItem_3" AutomationProperties.AutomationId="InOutArgument" Style="{StaticResource argumentDirectionItemStyle}">
+          <sapv:PropertyKind x:Uid="sapv:PropertyKind_1">InOutArgument</sapv:PropertyKind>
+        </ComboBoxItem>        
+        <ComboBoxItem x:Uid="ComboBoxItem_4" AutomationProperties.AutomationId="Property" Style="{StaticResource argumentDirectionItemStyle}">          
+          <sapv:PropertyKind x:Uid="proj:PropertyKind_8">Property</sapv:PropertyKind>
+        </ComboBoxItem>
+      </ComboBox.Items>
+    </ComboBox>
+
+  </DataTemplate>
+
+  <DataTemplate x:Uid="DataTemplate_19" x:Key="TypeBrowser_InlineEditorTemplate">
+    <sapv:TypePresenter
+              x:Uid="sapv:TypePresenter_1" AllowNull          ="{Binding Converter={StaticResource PropertyEntryToEditorOptionConverter}, ConverterParameter={x:Static sap:TypePropertyEditor.AllowNull}}"
+              BrowseTypeDirectly ="{Binding Converter={StaticResource PropertyEntryToEditorOptionConverter}, ConverterParameter={x:Static sap:TypePropertyEditor.BrowseTypeDirectly}}"
+              Filter             ="{Binding Converter={StaticResource PropertyEntryToEditorOptionConverter}, ConverterParameter={x:Static sap:TypePropertyEditor.Filter}}"
+              Context            ="{Binding Converter={StaticResource PropertyEntryToEditingContextConverter}}"
+              Type               ="{Binding Path=Value, Mode=TwoWay}" />
+  </DataTemplate>
+
+  <DataTemplate x:Uid="DataTemplate_20" x:Key="handleValueEditor">
+    <Border x:Uid="Border_1" ToolTip="{StaticResource handleValueEditorToolTipText}" BorderThickness="1" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Padding="2">
+      <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal">
+        <TextBlock x:Uid="TextBlock_7" Name="editor" Text="{x:Null}"/>
+        <TextBlock x:Uid="TextBlock_8" Text="{StaticResource handleValueEditorText}"  Style="{StaticResource hintTextBlockStyle}" Tag="{Binding ElementName=editor, Mode=OneTime}"/>
+      </StackPanel>
+    </Border>
+  </DataTemplate>
+
+  <DataTemplate x:Uid="DataTemplate_21" x:Key="VBIdentifierNameEditorTemplate"> 
+    <sapv:VBIdentifierDesigner x:Uid="sapv:VBIdentifierDesigner_1" Identifier="{Binding Path=Value, Mode=TwoWay}" IsReadOnly="False" 
+                               ToolTip="{Binding Path=NameString, RelativeSource={RelativeSource Self}}" AutomationProperties.AutomationId="VariableNameTextBlock" />
+  </DataTemplate>
+  
+  <DataTemplate x:Uid="DataTemplate_23" x:Key="IsRequiredPropertyEditor_InlineEditorTemplate">
+    <CheckBox x:Uid="checkBox" DataContext="{Binding Converter={StaticResource ModelPropertyEntryToContainerConverter}}"
+              IsChecked="{Binding Path=ModelItem.IsRequired}"
+              Tag="{Binding Path=ModelItem.Direction}"
+              Name="checkBox"
+              Margin="4,0,0,0"
+              AutomationProperties.AutomationId="IsRequired"
+              VerticalAlignment="Center" />
+    <DataTemplate.Triggers>
+      <Trigger x:Uid="Trigger_8" Property="Tag" Value="{x:Static sapv:PropertyKind.Property}" SourceName="checkBox">
+        <Setter x:Uid="Setter_84" Property="IsEnabled" Value="False" TargetName="checkBox"/>
+      </Trigger>
+    </DataTemplate.Triggers>
+  </DataTemplate>
+    
+  <DataTemplate x:Uid="errorPresenterTemplate" x:Key="ErrorPresenterDialogTemplate">
+    <Grid x:Uid="error_grid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40" x:Uid="error_grid_col0"/>
+            <ColumnDefinition Width="*" x:Uid="error_grid_col1"/>
+        </Grid.ColumnDefinitions>  
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" x:Uid="error_grid_row0"/>
+            <RowDefinition Height="Auto" x:Uid="error_grid_row1"/>
+        </Grid.RowDefinitions>
+        <Rectangle Grid.Row="0" Grid.Column="0" Width="30" Height="30" Fill="{Binding Path=Icon}" VerticalAlignment="Top" x:Uid="error_grid_icon"/>
+        <TextBlock Text="{Binding Path=ErrorDescription}" Grid.Column="1" Grid.Row="0" Margin="5" Width="300"  VerticalAlignment="Center" TextWrapping="Wrap" TextTrimming="None" x:Uid="error_grid_error"/>
+        <TextBlock Text="{Binding Path=StackTrace}" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="5" Width="340"  VerticalAlignment="Stretch" TextWrapping="Wrap" TextTrimming="None" Visibility="{Binding Path=StackTraceVisibility}" x:Uid="error_grid_stacktrace"/>
+        <!-- uncomment below code when visual freeze is over... -->
+        <!--Expander Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Margin="5" Visibility="{Binding Path=StackTraceVisibility}" Header="Details:" x:Uid="errorDetails">
+            <Expander.Content>
+                <TextBox Text="{Binding Path=StackTrace}" BorderThickness="0" Background="Transparent" IsReadOnly="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Width="400" MinLines="10" MaxLines="10"/>
+            </Expander.Content>
+        </Expander-->
+    </Grid>
+  </DataTemplate>
+
+  <DataTemplate x:Uid="DataTemplate_25" x:Key="VersionPropertyValueEditorTemplate">
+    <sapv:VersionEditor x:Uid="sapv:VersionEditor_1" Version="{Binding Path=Value, Mode=TwoWay}" />
+  </DataTemplate>
+</ResourceDictionary>

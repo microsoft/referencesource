@@ -1,0 +1,194 @@
+﻿<sad:ActivityDesigner x:Uid="sad:ActivityDesigner_1" x:Class="System.Activities.Core.Presentation.SwitchDesigner"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sadv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sadc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:proj="clr-namespace:System.Activities.Core.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    x:ClassModifier="internal"
+    x:Name="controlRoot"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.Switch}"
+    >
+
+  <sad:ActivityDesigner.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <sadc:ArgumentToExpressionConverter x:Uid="sadv:ArgumentToExpressionConverter_1" x:Key="argumentToExpressionConverter" />
+      <proj:GenericTypeArgumentConverter x:Uid="proj:GenericTypeArgumentConverter_1" x:Key="genericTypeArgumentConverter" />
+      <proj:NotConverter x:Uid="NotConverter_1" x:Key="NotConverter"/>
+      <proj:HintTextMaxWidthConverter x:Uid="HintTextMaxWidthConverter_1" x:Key="HintTextMaxWidthConverter" />
+      <proj:HintTextConverter x:Uid="HintTextConverter_1" x:Key="HintTextConverter" />
+      
+      <DataTemplate x:Uid="DataTemplate_1" x:Key="ExpandedSwitchTemplate">
+        <StackPanel x:Uid="StackPanel_1">
+          <StackPanel x:Uid="StackPanel_2" Orientation="Horizontal">
+            <TextBlock  x:Uid="TextBlock_1" Margin="0,3,7,0" Localization.Attributes="$Content(Unreadable Unmodifiable)">Expression</TextBlock>
+            <sadv:ExpressionTextBox
+                SnapsToDevicePixels ="True"
+                x:Uid="expressionBox" AutomationProperties.AutomationId="Expression"
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Auto"
+                x:Name="expressionBox"
+                MinLines="1"
+                MaxLines="1"
+                MinWidth="400"
+                HorizontalAlignment="Stretch"
+                ExpressionType="{Binding Path=CaseType, Mode=OneWay}"
+                Expression="{Binding Path=ModelItem.Expression, Mode=TwoWay, Converter={StaticResource argumentToExpressionConverter}}"
+                OwnerActivity="{Binding Path=ModelItem, Mode=OneWay}"
+                AutomationProperties.Name="Expression"/>
+          </StackPanel>
+
+          <Border x:Uid="Border_1" BorderThickness="1" Margin="0,15,0,2">
+            <Border.Style>
+              <Style x:Uid="Style_3">
+                <Setter x:Uid="Setter_45" Property="Border.BorderBrush" Value="{StaticResource DesignerViewBackground}" />
+                <Style.Triggers>
+                  <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=ShowDefaultCaseExpanded}" Value="true">
+                    <Setter x:Uid="Setter_46" Property="Border.BorderBrush">
+                      <Setter.Value>
+                        <LinearGradientBrush x:Uid="LinearGradientBrush_1" EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                          <GradientStop x:Uid="GradientStop_1" Color="{x:Static sad:WorkflowDesignerColors.DesignerViewBackgroundColor}" Offset="0.5"/>
+                          <GradientStop x:Uid="GradientStop_2" Color="{x:Static sad:WorkflowDesignerColors.WorkflowViewElementBorderColor}" Offset="0"/>
+                        </LinearGradientBrush>
+                      </Setter.Value>
+                    </Setter>
+                    <Setter x:Uid="Setter_47" Property="Border.Margin" Value="-3,-3,-3,0" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Border.Style>
+            <UserControl x:Uid="UserControl_1" AutomationProperties.Name="Default Case" AutomationProperties.AutomationId="Default" >
+              <StackPanel x:Uid="StackPanel_3" Background="Transparent" IsHitTestVisible="True" Focusable="True" 
+                          MouseDown="OnDefaultCaseViewMouseDown"
+                          MouseUp="OnDefaultCaseViewMouseUp"
+                          KeyDown="OnDefaultCaseViewKeyDown">
+                <Grid x:Uid="Grid_1">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Uid="ColumnDefinition_1" />
+                    <ColumnDefinition x:Uid="ColumnDefinition_2" />
+                  </Grid.ColumnDefinitions>
+                  <TextBlock x:Uid="TextBlock_2" Grid.Column="0" Margin="0,3,7,0" Localization.Attributes="$Content(Unreadable Unmodifiable)">Default</TextBlock>
+                  <TextBlock x:Uid="TextBlock_3" Grid.Column="1" Foreground="{x:Static SystemColors.GrayTextBrush}"
+                      FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="5,3,3,0" 
+                      TextTrimming="CharacterEllipsis"
+                      MaxWidth="{Binding Path=ModelItem.Default, ElementName=controlRoot, Converter={StaticResource HintTextMaxWidthConverter}, ConverterParameter=150}"
+                      ToolTip="{Binding Text, RelativeSource={x:Static RelativeSource.Self}}">
+                    <TextBlock.Text>
+                      <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource HintTextConverter}">
+                        <Binding x:Uid="Binding_1" Path="ModelItem.Default" />
+                        <Binding x:Uid="Binding_2" Path="ModelItem.Default.DisplayName" />
+                      </MultiBinding>
+                    </TextBlock.Text>
+                    <TextBlock.Style>
+                      <Style x:Uid="Style_4" TargetType="{x:Type TextBlock}">
+                        <Setter x:Uid="Setter_49" Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                          <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Path=ShowDefaultCaseExpanded}" Value="true">
+                            <Setter x:Uid="Setter_50" Property="Visibility" Value="Collapsed" />
+                          </DataTrigger>
+                          <DataTrigger x:Uid="DataTrigger_7" Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Path=ShouldExpandAll}" Value="true">
+                            <Setter x:Uid="Setter_51" Property="Visibility" Value="Collapsed" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBlock.Style>
+                  </TextBlock>
+                </Grid>
+                <sad:WorkflowItemPresenter
+                        x:Uid="sad:WorkflowItemPresenter_1"
+                        IsDefaultContainer="True"
+                        Item="{Binding Path=ModelItem.Default, Mode=TwoWay}"
+                        AllowedItemType="{x:Type sa:Activity}"
+                        HintText="{DynamicResource dropActivityHint}"
+                        MinWidth="200"
+                        MinHeight="100"
+                        Margin="1,1,1,3"
+                        AutomationProperties.AutomationId="DefaultActivity"
+                        AutomationProperties.Name="Default: Drop activity here" >
+
+                  <sad:WorkflowItemPresenter.Style>
+                    <Style x:Uid="DefaultCaseItemPresenterStyle" TargetType="{x:Type sad:WorkflowItemPresenter}">
+                      <Setter x:Uid="Setter_32" Property="Visibility" Value="Collapsed"/>
+                      <Style.Triggers>
+                        <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowDefaultCaseExpanded}" Value="true">
+                          <Setter x:Uid="Setter_42"  Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Path=ShouldExpandAll}" Value="true">
+                          <Setter x:Uid="Setter_44"  Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </sad:WorkflowItemPresenter.Style>
+                </sad:WorkflowItemPresenter>
+              </StackPanel>
+            </UserControl>
+          </Border>
+
+          <sad:WorkflowItemsPresenter
+              Margin="0,0,0,3"
+              x:Uid="sad:WorkflowItemsPresenter_1"
+              AllowedItemType="{DynamicResource ModelItemKeyValuePairType}"
+
+              AutomationProperties.AutomationId="Cases"
+              AutomationProperties.Name="Cases"
+              IsTabStop="False">
+                <sad:WorkflowItemsPresenter.SpacerTemplate>
+                    <DataTemplate x:Uid="DataTemplate_2">
+                        <Rectangle x:Uid="Rectangle_2" Height="1" SnapsToDevicePixels="True" Fill="Transparent" Stroke="{StaticResource WorkflowViewElementBorderBrush}" />
+                    </DataTemplate>
+                </sad:WorkflowItemsPresenter.SpacerTemplate>
+      
+                <sad:WorkflowItemsPresenter.Items>
+                    <Binding x:Uid="Binding_Uid_check" Path="ModelItem.Cases.ItemsCollection"/>
+                </sad:WorkflowItemsPresenter.Items>
+            </sad:WorkflowItemsPresenter>
+
+                    <StackPanel x:Uid="StackPanel_4" Orientation="Horizontal">
+            <TextBlock x:Uid ="AddNewCaseLabel" Loaded="OnAddNewCaseLabelLoaded" Unloaded="OnAddNewCaseLabelUnloaded" Margin="1,0,5,0" VerticalAlignment="Center">Case value </TextBlock>
+            <proj:CaseKeyBox x:Uid="AddNewCaseTextBox"
+                             DisplayHintText="true"
+                             Value="{Binding NewKey, ElementName=controlRoot, Mode=TwoWay}"
+                             ValueType="{Binding ModelItem.ItemType, ElementName=controlRoot, Converter={StaticResource genericTypeArgumentConverter}, ConverterParameter=0}"
+                             AutomationProperties.AutomationId="AddNewCase"
+                             AutomationProperties.Name="Add new case"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             LabelText="{StaticResource addCaseLabel}" 
+                             MinWidth="150"
+                             Margin="1,0,0,0"
+                             ValueCommitted="OnNewKeyCommitted"
+                             EditCancelled="OnNewKeyEditCancelled"
+                             GotFocus="OnNewKeyTextBoxGotFocus"
+                             Loaded="OnCaseKeyBoxLoaded"
+                             CaseKeyValidationCallback="{Binding CheckDuplicateCaseKey, ElementName=controlRoot}"
+                             IsEnabled="{Binding Mode=OneWay, Path=IsReadOnly, RelativeSource={RelativeSource AncestorType={x:Type sadv:DesignerView}}, Converter={StaticResource NotConverter}}"
+                             />
+          </StackPanel>
+        </StackPanel>
+      </DataTemplate>
+
+      <Style x:Uid="Style_2" x:Key="SwitchStyle" TargetType="{x:Type ContentPresenter}">
+        <Setter x:Uid="Setter_3" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Path=ShowExpanded}" Value="true">
+            <Setter x:Uid="Setter_4" Property="ContentTemplate" Value="{DynamicResource ExpandedSwitchTemplate}"/>
+          </DataTrigger>
+          <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Path=IsRootDesigner}" Value="true">
+            <Setter x:Uid="Setter_48" Property="VerticalAlignment" Value="Top"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+
+    </ResourceDictionary>
+  </sad:ActivityDesigner.Resources>
+
+  <ContentPresenter x:Uid="ContentPresenter_2" Style="{DynamicResource SwitchStyle}" Content="{Binding}" />
+
+</sad:ActivityDesigner>

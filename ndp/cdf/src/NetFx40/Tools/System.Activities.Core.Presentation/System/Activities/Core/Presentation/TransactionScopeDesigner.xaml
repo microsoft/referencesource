@@ -1,0 +1,49 @@
+﻿<sad:ActivityDesigner
+    x:Uid="sad:WorkflowElementDesigner_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"    
+    xmlns:proj="clr-namespace:System.Activities.Core.Presentation"
+    x:Class="System.Activities.Core.Presentation.TransactionScopeDesigner"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    x:ClassModifier="internal"
+    Icon="{x:Static sad:WorkflowDesignerIcons+Activities.TransactionScope}"
+    Margin="5">
+    <sad:ActivityDesigner.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+                <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Core.Presentation;component/System/Activities/Core/Presentation/Themes/DesignerStyleDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Uid="DataTemplate_1" x:Key="ExpandedTransactionScopeTemplate">
+                <StackPanel x:Uid="StackPanel_1">
+                    <TextBlock Margin="0,3,0,7" x:Uid="TextBlock_1" Text="Body" Localization.Attributes="Text(Unreadable Unmodifiable)" />
+                    <Border x:Uid="Border_1" BorderThickness ="1" BorderBrush="{StaticResource WorkflowViewElementBorderBrush}">
+                        <sad:WorkflowItemPresenter x:Uid="sad:WorkflowItemPresenter_1" AllowedItemType="{x:Type sa:Activity}"
+                                                   Background="Transparent"  MinWidth="150" MinHeight="100"
+                                                   IsDefaultContainer="True"
+                                                   HintText="{DynamicResource dropActivityHint}"
+                                                   Item="{Binding Path=ModelItem.Body, Mode=TwoWay}"
+                                                   Margin="5,5,5,5"
+                                                   AutomationProperties.AutomationId="TransactionScopeBody"
+                                                   AutomationProperties.Name="Body: Drop activity here"/>
+                    </Border>
+                </StackPanel>
+            </DataTemplate>
+
+            <Style x:Uid="Style_1" x:Key="TransactionScopeStyle" TargetType="{x:Type ContentPresenter}">
+                <Setter x:Uid="Setter_1" Property="ContentTemplate" Value="{DynamicResource CollapsedActivityViewTemplate}" />
+                <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ShowExpanded}" Value="true">
+                        <Setter x:Uid="Setter_2" Property="ContentTemplate" Value="{DynamicResource ExpandedTransactionScopeTemplate}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+        </ResourceDictionary>
+    </sad:ActivityDesigner.Resources>
+
+    <ContentPresenter x:Uid="ContentPresenter_1" Style="{DynamicResource TransactionScopeStyle}" Content="{Binding}" />
+
+</sad:ActivityDesigner>

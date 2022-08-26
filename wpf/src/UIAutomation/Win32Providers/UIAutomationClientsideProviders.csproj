@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{bd084852-5cba-4412-80a4-b93e8620f6d2}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>UIAutomationClientsideProviders</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;UIAUTOMATIONCLIENTSIDEPROVIDERS;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\ndp\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ndp\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ndp\clr\src\managedlibraries\remoting\System.Runtime.Remoting.csproj">
+      <Project>{688a2a6d-d399-4248-860d-0bebea7ce269}</Project>
+      <Name>System.Runtime.Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UIAutomationClient\UIAutomationClient.csproj">
+      <Project>{05e25af9-3315-44db-a143-fae50790102d}</Project>
+      <Name>UIAutomationClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WindowsBase.csproj">
+      <Project>{7bc32439-1475-4ea6-b74c-cd651f8f233e}</Project>
+      <Name>WindowsBase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\Test\Common\FxCop\Suppression\UIAClientSideProviders\CodeQuality.cs" />
+    <Compile Include="..\..\Shared\MS\Win32\NativeMethodsSetLastError.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\Accessible.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\ClickablePoint.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\CommonGetThemePartSize.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\CommonRemoteMemoryBlock.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\CommonXSendMessage.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\EmptyElement.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\EventManager.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\Input.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\Main.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\Misc.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\MSAAEventDispatcher.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\MSAANativeProvider.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\MSAAWinEventWrap.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\NonClientArea.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\OleObject.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\ProxyFragment.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\ProxyHwnd.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\ProxySimple.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\QueueProcessor.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\SafeCoTaskMem.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\SafeProcessHandle.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\SafeThemeHandle.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\Tom.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsAltTab.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsButton.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsComboBox.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsContainer.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsEditBox.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsEditBoxRange.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsFormsHelpers.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsFormsLinkLabel.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsGrip.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsHyperlink.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsIPAddress.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListBox.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListView.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewGroup.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewGroupHelper.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewGroupSubsetLink.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewItem.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewItemCheckBox.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewItemStartMenu.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewScroll.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsListViewSubItem.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsMenu.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsNonControl.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsProgressbar.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsRebar.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsRichEdit.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsRichEditRange.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsScroll.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsScrollBar.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsScrollBarBits.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsSlider.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsSpinner.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsStartMenu.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsStatic.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsStatusBar.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsSysHeader.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsTab.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsTitleBar.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsToolbar.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsToolbarAsMenu.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsToolbarItemAsMenuItem.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsTooltip.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsTreeView.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WindowsUpDown.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WinEventTracker.cs" />
+    <Compile Include="MS\Internal\AutomationProxies\WinFormsSpinner.cs" />
+    <Compile Include="MS\Win32\ExternDll.cs" />
+    <Compile Include="MS\Win32\NativeMethods.cs" />
+    <Compile Include="MS\Win32\SafeNativeMethods.cs" />
+    <Compile Include="MS\Win32\UnsafeNativeMethods.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

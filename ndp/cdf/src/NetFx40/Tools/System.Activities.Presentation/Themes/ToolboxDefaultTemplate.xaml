@@ -1,0 +1,24 @@
+﻿<ResourceDictionary x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:swdv="clr-namespace:System.Activities.Presentation.View"
+    xmlns:swd="clr-namespace:System.Activities.Presentation"
+    xmlns:swdt="clr-namespace:System.Activities.Presentation.Toolbox"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <ControlTemplate x:Uid="ControlTemplate_1" x:Key="ToolboxDefaultTemplate" TargetType="swdt:ToolboxControl">
+    <ControlTemplate.Resources>
+        <swd:CachedResourceDictionaryExtension x:Uid="swd:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+    </ControlTemplate.Resources>
+    
+        <Grid x:Uid="Grid_1" MinWidth="{TemplateBinding MinWidth}" MinHeight="{TemplateBinding MinHeight}" MaxHeight="{TemplateBinding MaxHeight}" MaxWidth="{TemplateBinding MaxWidth}" Background="{TemplateBinding Background}">
+            <Grid.RowDefinitions>
+                <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+                <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBox x:Uid="PART_SearchBox" Name="PART_SearchBox" Grid.Row="0" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" MaxLength="15"/>
+            <TextBlock x:Uid="hintText" Text="Search" Tag="{Binding ElementName=PART_SearchBox, Mode=OneTime}" Style="{StaticResource hintTextBlockStyle}"/>
+            <TreeView x:Uid="PART_Tools" Name="PART_Tools" Grid.Row="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" />
+        </Grid>
+    </ControlTemplate>
+
+</ResourceDictionary>

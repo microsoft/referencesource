@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{a7c0165e-c0bc-4a41-a290-e33388db05d9}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Management</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;FEATURE_LEGACYSURFACEAREA;FEATURE_UTF32;FEATURE_UTF7;TRACE;RETAIL;WIN32;PRODUCTION_BUILD</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.JScript" />
+    <Reference Include="System.Configuration.Install" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="assemblyinfo.cs" />
+    <Compile Include="Instrumentation\AssemblyNameUtility.cs" />
+    <Compile Include="Instrumentation\Attributes.cs" />
+    <Compile Include="Instrumentation\CodeSpit.cs" />
+    <Compile Include="Instrumentation\EventSource.cs" />
+    <Compile Include="Instrumentation\Instrumentation.cs" />
+    <Compile Include="Instrumentation\ManagementInstaller.cs" />
+    <Compile Include="Instrumentation\MetaDataInfo.cs" />
+    <Compile Include="Instrumentation\SchemaMapping.cs" />
+    <Compile Include="Instrumentation\SchemaRegistration.cs" />
+    <Compile Include="Instrumentation\WMICapabilities.cs" />
+    <Compile Include="InteropClasses\WMIInterop.cs" />
+    <Compile Include="managementbaseobject.cs" />
+    <Compile Include="managementclass.cs" />
+    <Compile Include="ManagementDatetime.cs" />
+    <Compile Include="managementeventargs.cs" />
+    <Compile Include="managementeventwatcher.cs" />
+    <Compile Include="managementexception.cs" />
+    <Compile Include="managementnamedvaluecollection.cs" />
+    <Compile Include="managementobject.cs" />
+    <Compile Include="managementobjectcollection.cs" />
+    <Compile Include="managementobjectsearcher.cs" />
+    <Compile Include="managementoperationwatcher.cs" />
+    <Compile Include="managementoptions.cs" />
+    <Compile Include="managementpath.cs" />
+    <Compile Include="managementquery.cs" />
+    <Compile Include="managementscope.cs" />
+    <Compile Include="method.cs" />
+    <Compile Include="methodset.cs" />
+    <Compile Include="MgmtResManager.cs" />
+    <Compile Include="property.cs" />
+    <Compile Include="propertyset.cs" />
+    <Compile Include="qualifier.cs" />
+    <Compile Include="qualifierset.cs" />
+    <Compile Include="wmieventsink.cs" />
+    <Compile Include="WmiGenerator.cs" />
+    <Compile Include="wmiutil.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

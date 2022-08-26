@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{7048e9a8-b46b-4143-a2cc-e123f1639a92}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Net</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="FXCopSupression.cs" />
+    <Compile Include="net\HttpPolicyDownloaderProtocol.cs" />
+    <Compile Include="net\INetworkProgress.cs" />
+    <Compile Include="net\IPEndPointCollection.cs" />
+    <Compile Include="net\IUnsafeWebRequestCreate.cs" />
+    <Compile Include="net\Logging.cs" />
+    <Compile Include="net\PeerToPeer\Cloud.cs" />
+    <Compile Include="net\PeerToPeer\CloudCollection.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\CollaborationEnumTypes.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\CollaborationHelperFunctions.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\ContactManager.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\MyContact.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\Peer.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerApplication.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerApplicationLaunchInfo.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerCollaboration.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerCollaborationPermission.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerContact.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerEndPoint.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerInvitationResponse.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerNearMe.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerObject.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\PeerPresenceInfo.cs" />
+    <Compile Include="net\PeerToPeer\Collaboration\UnsafeCollabNativeMethods.cs" />
+    <Compile Include="net\PeerToPeer\PeerName.cs" />
+    <Compile Include="net\PeerToPeer\PeerNameRecord.cs" />
+    <Compile Include="net\PeerToPeer\PeerNameRecordCollection.cs" />
+    <Compile Include="net\PeerToPeer\PeerNameRegistration.cs" />
+    <Compile Include="net\PeerToPeer\PeerNameResolver.cs" />
+    <Compile Include="net\PeerToPeer\PeerNameType.cs" />
+    <Compile Include="net\PeerToPeer\PeerToPeerException.cs" />
+    <Compile Include="net\PeerToPeer\PnrpPermission.cs" />
+    <Compile Include="net\PeerToPeer\PnrpScope.cs" />
+    <Compile Include="net\PeerToPeer\SystemNetHelpers.cs" />
+    <Compile Include="net\PeerToPeer\UnsafePeerToPeerMethods.cs" />
+    <Compile Include="net\UdpAnySourceMulticastClient.cs" />
+    <Compile Include="net\UdpSingleSourceMulticastClient.cs" />
+    <Compile Include="net\UiSynchronizationContext.cs" />
+    <Compile Include="net\UnsafeMethods.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

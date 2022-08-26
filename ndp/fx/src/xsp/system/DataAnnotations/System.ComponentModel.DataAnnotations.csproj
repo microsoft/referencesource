@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{5f4dc9b0-8921-47c3-9582-a0def0bbf4e3}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.ComponentModel.DataAnnotations</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;FEATURE_LEGACYSURFACEAREA;FEATURE_UTF32;FEATURE_UTF7;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Core\System.Core.csproj">
+      <Project>{b656cf4b-8938-4bc8-b777-68da792be27d}</Project>
+      <Name>System.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\..\System.Data.csproj">
+      <Project>{9f39d5c4-50fa-4c2b-8511-41a6346f44fc}</Project>
+      <Name>System.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\..\..\InternalApis\Clr\inc\AppContextDefaultValues.cs" />
+    <Compile Include="..\..\..\..\..\..\InternalApis\Clr\inc\LocalAppContext.cs" />
+    <Compile Include="DataAnnotations\AppContextDefaultValues.Default.cs" />
+    <Compile Include="DataAnnotations\AppSettings.cs" />
+    <Compile Include="DataAnnotations\AssociatedMetadataTypeTypeDescriptionProvider.cs" />
+    <Compile Include="DataAnnotations\AssociatedMetadataTypeTypeDescriptor.cs" />
+    <Compile Include="DataAnnotations\AssociationAttribute.cs" />
+    <Compile Include="DataAnnotations\BindableTypeAttribute.cs" />
+    <Compile Include="DataAnnotations\CompareAttribute.cs" />
+    <Compile Include="DataAnnotations\ConcurrencyCheckAttribute.cs" />
+    <Compile Include="DataAnnotations\CreditCardAttribute.cs" />
+    <Compile Include="DataAnnotations\CustomValidationAttribute.cs" />
+    <Compile Include="DataAnnotations\DataType.cs" />
+    <Compile Include="DataAnnotations\DataTypeAttribute.cs" />
+    <Compile Include="DataAnnotations\DisplayAttribute.cs" />
+    <Compile Include="DataAnnotations\DisplayColumnAttribute.cs" />
+    <Compile Include="DataAnnotations\DisplayFormatAttribute.cs" />
+    <Compile Include="DataAnnotations\EditableAttribute.cs" />
+    <Compile Include="DataAnnotations\EmailAddressAttribute.cs" />
+    <Compile Include="DataAnnotations\EnumDataTypeAttribute.cs" />
+    <Compile Include="DataAnnotations\FileExtensionsAttribute.cs" />
+    <Compile Include="DataAnnotations\FilterUIHintAttribute.cs" />
+    <Compile Include="DataAnnotations\IValidatableObject.cs" />
+    <Compile Include="DataAnnotations\KeyAttribute.cs" />
+    <Compile Include="DataAnnotations\LocalAppContextSwitches.cs" />
+    <Compile Include="DataAnnotations\LocalizableString.cs" />
+    <Compile Include="DataAnnotations\MaxLengthAttribute.cs" />
+    <Compile Include="DataAnnotations\MetadataPropertyDescriptorWrapper.cs" />
+    <Compile Include="DataAnnotations\MetadataTypeAttribute.cs" />
+    <Compile Include="DataAnnotations\MinLengthAttribute.cs" />
+    <Compile Include="DataAnnotations\PhoneAttribute.cs" />
+    <Compile Include="DataAnnotations\RangeAttribute.cs" />
+    <Compile Include="DataAnnotations\RegularExpressionAttribute.cs" />
+    <Compile Include="DataAnnotations\RequiredAttribute.cs" />
+    <Compile Include="DataAnnotations\ScaffoldAttribute.cs" />
+    <Compile Include="DataAnnotations\Schema\ColumnAttribute.cs" />
+    <Compile Include="DataAnnotations\Schema\ComplexTypeAttribute.cs" />
+    <Compile Include="DataAnnotations\Schema\DatabaseGeneratedAttribute.cs" />
+    <Compile Include="DataAnnotations\Schema\DatabaseGeneratedOption.cs" />
+    <Compile Include="DataAnnotations\Schema\ForeignKeyAttribute.cs" />
+    <Compile Include="DataAnnotations\Schema\InversePropertyAttribute.cs" />
+    <Compile Include="DataAnnotations\Schema\NotMappedAttribute.cs" />
+    <Compile Include="DataAnnotations\Schema\TableAttribute.cs" />
+    <Compile Include="DataAnnotations\StringLengthAttribute.cs" />
+    <Compile Include="DataAnnotations\TimestampAttribute.cs" />
+    <Compile Include="DataAnnotations\UIHintAttribute.cs" />
+    <Compile Include="DataAnnotations\UrlAttribute.cs" />
+    <Compile Include="DataAnnotations\ValidationAttribute.cs" />
+    <Compile Include="DataAnnotations\ValidationAttributeStore.cs" />
+    <Compile Include="DataAnnotations\ValidationContext.cs" />
+    <Compile Include="DataAnnotations\ValidationException.cs" />
+    <Compile Include="DataAnnotations\ValidationResult.cs" />
+    <Compile Include="DataAnnotations\Validator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\DataAnnotationsResources.Designer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

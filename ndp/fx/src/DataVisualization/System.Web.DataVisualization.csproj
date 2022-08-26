@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{dc77e478-f0ec-4fee-a3a5-547a2be54d8f}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Web.DataVisualization</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;FEATURE_LEGACYSURFACEAREA;FEATURE_UTF32;FEATURE_UTF7;ENTERPRISE_VERSION;VERSION_360;VERSION_400;VERSION_410;VERSION_450;VERSION_451;VS2005;VERSION_500;VERSION_550;_DEBUG_;VERSION_551;MS_ROSETTA;MS_ROSETTA2;SQLRS_CONTROL;VS_DESIGN_TIME;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\System.Data.csproj">
+      <Project>{9f39d5c4-50fa-4c2b-8511-41a6346f44fc}</Project>
+      <Name>System.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Drawing.csproj">
+      <Project>{a95f2aef-5047-4d45-9480-b0476b85b958}</Project>
+      <Name>System.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xsp\system\Web\System.Web.csproj">
+      <Project>{a0341765-8edd-4fbc-9ff8-e5fa04131891}</Project>
+      <Name>System.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\Annotation\AnnotationBase.cs" />
+    <Compile Include="Common\Annotation\AnnotationCollection.cs" />
+    <Compile Include="Common\Annotation\ArrowAnnotation.cs" />
+    <Compile Include="Common\Annotation\CalloutAnnotation.cs" />
+    <Compile Include="Common\Annotation\GroupAnnotation.cs" />
+    <Compile Include="Common\Annotation\ImageAnnotation.cs" />
+    <Compile Include="Common\Annotation\LineAnnotation.cs" />
+    <Compile Include="Common\Annotation\PolygonAnnotation.cs" />
+    <Compile Include="Common\Annotation\RectangleAnnotation.cs" />
+    <Compile Include="Common\Annotation\TextAnnotation.cs" />
+    <Compile Include="Common\Borders3D\Borders3D.cs" />
+    <Compile Include="Common\Borders3D\EmbedBorder.cs" />
+    <Compile Include="Common\Borders3D\EmbossBorder.cs" />
+    <Compile Include="Common\ChartTypes\AreaChart.cs" />
+    <Compile Include="Common\ChartTypes\BarChart.cs" />
+    <Compile Include="Common\ChartTypes\BoxPlotChart.cs" />
+    <Compile Include="Common\ChartTypes\BubbleChart.cs" />
+    <Compile Include="Common\ChartTypes\ChartTypeRegistry.cs" />
+    <Compile Include="Common\ChartTypes\ColumnChart.cs" />
+    <Compile Include="Common\ChartTypes\DoughnutChart.cs" />
+    <Compile Include="Common\ChartTypes\ErrorBarChart.cs" />
+    <Compile Include="Common\ChartTypes\FastLineChart.cs" />
+    <Compile Include="Common\ChartTypes\FastPointChart.cs" />
+    <Compile Include="Common\ChartTypes\FunnelChart.cs" />
+    <Compile Include="Common\ChartTypes\KagiChart.cs" />
+    <Compile Include="Common\ChartTypes\LineChart.cs" />
+    <Compile Include="Common\ChartTypes\PieChart.cs" />
+    <Compile Include="Common\ChartTypes\PointAndFigureChart.cs" />
+    <Compile Include="Common\ChartTypes\PointChart.cs" />
+    <Compile Include="Common\ChartTypes\PolarChart.cs" />
+    <Compile Include="Common\ChartTypes\RadarChart.cs" />
+    <Compile Include="Common\ChartTypes\RangeChart.cs" />
+    <Compile Include="Common\ChartTypes\RenkoChart.cs" />
+    <Compile Include="Common\ChartTypes\StackedAreaChart.cs" />
+    <Compile Include="Common\ChartTypes\StackedBarChart.cs" />
+    <Compile Include="Common\ChartTypes\StackedColumnChart.cs" />
+    <Compile Include="Common\ChartTypes\StepLineChart.cs" />
+    <Compile Include="Common\ChartTypes\StockChart.cs" />
+    <Compile Include="Common\ChartTypes\ThreeLineBreakChart.cs" />
+    <Compile Include="Common\Converters\AnnotationConverters.cs" />
+    <Compile Include="Common\Converters\AxesArrayConverter.cs" />
+    <Compile Include="Common\Converters\AxisConverters.cs" />
+    <Compile Include="Common\Converters\CustomAttributesConverters.cs" />
+    <Compile Include="Common\Converters\DataManagerConverters.cs" />
+    <Compile Include="Common\Converters\ElementPositionConverter.cs" />
+    <Compile Include="Common\Converters\LegendConverters.cs" />
+    <Compile Include="Common\DataManager\DataManager.cs" />
+    <Compile Include="Common\DataManager\DataPoint.cs" />
+    <Compile Include="Common\DataManager\DataSeries.cs" />
+    <Compile Include="Common\EditorNames.cs" />
+    <Compile Include="Common\Formulas\FormulaHelpers.cs" />
+    <Compile Include="Common\Formulas\FormulaRegistry.cs" />
+    <Compile Include="Common\Formulas\GeneralFormulas.cs" />
+    <Compile Include="Common\Formulas\Oscillator.cs" />
+    <Compile Include="Common\Formulas\PriceIndicators.cs" />
+    <Compile Include="Common\Formulas\StatisticalAnalysis.cs" />
+    <Compile Include="Common\Formulas\TechGeneralIndicators.cs" />
+    <Compile Include="Common\Formulas\TimeSeriesAndForecasting.cs" />
+    <Compile Include="Common\Formulas\VolumeIndicator.cs" />
+    <Compile Include="Common\General\Axis.cs" />
+    <Compile Include="Common\General\AxisLabels.cs" />
+    <Compile Include="Common\General\AxisScale.cs" />
+    <Compile Include="Common\General\AxisScaleBreaks.cs" />
+    <Compile Include="Common\General\AxisScaleSegments.cs" />
+    <Compile Include="Common\General\AxisScrollBar.cs" />
+    <Compile Include="Common\General\AxisScrollZoom.cs" />
+    <Compile Include="Common\General\BaseClasses.cs" />
+    <Compile Include="Common\General\BaseCollections.cs" />
+    <Compile Include="Common\General\BaseInterfaces.cs" />
+    <Compile Include="Common\General\Chart.cs" />
+    <Compile Include="Common\General\ChartArea.cs" />
+    <Compile Include="Common\General\ChartArea3D.cs" />
+    <Compile Include="Common\General\ChartAreaAxes.cs" />
+    <Compile Include="Common\General\ChartAreaCircular.cs" />
+    <Compile Include="Common\General\ChartAreaCollection.cs" />
+    <Compile Include="Common\General\ChartAreaCursor.cs" />
+    <Compile Include="Common\General\ChartElement.cs" />
+    <Compile Include="Common\General\ChartGraphics.cs" />
+    <Compile Include="Common\General\ChartGraphics3D.cs" />
+    <Compile Include="Common\General\ChartRenderingEngine.cs" />
+    <Compile Include="Common\General\ChartSerializer.cs" />
+    <Compile Include="Common\General\CommonElements.cs" />
+    <Compile Include="Common\General\Constants.cs" />
+    <Compile Include="Common\General\DataManipulator.cs" />
+    <Compile Include="Common\General\FormulaData.cs" />
+    <Compile Include="Common\General\GdiGraphics.cs" />
+    <Compile Include="Common\General\GridTickMarks.cs" />
+    <Compile Include="Common\General\IChartRenderingEngine.cs" />
+    <Compile Include="Common\General\ImageMap.cs" />
+    <Compile Include="Common\General\Label.cs" />
+    <Compile Include="Common\General\Legend.cs" />
+    <Compile Include="Common\General\LegendColumns.cs" />
+    <Compile Include="Common\General\Matrix3D.cs" />
+    <Compile Include="Common\General\NamedImageCollection.cs" />
+    <Compile Include="Common\General\Selection.cs" />
+    <Compile Include="Common\General\SmartLabels.cs" />
+    <Compile Include="Common\General\Statistics.cs" />
+    <Compile Include="Common\General\StripLine.cs" />
+    <Compile Include="Common\General\SubAxis.cs" />
+    <Compile Include="Common\General\Title.cs" />
+    <Compile Include="Common\SR.cs" />
+    <Compile Include="Common\SRCategoryAttribute.cs" />
+    <Compile Include="Common\SRDescriptionAttribute.cs" />
+    <Compile Include="Common\Utilities\ColorPalette.cs" />
+    <Compile Include="Common\Utilities\CustomAttributesRegistry.cs" />
+    <Compile Include="Common\Utilities\ElementPosition.cs" />
+    <Compile Include="Common\Utilities\ImageLoader.cs" />
+    <Compile Include="Common\Utilities\KeywordsRegistry.cs" />
+    <Compile Include="Common\Utilities\ValueConverter.cs" />
+    <Compile Include="Common\Utilities\XmlSerializer.cs" />
+    <Compile Include="WebForm\AssemblyInfo.cs" />
+    <Compile Include="WebForm\ChartWebControl.cs" />
+    <Compile Include="WebForm\Converters\MapAreaCoordinatesConverter.cs" />
+    <Compile Include="WebForm\FxCopExclusionsByDesign.cs" />
+    <Compile Include="WebForm\General\ChartHttpHandler.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

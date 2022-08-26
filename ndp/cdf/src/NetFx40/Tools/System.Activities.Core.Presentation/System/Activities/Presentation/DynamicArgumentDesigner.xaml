@@ -1,0 +1,296 @@
+﻿<UserControl x:Uid="UserControl_1" x:Class="System.Activities.Presentation.DynamicArgumentDesigner"
+             x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities"
+    xmlns:sad="clr-namespace:System.Activities.Presentation;assembly=System.Activities.Presentation"
+    xmlns:sapv="clr-namespace:System.Activities.Presentation.View;assembly=System.Activities.Presentation"
+    xmlns:sadc="clr-namespace:System.Activities.Presentation.Converters;assembly=System.Activities.Presentation"
+    xmlns:sadm="clr-namespace:System.Activities.Presentation.Model;assembly=System.Activities.Presentation"
+    xmlns:local="clr-namespace:System.Activities.Presentation"
+    xmlns:proj="clr-namespace:System.Activities.Core.Presentation"
+    Style="{DynamicResource WorkflowContentControlStyle}">
+
+  <UserControl.Resources>
+    <ResourceDictionary x:Uid="ResourceDictionary_1">
+      <ResourceDictionary.MergedDictionaries>
+        <sad:CachedResourceDictionaryExtension x:Uid="swd:CachedResourceDictionaryExtension_1" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+        <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_6" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/GenericTypeParameterConverter.xaml"/>
+      </ResourceDictionary.MergedDictionaries>
+      <sadc:ModelToObjectValueConverter x:Uid="sadm:ModelToObjectValueConverter_1" x:Key="ModelToObjectConverter" />
+      <proj:NotConverter x:Uid="NotConverter_1" x:Key="NotConverter"/>
+      <sadc:ModelPropertyEntryToOwnerActivityConverter x:Uid="sapv:ModelPropertyEntryToOwnerActivityConverter_1" x:Key="ModelPropertyEntryToOwnerActivityConverter" />
+      
+      <s:String x:Uid="addDynamicArgumentNewRowLabel" x:Key="addDynamicArgumentNewRowLabel">Create Argument</s:String>
+      <s:String x:Uid="nameHeader" x:Key="nameHeader">Name</s:String>
+      <s:String x:Uid="directionHeader" x:Key="directionHeader">Direction</s:String>
+      <s:String x:Uid="typeHeader" x:Key="typeHeader">Type</s:String>
+      <s:String x:Uid="valueHeader" x:Key="valueHeader">Value</s:String>
+      <s:String x:Uid="assignToHeader" x:Key="assignToHeader">Assign To</s:String>
+
+      <!--Default row style-->
+      <Style x:Uid="Style_1" x:Key="defaultRowStyle" TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource baseDataRowStyle}">
+        <Setter x:Uid="Setter_1" Property="AutomationProperties.AutomationId" Value="{Binding Path=Item.Name, RelativeSource={RelativeSource Mode=Self}, Mode=OneWay }" />
+        <EventSetter x:Uid="EventSetter_1" Event="KeyDown" Handler="OnDataGridRowKeyDown"/>
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding}" Value="{x:Static CollectionView.NewItemPlaceholder}">
+            <Setter x:Uid="Setter_18" Property="AutomationProperties.Name" Value="{Binding Path=HintText, RelativeSource={RelativeSource AncestorType={x:Type local:DynamicArgumentDesigner}}, Mode=OneWay}" />
+          </DataTrigger>
+          <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Source={x:Static proj:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+            <Setter x:Uid="Setter_22" Property="HeaderStyle">
+              <Setter.Value>
+                <Style x:Uid="Style_11" TargetType="DataGridRowHeader">
+                  <Setter x:Uid="Setter_23" Property="AutomationProperties.Name" Value="{Binding Path=Name}"></Setter>
+                </Style>
+              </Setter.Value>
+            </Setter>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+
+      <!--Default cell style-->
+      <Style x:Uid="Style_10" x:Key="defaultCellStyle" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource baseDataCellStyle}">
+        <Style.Triggers>
+          <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Source={x:Static proj:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+            <Setter x:Uid="Setter_21" Property="AutomationProperties.Name">
+              <Setter.Value>
+                <MultiBinding x:Uid="MultiBinding_0" StringFormat="{}{1} of {0}">
+                  <Binding x:Uid="Binding_0" Path="Name" />
+                  <Binding x:Uid="Binding_1" Path="Column.Header" RelativeSource="{x:Static RelativeSource.Self}" />
+                </MultiBinding>
+              </Setter.Value>
+            </Setter>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+      
+      <!--Custom style for TyePresenter-->
+      <Style x:Uid="Style_4" TargetType="{x:Type sapv:TypePresenter}" x:Key="typePresenterStyle">
+        <Setter x:Uid="Setter_4" Property="Type" Value="{Binding Path=Type, Mode=TwoWay, ValidatesOnExceptions=True}"/>
+        <Setter x:Uid="Setter_5" Property="Context" Value="{Binding Path=Context, RelativeSource={RelativeSource AncestorType={x:Type local:DynamicArgumentDesigner}}, Mode=OneWay}"/>
+        <Setter x:Uid="Setter_7" Property="ToolTip" Value="{Binding Path=Type.FullName}"/>
+        <Setter x:Uid="Setter_8" Property="BrowseTypeDirectly" Value="False"/>
+      </Style>
+
+      <!-- style for direction combobox - depending on choosen value, display rather
+                 text description than enum's value -->
+      <Style x:Uid="Style_5" x:Key="directionTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Setter x:Uid="Setter_9" Property="Text" Value="&lt;NULL&gt;"/>
+        <Style.Triggers>
+          <Trigger x:Uid="Trigger_1" Property="Tag">
+            <Trigger.Value>
+              <sa:ArgumentDirection x:Uid="sa:ArgumentDirection_1">In</sa:ArgumentDirection>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_10" Property="Text" Value="{DynamicResource inArgumentTitle}"/>
+          </Trigger>
+          <Trigger x:Uid="Trigger_2" Property="Tag">
+            <Trigger.Value>
+              <sa:ArgumentDirection x:Uid="sa:ArgumentDirection_2">Out</sa:ArgumentDirection>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_11" Property="Text" Value="{DynamicResource outArgumentTitle}"/>
+          </Trigger>
+          <Trigger x:Uid="Trigger_3" Property="Tag">
+            <Trigger.Value>
+              <sa:ArgumentDirection x:Uid="sa:ArgumentDirection_3">InOut</sa:ArgumentDirection>
+            </Trigger.Value>
+            <Setter x:Uid="Setter_12" Property="Text" Value="{DynamicResource inOutArgumentTitle}"/>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <!-- data template for combo box item - the content of the combo box item is always an enum,
+             displayed value is displayed as text block however (enables localization) -->
+      <Style x:Uid="Style_6" x:Key="directionComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+        <Setter x:Uid="Setter_13" Property="ContentTemplate">
+          <Setter.Value>
+            <DataTemplate x:Uid="DataTemplate_1">
+              <TextBlock x:Uid="TextBlock_2" Tag="{Binding}" Style="{StaticResource directionTextBlockStyle}" />
+            </DataTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style>
+
+      <!-- editable direction template - combobox displaying available directions -->
+      <DataTemplate x:Uid="DataTemplate_2" x:Key="DirectionComboTemplate">
+        <ComboBox x:Uid="ComboBox_1" SelectedValue="{Binding Path=Direction, ValidatesOnExceptions=True}" SelectedValuePath="Content" BorderBrush="{x:Null}" AutomationProperties.AutomationId="DynamicArgumentDesigner_ArgDirectionComboBox"                  
+                  Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded"
+                  AutomationProperties.Name="{StaticResource directionHeader}">
+          <ComboBox.Items>
+            <ComboBoxItem x:Uid="ComboBoxItem_1" Style="{StaticResource directionComboBoxItemStyle}">
+              <sa:ArgumentDirection x:Uid="sa:ArgumentDirection_4">In</sa:ArgumentDirection>
+            </ComboBoxItem>
+            <ComboBoxItem x:Uid="ComboBoxItem_2" Style="{StaticResource directionComboBoxItemStyle}">
+              <sa:ArgumentDirection x:Uid="sa:ArgumentDirection_5">Out</sa:ArgumentDirection>
+            </ComboBoxItem>
+            <ComboBoxItem x:Uid="ComboBoxItem_3" Style="{StaticResource directionComboBoxItemStyle}">
+              <sa:ArgumentDirection x:Uid="sa:ArgumentDirection_6">InOut</sa:ArgumentDirection>
+            </ComboBoxItem>
+          </ComboBox.Items>
+        </ComboBox>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_3" x:Key="argumentExpressionEditingTemplate">
+        <sapv:ExpressionTextBox x:Uid="sapv:ExpressionTextBox_1"
+          BorderBrush="{x:Null}"
+          Expression="{Binding Path=Expression, Mode=TwoWay, ValidatesOnExceptions=True}"
+          ExpressionType="{Binding Path=Type}"
+          OwnerActivity="{Binding Path=Editor.OwnerActivity}"
+          UseLocationExpression="{Binding Path=UseLocationExpression}"
+          IsReadOnly="False"
+          VerticalScrollBarVisibility="Auto" MinLines="1" MaxLines="1"
+          AutomationProperties.AutomationId="DynamicArgumentDesigner_ArgumentExpression"
+          AutomationProperties.Name="{StaticResource valueHeader}"
+          Loaded="OnExpressionTextBoxLoaded"
+          Unloaded="OnExpressionTextBoxUnloaded" />
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_5" x:Key="argumentExpressionReadOnlyTemplate">
+         <sapv:ExpressionTextBox x:Uid="sapv:ExpressionTextBox_2"
+          BorderBrush="{x:Null}"
+          Expression="{Binding Path=Expression, Mode=TwoWay, ValidatesOnExceptions=True}"
+          ExpressionType="{Binding Path=Type}"
+          OwnerActivity="{Binding Path=Editor.OwnerActivity}"
+          UseLocationExpression="{Binding Path=UseLocationExpression}"
+          IsReadOnly="True"
+          VerticalScrollBarVisibility="Auto" MinLines="1" MaxLines="1"
+          AutomationProperties.AutomationId="DynamicArgumentDesigner_ArgumentExpression"
+          AutomationProperties.Name="{StaticResource valueHeader}"
+          Loaded="OnExpressionTextBoxLoaded"/>
+      </DataTemplate>
+
+      <DataTemplate x:Uid="DataTemplate_4" x:Key="argumentDirectionEditingTemplate">
+        <ContentControl x:Uid="DynamicArgumentDesigner_ArgumentDirectionEditor" Content="{Binding}" Name="DynamicArgumentDesigner_ArgumentDirectionEditor" ContentTemplate="{StaticResource DirectionComboTemplate}"/>
+      </DataTemplate>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <UserControl.CommandBindings>
+    <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static local:DynamicArgumentDesigner.CreateDynamicArgumentCommand}" Executed="OnCreateDynamicArgumentExecute"/>
+    <CommandBinding x:Uid="CommandBinding_2" Command="{x:Static local:DynamicArgumentDesigner.MoveUpArgumentCommand}" Executed="OnMoveUpArgumentExecute"/>
+    <CommandBinding x:Uid="CommandBinding_3" Command="{x:Static local:DynamicArgumentDesigner.MoveDownArgumentCommand}" Executed="OnMoveDownArgumentExecute"/>
+    <CommandBinding x:Uid="CommandBinding_4" Command="{x:Static local:DynamicArgumentDesigner.DeleteArgumentCommand}" Executed="OnDeleteArgumentExecute"/>
+  </UserControl.CommandBindings>
+
+  <Grid x:Uid="Grid_1" x:Name="Grid_1">
+    <Grid.RowDefinitions>
+      <RowDefinition x:Uid="RowDefinition_1" Height="Auto" />
+      <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+    </Grid.RowDefinitions>
+    <StackPanel Grid.Row="0" x:Uid="StackPanel_1" x:Name="StackPane_1" Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button x:Uid="Button_3" x:Name="ButtonDelete" Command="{x:Static local:DynamicArgumentDesigner.DeleteArgumentCommand}" IsEnabled="false" AutomationProperties.Name="Delete button">
+        <Button.Style>
+          <Style x:Uid="Style_9">
+            <Setter x:Uid="Setter_19" Property="Button.Content">
+              <Setter.Value>
+                <Rectangle x:Uid="Rectangle_1" Width="12" Height="12" Fill="{x:Static sad:WorkflowDesignerIcons+DesignerItems.DeleteButton}"/>
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger x:Uid="Trigger_8" Property="Button.IsEnabled" Value="false">
+                <Setter x:Uid="Setter_20" Property="Button.Content">
+                  <Setter.Value>
+                    <Rectangle x:Uid="Rectangle_2" Width="12" Height="12" Fill="{x:Static sad:WorkflowDesignerIcons+DesignerItems.DeleteDisabledButton}"/>
+                  </Setter.Value>
+                </Setter>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+      </Button>        
+      <Button x:Uid="Button_2" x:Name="ButtonMovUp" Command="{x:Static local:DynamicArgumentDesigner.MoveUpArgumentCommand}" IsEnabled="false" AutomationProperties.Name="Up button">
+        <Button.Style>
+          <Style x:Uid="Style_8">
+            <Setter x:Uid="Setter_16" Property="Button.Content">
+              <Setter.Value>
+                <Rectangle x:Uid="Rectangle_7" Width="12" Height="12" Fill="{x:Static sad:WorkflowDesignerIcons+DesignerItems.MoveUpButton}" />
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger x:Uid="Trigger_7" Property="Button.IsEnabled" Value="false">
+                <Setter x:Uid="Setter_17" Property="Button.Content">
+                  <Setter.Value>
+                    <Rectangle x:Uid="Rectangle_8" Width="12" Height="12" Fill="{x:Static sad:WorkflowDesignerIcons+DesignerItems.MoveUpDisabledButton}" />
+                  </Setter.Value>
+                </Setter>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+      </Button>
+      <Button x:Uid="Button_1" x:Name="ButtonMovDown" Command="{x:Static local:DynamicArgumentDesigner.MoveDownArgumentCommand}" IsEnabled="false" AutomationProperties.Name="Down button">
+        <Button.Style>
+          <Style x:Uid="Style_7">
+            <Setter x:Uid="Setter_14" Property="Button.Content">
+              <Setter.Value>
+                <Rectangle x:Uid="Rectangle_5" Width="12" Height="12" Fill="{x:Static sad:WorkflowDesignerIcons+DesignerItems.MoveDownButton}"/>
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger x:Uid="Trigger_5" Property="Button.IsEnabled" Value="false">
+                <Setter x:Uid="Setter_15" Property="Button.Content">
+                  <Setter.Value>
+                    <Rectangle x:Uid="Rectangle_6" Width="12" Height="12" Fill="{x:Static sad:WorkflowDesignerIcons+DesignerItems.MoveDownDisabledButton}"/>
+                  </Setter.Value>
+                </Setter>
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+      </Button>
+    </StackPanel>
+    <DataGrid Grid.Row="1" x:Uid="WPF_DataGrid" x:Name="WPF_DataGrid"
+                    Background="{DynamicResource DesignerViewBackground}"
+                    RowStyle="{StaticResource defaultRowStyle}"
+                    CellStyle="{StaticResource defaultCellStyle}"
+                    AutomationProperties.AutomationId="DynamicArgumentDesigner_DatGrid"
+                    SelectionChanged="OnDataGridSelectionChanged">
+      <DataGrid.Columns>
+        <DataGridTemplateColumn x:Uid="DataGridTemplateColumn_1" Header="{StaticResource nameHeader}" Width="100*" CanUserSort="False">
+          <DataGridTemplateColumn.CellEditingTemplate>
+            <DataTemplate x:Uid="DataTemplate_6">
+              <TextBox x:Uid="TextBox_1" Text="{Binding Path=Name, Mode=TwoWay, ValidatesOnExceptions=True}" MinWidth="75"
+                       VerticalAlignment="Center" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="DynamicArgumentDesigner_ArgumentNameTextBox"
+                       Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded"
+                       AutomationProperties.Name="{StaticResource nameHeader}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellEditingTemplate>
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate x:Uid="DataTemplate_7">
+              <TextBlock x:Uid="TextBlock_3" Text="{Binding Path=Name}"  VerticalAlignment="Center" AutomationProperties.AutomationId="DynamicArgumentDesigner_ArgumentNameTextBlock"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn x:Uid="DataGridTemplateColumn_2" Header="{StaticResource directionHeader}" Width="75*" CanUserSort="False">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate x:Uid="DataTemplate_8">
+              <TextBlock x:Uid="TextBlock_4" Tag="{Binding Path=Direction}" Style="{StaticResource directionTextBlockStyle}" VerticalAlignment="Center" AutomationProperties.AutomationId="DynamicArgumentDesigner_DirectionTextBlock"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn x:Uid="DataGridTemplateColumn_3" Header="{StaticResource typeHeader}" Width="100*" CanUserSort="False">
+          <DataGridTemplateColumn.CellEditingTemplate>
+            <DataTemplate x:Uid="DataTemplate_9">
+              <sapv:TypePresenter x:Uid="addArgumentTypePresenter" x:Name="addArgumentTypePresenter" VerticalAlignment="Center" Style="{StaticResource typePresenterStyle}" AutomationProperties.AutomationId="DynamicArgumentDesigner_ArgumentTypeTypePresenter"
+                                  Loaded="OnEditingControlLoaded" Unloaded="OnEditingControlUnloaded"
+                                  Label="{StaticResource typeHeader}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellEditingTemplate>
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate x:Uid="DataTemplate_10">
+              <TextBlock x:Uid="TextBlock_5" Text="{Binding Path=Type, Converter={StaticResource TypeParameterConverter}, ValidatesOnExceptions=True}" ToolTip="{Binding Path=Type.FullName}" VerticalAlignment="Center" AutomationProperties.AutomationId="DynamicArgumentDesigner_ArgumentTypeTextBlock"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn x:Uid="DataGridTemplateColumn_4" Width="150*" CanUserSort="False" CellTemplate="{StaticResource argumentExpressionReadOnlyTemplate}" CellEditingTemplate="{StaticResource argumentExpressionEditingTemplate}" />
+
+      </DataGrid.Columns>
+    </DataGrid>
+  </Grid>
+</UserControl>

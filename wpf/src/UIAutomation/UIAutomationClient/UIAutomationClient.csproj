@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{05e25af9-3315-44db-a143-fae50790102d}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>UIAutomationClient</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;UIAUTOMATIONCLIENT;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\ndp\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ndp\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\ndp\clr\src\managedlibraries\remoting\System.Runtime.Remoting.csproj">
+      <Project>{688a2a6d-d399-4248-860d-0bebea7ce269}</Project>
+      <Name>System.Runtime.Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WindowsBase.csproj">
+      <Project>{7bc32439-1475-4ea6-b74c-cd651f8f233e}</Project>
+      <Name>WindowsBase</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Accessibility" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\Test\Common\FxCop\Suppression\UIAClient\CodeQuality.cs" />
+    <Compile Include="..\..\Shared\MS\Win32\NativeMethodsSetLastError.cs" />
+    <Compile Include="MS\Internal\Automation\Accessible.cs" />
+    <Compile Include="MS\Internal\Automation\AutomationAttributeInfo.cs" />
+    <Compile Include="MS\Internal\Automation\AutomationPatternInfo.cs" />
+    <Compile Include="MS\Internal\Automation\AutomationPropertyInfo.cs" />
+    <Compile Include="MS\Internal\Automation\BoundingRectTracker.cs" />
+    <Compile Include="MS\Internal\Automation\CacheHelper.cs" />
+    <Compile Include="MS\Internal\Automation\CalloutQueueItem.cs" />
+    <Compile Include="MS\Internal\Automation\ClickablePoint.cs" />
+    <Compile Include="MS\Internal\Automation\ClientEventManager.cs" />
+    <Compile Include="MS\Internal\Automation\ClientSideQueueItem.cs" />
+    <Compile Include="MS\Internal\Automation\EventListener.cs" />
+    <Compile Include="MS\Internal\Automation\EventListenerClientSide.cs" />
+    <Compile Include="MS\Internal\Automation\FocusTracker.cs" />
+    <Compile Include="MS\Internal\Automation\HwndProxyElementProvider.cs" />
+    <Compile Include="MS\Internal\Automation\Input.cs" />
+    <Compile Include="MS\Internal\Automation\InvokeHandlers.cs" />
+    <Compile Include="MS\Internal\Automation\MenuTracker.cs" />
+    <Compile Include="MS\Internal\Automation\Misc.cs" />
+    <Compile Include="MS\Internal\Automation\ProxyManager.cs" />
+    <Compile Include="MS\Internal\Automation\QueueProcessor.cs" />
+    <Compile Include="MS\Internal\Automation\SafeHandles.cs" />
+    <Compile Include="MS\Internal\Automation\SafeProcessHandle.cs" />
+    <Compile Include="MS\Internal\Automation\Schema.cs" />
+    <Compile Include="MS\Internal\Automation\UiaCoreAPI.cs" />
+    <Compile Include="MS\Internal\Automation\WindowHideOrCloseTracker.cs" />
+    <Compile Include="MS\Internal\Automation\WindowInteractionStateTracker.cs" />
+    <Compile Include="MS\Internal\Automation\WindowShowOrOpenTracker.cs" />
+    <Compile Include="MS\Internal\Automation\WindowVisualStateTracker.cs" />
+    <Compile Include="MS\Internal\Automation\WinEventQueueItem.cs" />
+    <Compile Include="MS\Internal\Automation\WinEventWrap.cs" />
+    <Compile Include="MS\Win32\NativeMethods.cs" />
+    <Compile Include="MS\Win32\SafeNativeMethods.cs" />
+    <Compile Include="MS\Win32\UnsafeNativeMethods.cs" />
+    <Compile Include="System\Windows\Automation\AndCondition.cs" />
+    <Compile Include="System\Windows\Automation\Automation.cs" />
+    <Compile Include="System\Windows\Automation\AutomationElement.cs" />
+    <Compile Include="System\Windows\Automation\AutomationElementCollection.cs" />
+    <Compile Include="System\Windows\Automation\AutomationFocusChangedEventArgs.cs" />
+    <Compile Include="System\Windows\Automation\BasePattern.cs" />
+    <Compile Include="System\Windows\Automation\CacheRequest.cs" />
+    <Compile Include="System\Windows\Automation\ClientSettings.cs" />
+    <Compile Include="System\Windows\Automation\ClientSideProviderDescription.cs" />
+    <Compile Include="System\Windows\Automation\Condition.cs" />
+    <Compile Include="System\Windows\Automation\DockPattern.cs" />
+    <Compile Include="System\Windows\Automation\ExpandCollapsePattern.cs" />
+    <Compile Include="System\Windows\Automation\GridItemPattern.cs" />
+    <Compile Include="System\Windows\Automation\GridPattern.cs" />
+    <Compile Include="System\Windows\Automation\InvokePattern.cs" />
+    <Compile Include="System\Windows\Automation\ItemContainerPattern.cs" />
+    <Compile Include="System\Windows\Automation\MultipleViewPattern.cs" />
+    <Compile Include="System\Windows\Automation\NotCondition.cs" />
+    <Compile Include="System\Windows\Automation\OrCondition.cs" />
+    <Compile Include="System\Windows\Automation\PropertyCondition.cs" />
+    <Compile Include="System\Windows\Automation\RangeValuePattern.cs" />
+    <Compile Include="System\Windows\Automation\ScrollItemPattern.cs" />
+    <Compile Include="System\Windows\Automation\ScrollPattern.cs" />
+    <Compile Include="System\Windows\Automation\SelectionItemPattern.cs" />
+    <Compile Include="System\Windows\Automation\SelectionPattern.cs" />
+    <Compile Include="System\Windows\Automation\SynchronizedInputPattern.cs" />
+    <Compile Include="System\Windows\Automation\TableItemPattern.cs" />
+    <Compile Include="System\Windows\Automation\TablePattern.cs" />
+    <Compile Include="System\Windows\Automation\Text\TextRange.cs" />
+    <Compile Include="System\Windows\Automation\TextPattern.cs" />
+    <Compile Include="System\Windows\Automation\TogglePattern.cs" />
+    <Compile Include="System\Windows\Automation\TransformPattern.cs" />
+    <Compile Include="System\Windows\Automation\TreeWalker.cs" />
+    <Compile Include="System\Windows\Automation\ValuePattern.cs" />
+    <Compile Include="System\Windows\Automation\VirtualizedItemPattern.cs" />
+    <Compile Include="System\Windows\Automation\WindowPattern.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

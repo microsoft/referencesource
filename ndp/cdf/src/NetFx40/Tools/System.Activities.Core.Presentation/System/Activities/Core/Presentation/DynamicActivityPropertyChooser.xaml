@@ -1,0 +1,29 @@
+﻿<UserControl x:Uid="UserControl_1" x:Class="System.Activities.Core.Presentation.DynamicActivityPropertyChooser"
+             x:ClassModifier="internal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:sacp="clr-namespace:System.Activities.Core.Presentation"
+             xmlns:system='clr-namespace:System;assembly=mscorlib'
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <UserControl.Resources>
+    <sacp:DynamicActivityPropertyToTooltipConverter x:Uid="sacp:TooltipConverter_1" x:Key="tooltipConverter" />
+    <system:String x:Uid="String_1" x:Key="DynamicActivityPropertyChooserComboBoxAutomationName">Choose Dynamic Activity Property</system:String>
+  </UserControl.Resources>
+  <Grid x:Uid="Grid_1">
+    <ComboBox x:Uid="comboBox" Height="23" Name="comboBox" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" ItemsSource="{Binding Path=DropDownItems}" TextSearch.TextPath="Name" SelectedValuePath="Name" SelectedValue="{Binding Path=SelectedPropertyName}" AutomationProperties.AutomationId="ComboBox">
+      <ComboBox.ItemTemplate>
+        <DataTemplate x:Uid="DataTemplate_1">
+          <TextBlock x:Uid="TextBlock_1" Text="{Binding Path=Name}" HorizontalAlignment="Stretch" ToolTip="{Binding Converter={StaticResource tooltipConverter}}" />
+        </DataTemplate>
+      </ComboBox.ItemTemplate>
+      <ComboBox.Style>
+          <Style x:Uid="Style_1">
+              <Style.Triggers>
+                  <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Source={x:Static sacp:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                      <Setter x:Uid="Setter_1" Property="AutomationProperties.Name" Value="{StaticResource DynamicActivityPropertyChooserComboBoxAutomationName}"/>
+                  </DataTrigger>
+              </Style.Triggers>              
+          </Style>
+      </ComboBox.Style>
+    </ComboBox>
+  </Grid>
+</UserControl>

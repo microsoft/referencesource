@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="System.Activities.Presentation.Annotations.DockedAnnotationView"
+             x:ClassModifier="internal"
+             x:Name="root" x:Uid="root" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             AutomationProperties.AutomationId="DockedAnnotation">
+  <UserControl.Resources>
+		<DrawingBrush x:Uid="DrawingBrush_1" x:Key="UndockButtonBrush" Stretch="Uniform">
+			<DrawingBrush.Drawing>
+				<DrawingGroup x:Uid="DrawingGroup_1">
+					<DrawingGroup.Children>
+						<GeometryDrawing x:Uid="GeometryDrawing_1" Brush="Transparent" Geometry="F1 M 0.00780387,0.00520802L 12.0078,0.00520802L 12.0078,12.0052L 0.00780387,12.0052L 0.00780387,0.00520802 Z ">
+							<GeometryDrawing.Pen>
+								<Pen x:Uid="Pen_1" Thickness="0.8" LineJoin="Round" Brush="Transparent" />
+							</GeometryDrawing.Pen>
+						</GeometryDrawing>
+						<GeometryDrawing x:Uid="GeometryDrawing_2" Brush="{DynamicResource AnnotationDockButtonBrush}" Geometry="F1 M 1.00779,8.50521L 1.00779,3.50526L 6.00779,3.50526L 6.00779,1.83857L 6.84107,1.83857L 6.84107,5.58857L 11.0078,5.58857L 11.0078,6.42188L 6.84107,6.42188L 6.84107,10.1718L 6.00779,10.1718L 6.00779,8.50521L 1.00779,8.50521 Z "/>
+					</DrawingGroup.Children>
+				</DrawingGroup>
+			</DrawingBrush.Drawing>
+		</DrawingBrush>
+
+		<DrawingBrush x:Uid="DrawingBrush_2" x:Key="UndockButtonHighlightBrush" Stretch="Uniform">
+			<DrawingBrush.Drawing>
+				<DrawingGroup x:Uid="DrawingGroup_2">
+					<DrawingGroup.Children>
+						<GeometryDrawing x:Uid="GeometryDrawing_3" Brush="{DynamicResource AnnotationDockButtonHoverBackgroundBrush}" Geometry="F1 M 0.00780387,0.00520802L 12.0078,0.00520802L 12.0078,12.0052L 0.00780387,12.0052L 0.00780387,0.00520802 Z ">
+							<GeometryDrawing.Pen>
+								<Pen x:Uid="Pen_2" Thickness="0.8" LineJoin="Round" Brush="{DynamicResource AnnotationDockButtonHoverBorderBrush}"/>
+							</GeometryDrawing.Pen>
+						</GeometryDrawing>
+						<GeometryDrawing x:Uid="GeometryDrawing_4" Brush="{DynamicResource AnnotationDockButtonHoverBrush}" Geometry="F1 M 1.00779,8.50521L 1.00779,3.50526L 6.00779,3.50526L 6.00779,1.83857L 6.84107,1.83857L 6.84107,5.58857L 11.0078,5.58857L 11.0078,6.42188L 6.84107,6.42188L 6.84107,10.1718L 6.00779,10.1718L 6.00779,8.50521L 1.00779,8.50521 Z "/>
+					</DrawingGroup.Children>
+				</DrawingGroup>
+			</DrawingBrush.Drawing>
+		</DrawingBrush>
+
+		<ControlTemplate x:Uid="ControlTemplate_1" x:Key="UndockButtonTemplate">
+			<Rectangle x:Uid="Rectangle_1" Fill="{StaticResource ResourceKey=UndockButtonBrush}" />
+		</ControlTemplate>
+
+		<ControlTemplate x:Uid="ControlTemplate_2" x:Key="UndockButtonHighlightTemplate">
+			<Rectangle x:Uid="Rectangle_2" Fill="{StaticResource ResourceKey=UndockButtonHighlightBrush}" />
+		</ControlTemplate>
+	</UserControl.Resources>
+  <Grid x:Uid="Grid_1" Margin="0" Background="Transparent">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition x:Uid="ColumnDefinition_1" Width="18" />
+      <ColumnDefinition x:Uid="ColumnDefinition_2" />
+      <ColumnDefinition x:Uid="ColumnDefinition_3" Width="18" />
+    </Grid.ColumnDefinitions>
+    <TextBox x:Uid="TextBox_1" x:Name="textBox" Grid.Column="1" Margin="0,4,0,4" Text="{Binding Path=AnnotationText, ElementName=root}" IsReadOnly="{Binding ElementName=root, Path=IsReadOnly}" AcceptsReturn="True" MinWidth="90" BorderThickness="0" TextWrapping="Wrap" Foreground="{DynamicResource AnnotationDockTextBrush}" Background="Transparent" ContextMenu="{x:Null}" />
+    <Button x:Uid="undockButton" x:Name="undockButton" ToolTip="{DynamicResource undockTooltip}" Grid.Column="2" Width="12" Height="12" VerticalAlignment="Top" HorizontalAlignment="Right" Click="OnUndockButtonClicked" Margin="3" Visibility="Hidden">
+			<Button.Style>
+				<Style x:Uid="Style_1" TargetType="{x:Type Button}">
+					<Setter x:Uid="Setter_1" Property="Template" Value="{StaticResource UndockButtonTemplate}" />
+					<Setter x:Uid="Setter_2" Property="FocusVisualStyle" Value="{x:Null}" />
+					<Style.Triggers>
+						<Trigger x:Uid="Trigger_1" Property="IsMouseOver" Value="True">
+							<Setter x:Uid="Setter_3" Property="Template" Value="{StaticResource UndockButtonHighlightTemplate}" />
+						</Trigger>
+						<Trigger x:Uid="Trigger_2" Property="IsFocused" Value="True">
+							<Setter x:Uid="Setter_4" Property="Template" Value="{StaticResource UndockButtonHighlightTemplate}" />
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</Button.Style>
+    </Button>
+    <Border x:Name="border" x:Uid="Border_1" Grid.Column="0" Grid.ColumnSpan="3" BorderThickness="1" BorderBrush="{DynamicResource WorkflowViewElementBorderBrush}" Visibility="Hidden" />
+  </Grid>
+</UserControl>

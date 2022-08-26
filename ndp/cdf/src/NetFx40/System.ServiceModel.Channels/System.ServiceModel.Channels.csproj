@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{c02edf29-0752-4028-853d-bbad2438b99f}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.ServiceModel.Channels</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WCF\SMDiagnostics\SMDiagnostics.csproj">
+      <Project>{b9807cc8-1745-4e4d-b4d0-7ce74ae96e1e}</Project>
+      <Name>SMDiagnostics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Configuration\System.Configuration.csproj">
+      <Project>{60ea5934-1ec8-4fb6-a76c-b9ab9ac6e26d}</Project>
+      <Name>System.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Core\System.Core.csproj">
+      <Project>{b656cf4b-8938-4bc8-b777-68da792be27d}</Project>
+      <Name>System.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WCF\IdentityModel\System.IdentityModel.csproj">
+      <Project>{c5907c00-eec5-4b0b-94b5-aee96ac5c6ba}</Project>
+      <Name>System.IdentityModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Runtime.DurableInstancing\System.Runtime.DurableInstancing.csproj">
+      <Project>{7819c9a4-5600-4dee-9314-6828ffb287c5}</Project>
+      <Name>System.Runtime.DurableInstancing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WCF\Serialization\System.Runtime.Serialization.csproj">
+      <Project>{ce33578b-efc6-4bf5-b038-e6aebb7fa3b9}</Project>
+      <Name>System.Runtime.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\clr\src\managedlibraries\security\System.Security.csproj">
+      <Project>{42151cfd-485b-404b-ae9c-2b98ce973704}</Project>
+      <Name>System.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WCF\ServiceModel\System.ServiceModel.csproj">
+      <Project>{853a7165-f1ef-45a9-9081-e584debe6bba}</Project>
+      <Name>System.ServiceModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\System.ServiceModel.Internals\System.ServiceModel.Internals.csproj">
+      <Project>{7835b9e8-7e4e-42bc-ba8e-09309362af70}</Project>
+      <Name>System.ServiceModel.Internals</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NetFx20\System.Web.Services\System.Web.Services.csproj">
+      <Project>{9065040b-0061-4561-918e-49917268b40a}</Project>
+      <Name>System.Web.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="System\ServiceModel\Channels\ByteStreamBufferedMessageData.cs" />
+    <Compile Include="System\ServiceModel\Channels\ByteStreamMessage.cs" />
+    <Compile Include="System\ServiceModel\Channels\ByteStreamMessageEncoder.cs" />
+    <Compile Include="System\ServiceModel\Channels\ByteStreamMessageEncoderFactory.cs" />
+    <Compile Include="System\ServiceModel\Channels\ByteStreamMessageEncodingBindingElement.cs" />
+    <Compile Include="System\ServiceModel\Channels\ByteStreamMessageUtility.cs" />
+    <Compile Include="System\ServiceModel\Channels\ClientUdpOutputChannel.cs" />
+    <Compile Include="System\ServiceModel\Channels\DuplicateMessageDetector.cs" />
+    <Compile Include="System\ServiceModel\Channels\HttpRequestMessageExtensionMethods.cs" />
+    <Compile Include="System\ServiceModel\Channels\HttpResponseMessageExtensionMethods.cs" />
+    <Compile Include="System\ServiceModel\Channels\IUdpReceiveHandler.cs" />
+    <Compile Include="System\ServiceModel\Channels\MessageExtensionMethods.cs" />
+    <Compile Include="System\ServiceModel\Channels\NetworkInterfaceMessageProperty.cs" />
+    <Compile Include="System\ServiceModel\Channels\ServerUdpOutputChannel.cs" />
+    <Compile Include="System\ServiceModel\Channels\SynchronizedRandom.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpChannelBase.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpChannelFactory.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpChannelListener.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpConstants.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpDuplexChannel.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpOutputChannel.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpReplyChannel.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpRequestContext.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpRetransmissionSettings.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpSocket.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpSocketReceiveManager.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpTransportBindingElement.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpTransportBindingElementPolicy.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpTransportImporter.cs" />
+    <Compile Include="System\ServiceModel\Channels\UdpUtility.cs" />
+    <Compile Include="System\ServiceModel\Channels\XmlBufferedByteStreamReader.cs" />
+    <Compile Include="System\ServiceModel\Channels\XmlByteStreamReader.cs" />
+    <Compile Include="System\ServiceModel\Channels\XmlByteStreamWriter.cs" />
+    <Compile Include="System\ServiceModel\Channels\XmlStreamedByteStreamReader.cs" />
+    <Compile Include="System\ServiceModel\Configuration\ByteStreamConfigurationStrings.cs" />
+    <Compile Include="System\ServiceModel\Configuration\ByteStreamMessageEncodingElement.cs" />
+    <Compile Include="System\ServiceModel\Configuration\Properties.cs" />
+    <Compile Include="System\ServiceModel\Configuration\UdpBindingCollectionElement.cs" />
+    <Compile Include="System\ServiceModel\Configuration\UdpBindingElement.cs" />
+    <Compile Include="System\ServiceModel\Configuration\UdpRetransmissionSettingsElement.cs" />
+    <Compile Include="System\ServiceModel\Configuration\UdpTransportConfigurationStrings.cs" />
+    <Compile Include="System\ServiceModel\Configuration\UdpTransportElement.cs" />
+    <Compile Include="System\ServiceModel\UdpBinding.cs" />
+    <Compile Include="TD.Designer.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

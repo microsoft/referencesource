@@ -1,0 +1,551 @@
+﻿<UserControl
+    x:Uid="UserControl_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:minimap="clr-namespace:System.Activities.Presentation"
+    xmlns:sapa="clr-namespace:System.Activities.Presentation.Annotations"
+    xmlns:proj="clr-namespace:System.Activities.Presentation.View" 
+    x:Class="System.Activities.Presentation.View.DesignerView"
+    x:Name="xnDesignerView"
+    Style="{DynamicResource WorkflowUserControlStyle}">
+    <UserControl.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+            <ResourceDictionary.MergedDictionaries>
+                <minimap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="pack://application:,,,/System.Activities.Presentation;component/System/Activities/Presentation/ColorResources.xaml"/>
+                <minimap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_3" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+                <minimap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+                <minimap:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_5" Source="pack://application:,,,/System.Activities.Presentation;component/Themes/StringResources.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <s:String x:Uid="String_1" x:Key="BreadCrumbObjectSeparator">Arrow</s:String>
+            <proj:BreadCrumbTextConverter x:Uid="proj:BreadCrumbTextConverter_1" x:Key="breadCrumbTextConverter"/>
+            <proj:ContextMenuIconProvider x:Uid="proj:ContextMenuIconProvider_1" x:Key="contextMenuIconProvider"/>
+            <proj:CanExpandCollapseAllConverter x:Uid="proj:CanExpandCollapseAllConverter_1" x:Key="canExpandCollapseAllConverter"/>
+            <proj:ExpandAllCollapseAllToggleConverter x:Uid="proj:ExpandAllCollapseAllToggleConverter_1" x:Key="expandAllCollapseAllToggleConverter"/>
+            <minimap:TextFormattingConverter x:Uid="minimap:TextFormattingConverter_1" x:Key="textFormattingConverter"/>
+            <Style x:Uid="Style_1" TargetType="ItemsControl" x:Key="BreadCrumbPanelStyle">
+                <Setter x:Uid="Setter_1" Property="ItemsPanel">
+                    <Setter.Value>
+                        <ItemsPanelTemplate x:Uid="ItemsPanelTemplate_1">
+                            <StackPanel x:Uid="StackPanel_1" Orientation="Horizontal" FlowDirection="LeftToRight" Background="{StaticResource DesignerViewBackground}" CanHorizontallyScroll="False"/>
+                        </ItemsPanelTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Uid="Style_2" TargetType="{x:Type Rectangle}" x:Key="menuItemRectangle">
+                <Setter x:Uid="Setter_2" Property="Width" Value="16"/>
+                <Setter x:Uid="Setter_3" Property="Height" Value="16"/>
+            </Style>
+
+            <Style x:Uid="Style_4" TargetType="ListBoxItem">
+                <Style.Resources>
+                    <SolidColorBrush x:Uid="SolidColorBrush_1" x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FFCCCCCC"/>
+                </Style.Resources>
+            </Style>
+
+            <Style x:Uid="Style_8" x:Key="statusBarItemStyle" TargetType="{x:Type StatusBarItem}">
+                <Setter x:Uid="Setter_10" Property="Margin" Value="0,1"/>
+                <Setter x:Uid="Setter_11" Property="Padding" Value="0"/>
+                <Setter x:Uid="Setter_12" Property="VerticalAlignment" Value="Stretch"/>
+                <Setter x:Uid="Setter_13" Property="VerticalContentAlignment" Value="Stretch"/>
+            </Style>
+
+            <ControlTemplate x:Uid="ControlTemplate_34" x:Key="BreadCrumbArrowTemplate" TargetType="{x:Type Separator}">
+                <Viewbox x:Uid="BreadCrumbArrow1" x:Name="BreadCrumbArrow" HorizontalAlignment="Right" Margin="2,2,2,1" Width="5">
+                    <Canvas x:Uid="Canvas_11" Width="5.00018" Height="8.00012">
+                        <Path x:Uid="Line21" x:Name="Line2" Width="4.99994" Height="5" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Stroke="{DynamicResource WorkflowViewElementBorderBrush}" Data="F1 M 1,1L 3.99994,4"/>
+                        <Path x:Uid="Line_11" x:Name="Line_1" Width="5" Height="5" Canvas.Left="0.000183105" Canvas.Top="3.00012" Stretch="Fill" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Stroke="{DynamicResource WorkflowViewElementBorderBrush}" Data="F1 M 1.00018,7.00012L 4.00018,4.00012"/>
+                    </Canvas>
+                </Viewbox>
+            </ControlTemplate>
+          
+            <Style x:Uid="Style_10" x:Key="breadCrumbSeparatorStyle" TargetType="{x:Type Separator}">
+              <Setter x:Uid="Setter_31" Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+              <Setter x:Uid="Setter_32" Property="Margin" Value="0,2,0,2"/>
+              <Setter x:Uid="Setter_33" Property="Focusable" Value="false"/>
+              <Setter x:Uid="Setter_34" Property="AutomationProperties.Name" Value="{Binding Source={StaticResource BreadCrumbObjectSeparator}}" />
+              <Setter x:Uid="Setter_35" Property="Template" Value="{StaticResource BreadCrumbArrowTemplate}" />
+            </Style>
+            <Cursor x:Uid="PanCursor_1" x:Key="PanningCursor">/System.Activities.Presentation;component/Resources/Panning.cur</Cursor>
+            <Cursor x:Uid="PanCursor_2" x:Key="ReadyToPanCursor">/System.Activities.Presentation;component/Resources/ReadyToPan.cur</Cursor>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.CommandBindings>
+        <CommandBinding x:Uid="CommandBinding_1" Command="{x:Static proj:DesignerView.GoToParentCommand}" CanExecute="OnGoToParentCommandCanExecute" Executed="OnGoToParentCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_2" Command="{x:Static proj:DesignerView.ExpandCommand}" CanExecute="OnExpandCommandCanExecute" Executed="OnExpandCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_28" Command="{x:Static proj:DesignerView.ExpandAllCommand}" CanExecute="OnExpandAllCommandCanExecute" Executed="OnExpandAllCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_33" Command="{x:Static proj:DesignerView.CollapseCommand}" CanExecute="OnCollapseCommandCanExecute" Executed="OnCollapseCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_43" Command="{x:Static proj:DesignerView.CollapseAllCommand}" CanExecute="OnCollapseAllCommandCanExecute" Executed="OnCollapseAllCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_44" Command="{x:Static proj:DesignerView.RestoreCommand}" CanExecute="OnRestoreCommandCanExecute" Executed="OnRestoreCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_34" Command="{x:Static proj:DesignerView.ExpandInPlaceCommand}" CanExecute="OnExpandInPlaceCommandCanExecute" Executed="OnExpandInPlaceCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_3" Command="{x:Static proj:DesignerView.CutCommand}" CanExecute="OnCutCommandCanExecute" Executed="OnCutCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_4" Command="{x:Static proj:DesignerView.CopyCommand}" CanExecute="OnCopyCommandCanExecute" Executed="OnCopyCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_5" Command="{x:Static proj:DesignerView.PasteCommand}" CanExecute="OnPasteCommandCanExecute" Executed="OnPasteCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_6" Command="{x:Static ApplicationCommands.Delete}" CanExecute="OnDeleteCommandCanExecute" Executed="OnDeleteCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_7" Command="{x:Static proj:DesignerView.InsertBreakpointCommand}" CanExecute="OnInsertBreakpointCommandCanExecute" Executed="OnInsertBreakpointCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_8" Command="{x:Static proj:DesignerView.DeleteBreakpointCommand}" CanExecute="OnDeleteBreakpointCommandCanExecute" Executed="OnDeleteBreakpointCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_9" Command="{x:Static proj:DesignerView.EnableBreakpointCommand}" CanExecute="OnEnableBreakpointCommandCanExecute" Executed="OnEnableBreakpointCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_10" Command="{x:Static proj:DesignerView.DisableBreakpointCommand}" CanExecute="OnDisableBreakpointCommandCanExecute" Executed="OnDisableBreakpointCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_11" Command="{x:Static ApplicationCommands.Properties}" CanExecute="OnShowPropertiesCommandCanExecute" Executed="OnShowPropertiesCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_12" Command="{x:Static proj:DesignerView.SelectAllCommand}"  Executed="OnSelectAllCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_13" Command="{x:Static proj:DesignerView.SaveAsImageCommand}" CanExecute="OnSaveAsImageCommandCanExecute" Executed="OnSaveAsImageCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_14" Command="{x:Static proj:DesignerView.CopyAsImageCommand}" CanExecute="OnCopyAsImageCommandCanExecute" Executed="OnCopyAsImageCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_15" Command="{x:Static proj:DesignerView.ZoomInCommand}" CanExecute="OnZoomInCommandCanExecute" Executed="OnZoomInCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_16" Command="{x:Static proj:DesignerView.ZoomOutCommand}" CanExecute="OnZoomOutCommandCanExecute" Executed="OnZoomOutCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_17" Command="{x:Static proj:DesignerView.ToggleArgumentDesignerCommand}" CanExecute="OnToggleArgumentDesignerCommandCanExecute" Executed="OnToggleArgumentDesignerCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_18" Command="{x:Static proj:DesignerView.ToggleVariableDesignerCommand}" CanExecute="OnToggleVariableDesignerCommandCanExecute" Executed="OnToggleVariableDesignerCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_27" Command="{x:Static proj:DesignerView.ToggleImportsDesignerCommand}" CanExecute="OnToggleImportsDesignerCommandCanExecute" Executed="OnToggleImportsDesignerCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_19" Command="{x:Static proj:DesignerView.CreateVariableCommand}" CanExecute="OnCreateVariableCommandCanExecute" Executed="OnCreateVariableCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_20" Command="{x:Static proj:DesignerView.ToggleMiniMapCommand}" CanExecute="OnToggleMiniMapCommandExecute" Executed="OnToggleMiniMapCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_21" Command="{x:Static proj:DesignerView.CycleThroughDesignerCommand}" CanExecute="OnCycleThroughDesignerCommandCanExecute" Executed="OnCycleThroughDesignerCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_23" Command="{x:Static proj:DesignerView.CreateWorkflowElementCommand}" CanExecute="OnCreateWorkflowElementCommandCanExecute" Executed="OnCreateWorkflowElementCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_22" Command="{x:Static proj:DesignerView.CreateArgumentCommand}" CanExecute="OnCreateArgumentCommandCanExecute" Executed="OnCreateArgumentCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_25" Command="{x:Static proj:DesignerView.UndoCommand}" CanExecute="OnUndoCommandCanExecute" Executed="OnUndoCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_24" Command="{x:Static proj:DesignerView.RedoCommand}" CanExecute="OnRedoCommandCanExecute" Executed="OnRedoCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_26" Command="{x:Static proj:DesignerView.CommitCommand}" CanExecute="OnCommitCommandCanExecute" Executed="OnCommitCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_35" Command="{x:Static proj:DesignerView.FitToScreenCommand}" CanExecute="OnFitToScreenCommandCanExecute" Executed="OnFitToScreenCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_32" Command="{x:Static proj:DesignerView.ResetZoomCommand}" CanExecute="OnResetZoomCommandCanExecute" Executed="OnResetZoomCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_31" Command="{x:Static proj:ExpressionTextBox.CompleteWordCommand}"/>
+        <CommandBinding x:Uid="CommandBinding_36" Command="{x:Static proj:ExpressionTextBox.GlobalIntellisenseCommand}" />
+        <CommandBinding x:Uid="CommandBinding_29" Command="{x:Static proj:ExpressionTextBox.ParameterInfoCommand}" />
+        <CommandBinding x:Uid="CommandBinding_30" Command="{x:Static proj:ExpressionTextBox.QuickInfoCommand}"/>
+        <CommandBinding x:Uid="CommandBinding_37" Command="{x:Static proj:DesignerView.MoveFocusCommand}" CanExecute="OnMoveFocusCommandCanExecute" Executed="OnMoveFocusCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_38" Command="{x:Static proj:DesignerView.ToggleSelectionCommand}" CanExecute="OnToggleSelectionCommandCanExecute" Executed="OnToggleSelectionCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_41" Command="{x:Static proj:ExpressionTextBox.IncreaseFilterLevelCommand}"/>
+        <CommandBinding x:Uid="CommandBinding_42" Command="{x:Static proj:ExpressionTextBox.DecreaseFilterLevelCommand}"/>
+        <CommandBinding x:Uid="CommandBinding_45" Command="{x:Static proj:DesignerView.AddAnnotationCommand}" CanExecute="OnAddAnnotationCommandCanExecute" Executed="OnAddAnnotationCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_46" Command="{x:Static proj:DesignerView.EditAnnotationCommand}" CanExecute="OnEditAnnotationCommandCanExecute" Executed="OnEditAnnotationCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_47" Command="{x:Static proj:DesignerView.DeleteAnnotationCommand}" CanExecute="OnDeleteAnnotationCommandCanExecute" Executed="OnDeleteAnnotationCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_48" Command="{x:Static proj:DesignerView.ShowAllAnnotationCommand}" CanExecute="OnShowAllAnnotationCommandCanExecute" Executed="OnShowAllAnnotationCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_49" Command="{x:Static proj:DesignerView.HideAllAnnotationCommand}" CanExecute="OnHideAllAnnotationCommandCanExecute" Executed="OnHideAllAnnotationCommandExecuted"/>
+        <CommandBinding x:Uid="CommandBinding_50" Command="{x:Static proj:DesignerView.DeleteAllAnnotationCommand}" CanExecute="OnDeleteAllAnnotationCommandCanExecute" Executed="OnDeleteAllAnnotationCommandExecuted"/>
+
+  </UserControl.CommandBindings>
+
+    <UserControl.ContextMenu>
+        <ContextMenu x:Uid="ContextMenu_1" AutomationProperties.AutomationId="WFDesigner_ContextMenu" Loaded="OnWorkflowViewContextMenuLoaded" Closed="OnWorkflowViewContextMenuClosed">
+            <MenuItem x:Uid="goToParentMenuItem" Command="{x:Static proj:DesignerView.GoToParentCommand}" Header="{StaticResource menuItemCollapse}" Visibility="Collapsed" Loaded="OnGoToParentMenuLoaded" Name="goToParentMenuItem" AutomationProperties.AutomationId="GoToParentMenuItem" />
+            <MenuItem x:Uid="expandMenuItem" Command="{x:Static proj:DesignerView.ExpandCommand}" Header="{StaticResource menuItemExpand}" Visibility="Collapsed" Loaded="OnExpandMenuLoaded" Name="expandMenuItem" AutomationProperties.AutomationId="ExpandMenuItem" />
+            <MenuItem x:Uid="collapseMenuItem" Command="{x:Static proj:DesignerView.CollapseCommand}" Header="{StaticResource menuItemCollapseInPlace}" Visibility="Collapsed" Loaded="OnCollapseExpandInPlaceMenuLoaded" Name="collapseMenuItem" AutomationProperties.AutomationId="CollapseMenuItem" />
+            <MenuItem x:Uid="expandInPlaceMenuItem" Command="{x:Static proj:DesignerView.ExpandInPlaceCommand}" Header="{StaticResource menuItemExpandInPlace}" Visibility="Collapsed" Loaded="OnCollapseExpandInPlaceMenuLoaded" Name="expandInPlaceMenuItem" AutomationProperties.AutomationId="ExpandInPlaceMenuItem" />
+            <Separator x:Uid="Separator_1" Loaded="OnMenuItemSeparatorLoaded" Tag="GoToParentCommand;ExpandCommand"/>
+            <MenuItem x:Uid="MenuItem_1" Command="{x:Static proj:DesignerView.CutCommand}" Header="{StaticResource menuItemCut}"  AutomationProperties.AutomationId="CutMenuItem" >
+                <MenuItem.Icon>
+                    <MultiBinding x:Uid="MultiBinding_3" Converter="{StaticResource contextMenuIconProvider}" ConverterParameter="Cut">
+                        <Binding x:Uid="Binding_5" RelativeSource="{RelativeSource Self}" Mode="OneTime"/>
+                        <Binding x:Uid="Binding_6" RelativeSource="{RelativeSource Self}" Mode="OneWay" Path="IsEnabled"/>
+                    </MultiBinding>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem x:Uid="MenuItem_2" Command="{x:Static proj:DesignerView.CopyCommand}" Header="{StaticResource menuItemCopy}" AutomationProperties.AutomationId="CopyMenuItem" x:Name="copyMenuItem">
+                <MenuItem.Icon>
+                    <MultiBinding x:Uid="MultiBinding_4" Converter="{StaticResource contextMenuIconProvider}" ConverterParameter="Copy">
+                        <Binding x:Uid="Binding_7" RelativeSource="{RelativeSource Self}" Mode="OneTime"/>
+                        <Binding x:Uid="Binding_8" RelativeSource="{RelativeSource Self}" Mode="OneWay" Path="IsEnabled"/>
+                    </MultiBinding>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem x:Uid="MenuItem_3" Command="{x:Static proj:DesignerView.PasteCommand}" Header="{StaticResource menuItemPaste}" AutomationProperties.AutomationId="PasteMenuItem" >
+                <MenuItem.Icon>
+                    <MultiBinding x:Uid="MultiBinding_5" Converter="{StaticResource contextMenuIconProvider}" ConverterParameter="Paste">
+                        <Binding x:Uid="Binding_9" RelativeSource="{RelativeSource Self}" Mode="OneTime"/>
+                        <Binding x:Uid="Binding_10" RelativeSource="{RelativeSource Self}" Mode="OneWay" Path="IsEnabled"/>
+                    </MultiBinding>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem x:Uid="MenuItem_4" Command="{x:Static ApplicationCommands.Delete}" Header="{StaticResource menuItemDelete}" AutomationProperties.AutomationId="DeleteMenuItem" >
+                <MenuItem.Icon>
+                    <MultiBinding x:Uid="MultiBinding_6" Converter="{StaticResource contextMenuIconProvider}" ConverterParameter="Delete">
+                        <Binding x:Uid="Binding_11" RelativeSource="{RelativeSource Self}" Mode="OneTime"/>
+                        <Binding x:Uid="Binding_12" RelativeSource="{RelativeSource Self}" Mode="OneWay" Path="IsEnabled"/>
+                    </MultiBinding>
+                </MenuItem.Icon>
+            </MenuItem>
+
+      <Separator x:Uid="Separator_3" Loaded="OnMenuItemSeparatorLoaded" Tag="Annotations"/>
+      <MenuItem x:Uid="MenuItem_17" Name="Annotations" Header="An_notations" Loaded="OnAnnotationsMenuLoaded" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="AnnotationsMenuItem" >
+        <MenuItem x:Uid="MenuItem_13" Command="{x:Static proj:DesignerView.AddAnnotationCommand}" Header="_Add Annotation" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="AddAnnotationMenuItem" />
+        <MenuItem x:Uid="MenuItem_15" Command="{x:Static proj:DesignerView.EditAnnotationCommand}" Header="_Edit Annotation" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="EditAnnotationMenuItem" />
+        <MenuItem x:Uid="MenuItem_14" Command="{x:Static proj:DesignerView.DeleteAnnotationCommand}" Header="_Delete Annotation" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="DeleteAnnotationMenuItem" />
+        <Separator x:Uid="Separator_17" Style="{StaticResource separatorStyle}" />
+        <MenuItem x:Uid="MenuItem_18" Command="{x:Static proj:DesignerView.ShowAllAnnotationCommand}" Header="_Show All Annotations" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="ShowAllAnnotationMenuItem"/>
+        <MenuItem x:Uid="MenuItem_19" Command="{x:Static proj:DesignerView.HideAllAnnotationCommand}" Header="_Hide All Annotations" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="HideAllAnnotationMenuItem"/>
+        <MenuItem x:Uid="MenuItem_20" Command="{x:Static proj:DesignerView.DeleteAllAnnotationCommand}" Header="De_lete All Annotations" Style="{StaticResource menuItemStyle}" AutomationProperties.AutomationId="DeleteAllAnnotationMenuItem"/>
+      </MenuItem>
+
+            <Separator x:Uid="Separator_2" Loaded="OnMenuItemSeparatorLoaded" Tag="BreakpointMenu" />
+            <MenuItem x:Uid="BreakpointMenu" Header="{StaticResource menuItemBreakpoint}" Visibility="Collapsed" Loaded="OnBreakpointMenuLoaded" Name="BreakpointMenu" AutomationProperties.AutomationId="BreakpointMenuItem" >
+                <MenuItem x:Uid="MenuItem_5" Command="{x:Static proj:DesignerView.InsertBreakpointCommand}" Header="{StaticResource menuItemInsertBreakpoint}" Visibility="Collapsed" Loaded="OnInsertBreakpointMenuLoaded" AutomationProperties.AutomationId="InsertBreakpointMenuItem" >
+                    <MenuItem.Icon>
+                        <Rectangle x:Uid="Rectangle_9" Fill="{StaticResource BoundBreakpointIcon}" Style="{StaticResource menuItemRectangle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Uid="MenuItem_6" Command="{x:Static proj:DesignerView.DeleteBreakpointCommand}" Header="{StaticResource menuItemDeleteBreakpoint}" Visibility="Collapsed" Loaded="OnDeleteBreakpointMenuLoaded" AutomationProperties.AutomationId="DeleteBreakpointMenuItem" >
+                    <MenuItem.Icon>
+                        <Rectangle x:Uid="Rectangle_10" Fill="{StaticResource DeleteBreakpointIcon}" Style="{StaticResource menuItemRectangle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Uid="MenuItem_7" Command="{x:Static proj:DesignerView.EnableBreakpointCommand}" Header="{StaticResource menuItemEnableBreakpoint}" Visibility="Collapsed" Loaded="OnEnableBreakpointMenuLoaded" AutomationProperties.AutomationId="EnableBreakpointMenuItem" >
+                    <MenuItem.Icon>
+                        <Rectangle x:Uid="Rectangle_11" Fill="{StaticResource EnabledBreakpointIcon}" Style="{StaticResource menuItemRectangle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Uid="MenuItem_8" Command="{x:Static proj:DesignerView.DisableBreakpointCommand}" Header="{StaticResource menuItemDisableBreakpoint}" Visibility="Collapsed" Loaded="OnDisableBreakpointMenuLoaded" AutomationProperties.AutomationId="DisableBreakpointMenuItem" >
+                    <MenuItem.Icon>
+                        <Rectangle x:Uid="Rectangle_12" Fill="{StaticResource DisabledBreakpointIcon}" Style="{StaticResource menuItemRectangle}"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+          
+            <Separator x:Uid="Separator_16" Loaded="OnMenuItemSeparatorLoaded" Tag="SaveAsImageCommand;CopyAsImageCommand"/>
+            <MenuItem x:Uid="MenuItem_9" Command="{x:Static proj:DesignerView.CopyAsImageCommand}" Header="{StaticResource menuItemCopyAsImage}" Loaded="OnCopyAsImageMenuLoaded" AutomationProperties.AutomationId="CopyAsImageMenuItem" ></MenuItem>
+            <MenuItem x:Uid="MenuItem_10" Command="{x:Static proj:DesignerView.SaveAsImageCommand}" Header="{StaticResource menuItemSaveAsImage}" Loaded="OnSaveAsImageMenuLoaded" AutomationProperties.AutomationId="SaveAsImageMenuItem" ></MenuItem>
+            <Separator x:Uid="Separator_4" Loaded="OnMenuItemSeparatorLoaded" Tag="CreateVariableCommand;Properties"/>
+            <MenuItem x:Uid="MenuItem_11" Command="{x:Static proj:DesignerView.CreateVariableCommand}" Header="{StaticResource menuItemCreateVariable}" AutomationProperties.AutomationId="CreateVariableMenuItem" Loaded="OnCreateVariableMenuLoaded">
+                <!--MenuItem.Icon> update when icon is available...
+                    <Rectangle x:Uid="Rectangle_13" Fill="{StaticResource CreateVariableIcon}" Style="{StaticResource menuItemRectangle}"/>
+                </MenuItem.Icon-->
+            </MenuItem>
+            <MenuItem x:Uid="MenuItem_12" Command="{x:Static ApplicationCommands.Properties}" Header="{StaticResource menuItemProperties}" Visibility="Collapsed" Loaded="OnPropertiesMenuLoaded" AutomationProperties.AutomationId="PropertiesMenuItem" />
+            <Separator x:Uid="Separator_5" Loaded="OnMenuItemSeparatorLoaded" Tag="{x:Static proj:DesignerView.CustomMenuItemsSeparatorCommand}"/>
+        </ContextMenu>
+    </UserControl.ContextMenu>
+
+    <Grid x:Uid="Grid_2" Background="{DynamicResource DesignerViewBackground}">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_4" Height="Auto" />
+            <RowDefinition x:Uid="RowDefinition_5" Height="*" />
+            <RowDefinition x:Uid="RowDefinition_6" Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <FrameworkElement x:Uid="minimapPlacementTarget" x:Name="minimapPlacementTarget" Grid.Row="0" HorizontalAlignment="Right" Visibility="Hidden"/>
+
+        <Grid x:Uid="BreadCrumbBarLayout" x:Name="BreadCrumbBarLayout" Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Uid="ColumnDefinition_14" Width="*"/>
+                <ColumnDefinition x:Uid="ColumnDefinition_15" Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ScrollViewer x:Uid="ScrollViewer_1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Disabled" FlowDirection="RightToLeft" HorizontalAlignment="Left" Grid.Column="0">
+                <StackPanel x:Uid="StackPanel_2" FlowDirection="LeftToRight" CanHorizontallyScroll="False" Orientation="Horizontal" >
+                    <ListBox x:Uid="breadCrumbListBox" x:Name="breadCrumbListBox" Style="{StaticResource BreadCrumbPanelStyle}" HorizontalAlignment="Left" BorderBrush="Transparent" BorderThickness="0" PreviewKeyDown="OnBreadCrumbNavigation" Background="{DynamicResource DesignerViewBackground}"
+                             AutomationProperties.Name="Breadcrumb bar">
+                        <!-- breadcrumb container style : make it focusable for actual objects and non focusable for arrow connector
+                           register for mouse left button down and key down (Enter) events -->
+                        <ListBox.ItemContainerStyle>
+                            <Style x:Uid="Style_9" TargetType="ListBoxItem">
+                                <Style.Setters>
+                                    <Setter x:Uid="Setter_15" Property="AutomationProperties.Name">
+                                        <Setter.Value>
+                                            <MultiBinding x:Uid="MultiBinding_2" Converter="{StaticResource breadCrumbTextConverter}">
+                                                <Binding x:Uid="Binding_3"/>
+                                                <Binding x:Uid="Binding_4" Path="DisplayName"/>
+                                            </MultiBinding>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter x:Uid="Setter_4" Property="UIElement.Focusable" Value="True"/>
+                                    <EventSetter x:Uid="EventSetter_1" Event="UIElement.MouseLeftButtonUp" Handler="OnBreadCrumbClick"/>
+                                    <EventSetter x:Uid="EventSetter_2" Event="UIElement.KeyDown" Handler="OnBreadCrumbClick"/>
+                                </Style.Setters>
+                                <Style.Triggers>
+                                    <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=ItemType.Name}" Value="BreadCrumbObjectSeparator">
+                                        <Setter x:Uid="Setter_5" Property="UIElement.Focusable" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Source={x:Static minimap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                                        <Setter x:Uid="Setter_14" Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate x:Uid="ControlTemplate_1">
+                                                    <StackPanel x:Uid="StackPanel_4" Orientation="Horizontal">
+                                                        <Separator x:Uid="Separator_18" x:Name="Separator" Style="{StaticResource breadCrumbSeparatorStyle}"/>
+                                                        <ContentPresenter x:Uid="ContentPresenter_1" ContentTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource AncestorType=ListBox}}" Content="{Binding}"/>
+                                                    </StackPanel>
+                                                    <ControlTemplate.Triggers>
+                                                        <DataTrigger x:Uid="DataTrigger_31" Binding="{Binding RelativeSource={RelativeSource PreviousData}}" Value="{x:Null}">
+                                                            <Setter x:Uid="Setter_41" Property="Visibility" TargetName="Separator" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger x:Uid="DataTrigger_8" Binding="{Binding Source={x:Static minimap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="true">
+                                        <Setter x:Uid="Setter_23" Property="Template">
+                                            <Setter.Value>
+                                              <ControlTemplate x:Uid="ControlTemplate_3">
+                                                <ContentPresenter x:Uid="ContentPresenter_2" ContentTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource AncestorType=ListBox}}" Content="{Binding}"/>
+                                              </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:Uid="DataTemplate_1">
+                                <!-- item template - this is content presenter, which by default binds to activity
+                                but for breadcrumb object separator (an arrow) displays only arrow -->
+                                <ContentPresenter x:Uid="itemPresenter" Content="{Binding}" x:Name="itemPresenter">
+                                    <ContentPresenter.Style>
+                                        <Style x:Uid="Style_6" TargetType="{x:Type ContentPresenter}">
+                                            <Setter x:Uid="Setter_6" Property="Focusable" Value="False"/>
+                                            <Setter x:Uid="Setter_7" Property="ContentTemplate">
+                                                <Setter.Value>
+                                                    <DataTemplate x:Uid="DataTemplate_2">
+                                                        <TextBlock x:Uid="TextBlock_1" x:Name="breadCrumbElementText" Margin="5,5,5,5" Padding="0"  Foreground="{DynamicResource WorkflowViewElementCaptionBrush}" Tag="{Binding}" AutomationProperties.AutomationId="{Binding RelativeSource={RelativeSource Self}, Path=Text, ConverterParameter='BC{0}', Mode=OneWay, Converter={StaticResource textFormattingConverter}}">
+                                                          <TextBlock.Text>
+                                                            <MultiBinding x:Uid="MultiBinding_1" Converter="{StaticResource breadCrumbTextConverter}">
+                                                              <Binding x:Uid="Binding_1"/>
+                                                              <Binding x:Uid="Binding_2" Path="DisplayName"/>
+                                                            </MultiBinding>
+                                                          </TextBlock.Text>
+                                                        </TextBlock>
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value = "True">
+                                                                <Setter x:Uid="Setter_16" Property="TextBlock.TextDecorations" TargetName="breadCrumbElementText" Value="Underline"/>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <MultiDataTrigger x:Uid="MultiDataTrigger_1">
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition x:Uid="Condition_1" Binding="{Binding Path=ItemType.Name}" Value="BreadCrumbObjectSeparator" />
+                                                        <Condition x:Uid="Condition_2" Binding="{Binding Source={x:Static minimap:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter x:Uid="Setter_36" Property="ContentTemplate">
+                                                        <Setter.Value>
+                                                            <DataTemplate x:Uid="DataTemplate_3">
+                                                                <Viewbox x:Uid="BreadCrumbArrow" x:Name="BreadCrumbArrow" HorizontalAlignment="Right" Margin="2,2,2,1" Width="5">
+                                                                    <Canvas x:Uid="Canvas_1" Width="5.00018" Height="8.00012">
+                                                                        <Path x:Uid="Line2" x:Name="Line2" Width="4.99994" Height="5" Canvas.Left="0" Canvas.Top="0" Stretch="Fill" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Stroke="{DynamicResource WorkflowViewElementBorderBrush}" Data="F1 M 1,1L 3.99994,4"/>
+                                                                        <Path x:Uid="Line_1" x:Name="Line_1" Width="5" Height="5" Canvas.Left="0.000183105" Canvas.Top="3.00012" Stretch="Fill" StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" Stroke="{DynamicResource WorkflowViewElementBorderBrush}" Data="F1 M 1.00018,7.00012L 4.00018,4.00012"/>
+                                                                    </Canvas>
+                                                                </Viewbox>
+                                                            </DataTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentPresenter.Style>
+                                </ContentPresenter>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
+            <Path x:Uid="Line" x:Name="Line" Height="1" Stretch="Fill" StrokeStartLineCap="Square" StrokeEndLineCap="Square" Stroke="{DynamicResource WorkflowViewElementBorderBrush}" Data="F1 M 1269.35,2L 2,2" Margin="0,0,0,0" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+            <StackPanel x:Uid="StackPanel_3" Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" FlowDirection="LeftToRight" CanHorizontallyScroll="False">
+                <StackPanel.Resources>
+                    <ControlTemplate x:Uid="ControlTemplate_2" x:Key="ExpandAllCollapseAllTemplate" TargetType="{x:Type ToggleButton}" >
+                        <Grid x:Uid="Grid_3">
+                            <TextBlock x:Uid="collapseAllText" x:Name="collapseAllText" Margin="5,5,5,5" Padding="0" Text="{Binding Path=Tag, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" Focusable="False"
+                             Foreground="{x:Static minimap:WorkflowDesignerColors.DesignerViewExpandAllCollapseAllButtonBrush}" />
+                            <Rectangle x:Uid="Rectangle_4" x:Name="FocusRectangle" StrokeThickness="1" Stroke="{DynamicResource WorkflowViewElementCaptionBrush}" StrokeDashArray="1 2" Visibility="Collapsed" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger x:Uid="DataTrigger_5" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Self}}" Value = "True">
+                                <Setter x:Uid="Setter_18" Property="TextBlock.TextDecorations" TargetName="collapseAllText" Value="Underline"/>
+                                <Setter x:Uid="Setter_19" Property="TextBlock.Foreground" TargetName="collapseAllText" Value="{x:Static minimap:WorkflowDesignerColors.DesignerViewExpandAllCollapseAllButtonMouseOverBrush}"/>
+                            </DataTrigger>
+                            <DataTrigger x:Uid="DataTrigger_6" Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Value = "True">
+                                <Setter x:Uid="Setter_20" Property="TextBlock.Text" TargetName="collapseAllText" Value="{StaticResource restore}" />
+                                <Setter x:Uid="Setter_21" Property="TextBlock.Foreground" TargetName="collapseAllText" Value="{x:Static minimap:WorkflowDesignerColors.DesignerViewExpandAllCollapseAllPressedBrush}" />
+                            </DataTrigger>
+                            <DataTrigger x:Uid="DataTrigger_7" Binding="{Binding Path=IsKeyboardFocused, RelativeSource={RelativeSource Self}}" Value = "True">
+                                <Setter x:Uid="Setter_22" Property="Visibility" TargetName="FocusRectangle" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger x:Uid="DataTrigger_4" Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}}" Value = "False">
+                                <Setter x:Uid="Setter_17" Property="TextBlock.Foreground" TargetName="collapseAllText" Value="{x:Static SystemColors.GrayTextBrush}" />
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </StackPanel.Resources>
+                <ToggleButton x:Uid="expandAllButton" x:Name="expandAllButton" Tag="{StaticResource expandAll}" Template="{DynamicResource ExpandAllCollapseAllTemplate}" UIElement.Focusable="True" AutomationProperties.Name="ExpandAll" FocusVisualStyle="{x:Null}"
+                IsEnabled="{Binding Path=RootDesigner, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}, Converter={StaticResource canExpandCollapseAllConverter}}" Loaded="OnExpandAllCollapseAllButtonLoaded">
+                    <ToggleButton.IsChecked>
+                        <MultiBinding  x:Uid="MultiBinding_7" Converter="{StaticResource expandAllCollapseAllToggleConverter}" Mode="TwoWay">
+                            <Binding x:Uid="Binding_13" RelativeSource="{RelativeSource AncestorType={x:Type proj:DesignerView}}" Path="ShouldExpandAll" Mode="TwoWay" />
+                            <Binding x:Uid="Binding_14" RelativeSource="{RelativeSource AncestorType={x:Type proj:DesignerView}}" Path="ShouldCollapseAll" Mode="OneWayToSource" />
+                        </MultiBinding>
+                    </ToggleButton.IsChecked>
+                </ToggleButton>
+                <ToggleButton x:Uid="collapseAllButton" x:Name="collapseAllButton" Tag="{StaticResource collapseAll}" Template="{DynamicResource ExpandAllCollapseAllTemplate}" UIElement.Focusable="True" AutomationProperties.Name="CollapseAll" FocusVisualStyle="{x:Null}"
+                IsEnabled="{Binding Path=RootDesigner, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}, Converter={StaticResource canExpandCollapseAllConverter}}" Loaded="OnExpandAllCollapseAllButtonLoaded">
+                    <ToggleButton.IsChecked>
+                        <MultiBinding  x:Uid="MultiBinding_8" Converter="{StaticResource expandAllCollapseAllToggleConverter}" Mode="TwoWay">
+                            <Binding x:Uid="Binding_15" RelativeSource="{RelativeSource AncestorType={x:Type proj:DesignerView}}" Path="ShouldCollapseAll" Mode="TwoWay" />
+                            <Binding x:Uid="Binding_16" RelativeSource="{RelativeSource AncestorType={x:Type proj:DesignerView}}" Path="ShouldExpandAll" Mode="OneWayToSource" />
+                        </MultiBinding>
+                    </ToggleButton.IsChecked>
+                </ToggleButton>
+            </StackPanel>
+        </Grid>
+
+        <AdornerDecorator x:Uid="AdornerDecorator_1" Grid.Row="1">
+            <Grid x:Uid="designerViewGrid" x:Name="designerViewGrid">
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Uid="RowDefinition_1" Height="3*" MinHeight="1"/>
+                    <RowDefinition x:Uid="RowDefinition_2" Height="4" />
+                    <RowDefinition x:Uid="RowDefinition_3" Height="2*" />
+                </Grid.RowDefinitions>
+                <ScrollViewer x:Uid="scrollViewer" Grid.Row="0" x:Name="scrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" 
+                              MouseMove="OnScrollViewerMouseMove" MouseLeave="OnScrollViewerMouseLeave" KeyDown="OnScrollViewerKeyDown"
+                              PreviewMouseLeftButtonUp="OnScrollViewerPreviewMouseLeftButtonUp" PreviewMouseLeftButtonDown="OnScrollViewerPreviewMouseLeftButtonDown">
+                    <Grid x:Name="scrollViewerContent" Background="Transparent" x:Uid="Grid_4" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Viewbox x:Uid="viewBox" x:Name="viewBox" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                            <Grid x:Uid="scrollableContent" x:Name="scrollableContent" Background="Transparent" TextOptions.TextFormattingMode="Display" >
+                                <Border x:Uid="designerPresenterBorder" Margin="20" Background="{StaticResource DesignerViewBackground}" BorderThickness="0">
+                                    <ContentPresenter x:Uid="designerPresenter" PreviewMouseLeftButtonDown="OnRootDesignerPreviewMouseLeftButtonDown" Margin="0" x:Name="designerPresenter" Content="{Binding Path=RootDesigner.Parent, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}" />
+                                </Border>
+                            </Grid>
+                        </Viewbox>
+                    </Grid>
+                </ScrollViewer>
+                <GridSplitter x:Uid="splitter" x:Name="splitter" Grid.Row="1"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Center"
+                  ShowsPreview="True"
+                  Height="3"
+                  Margin="0,-2,0,0"
+                  DragCompleted="SplitterDragCompleted"/>
+
+                <Grid x:Uid="bottomPanel" x:Name="bottomPanel"  Grid.Row="2" IsVisibleChanged="OnBottomPanelIsVisibleChanged">
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Uid="RowDefinition_7" Height="Auto"/>
+                        <RowDefinition x:Uid="RowDefinition_8" Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <proj:ArgumentDesigner x:Uid="arguments1" x:Name="arguments1" Grid.Row="1" Context="{Binding Path=Context, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}" ActivitySchema="{Binding Path=ActivitySchema, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}" Visibility="Collapsed" />
+                    <proj:VariableDesigner x:Uid="variables1" x:Name="variables1" Grid.Row="1" Context="{Binding Path=Context, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}" Visibility="Collapsed" />
+                    <proj:ImportDesigner x:Uid="imports1" x:Name="imports1" Grid.Row="1" Context="{Binding Path=Context, RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}" Visibility="Collapsed" />
+                </Grid>
+
+                <proj:ExtensionSurface x:Uid="wfViewExtensionSurface" x:Name="wfViewExtensionSurface" Designer="{Binding RelativeSource={RelativeSource AncestorType={x:Type proj:DesignerView}}}" AutoExpandCanvas="True"/>
+                <proj:ExtensionSurface x:Uid="designerExtensionSurface" x:Name="designerExtensionSurface" Grid.Row="0" Grid.RowSpan="3" Margin="2,2,18,22">
+                    <proj:ExtensionWindow x:Uid="miniMap" x:Name="miniMap"
+                                  Title="{DynamicResource minimapTitle}"
+                                  Closing="OnExtensionWindowClosing"
+                                  Visibility="Collapsed"
+                                  IsResizable="True"
+                                  ShowResizeGrip="False"
+                                  IsEnabled="False"
+                                  IsTabStop="False"
+                                  Width="300"
+                                  Height="250"
+                                  IsVisibleChanged="OnMinimapVisibilityChanged"
+                                  AutomationProperties.AutomationId="MiniMapExtensionWindow"
+                                  proj:ExtensionSurface.PlacementTarget="{Binding ElementName=minimapPlacementTarget}"                                     
+                                  proj:ExtensionSurface.Alignment="RightTop"
+                                  proj:ExtensionSurface.Mode="Relative">
+                        <minimap:MiniMapControl  x:Uid="minimap:MiniMapControl_1" MapSource="{Binding ElementName=scrollViewer}" />
+                    </proj:ExtensionWindow>
+                </proj:ExtensionSurface>
+            </Grid>
+        </AdornerDecorator>
+
+        <StatusBar x:Uid="StatusBar_1" x:Name="shellBar" Grid.Row="2" Background="{DynamicResource ShellBarBackgroundBrush}">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate x:Uid="ItemsPanelTemplate_2">
+                    <Grid x:Uid="Grid_1" MinHeight="22" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition x:Uid="ColumnDefinition_3" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_4" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_5" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_8" Width="*"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_9" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_10" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_11" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_12" Width="Auto"/>
+                            <ColumnDefinition x:Uid="ColumnDefinition_13" Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+
+            <StatusBarItem x:Uid="StatusBarItem_2" Grid.Column="0" x:Name="variablesStatusBarItem" Style="{StaticResource statusBarItemStyle}">
+                <ToggleButton x:Uid="buttonVariables1" x:Name="buttonVariables1" Checked="OnToggleButtonCheckChanged" Unchecked="OnToggleButtonCheckChanged" Style="{DynamicResource statusBarButtonStyle}" Tag="{Binding ElementName=variables1}" AutomationProperties.AutomationId="NewVariablesToggleButton" BorderThickness="0" Margin="0,0,7,0">
+                    <TextBlock x:Uid="TextBlock_2" Text="{DynamicResource variablesTitle}" Style="{DynamicResource statusBarTextBlockStyle}"/>
+                </ToggleButton>
+            </StatusBarItem>
+
+
+            <StatusBarItem x:Uid="StatusBarItem_4" Grid.Column="1" x:Name="argumentsStatusBarItem" Style="{StaticResource statusBarItemStyle}" >
+                <ToggleButton x:Uid="buttonArguments1" x:Name="buttonArguments1" Checked="OnToggleButtonCheckChanged" Unchecked="OnToggleButtonCheckChanged" Style="{DynamicResource statusBarButtonStyle}" Tag="{Binding ElementName=arguments1}" AutomationProperties.AutomationId="NewArgumentsToggleButton" BorderThickness="0" Margin="0,0,7,0">
+                    <TextBlock x:Uid="TextBlock_3" Text="{DynamicResource argumentsTitle}" Style="{DynamicResource statusBarTextBlockStyle}"/>
+                </ToggleButton>
+            </StatusBarItem>
+
+            <StatusBarItem x:Uid="StatusBarItem_6" Grid.Column="2" x:Name="importsStatusBarItem" Style="{StaticResource statusBarItemStyle}">
+                <ToggleButton x:Uid="buttonImports1" x:Name="buttonImports1" Checked="OnToggleButtonCheckChanged" Unchecked="OnToggleButtonCheckChanged" Style="{DynamicResource statusBarButtonStyle}" Tag="{Binding ElementName=imports1}" AutomationProperties.AutomationId="NewImportsToggleButton" BorderThickness="0" Margin="0,0,7,0">
+                    <TextBlock x:Uid="TextBlock_4" Text="{DynamicResource importsTitle}" Style="{DynamicResource statusBarTextBlockStyle}"/>
+                </ToggleButton>
+            </StatusBarItem>
+
+            <StatusBarItem x:Uid="StatusBarItem_5" Grid.Column="3" Style="{StaticResource statusBarItemStyle}">
+            </StatusBarItem>
+
+            <StatusBarItem x:Uid="panModeStatusBar" Grid.Column="4" x:Name="panModeStatusBarItem" Style="{StaticResource statusBarItemStyle}" >
+                <ToggleButton AutomationProperties.Name="PanMode" x:Uid="buttonPanMode" x:Name="buttonPanMode" IsChecked="{Binding Path=InPanMode, ElementName=xnDesignerView, Mode=TwoWay}" AutomationProperties.AutomationId="PanModeToggleButton" Checked="OnToggleButtonCheckChanged" Unchecked="OnToggleButtonCheckChanged" Style="{DynamicResource statusBarButtonStyle}" BorderThickness="0">
+                    <ToggleButton.Content>
+                        <Rectangle x:Uid="Rectangle_20" Fill="{x:Static minimap:WorkflowDesignerIcons+DesignerItems.PanMode}" ToolTip="{DynamicResource togglePanMode}" MinWidth="16" MinHeight="16" Margin="5,0"/>
+                    </ToggleButton.Content>
+                </ToggleButton>
+            </StatusBarItem>
+
+            <StatusBarItem x:Uid="zoomIconStatusBar" Grid.Column="5" x:Name="zoomIconStatusBar" Style="{StaticResource statusBarItemStyle}" >
+                <Button AutomationProperties.Name="100%" x:Uid="buttonResetZoom" x:Name="buttonResetZoom" Command="{x:Static proj:DesignerView.ResetZoomCommand}" AutomationProperties.AutomationId="ResetZoomCommand" Style="{DynamicResource statusBarButtonStyle}" BorderThickness="0">
+                    <Button.Content>
+                        <Rectangle x:Uid="Rectangle_17" Fill="{x:Static minimap:WorkflowDesignerIcons+DesignerItems.Zoom}" ToolTip="{DynamicResource resetZoomLabel}" MinWidth="16" MinHeight="16" Margin="5,0"/>
+                    </Button.Content>
+                </Button>
+            </StatusBarItem>
+
+            <!-- This is for the sake of data binding, it will never need to be shown -->
+            <StatusBarItem x:Uid="StatusBarItem_7" Grid.Column="6" x:Name="zoomSliderStatusBar" Style="{StaticResource statusBarItemStyle}">
+                <Slider x:Uid="zoomSlider" Margin="0,0" x:Name="zoomSlider" MinWidth="75" AutomationProperties.AutomationId="ZoomSlider" TickPlacement="BottomRight" SmallChange="1" LargeChange="10" BorderThickness="0,0,0,3" Visibility="Collapsed">
+                    <Slider.LayoutTransform>
+                        <ScaleTransform x:Uid="ScaleTransform_1" ScaleX="0.7" ScaleY="0.7"/>
+                    </Slider.LayoutTransform>
+                    <Slider.Style>
+                        <Style x:Uid="Style_7">
+                            <Style.Triggers>
+                                <Trigger x:Uid="Trigger_1" Property="Slider.IsKeyboardFocusWithin" Value="True">
+                                    <Setter x:Uid="Setter_9" Property="Slider.BorderBrush" Value="{StaticResource WorkflowViewElementSelectedBorder}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Slider.Style>
+                </Slider>
+            </StatusBarItem>
+
+            <StatusBarItem x:Uid="StatusBarItem_8" Grid.Column="6" x:Name="zoomPickerStatusBar" Style="{StaticResource statusBarItemStyle}" Margin="5,1">
+                <ComboBox AutomationProperties.Name="Zoom Picker" x:Uid="zoomPicker" x:Name="zoomPicker" AutomationProperties.AutomationId="ZoomPicker" IsEditable="true" IsReadOnly="False" Width="75" Style="{DynamicResource statusBarComboBoxStyle}" GotFocus="OnZoompickerGotFocus" LostFocus="OnZoompickerLostFocus">
+                    <ComboBox.CommandBindings>
+                        <CommandBinding x:Uid="CommandBinding_39" Command="Undo" PreviewCanExecute="OnZoomPickerUndoRedoCommandPreviewCanExecute" />
+                        <CommandBinding x:Uid="CommandBinding_40" Command="Redo" PreviewCanExecute="OnZoomPickerUndoRedoCommandPreviewCanExecute" />
+                    </ComboBox.CommandBindings>
+                </ComboBox>
+            </StatusBarItem>
+
+            <StatusBarItem x:Uid="zoomFitToScreenStatusBar" Grid.Column="7" x:Name="zoomFitToScreenStatusBar" Style="{StaticResource statusBarItemStyle}" >
+                <Button AutomationProperties.Name="Fit to Screen" x:Uid="buttonFitToScreen" x:Name="buttonFitToScreen" Command="{x:Static proj:DesignerView.FitToScreenCommand}" AutomationProperties.AutomationId="ZoomToScreenButton" Style="{DynamicResource statusBarButtonStyle}">
+                    <Button.Content>
+                        <Rectangle x:Uid="Rectangle_18" Fill="{x:Static minimap:WorkflowDesignerIcons+DesignerItems.FitToScreen}" ToolTip="{DynamicResource zoomFitToScreenLabel}" MinWidth="16" MinHeight="16" Margin="5,0"/>
+                    </Button.Content>
+                </Button>
+            </StatusBarItem>
+
+            <StatusBarItem x:Uid="minimapStatusBar" Grid.Column="8" x:Name="minimapStatusBar" Style="{StaticResource statusBarItemStyle}" >
+                <ToggleButton AutomationProperties.Name="Overview" x:Uid="buttonMinimap" x:Name="buttonMinimap" IsChecked="{Binding Path=IsEnabled, ElementName=miniMap, Mode=TwoWay}" Tag="{Binding ElementName=miniMap}" AutomationProperties.AutomationId="MinimapToggleButton" Checked="OnToggleButtonCheckChanged" Unchecked="OnToggleButtonCheckChanged" Style="{DynamicResource statusBarButtonStyle}" BorderThickness="0">
+                    <ToggleButton.Content>
+                        <Rectangle x:Uid="Rectangle_19" Fill="{x:Static minimap:WorkflowDesignerIcons+DesignerItems.Overview}" ToolTip="{DynamicResource minimapTitle}" MinWidth="16" MinHeight="16" Margin="5,0"/>
+                    </ToggleButton.Content>
+                </ToggleButton>
+            </StatusBarItem>
+
+
+        </StatusBar>
+    </Grid>
+</UserControl>

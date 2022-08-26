@@ -1,0 +1,145 @@
+﻿<ResourceDictionary x:Uid="ResourceDictionary_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:swd="clr-namespace:System.Activities.Presentation">
+
+  <DrawingBrush x:Uid="DrawingBrush_67" x:Key="CurrentContextArrowIcon" Stretch="Uniform">
+    <!-- Viewbox="0,0,18,18" ViewboxUnits="Absolute" -->
+    <DrawingBrush.Drawing>
+      <DrawingGroup x:Uid="DrawingGroup_48">
+        <DrawingGroup.Children>
+          <GeometryDrawing x:Uid="GeometryDrawing_415" Brush="#FFDADADA" Geometry="F1 M 13.3333,0L 0,0L 0,0.997334L 4.336,5.33333L 0,9.66933L 0,10.6667L 13.3333,10.6667L 20,5.66533L 20,5.00133L 13.3333,0 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_416" Brush="#FF414141" Geometry="F1 M 12.888,1.33333L 2.22133,1.33333L 6.22133,5.33333L 2.22133,9.33333L 12.888,9.33333L 18.2213,5.33333L 12.888,1.33333 Z " />
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  <DrawingBrush x:Uid="DrawingBrush_68" x:Key="CurrentLocationArrowIcon" Stretch="Uniform">
+    <!-- Viewbox="0,0,18,18" ViewboxUnits="Absolute" -->
+    <DrawingBrush.Drawing>
+      <DrawingGroup x:Uid="DrawingGroup_49">
+        <DrawingGroup.Children>
+          <GeometryDrawing x:Uid="GeometryDrawing_417" Brush="#FFDADADA" Geometry="F1 M 13.7787,0L 0,0L 0,10.6667L 13.7787,10.6667L 20,6L 20,4.66667L 13.7787,0 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_418" Brush="#FF414141" Geometry="F1 M 13.3333,1.33333L 4,1.33333L 4,9.33333L 13.3333,9.33333L 18.6667,5.33333L 13.3333,1.33333 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_419" Brush="#FF414141" Geometry="F1 M 1.33333,9.33333L 2.66667,9.33333L 2.66667,1.33467L 1.33333,1.33467L 1.33333,9.33333 Z " />
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  <DrawingBrush x:Uid="DrawingBrush_69" x:Key="DisabledBreakpointIcon" Stretch="Uniform">
+    <!-- Viewbox="0,0,18,18" ViewboxUnits="Absolute" -->
+    <DrawingBrush.Drawing>
+      <DrawingGroup x:Uid="DrawingGroup_50">
+        <DrawingGroup.Children>
+          <GeometryDrawing x:Uid="GeometryDrawing_420" Brush="#FFDADADA" Geometry="F1 M 9.33333,5.33333C 7.128,5.33333 5.33333,7.128 5.33333,9.33333C 5.33333,11.5387 7.128,13.3333 9.33333,13.3333C 11.5387,13.3333 13.3333,11.5387 13.3333,9.33333C 13.3333,7.128 11.5387,5.33333 9.33333,5.33333 Z M 18.6667,9.33333C 18.6667,14.488 14.488,18.6667 9.33333,18.6667C 4.17867,18.6667 0,14.488 0,9.33333C 0,4.17867 4.17867,0 9.33333,0C 14.488,0 18.6667,4.17867 18.6667,9.33333 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_421" Brush="#FFE51300" Geometry="F1 M 9.33333,14.6667C 6.392,14.6667 4,12.2733 4,9.33333C 4,6.392 6.392,4 9.33333,4C 12.2747,4 14.6667,6.392 14.6667,9.33333C 14.6667,12.2733 12.2747,14.6667 9.33333,14.6667 Z M 9.33333,1.33333C 4.916,1.33333 1.33333,4.91467 1.33333,9.33333C 1.33333,13.752 4.916,17.3333 9.33333,17.3333C 13.7507,17.3333 17.3333,13.752 17.3333,9.33333C 17.3333,4.91467 13.7507,1.33333 9.33333,1.33333 Z " />
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  <DrawingBrush x:Uid="DrawingBrush_70" x:Key="EnabledBreakpointIcon" Stretch="Uniform">
+    <!-- Viewbox="0,0,18,18" ViewboxUnits="Absolute" -->
+    <DrawingBrush.Drawing>
+      <DrawingGroup x:Uid="DrawingGroup_51">
+        <DrawingGroup.Children>
+          <GeometryDrawing x:Uid="GeometryDrawing_422" Brush="#FFDADADA" Geometry="F1 M 9.33333,0C 4.17867,0 0,4.17867 0,9.33333C 0,14.488 4.17867,18.6667 9.33333,18.6667C 14.488,18.6667 18.6667,14.488 18.6667,9.33333C 18.6667,4.17867 14.488,0 9.33333,0 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_423" Brush="#FFE51300" Geometry="F1 M 3.67187,3.67187C 1.63187,5.7092 0.930533,8.57187 1.55053,11.1852L 11.1839,1.55053C 8.57187,0.931866 5.7092,1.6332 3.67187,3.67187 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_424" Brush="#FFE51300" Geometry="F1 M 17.1159,7.48173L 7.48253,17.1164C 10.0945,17.7337 12.9572,17.0337 14.9945,14.9951C 17.0345,12.9564 17.7359,10.0937 17.1159,7.48173 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_425" Brush="#FFE51300" Geometry="F1 M 14.9948,3.67187C 14.5295,3.2052 14.0188,2.8172 13.4788,2.49053L 2.4908,13.4785C 2.81747,14.0185 3.20547,14.5319 3.67213,14.9945C 4.13613,15.4612 4.64813,15.8492 5.1868,16.1759L 16.1761,5.18787C 15.8495,4.64787 15.4615,4.13587 14.9948,3.67187 Z " />
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  <DrawingBrush x:Uid="DrawingBrush_71" x:Key="BoundBreakpointIcon" Stretch="Uniform">
+    <!-- Viewbox="0,0,18,18" ViewboxUnits="Absolute" -->
+    <DrawingBrush.Drawing>
+      <DrawingGroup x:Uid="DrawingGroup_52">
+        <DrawingGroup.Children>
+          <GeometryDrawing x:Uid="GeometryDrawing_426" Brush="#FFDADADA" Geometry="F1 M 9.33333,0C 4.17867,0 0,4.17867 0,9.33333C 0,14.488 4.17867,18.6667 9.33333,18.6667C 14.488,18.6667 18.6667,14.488 18.6667,9.33333C 18.6667,4.17867 14.488,0 9.33333,0 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_427" Brush="#FFE51300" Geometry="F1 M 3.67187,3.67187C 1.63187,5.7092 0.930533,8.57187 1.55053,11.1852L 11.1839,1.55053C 8.57187,0.931866 5.7092,1.6332 3.67187,3.67187 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_428" Brush="#FFE51300" Geometry="F1 M 17.1159,7.48173L 7.48253,17.1164C 10.0945,17.7337 12.9572,17.0337 14.9945,14.9951C 17.0345,12.9564 17.7359,10.0937 17.1159,7.48173 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_429" Brush="#FFE51300" Geometry="F1 M 14.9948,3.67187C 14.5295,3.2052 14.0188,2.8172 13.4788,2.49053L 2.4908,13.4785C 2.81747,14.0185 3.20547,14.5319 3.67213,14.9945C 4.13613,15.4612 4.64813,15.8492 5.1868,16.1759L 16.1761,5.18787C 15.8495,4.64787 15.4615,4.13587 14.9948,3.67187 Z " />
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  <DrawingBrush x:Uid="DrawingBrush_72" x:Key="DeleteBreakpointIcon" Stretch="Uniform">
+    <!-- Viewbox="0,0,18,18" ViewboxUnits="Absolute" -->
+    <DrawingBrush.Drawing>
+      <DrawingGroup x:Uid="DrawingGroup_53">
+        <DrawingGroup.Children>
+          <GeometryDrawing x:Uid="GeometryDrawing_430" Brush="#FFDADADA" Geometry="F1 M 10.6693,1.33333L 10.6693,0L 8.36667,0L 5.46133,2.6L 3.864,0.685333C 3.46933,0.249334 2.88533,0 2.26133,0C 1.65867,0 1.07867,0.227999 0.674666,0.622667C 0.250666,1.03333 0.00533314,1.60933 0.00266647,2.20133C -1.93405e-007,2.796 0.237333,3.35733 0.713333,3.82267L 2.404,5.33333L 0.666666,6.88667C 0.237333,7.30933 -1.93405e-007,7.87067 0.00266647,8.46533C 0.00533314,9.05733 0.250666,9.63333 0.672,10.0413C 0.862666,10.228 1.09333,10.3733 1.34533,10.4787C 1.344,10.5413 1.336,10.604 1.336,10.6667C 1.336,15.8213 5.51467,20 10.6693,20C 15.824,20 20.0027,15.8213 20.0027,10.6667C 20.0027,5.512 15.824,1.33333 10.6693,1.33333 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_431" Brush="#FFE51300" Geometry="F1 M 9.92,2.71547L 7.73867,5.3328L 8.79867,6.6048L 12.52,2.88347C 11.6667,2.68213 10.788,2.63547 9.92,2.71547 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_432" Brush="#FFE51300" Geometry="F1 M 5.46107,8.06773L 3.8984,9.94107C 3.56773,10.3104 3.13973,10.5397 2.6744,10.6251C 2.67173,11.2611 2.73973,11.8971 2.8864,12.5184L 6.45173,8.95307L 5.46107,8.06773 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_433" Brush="#FFE51300" Geometry="F1 M 16.3308,5.0052C 15.8655,4.53853 15.3548,4.15053 14.8148,3.82387L 10.2695,8.37053L 10.6695,8.85187L 10.6695,10.6665L 8.3668,10.6665L 8.1588,10.4799L 3.8268,14.8119C 4.15347,15.3519 4.54147,15.8652 5.00813,16.3279C 5.47213,16.7945 5.98413,17.1825 6.5228,17.5092L 17.5121,6.5212C 17.1855,5.9812 16.7975,5.4692 16.3308,5.0052 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_434" Brush="#FFE51300" Geometry="F1 M 18.4519,8.81507L 8.81853,18.4497C 11.4305,19.0671 14.2932,18.3671 16.3305,16.3284C 18.3705,14.2897 19.0719,11.4271 18.4519,8.81507 Z " />
+          <GeometryDrawing x:Uid="GeometryDrawing_435" Brush="#FF414141" Geometry="F1 M 9.336,1.33333L 8.87733,1.33333L 5.32,4.51333L 2.87467,1.58C 2.55733,1.22933 1.91467,1.27467 1.60133,1.58C 1.28,1.892 1.216,2.44933 1.60133,2.82933L 4.404,5.33333L 1.60133,7.83733C 1.216,8.21733 1.28,8.77467 1.60133,9.08667C 1.91467,9.392 2.55733,9.43867 2.87467,9.08667L 5.32,6.15333L 8.87733,9.33333L 9.336,9.33333L 6.00267,5.33333L 9.336,1.33333 Z " />
+        </DrawingGroup.Children>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  <DrawingBrush x:Uid="ExtensionWindowHeaderCloseButtonMouseOver" x:Key="ExtensionWindowHeaderCloseButtonMouseOver" Stretch="Uniform">
+    <DrawingBrush.Drawing>
+      <DrawingGroup x:Uid="DrawingGroup_143">
+        <GeometryDrawing x:Uid="GeometryDrawing_547">
+          <GeometryDrawing.Pen>
+            <Pen x:Uid="Pen_277" DashCap="Round" Brush="#FF000000" Thickness="2"/>
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <LineGeometry  x:Uid="LineGeometry_10" StartPoint="4,4" EndPoint="12,12"/>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing x:Uid="GeometryDrawing_548">
+          <GeometryDrawing.Pen>
+            <Pen x:Uid="Pen_278" DashCap="Round" Brush="#FF000000" Thickness="2"/>
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <LineGeometry x:Uid="LineGeometry_11" StartPoint="12,4" EndPoint="4,12"/>
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingBrush.Drawing>
+  </DrawingBrush>
+  <ControlTemplate x:Uid="ControlTemplate_1" x:Key="CollapsedButtonTemplate">
+    <Rectangle x:Uid="Rectangle_1">
+      <Rectangle.Fill>
+        <DrawingBrush x:Uid="DrawingBrush_80" Viewbox="0,0,8.00024,7.4953" ViewboxUnits="Absolute">
+          <DrawingBrush.Drawing>
+            <GeometryDrawing x:Uid="GeometryDrawing_128" Brush="{DynamicResource WorkflowViewElementCaptionBrush}" Geometry="M0.4999857,2.9997998 L4.0000907,6.5004997 7.5001957,2.9999998 8.0002107,3.4994998 4.010091,7.4952996 4.0000907,7.4906996 4.0000907,7.4949996 -2.9297754E-05,3.4993998 0.4999857,2.9997998 z M0.4999857,-6.1035159E-08 L4.0000907,3.5006998 7.5001957,0.00019993896 8.0002107,0.49969992 4.010091,4.4953998 4.0000907,4.4908998 4.0000907,4.4950998 -2.9297754E-05,0.49949992 0.4999857,-6.1035159E-08 z" />
+          </DrawingBrush.Drawing>
+        </DrawingBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+  </ControlTemplate>
+  <ControlTemplate x:Uid="ControlTemplate_2" x:Key="ExpandedButtonTemplate">
+    <Rectangle x:Uid="Rectangle_2">
+      <Rectangle.Fill>
+        <DrawingBrush x:Uid="DrawingBrush_81" Viewbox="0,0,8,7.49536" ViewboxUnits="Absolute">
+          <DrawingBrush.Drawing>
+            <GeometryDrawing x:Uid="GeometryDrawing_129" Brush="{DynamicResource WorkflowViewElementCaptionBrush}" Geometry="M7.5099707,4.4956134 L3.9999707,0.99491329 0.4999707,4.4956134 -2.9296875E-05,3.9956562 3.9999707,-1.4647183E-06 4.0099707,0.0049981069 4.0099707,0.00099844961 7.9999707,3.9956562 7.5099707,4.4956134 z M7.5099707,7.4953563 L3.9999707,3.9946563 0.4999707,7.4953563 -2.9296875E-05,6.9953992 3.9999707,2.9997415 3.9999707,3.0047411 4.0099707,3.0007414 7.9999707,6.9953992 7.5099707,7.4953563 z" />
+          </DrawingBrush.Drawing>
+        </DrawingBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+  </ControlTemplate>
+  <ControlTemplate x:Uid="ControlTemplate_3" x:Key="FlowchartExpressionButtonTemplate">
+    <Rectangle x:Uid="Rectangle_3">
+      <Rectangle.Fill>
+        <DrawingBrush x:Uid="DrawingBrush_82" Viewbox="0,0,6.5,6.5" ViewboxUnits="Absolute">
+          <DrawingBrush.Drawing>
+            <GeometryDrawing x:Uid="GeometryDrawing_130" Brush="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}" Geometry="M-4.8828124E-06,-2.734375E-05 L6.4999951,-2.734375E-05 6.4999951,6.4999727 -4.8828124E-06,-2.734375E-05 z" />
+          </DrawingBrush.Drawing>
+        </DrawingBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+  </ControlTemplate>
+  <Style x:Uid="Style_1" x:Key="FocusStyle">
+    <Setter x:Uid="Setter_1" Property="Control.Template">
+      <Setter.Value>
+        <ControlTemplate x:Uid="ControlTemplate_4">
+          <Rectangle x:Uid="Rectangle_4" Margin="-2" StrokeThickness="1" Stroke="{DynamicResource WorkflowViewElementCaptionBrush}" StrokeDashArray="1 2" />
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+</ResourceDictionary>

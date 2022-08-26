@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="System.Activities.Presentation.View.ExpressionTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:sapv="clr-namespace:System.Activities.Presentation.View"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             KeyboardNavigation.TabNavigation="Local"
+             AutomationProperties.AutomationId="ExpressionTextBox"
+             AutomationProperties.HelpText="{Binding Path=HintText, RelativeSource={RelativeSource Mode=Self}}"
+             Loaded="OnExpressionTextBoxLoaded"
+             x:Uid="ExpressionTextBox_1">
+      <UserControl.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">           
+          <DataTemplate x:Uid="DataTemplate_1" x:Key="disabledInlineEditingTemplate">
+            <TextBlock Text="(Expression)" x:Uid="TextBlock_1" />        
+          </DataTemplate>
+          
+          <DataTemplate x:Uid="Datatemplate_2" x:Key="unsupportedEditorTemplate">                
+                    <TextBlock x:Uid="TextBlock_2" Text="Unregistered Expression Editor" VerticalAlignment="Center"
+                           ToolTip="{Binding Path=UnsupportedEditorMessage, RelativeSource={RelativeSource AncestorType={x:Type sapv:ExpressionTextBox}}}" 
+                           Foreground="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}" FontStyle="Italic" />                
+          </DataTemplate>
+
+          <DataTemplate x:Uid="Datatemplate_3" x:Key="designModelTemplate">
+            <TextBlock x:Uid="TextBlock_3" />
+          </DataTemplate>
+        </ResourceDictionary>
+      </UserControl.Resources>
+    <UserControl.CommandBindings>
+        <CommandBinding x:Uid="CommandBinding_7" Command="{x:Static sapv:ExpressionTextBox.CompleteWordCommand}" CanExecute="OnCompleteWordCommandCanExecute" Executed="OnCompleteWordCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_8" Command="{x:Static sapv:ExpressionTextBox.GlobalIntellisenseCommand}" CanExecute="OnGlobalIntellisenseCommandCanExecute" Executed="OnGlobalIntellisenseCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_9" Command="{x:Static sapv:ExpressionTextBox.ParameterInfoCommand}" CanExecute="OnParameterInfoCommandCanExecute" Executed="OnParameterInfoCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_10" Command="{x:Static sapv:ExpressionTextBox.QuickInfoCommand}" CanExecute="OnQuickInfoCommandCanExecute" Executed="OnQuickInfoCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_12" Command="{x:Static sapv:ExpressionTextBox.IncreaseFilterLevelCommand}" CanExecute="OnIncreaseFilterLevelCommandCanExecute" Executed="OnIncreaseFilterLevelCommandExecute"/>
+        <CommandBinding x:Uid="CommandBinding_13" Command="{x:Static sapv:ExpressionTextBox.DecreaseFilterLevelCommand}" CanExecute="OnDecreaseFilterLevelCommandCanExecute" Executed="OnDecreaseFilterLevelCommandExecute"/>        
+        <CommandBinding x:Uid="CommandBinding_15" Command="{x:Static sapv:DesignerView.CommitCommand}" CanExecute="OnCommitCommandCanExecute" Executed="OnCommitCommandExecute" />
+    </UserControl.CommandBindings>
+</UserControl>

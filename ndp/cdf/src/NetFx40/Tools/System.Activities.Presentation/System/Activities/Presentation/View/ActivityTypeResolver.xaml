@@ -1,0 +1,128 @@
+﻿<!--
+Copyright (c) Microsoft Corporation.  All rights reserved.
+-->
+
+<sad:DialogWindow x:Uid="Window_1" x:Class="System.Activities.Presentation.View.ActivityTypeResolver"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:design="clr-namespace:System.Activities.Presentation.View"
+    xmlns:sad="clr-namespace:System.Activities.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    x:ClassModifier="internal"
+    AutomationProperties.AutomationId="TypeResolverWindow"
+    Grid.IsSharedSizeScope="True"
+    Title="Type Resolver"
+    MaxHeight="235"
+    SizeToContent="WidthAndHeight"
+    ShowInTaskbar="False"
+    ResizeMode="NoResize"
+    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+    Style="{DynamicResource WorkflowWindowStyle}"
+    >
+
+    <Window.Resources>
+        <ResourceDictionary x:Uid="ResourceDictionary_1">
+
+            <ResourceDictionary.MergedDictionaries>
+                <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_2" Source="/System.Activities.Presentation;component/Themes/Icons.xaml"/>
+                <sad:CachedResourceDictionaryExtension x:Uid="ResourceDictionary_4" Source="/System.Activities.Presentation;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <sys:String x:Uid="ActivityTypeResolverAutomationName" x:Key="ActivityTypeResolverAutomationName">Activity Type Resolver</sys:String>
+            
+            <Style x:Uid="Style_2" TargetType="{x:Type Rectangle}" x:Key="errorIndicatorStyle">
+                <Setter x:Uid="Setter_2" Property="Visibility" Value="Visible"/>
+                <Setter x:Uid="Setter_3" Property="Fill" Value="{x:Static sad:WorkflowDesignerIcons+DesignerItems.TextBoxErrorValidation}"/>
+                <Setter x:Uid="Setter_4" Property="Width" Value="16"/>
+                <Setter x:Uid="Setter_5" Property="Height" Value="16"/>
+                <Setter x:Uid="Setter_6" Property="Margin" Value="0"/>
+                <Setter x:Uid="Setter_7" Property="ToolTip" Value="{Binding Path=ErrorText}"/>
+                <Style.Triggers>
+                    <DataTrigger x:Uid="DataTrigger_1" Binding="{Binding Path=IsValid}" Value="True">
+                        <Setter x:Uid="Setter_9" Property="Visibility" Value="Collapsed"/>
+                        <Setter x:Uid="Setter_10" Property="Fill" Value="{x:Null}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style x:Uid="Style_3" TargetType="{x:Type design:TypePresenter}" x:Key="typePresenterStyle">
+                <Setter x:Uid="Setter_11" Property="Type" Value="{Binding Path=TargetType, Mode=TwoWay}"/>
+                <Setter x:Uid="Setter_12" Property="Context" Value="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=Context}"/>
+                <Setter x:Uid="Setter_14" Property="ToolTip" Value="{Binding Path=ErrorText}"/>
+                <Setter x:Uid="Setter_16" Property="Filter" Value="{Binding Path=Filter}"/>
+                <Setter x:Uid="Setter_17" Property="BrowseTypeDirectly" Value="{Binding Path=BrowseTypeDirectly}"/>
+                <Setter x:Uid="Setter_18" Property="MostRecentlyUsedTypes" Value="{Binding Path=MostRecentlyUsedTypes}"/>
+            </Style>
+
+            <DataTemplate x:Uid="DataTemplate_1" DataType="{x:Type design:TypeKeyValue}">
+                <Grid x:Uid="Grid_1" ToolTip="{Binding Path=ErrorText}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Uid="ColumnDefinition_1" MinWidth="310"/>
+                        <ColumnDefinition x:Uid="ColumnDefinition_2" Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Uid="RowDefinition_4" />
+                        <RowDefinition x:Uid="RowDefinition_5" />
+                    </Grid.RowDefinitions>
+                    <StackPanel x:Uid="StackPanel_2" Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Margin="0,3">
+                        <TextBlock x:Uid="TextBlock_1" x:Name="TextBlock_1" Text="{Binding Path=GenericType.Name}" VerticalAlignment="Bottom" />
+                        <StackPanel x:Uid="StackPanel_3" Orientation="Horizontal" Margin="2,0,0,0">
+                            <StackPanel.Style>
+                                <Style x:Uid="Style_4" TargetType="StackPanel">
+                                    <Setter x:Uid="Setter_19" Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger x:Uid="DataTrigger_2" Binding="{Binding Path=HintText, Mode=OneWay}" Value="{x:Null}">
+                                            <Setter x:Uid="Setter_20" Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock x:Uid="TextBlock_2" Text=" " />
+                            <TextBlock x:Uid="TextBlock_3"
+                                Text="{Binding Path=HintText, Mode=OneWay}"
+                                FontSize="10"
+                                FontStyle="Italic"
+                                VerticalAlignment="Bottom"
+                                AutomationProperties.AutomationId="HintTextBlock" />
+                        </StackPanel>
+                    </StackPanel>
+                  <design:TypePresenter x:Uid="TypePresenter_1" Grid.Row="1" Grid.Column="0"  Margin="0,3"
+                                        AutomationProperties.AutomationId="TypeTypePresenter"
+                                        CenterActivityTypeResolverDialog="false"
+                                        HorizontalAlignment="Stretch">
+                    <design:TypePresenter.Style>
+                      <Style x:Uid="Style_5" TargetType="{x:Type design:TypePresenter}" BasedOn="{StaticResource typePresenterStyle}">
+                        <Style.Triggers>
+                          <DataTrigger x:Uid="DataTrigger_3" Binding="{Binding Source={x:Static sad:LocalAppContextSwitches.UseLegacyAccessibilityFeatures}}" Value="false">
+                            <Setter x:Uid="Setter_21" Property="Label" Value="{Binding ElementName=TextBlock_1, Path=Text}" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </design:TypePresenter.Style>
+                  </design:TypePresenter>
+                    <Rectangle x:Uid="Rectangle_1" Grid.Row="1" Grid.Column="1" Style="{StaticResource errorIndicatorStyle}"/>
+                </Grid>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid x:Uid="Grid_2" Margin="12" DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Uid="ColumnDefinition_3"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_1" Height="Auto"/>
+            <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+            <RowDefinition x:Uid="RowDefinition_3" Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Uid="typeName" Grid.Row="0" Grid.Column="0" Margin="0,0,0,3" x:Name="typeName" />
+        <ScrollViewer x:Uid="ScrollViewer_1" Grid.Row="1" Grid.Column="0" VerticalScrollBarVisibility="Auto" Focusable="False">
+        <ItemsControl x:Uid="typeResolver" x:Name="typeResolver" ItemsSource="{Binding Path=GenericTypeMapping}" AutomationProperties.AutomationId="TypeResolverTreeView" Focusable="False" />
+        </ScrollViewer>
+
+        <StackPanel x:Uid="StackPanel_1" Grid.Row="2" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right">
+          <Button x:Uid="Button_1" Content="OK" MinWidth="75" MinHeight="23" IsDefault="True" Margin="0, 3, 3, 0" Click="OnOkClick" AutomationProperties.AutomationId="OkButton" IsEnabled="{Binding Path=IsTypeResolved}"/>
+          <Button x:Uid="Button_2" Content="Cancel" MinWidth="75" MinHeight="23" IsCancel="True" Margin="3, 3, 0, 0" Click="OnCancelClick" AutomationProperties.AutomationId="CancelButton"/>
+        </StackPanel>
+    </Grid>
+</sad:DialogWindow>

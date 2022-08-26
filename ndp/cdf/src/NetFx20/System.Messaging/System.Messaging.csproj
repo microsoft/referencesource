@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{c8005b38-59c7-4c05-af4a-201aa046492f}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <OutputType>Library</OutputType>
+    <AssemblyName>System.Messaging</AssemblyName>
+    <UseVSHostingProcess>False</UseVSHostingProcess>
+    <NoStdLib>True</NoStdLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <DefineConstants>CODE_ANALYSIS_BASELINE;TRACE;RETAIL;WIN32</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " >
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\clr\src\bcl\mscorlib.csproj">
+      <Project>{861f1d95-44ac-4bd4-bf14-5a7fab81ad36}</Project>
+      <Name>mscorlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.csproj">
+      <Project>{922dc5d7-d572-4987-ab6b-9db35c74dc77}</Project>
+      <Name>System</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.Drawing.csproj">
+      <Project>{a95f2aef-5047-4d45-9480-b0476b85b958}</Project>
+      <Name>System.Drawing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\System.Transactions\System.Transactions.csproj">
+      <Project>{6ad0de06-77fa-4a5d-9f96-d36654a60e80}</Project>
+      <Name>System.Transactions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\System.Windows.Forms.csproj">
+      <Project>{aaa1520f-406f-413a-9190-71a073168135}</Project>
+      <Name>System.Windows.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\fx\src\Xml\System.Xml.csproj">
+      <Project>{dbfb2bb7-d437-4c6a-80f0-a3f69101b83d}</Project>
+      <Name>System.Xml</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.DirectoryServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\inc\externdll.cs" />
+    <Compile Include="..\..\inc\InvariantComparer.cs" />
+    <Compile Include="System\Messaging\AccessControlEntry.cs" />
+    <Compile Include="System\Messaging\AccessControlEntryType.cs" />
+    <Compile Include="System\Messaging\AccessControlList.cs" />
+    <Compile Include="System\Messaging\Acknowledgement.cs" />
+    <Compile Include="System\Messaging\AcknowledgeTypes.cs" />
+    <Compile Include="System\Messaging\ActiveXMessageFormatter.cs" />
+    <Compile Include="System\Messaging\BinaryMessageFormatter.cs" />
+    <Compile Include="System\Messaging\CryptographicProviderType.cs" />
+    <Compile Include="System\Messaging\Cursor.cs" />
+    <Compile Include="System\Messaging\DefaultPropertiesToSend.cs" />
+    <Compile Include="System\Messaging\Design\MessageFormatterConverter.cs" />
+    <Compile Include="System\Messaging\Design\MessageQueueConverter.cs" />
+    <Compile Include="System\Messaging\Design\QueuePathDialog.cs" />
+    <Compile Include="System\Messaging\Design\QueuePathEditor.cs" />
+    <Compile Include="System\Messaging\Design\SizeConverter.cs" />
+    <Compile Include="System\Messaging\Design\TimeoutConverter.cs" />
+    <Compile Include="System\Messaging\EncryptionAlgorithm.cs" />
+    <Compile Include="System\Messaging\EncryptionRequired.cs" />
+    <Compile Include="System\Messaging\GenericAccessRights.cs" />
+    <Compile Include="System\Messaging\HashAlgorithm.cs" />
+    <Compile Include="System\Messaging\IMessageFormatter.cs" />
+    <Compile Include="System\Messaging\Interop\Columns.cs" />
+    <Compile Include="System\Messaging\Interop\IPersist.cs" />
+    <Compile Include="System\Messaging\Interop\IPersistStream.cs" />
+    <Compile Include="System\Messaging\Interop\IPersistStreamInit.cs" />
+    <Compile Include="System\Messaging\Interop\IStream.cs" />
+    <Compile Include="System\Messaging\Interop\ITransaction.cs" />
+    <Compile Include="System\Messaging\Interop\MachinePropertyVariants.cs" />
+    <Compile Include="System\Messaging\Interop\MessagePropertyVariants.cs" />
+    <Compile Include="System\Messaging\Interop\NativeMethods.cs" />
+    <Compile Include="System\Messaging\Interop\QueuePropertyVariants.cs" />
+    <Compile Include="System\Messaging\Interop\Restrictions.cs" />
+    <Compile Include="System\Messaging\Interop\SafeHandles.cs" />
+    <Compile Include="System\Messaging\Interop\SafeNativeMethods.cs" />
+    <Compile Include="System\Messaging\Interop\UnsafeNativeMethods.cs" />
+    <Compile Include="System\Messaging\Message.cs" />
+    <Compile Include="System\Messaging\MessageEnumerator.cs" />
+    <Compile Include="System\Messaging\MessageLookupAction.cs" />
+    <Compile Include="System\Messaging\MessagePriority.cs" />
+    <Compile Include="System\Messaging\MessagePropertyFilter.cs" />
+    <Compile Include="System\Messaging\MessageQueue.cs" />
+    <Compile Include="System\Messaging\MessageQueueAccessControlEntry.cs" />
+    <Compile Include="System\Messaging\MessageQueueAccessRights.cs" />
+    <Compile Include="System\Messaging\MessageQueueCriteria.cs" />
+    <Compile Include="System\Messaging\MessageQueueEnumerator.cs" />
+    <Compile Include="System\Messaging\MessageQueueErrorCode.cs" />
+    <Compile Include="System\Messaging\MessageQueueException.cs" />
+    <Compile Include="System\Messaging\MessageQueueInstaller.cs" />
+    <Compile Include="System\Messaging\MessageQueuePermission.cs" />
+    <Compile Include="System\Messaging\MessageQueuePermissionAccess.cs" />
+    <Compile Include="System\Messaging\MessageQueuePermissionAttribute.cs" />
+    <Compile Include="System\Messaging\MessageQueuePermissionEntry.cs" />
+    <Compile Include="System\Messaging\MessageQueuePermissionEntryCollection.cs" />
+    <Compile Include="System\Messaging\MessageQueueTransaction.cs" />
+    <Compile Include="System\Messaging\MessageQueueTransactionStatus.cs" />
+    <Compile Include="System\Messaging\MessageQueueTransactionType.cs" />
+    <Compile Include="System\Messaging\MessageType.cs" />
+    <Compile Include="System\Messaging\MessagingDescriptionAttribute.cs" />
+    <Compile Include="System\Messaging\ModuleSuppressions.cs" />
+    <Compile Include="System\Messaging\PeekAction.cs" />
+    <Compile Include="System\Messaging\PeekCompletedEventArgs.cs" />
+    <Compile Include="System\Messaging\PeekCompletedEventHandler.cs" />
+    <Compile Include="System\Messaging\QueueAccessMode.cs" />
+    <Compile Include="System\Messaging\ReceiveCompletedEventArgs.cs" />
+    <Compile Include="System\Messaging\ReceiveCompletedEventHandler.cs" />
+    <Compile Include="System\Messaging\SecurityContext.cs" />
+    <Compile Include="System\Messaging\StandardAccessRights.cs" />
+    <Compile Include="System\Messaging\Trustee.cs" />
+    <Compile Include="System\Messaging\TrusteeType.cs" />
+    <Compile Include="System\Messaging\ValidationUtility.cs" />
+    <Compile Include="System\Messaging\XmlMessageFormatter.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

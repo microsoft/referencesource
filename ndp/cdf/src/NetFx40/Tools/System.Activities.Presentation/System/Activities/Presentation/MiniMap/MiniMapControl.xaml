@@ -1,0 +1,45 @@
+﻿<UserControl x:Uid="controlRoot" x:Class="System.Activities.Presentation.MiniMapControl"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:System.Activities.Presentation"
+    x:Name="controlRoot"
+    MinHeight="50" 
+    MinWidth="50">
+
+	<UserControl.Style>
+		<Style x:Uid="Style_1" TargetType="{x:Type UserControl}">
+			<Style.Triggers>
+				<Trigger x:Uid="Trigger_1" Property="IsMouseCaptured" Value="True">
+					<Setter x:Uid="Setter_1" Property="Cursor" Value="ScrollAll"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+	</UserControl.Style>
+    
+    <Grid x:Uid="contentGrid" Name="contentGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Uid="ColumnDefinition_1" Width="0"/>
+            <ColumnDefinition x:Uid="ColumnDefinition_2" Width="*"/>
+            <ColumnDefinition x:Uid="ColumnDefinition_3" Width="0"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition x:Uid="RowDefinition_1" Height="0"/>
+            <RowDefinition x:Uid="RowDefinition_2" Height="*"/>
+            <RowDefinition x:Uid="RowDefinition_3" Height="0"/>
+        </Grid.RowDefinitions>
+
+        <!-- Rectangle containing visual representation of minimap source-->
+        <Rectangle  x:Uid="Rectangle_1" Grid.Column="1" Grid.Row="1" Stroke="Gray" StrokeThickness="0">
+            <Rectangle.Fill>
+                <!-- visual brush object, bound to scroll viewer's content element - displays actual minimap -->
+                <VisualBrush x:Uid="VisualBrush_1" Visual="{Binding ElementName=controlRoot, Path=MapSource.Content}" Stretch="Uniform"/>
+            </Rectangle.Fill>
+        </Rectangle>
+      
+        <!-- lookup canvas - area of the minimap where user can drag lookup window -->
+        <Canvas x:Uid="lookupCanvas" Name="lookupCanvas" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
+            <Rectangle x:Uid="lookupWindow" Width="10" Height="10" Stroke="#FFFFC800" Fill="#00ffd966" StrokeThickness="2" Name="lookupWindow" OpacityMask="CornflowerBlue" Cursor="SizeAll"/>
+        </Canvas>
+    </Grid>
+</UserControl>

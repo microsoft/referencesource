@@ -1,0 +1,26 @@
+﻿<ComboBox x:Uid="ComboBox_1" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:local="clr-namespace:System.Activities.Presentation.Internal.PropertyEditing.Editors"
+          x:Class="System.Activities.Presentation.Internal.PropertyEditing.Editors.FlagEditor"
+          IsEditable="True"
+          ToolTip="{Binding Path=Text, RelativeSource={RelativeSource Self}}"
+          x:ClassModifier="internal">
+  <ComboBox.ItemContainerStyle>
+    <Style x:Uid="Style_1" TargetType="ComboBoxItem">
+      <Style.Setters>
+        <Setter x:Uid="Setter_1" Property="Template">
+          <Setter.Value>
+            <ControlTemplate x:Uid="ControlTemplate_1">
+              <local:FlagPanel x:Uid="sadv:FlagPanel_1"
+                                      FlagString="{Binding Path=Text, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}"
+                                      AutomationProperties.AutomationId="FlagPanel"
+                                      FlagType ="{Binding Path=FlagType,  RelativeSource={RelativeSource AncestorType={x:Type ComboBox}}}"
+                                      />
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+      </Style.Setters>
+    </Style>
+  </ComboBox.ItemContainerStyle>
+  <ComboBoxItem x:Uid="ComboBoxItem_1"/>
+</ComboBox>

@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Error_ArgIncorrectType" xml:space="preserve">
+    <value>The argument '{0}' must be of type '{1}'.</value>
+  </data>
+  <data name="Error_CannotConvertValueToString" xml:space="preserve">
+    <value>Cannot convert Value to string.</value>
+  </data>
+  <data name="Error_CannotUpdateValueFromStringValue" xml:space="preserve">
+    <value>Cannot update Value from StringValue.</value>
+  </data>
+  <data name="Error_DerivedContextItem" xml:space="preserve">
+    <value>The context item type '{0}' derives from the base item type of '{1}'.  Always pass a the base context item type.</value>
+  </data>
+  <data name="Error_DuplicateService" xml:space="preserve">
+    <value>The service '{0}' has already been published by another object.</value>
+  </data>
+  <data name="Error_EnumerationNotReady" xml:space="preserve">
+    <value>The enumeration either has ended or has not yet been started.</value>
+  </data>
+  <data name="Error_IncorrectServiceType" xml:space="preserve">
+    <value>An object '{0}' has published a service of type '{1}' but the service instance was returned as '{2}'.</value>
+  </data>
+  <data name="Error_InvalidFactoryType" xml:space="preserve">
+    <value>FactoryType must be set to a type that derives from NewItemFactory.</value>
+  </data>
+  <data name="Error_NullImplementation" xml:space="preserve">
+    <value>The method '{0}' has returned null, but that is not allowed in the implementation.</value>
+  </data>
+  <data name="Error_NullService" xml:space="preserve">
+    <value>An object '{0}' has published a service of type '{1}' but the returned instance was null.</value>
+  </data>
+  <data name="Error_PropertyValueEditor_InvalidDialogValueEditorCommandInvocation" xml:space="preserve">
+    <value>Expected e.Parameter to be non-null and to be a PropertyValue. CommandParameter should have a Binding to the PropertyValue.</value>
+  </data>
+  <data name="Error_PropertyValueEditor_InvalidDialogValueEditorEditorValue" xml:space="preserve">
+    <value>Expected PropertyValue.OwningEditor to be non-null and to be a subclass of PropertyValueEditorDialogBase.</value>
+  </data>
+  <data name="Error_RecursionResolvingService" xml:space="preserve">
+    <value>While resolving the service '{0}' a recursive request was made for the same service.</value>
+  </data>
+  <data name="Error_RequiredService" xml:space="preserve">
+    <value>This feature requires service '{0}' to be present, but it could not be located.</value>
+  </data>
+  <data name="Error_TableValidationFailed" xml:space="preserve">
+    <value>Validation of the attribute table has failed.</value>
+  </data>
+  <data name="Error_ToolAlreadyActive" xml:space="preserve">
+    <value>The tool '{0}' is already active in this editing context.  You cannot activate the same instance of a task tool more than once.</value>
+  </data>
+  <data name="Error_UnknownMemberDescriptor" xml:space="preserve">
+    <value>MemberDescriptors of type '{0}' are not supported.</value>
+  </data>
+  <data name="Error_ValidationAmbiguousMember" xml:space="preserve">
+    <value>The member named '{0}' was found as both a property and an event on type '{1}'.  Members with the same name are not supported.</value>
+  </data>
+  <data name="Error_ValidationNoMatchingMember" xml:space="preserve">
+    <value>The member named '{0}' does not exist on type '{1}'.</value>
+  </data>
+  <data name="Error_ValueGetFailed" xml:space="preserve">
+    <value>Get of Value failed.</value>
+  </data>
+  <data name="Error_ValueSetFailed" xml:space="preserve">
+    <value>Set of Value failed.</value>
+  </data>
+  <data name="ToolDescription_CreateInstance" xml:space="preserve">
+    <value>Create new '{0}'</value>
+  </data>
+
+  <!-- From Interaction -->
+  <data name="Error_EditingScopeReverted" xml:space="preserve">
+    <value>The ModelEditingScope has already been reverted.</value>
+  </data>
+  <data name="Error_EdtingScopeCompleted" xml:space="preserve">
+    <value>The ModelEditingScope has already been completed.</value>
+  </data>
+  <data name="Error_InvalidArrayIndex" xml:space="preserve">
+    <value>The index '{0}' is beyond the bounds of the array.</value>
+  </data>
+  
+  <!-- From Markup -->
+  <data name="Error_InvalidArgumentType" xml:space="preserve">
+    <value>The argument '{0}' must be of type '{1}'.</value>
+    <comment>-for users of the DocModel. Parameter validation when calling ViewManager attribute.
+
+-fix:type passed in must derive from type ViewManager</comment>
+  </data>
+
+
+  <!-- Property Editing -->
+  <data name="PropertyEditing_UndoText" xml:space="preserve">
+    <value>Change to {0} property.</value>
+  </data>
+  <data name="PropertyEditing_InvalidIndexer" xml:space="preserve">
+    <value>Cannot update PropertyValue because it is no longer part of a valid collection.</value>
+  </data>
+  <data name="PropertyEditing_ClearIndexer" xml:space="preserve">
+    <value>Cannot clear the value of an item in a collection.</value>
+  </data>
+  <data name="PropertyEditing_NoStringToValueConversion" xml:space="preserve">
+    <value>Property '{0}' does not support String to Value conversion.</value>
+  </data>
+  <data name="PropertyEditing_ValidationFailed" xml:space="preserve">
+    <value>Invalid value for property '{0}': '{1}'</value>
+  </data>
+  <data name="PropertyEditing_CategoryContainerAutomationPeerHelp" xml:space="preserve">
+    <value>Category container contains properties associated with a specific categories, along with any of its editors.</value>
+  </data>
+  <data name="PropertyEditing_CategoryList" xml:space="preserve">
+    <value>Category List</value>
+  </data>
+  <data name="PropertyEditing_DefaultCollectionStringValue" xml:space="preserve">
+    <value>(Collection)</value>
+  </data>
+  <data name="PropertyEditing_ErrorAbort_NoTransactionsOpened" xml:space="preserve">
+    <value>Cannot abort a transaction because none have been opened.</value>
+  </data>
+  <data name="PropertyEditing_ErrorCommit_NoTransactionsOpened" xml:space="preserve">
+    <value>Cannot commit a transaction because none have been opened.</value>
+  </data>
+  <data name="PropertyEditing_MultipleObjectsSelected" xml:space="preserve">
+    <value>Multiple objects selected</value>
+  </data>
+  <data name="PropertyEditing_MultipleTypesSelected" xml:space="preserve">
+    <value>Multiple types selected</value>
+  </data>
+  <data name="PropertyEditing_NameChangeUndoText" xml:space="preserve">
+    <value>Element rename</value>
+  </data>
+  <data name="PropertyEditing_NameSetError" xml:space="preserve">
+    <value>The specified name could not be set.</value>
+  </data>
+  <data name="PropertyEditing_PropertyInspector" xml:space="preserve">
+    <value>Properties Window</value>
+  </data>
+  <data name="PropertyEditing_PropertyInspectorAutomationPeerHelp" xml:space="preserve">
+    <value>PropertyInspector lists properties of all selected objects and allows the user to view and change them as needed.</value>
+  </data>
+  <data name="PropertyEditing_SetError" xml:space="preserve">
+    <value>Property value is not valid</value>
+  </data>
+  <data name="PropertyEditing_DialogError" xml:space="preserve">
+    <value>Unexpected error occurred in value dialog editor.</value>
+  </data>
+  <data name="PropertyEditing_DialogValueEditorTitle" xml:space="preserve">
+    <value>Property Editor: {0}</value>
+  </data>
+
+  <data name="PropertyEditing_ErrorSetValueOnIndexer" xml:space="preserve">
+    <value>PropertyValues in a collection are read-only.  Use PropertyValueCollection APIs to manipulate the collection itself.</value>
+  </data>
+  <data name="MetadataPluginLog_ErrorFailedToLoadMetadataAssembly" xml:space="preserve">
+    <value>Failed to load metadata assembly {0}.  Exception message: {1}.  Stack Trace: {2}</value>
+  </data>
+  <data name="PropertyEditing_SubPropertyEditorAutomationName" xml:space="preserve">
+    <value>SubPropertyEditor</value>
+  </data>
+  <data name="PropertyEditing_CollectionEditorTitle" xml:space="preserve">
+    <value>Collection Editor: {0}</value>
+  </data>
+  <data name="PropertyEditing_CollectionItemDisplayFormatType" xml:space="preserve">
+    <value>{0}</value>
+    <comment>Format used for collection items when only the item Type is available (0 = Type.Name)</comment>
+  </data>
+  <data name="PropertyEditing_CollectionItemDisplayFormatTypeAndName" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Format used for collection items when the item Type and the item Name are both available (0 = Type.Name, 1 = Name)</comment>
+  </data>
+  <data name="PropertyEditing_DefaultEnumerableStringValue" xml:space="preserve">
+    <value>(Enumerable)</value>
+  </data>
+  <data name="PropertyEditing_DefaultArrayStringValue" xml:space="preserve">
+    <value>(Array)</value>
+  </data>
+  <data name="PropertyEditing_DuplicateNameInCollection" xml:space="preserve">
+    <value>Collection cannot contain two or more items with the same name ('{0}').</value>
+  </data>
+  <data name="PropertyEditing_AdvancedCategoryEditors" xml:space="preserve">
+    <value>Advanced Category Editors</value>
+    <comment>- displayed through automation as the name of advanced CategoryEditor container</comment>
+  </data>
+  <data name="PropertyEditing_BasicCategoryEditors" xml:space="preserve">
+    <value>Basic Category Editors</value>
+    <comment>- displayed through automation as the name of basic CategoryEditor container</comment>
+  </data>
+  <data name="PropertyEditing_SelectionStatus_CategoryEditor" xml:space="preserve">
+    <value>Selected Category Editor: {0}</value>
+    <comment>Used by AutomationPeers to convey selection of a property grid row (single category editor, where {0} is the name of the category editor Type)</comment>
+  </data>
+  <data name="PropertyEditing_SelectionStatus_Empty" xml:space="preserve">
+    <value>Nothing Selected</value>
+    <comment>Used by AutomationPeers to convey selection of a property grid row (nothing selected)</comment>
+  </data>
+  <data name="PropertyEditing_SelectionStatus_Property" xml:space="preserve">
+    <value>Selected Property: {0}</value>
+    <comment>Used by AutomationPeers to convey selection of a property grid row (single property, where {0} is the property name)</comment>
+  </data>
+  <data name="PropertyEditing_SelectionStatus_Unknown" xml:space="preserve">
+    <value>Unknown Selection: {0}</value>
+    <comment>Used by AutomationPeers to convey selection of a property grid row when the UI element currently selected does not specify its own description (edge case)</comment>
+  </data>
+  <data name="FromExpression_CategoryIconLoadFailed" xml:space="preserve">
+    <value>Category {0} returned invalid category icon: {1}</value>
+    <comment>From Expression: {0} is the name of a category, and {1} is an error message.</comment>
+  </data>
+  <data name="FromExpression_MethodOrOperationIsNotImplemented" xml:space="preserve">
+    <value>The method or operation is not implemented.</value>
+    <comment>From Expression</comment>
+  </data>
+  <data name="FromExpression_CanOnlySetFocusScopePriorityOnAnElementThatIsAFocusScope" xml:space="preserve">
+    <value>Can only set FocusScopePriority on an element that is a FocusScope.</value>
+  </data>
+  <data name="FromExpression_CategoryEditorTypeLoadFailed" xml:space="preserve">
+    <value>Loading CategoryEditor type threw an exception: {0}</value>
+    <comment>Thrown when Type.GetType fails on the CategoryEditor name specified by a user control. {0} is an error message.</comment>
+  </data>
+  <data name="FromExpression_CollectionDialogEditorCollectionItemFactoryInstantiateFailed" xml:space="preserve">
+    <value>CollectionItemFactory {0} threw an exception: {1}</value>
+    <comment>Called when a custom CollectionItemFactory.CreateInstance throws in the CollectionEditorDialog. {0} is a string, and {1} is an error message.</comment>
+  </data>
+  <data name="FromExpression_NewItemFactoryIconLoadFailed" xml:space="preserve">
+    <value>NewItemFactory {0} GetImage() threw an exception: {1}</value>
+    <comment>{0} is a type name, and {1} is an error message.</comment>
+  </data>
+  <data name="FromExpression_NoConvertBackForValueToIconConverter" xml:space="preserve">
+    <value>No ConvertBack for ValueToIcon converter.</value>
+  </data>
+  <data name="FromExpression_SwitchConverterIsOneWay" xml:space="preserve">
+    <value>A SwitchConverter cannot be used for a two-way bind.</value>
+  </data>
+  <data name="FromExpression_UnexpectedImageSourceType" xml:space="preserve">
+    <value>Unexpected image source type {0}.</value>
+    <comment>{0} is the name of a type.</comment>
+  </data>
+  <data name="FromExpression_UnexpectedDrawingType" xml:space="preserve">
+    <value>Unexpected drawing type {0}.</value>
+    <comment>{0} is the name of a type.</comment>
+  </data>
+  <data name="FromExpression_UnexpectedBrushType" xml:space="preserve">
+    <value>Unexpected brush type {0}.</value>
+    <comment>{0} is the name of a type.</comment>
+  </data>
+  <data name="FromExpression_ValueEditorLoadFailed" xml:space="preserve">
+    <value>Loading ValueEditor threw an exception: {0}</value>
+    <comment>{0} is an error message.</comment>
+  </data>
+  <data name="PropertyEditing_AlphabeticalCaption" xml:space="preserve">
+    <value>Alphabetical</value>
+    <comment>ToolTip- and automation-exposed name of the alpha-sort button</comment>
+  </data>
+  <data name="PropertyEditing_CategorizedCaption" xml:space="preserve">
+    <value>Categorized</value>
+    <comment>ToolTip- and automation-exposed name of the category-sort button</comment>
+  </data>
+  <data name="PropertyEditing_ClearButtonCaption" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Caption of the search Clear button</comment>
+  </data>
+  <data name="PropertyEditing_NamePropertyDisplayFormat" xml:space="preserve">
+    <value>{0}:</value>
+    <comment>Used to display the Name property in the header of the property grid.  {0} will be replaced by the english name of the NameProperty (ie. "Name")</comment>
+  </data>
+  <data name="PropertyEditing_SelectionStatus_AdvancedCategory" xml:space="preserve">
+    <value>Selected Category: {0} (advanced properties)</value>
+    <comment>Used by AutomationPeers to convey selection of a advanced category grid row (single property, where {0} is the advanced category name)</comment>
+  </data>
+  <data name="PropertyEditing_SelectionStatus_Category" xml:space="preserve">
+    <value>Selected Category: {0}</value>
+    <comment>Used by AutomationPeers to convey selection of a category grid row (single category where {0} is the category name)</comment>
+  </data>
+  <data name="PropertyCategoryAllProperties" xml:space="preserve">
+    <value>All Properties</value>
+    <comment>Category used to host all properties in alpha-view.</comment>
+  </data>
+</root>

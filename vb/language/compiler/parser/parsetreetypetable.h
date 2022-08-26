@@ -1,0 +1,27 @@
+#ifdef DEF_TYPE
+
+DEF_TYPE(SyntaxError                                , Type                                      , AsType)
+DEF_TYPE(Boolean                                    , Type                                      , AsType)
+DEF_TYPE(SignedByte                                 , Type                                      , AsType)
+DEF_TYPE(Byte                                       , Type                                      , AsType)
+DEF_TYPE(Short                                      , Type                                      , AsType)
+DEF_TYPE(UnsignedShort                              , Type                                      , AsType)
+DEF_TYPE(Integer                                    , Type                                      , AsType)
+DEF_TYPE(UnsignedInteger                            , Type                                      , AsType)
+DEF_TYPE(Long                                       , Type                                      , AsType)
+DEF_TYPE(UnsignedLong                               , Type                                      , AsType)
+DEF_TYPE(Decimal                                    , Type                                      , AsType)
+DEF_TYPE(Single                                     , Type                                      , AsType)
+DEF_TYPE(Double                                     , Type                                      , AsType)
+DEF_TYPE(Date                                       , Type                                      , AsType)
+DEF_TYPE(Char                                       , Type                                      , AsType)
+DEF_TYPE(String                                     , Type                                      , AsType)
+DEF_TYPE(Object                                     , Type                                      , AsType)
+DEF_TYPE(AlreadyBound                               , AlreadyBoundType                          , AsAlreadyBound)
+DEF_TYPE(AlreadyBoundDelayCalculated                , AlreadyBoundDelayCalculatedType           , AsAlreadyBoundDelayCalculated)
+DEF_TYPE(Named                                      , NamedType                                 , AsNamed)
+DEF_TYPE(ArrayWithoutSizes                          , ArrayType                                 , AsArray)
+DEF_TYPE(ArrayWithSizes                             , ArrayWithSizesType                        , AsArrayWithSizes)
+DEF_TYPE(Nullable                                   , NullableType                              , AsNullable)
+
+#endif
