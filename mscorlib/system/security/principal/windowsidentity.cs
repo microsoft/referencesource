@@ -1316,7 +1316,7 @@ namespace System.Security.Principal
         /// <summary>
         /// Creates a collection of SID claims that represent the DeviceSidGroups.
         /// </summary>
-        /// this is SafeCritical as it accesss the NT token.
+        /// this is SafeCritical as it access the NT token.
         [SecurityCritical]
         void AddDeviceGroupSidClaims(List<Claim> instanceClaims,  TokenInformationClass tokenInformationClass)
         {
@@ -1366,7 +1366,7 @@ namespace System.Security.Principal
         /// <summary>
         /// Creates a collection of SID claims that represent the users groups.
         /// </summary>
-        /// this is SafeCritical as it accesss the NT token.
+        /// this is SafeCritical as it access the NT token.
         [SecurityCritical]
         void AddGroupSidClaims(List<Claim> instanceClaims)
         {
@@ -1430,7 +1430,7 @@ namespace System.Security.Principal
         /// <summary>
         /// Creates a Windows SID Claim and adds to collection of claims.
         /// </summary>
-        /// this is SafeCritical as it accesss the NT token.        
+        /// this is SafeCritical as it access the NT token.        
         [SecurityCritical]        
         void AddPrimarySidClaim(List<Claim> instanceClaims)
         {
