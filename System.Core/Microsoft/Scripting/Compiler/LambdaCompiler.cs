@@ -309,7 +309,7 @@ namespace System.Linq.Expressions.Compiler {
         }
 
         /// <summary>
-        /// Creates an unitialized field suitible for private implementation details
+        /// Creates an unitialized field suitable for private implementation details
         /// Works with DynamicMethods or TypeBuilders.
         /// </summary>
         private MemberExpression CreateLazyInitializedField<T>(string name) {
