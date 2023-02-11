@@ -153,7 +153,7 @@ namespace System.Collections {
             Array.Copy(_array, _head, array, index, firstPart);
             numToCopy -= firstPart;
             if (numToCopy > 0)
-                Array.Copy(_array, 0, array, index+_array.Length - _head, numToCopy);
+                Array.Copy(_array, 0, array, index + _array.Length - _head, numToCopy);
         }
         
         // Adds obj to the tail of the queue.
