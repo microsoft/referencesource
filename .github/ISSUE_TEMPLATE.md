@@ -7,8 +7,8 @@ only tracks infrastructure issues regarding the following items:
 * Reference Source Browser (http://referencesource.microsoft.com/)
 * Debugging the .NET Framework using Reference Source
 
-For issues regarding functionality, please use the following resources:
+This repository does not accept feature requests or bug reports. To submit
+those, you need to go elsewhere:
 
-* BCL. https://github.com/dotnet/corefx
-* ASP.NET. https://github.com/aspnet/home
-* Everything else. https://connect.microsoft.com/VisualStudio/feedback/LoadSubmitFeedbackForm
+* [.NET Framework](https://developercommunity.visualstudio.com/dotnet)
+* [.NET Core](https://github.com/dotnet/core)
