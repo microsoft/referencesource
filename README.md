@@ -7,7 +7,10 @@ developed in [.NET Core](https://github.com/dotnet/runtime).  We intend to consu
 
 **Please note that the referencesource repository is read-only**. [See this blog post](https://devblogs.microsoft.com/dotnet/net-core-is-open-source/) for the rationale.
 
-Questions, bugs, and pull requests should be done through [.NET Core](https://github.com/dotnet/runtime).
+This repository does not accept feature requests or bug reports. To submit those, you need to go elsewhere:
+
+* [.NET Framework](https://developercommunity.visualstudio.com/dotnet)
+* [.NET Core](https://github.com/dotnet/core)
 
 ## License
 
