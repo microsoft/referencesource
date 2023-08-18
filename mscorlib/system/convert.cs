@@ -107,6 +107,8 @@ namespace System {
     // When passed Value.DBNull, the Value.ToXXX() methods all throw an
     // InvalidCastException.
 
+    // Implementation of cultural number chars to be converted
+
     public static class Convert {
         
         //A typeof operation is fairly expensive (does a system call), so we'll cache these here
@@ -142,7 +144,18 @@ namespace System {
                                                        'e','f','g','h','i','j','k','l','m','n','o','p','q','r','s',
                                                        't','u','v','w','x','y','z','0','1','2','3','4','5','6','7',
                                                        '8','9','+','/','=' };        
-
+        internal static readonly string[] culturalDigits = {
+            @"٠۰߀०০੦૦୦௦౦೦൦෦๐໐༠၀႐០᠐᥆᧐᪀᪐᭐᮰᱀᱐꘠꣐꤀꧐꧰꩐꯰０" ,
+            @"١۱߁१১੧૧୧௧౧೧൧෧๑໑༡၁႑១᠑᥇᧑᪁᪑᭑᮱᱁᱑꘡꣑꤁꧑꧱꩑꯱１" ,
+            @"٢۲߂२২੨૨୨௨౨೨൨෨๒໒༢၂႒២᠒᥈᧒᪂᪒᭒᮲᱂᱒꘢꣒꤂꧒꧲꩒꯲２" ,
+            @"٣۳߃३৩੩૩୩௩౩೩൩෩๓໓༣၃႓៣᠓᥉᧓᪃᪓᭓᮳᱃᱓꘣꣓꤃꧓꧳꩓꯳３" ,
+            @"٤۴߄४৪੪૪୪௪౪೪൪෪๔໔༤၄႔៤᠔᥊᧔᪄᪔᭔᮴᱄᱔꘤꣔꤄꧔꧴꩔꯴４" ,
+            @"٥۵߅५৫੫૫୫௫౫೫൫෫๕໕༥၅႕៥᠕᥋᧕᪅᪕᭕᮵᱅᱕꘥꣕꤅꧕꧵꩕꯵５" ,
+            @"٦۶߆६৬੬૬୬௬౬೬൬෬๖໖༦၆႖៦᠖᥌᧖᪆᪖᭖᮶᱆᱖꘦꣖꤆꧖꧶꩖꯶６" ,
+            @"٧۷߇७৭੭૭୭௭౭೭൭ ෭๗໗༧၇႗៧᠗᥍᧗᪇᪗᭗᮷᱇᱗꘧꣗꤇꧗꧷꩗꯷７" ,
+            @"٨۸߈८৮੮૮୮௮౮೮൮෮๘໘༨၈႘៨᠘᥎᧘᪈᪘᭘᮸᱈᱘꘨꣘꤈꧘꧸꩘꯸８" ,
+            @"٩۹߉९৯੯૯୯௯౯೯൯෯๙໙༩၉႙៩᠙᥏᧙᪉᪙᭙᮹᱉᱙꘩꣙꤉꧙꧹꩙꯹９" ,
+        };
         private const Int32 base64LineBreakPosition = 76;       
 
 #if _DEBUG
@@ -178,6 +191,23 @@ namespace System {
             return TypeCode.Object;
         }
 
+	// Returns a string where cultural digits are replaced by conventional
+	private static string culturalDigitsReplace(string value)
+        {
+            int digitValue = 0;
+            StringBuilder ret = new StringBuilder(value);
+            foreach (string digits in culturalDigits)
+            {
+                char normalDigit = (char)('0' + digitValue);
+                foreach (char digit in digits)
+                {
+                    ret.Replace(digit, normalDigit);
+                }
+                digitValue++;
+            }
+            return ret.ToString();
+        }
+	    
         // Returns true if the given object is a database null. This operation
         // corresponds to "value.GetTypeCode() == TypeCode.DBNull".
         [Pure]
@@ -441,13 +471,13 @@ namespace System {
         public static bool ToBoolean(String value) {
             if (value == null)
                 return false;
-            return Boolean.Parse(value);
+            return Boolean.Parse(culturalDigitsReplace(value));
         }
 
         public static bool ToBoolean(String value, IFormatProvider provider) {
             if (value == null)
                 return false;
-            return Boolean.Parse(value);
+            return Boolean.Parse(culturalDigitsReplace(value));
         }
 
         public static bool ToBoolean(float value)
@@ -686,12 +716,12 @@ namespace System {
         public static sbyte ToSByte(String value) {
             if (value == null)
                 return 0;
-            return SByte.Parse(value, CultureInfo.CurrentCulture);
+            return SByte.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         [CLSCompliant(false)]
         public static sbyte ToSByte(String value, IFormatProvider provider) {
-            return SByte.Parse(value, NumberStyles.Integer, provider);
+            return SByte.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         [CLSCompliant(false)]
@@ -788,13 +818,13 @@ namespace System {
         public static byte ToByte(String value) {
             if (value == null)
                 return 0;
-            return Byte.Parse(value, CultureInfo.CurrentCulture);
+            return Byte.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static byte ToByte(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return Byte.Parse(value, NumberStyles.Integer, provider);
+            return Byte.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         public static byte ToByte(DateTime value)
@@ -887,13 +917,13 @@ namespace System {
         public static short ToInt16(String value) {
             if (value == null)
                 return 0;
-            return Int16.Parse(value, CultureInfo.CurrentCulture);
+            return Int16.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static short ToInt16(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return Int16.Parse(value, NumberStyles.Integer, provider);
+            return Int16.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         public static short ToInt16(DateTime value)
@@ -1000,14 +1030,14 @@ namespace System {
         public static ushort ToUInt16(String value) {
             if (value == null)
                 return 0;
-            return UInt16.Parse(value, CultureInfo.CurrentCulture);
+            return UInt16.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         [CLSCompliant(false)]
         public static ushort ToUInt16(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return UInt16.Parse(value, NumberStyles.Integer, provider);
+            return UInt16.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         [CLSCompliant(false)]
@@ -1112,13 +1142,13 @@ namespace System {
         public static int ToInt32(String value) {
             if (value == null)
                 return 0;
-            return Int32.Parse(value, CultureInfo.CurrentCulture);
+            return Int32.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static int ToInt32(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return Int32.Parse(value, NumberStyles.Integer, provider);
+            return Int32.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         public static int ToInt32(DateTime value)
@@ -1228,14 +1258,14 @@ namespace System {
         public static uint ToUInt32(String value) {
             if (value == null)
                 return 0;
-            return UInt32.Parse(value, CultureInfo.CurrentCulture);
+            return UInt32.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         [CLSCompliant(false)]
         public static uint ToUInt32(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return UInt32.Parse(value, NumberStyles.Integer, provider);
+            return UInt32.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         [CLSCompliant(false)]
@@ -1320,13 +1350,13 @@ namespace System {
         public static long ToInt64(string value) {
             if (value == null)
                 return 0;
-            return Int64.Parse(value, CultureInfo.CurrentCulture);
+            return Int64.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static long ToInt64(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return Int64.Parse(value, NumberStyles.Integer, provider);
+            return Int64.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         public static long ToInt64(DateTime value)
@@ -1427,14 +1457,14 @@ namespace System {
         public static ulong ToUInt64(String value) {
             if (value == null)
                 return 0;
-            return UInt64.Parse(value, CultureInfo.CurrentCulture);
+            return UInt64.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         [CLSCompliant(false)]
         public static ulong ToUInt64(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return UInt64.Parse(value, NumberStyles.Integer, provider);
+            return UInt64.Parse(culturalDigitsReplace(value), NumberStyles.Integer, provider);
         }
 
         [CLSCompliant(false)]
@@ -1511,13 +1541,13 @@ namespace System {
         public static float ToSingle(String value) {
             if (value == null)
                 return 0;
-            return Single.Parse(value, CultureInfo.CurrentCulture);
+            return Single.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static float ToSingle(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return Single.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, provider);
+            return Single.Parse(culturalDigitsReplace(value), NumberStyles.Float | NumberStyles.AllowThousands, provider);
         }
 
 
@@ -1600,13 +1630,13 @@ namespace System {
         public static double ToDouble(String value) {
             if (value == null)
                 return 0;
-            return Double.Parse(value, CultureInfo.CurrentCulture);
+            return Double.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static double ToDouble(String value, IFormatProvider provider) {
             if (value == null)
                 return 0;
-            return Double.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, provider);
+            return Double.Parse(culturalDigitsReplace(value), NumberStyles.Float | NumberStyles.AllowThousands, provider);
         }
 
         public static double ToDouble(bool value) {
@@ -1682,13 +1712,13 @@ namespace System {
         public static decimal ToDecimal(String value) {
             if (value == null)
                 return 0m;
-            return Decimal.Parse(value, CultureInfo.CurrentCulture);
+            return Decimal.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static Decimal ToDecimal(String value, IFormatProvider provider) {
             if (value == null)
                 return 0m;
-            return Decimal.Parse(value, NumberStyles.Number, provider);
+            return Decimal.Parse(culturalDigitsReplace(value), NumberStyles.Number, provider);
         }
 
         public static decimal ToDecimal(decimal value) {
@@ -1724,13 +1754,13 @@ namespace System {
         public static DateTime ToDateTime(String value) {
             if (value == null)
                 return new DateTime(0);
-            return DateTime.Parse(value, CultureInfo.CurrentCulture);
+            return DateTime.Parse(culturalDigitsReplace(value), CultureInfo.CurrentCulture);
         }
 
         public static DateTime ToDateTime(String value, IFormatProvider provider) {
             if (value == null)
                 return new DateTime(0);
-            return DateTime.Parse(value, provider);
+            return DateTime.Parse(culturalDigitsReplace(value), provider);
         }
 
          [CLSCompliant(false)]
@@ -1979,7 +2009,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            int r = ParseNumbers.StringToInt(value,fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsUnsigned);
+            int r = ParseNumbers.StringToInt(culturalDigitsReplace(value),fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsUnsigned);
             if (r < Byte.MinValue || r > Byte.MaxValue)
                 throw new OverflowException(Environment.GetResourceString("Overflow_Byte"));
             return (byte) r;
@@ -1995,7 +2025,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            int r = ParseNumbers.StringToInt(value,fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsI1);
+            int r = ParseNumbers.StringToInt(culturalDigitsReplace(value),fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsI1);
             if (fromBase != 10 && r <= Byte.MaxValue)
                 return (sbyte)r;
 
@@ -2013,7 +2043,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            int r = ParseNumbers.StringToInt(value,fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsI2);
+            int r = ParseNumbers.StringToInt(culturalDigitsReplace(value),fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsI2);
             if (fromBase != 10 && r <= UInt16.MaxValue)
                 return (short)r;
 
@@ -2032,7 +2062,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            int r = ParseNumbers.StringToInt(value,fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsUnsigned);
+            int r = ParseNumbers.StringToInt(culturalDigitsReplace(value),fromBase,ParseNumbers.IsTight | ParseNumbers.TreatAsUnsigned);
             if (r < UInt16.MinValue || r > UInt16.MaxValue)
                 throw new OverflowException(Environment.GetResourceString("Overflow_UInt16"));
             return (ushort) r;
@@ -2047,7 +2077,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            return ParseNumbers.StringToInt(value,fromBase,ParseNumbers.IsTight);
+            return ParseNumbers.StringToInt(culturalDigitsReplace(value),fromBase,ParseNumbers.IsTight);
         }
 
         // Parses value in base fromBase.  fromBase can only
@@ -2060,7 +2090,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            return (uint) ParseNumbers.StringToInt(value,fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight);
+            return (uint) ParseNumbers.StringToInt(culturalDigitsReplace(value),fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight);
         }
 
         // Parses value in base fromBase.  fromBase can only
@@ -2072,7 +2102,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            return ParseNumbers.StringToLong(value,fromBase,ParseNumbers.IsTight);
+            return ParseNumbers.StringToLong(culturalDigitsReplace(value),fromBase,ParseNumbers.IsTight);
         }
 
         // Parses value in base fromBase.  fromBase can only
@@ -2085,7 +2115,7 @@ namespace System {
                 throw new ArgumentException(Environment.GetResourceString("Arg_InvalidBase"));
             }
             Contract.EndContractBlock();
-            return (ulong) ParseNumbers.StringToLong(value,fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight);
+            return (ulong) ParseNumbers.StringToLong(culturalDigitsReplace(value),fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight);
         }
 
         // Convert the byte value to a string in base fromBase
@@ -2473,7 +2503,7 @@ namespace System {
         [SecurityCritical]
         private static unsafe Int32 FromBase64_Decode(Char* startInputPtr, Int32 inputLength, Byte* startDestPtr, Int32 destLength) {
 
-            // You may find this method weird to look at. It�s written for performance, not aesthetics.
+            // You may find this method weird to look at. Its written for performance, not aesthetics.
             // You will find unrolled loops label jumps and bit manipulations.
 
             const UInt32 intA =     (UInt32) 'A';            
