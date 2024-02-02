@@ -36,18 +36,6 @@
                 valueAsString = valueAsString.Replace("+", string.Empty).TrimEnd();
                 valueAsString = RemoveExtension(valueAsString);
 
-                bool digitFound = false;
-                foreach (char c in valueAsString) {
-                    if (Char.IsDigit(c)) {
-                        digitFound = true;
-                        break;
-                    }
-                }
-
-                if (!digitFound) {
-                    return false;
-                }
-
                 foreach (char c in valueAsString)
                 {
                     if (!(Char.IsDigit(c) 
