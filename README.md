@@ -1,7 +1,5 @@
 # .NET Reference Source
 
-If you landed here via redirect from https://referencesource.microsoft.com/ and this repo with .NET Framework reference sources does not meet your need please [file an issue](https://github.com/microsoft/referencesource/issues/new/choose).
-
 The referencesource repository contains sources from [Microsoft .NET Reference Source](https://referencesource.microsoft.com/)
 that represent a subset of the .NET Framework.  This subset contains similar functionality to the class libraries that are being
 developed in [.NET Core](https://github.com/dotnet/runtime).  We intend to consult the referencesource repository as we develop
