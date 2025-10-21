@@ -1,0 +1,24 @@
+//------------------------------------------------------------------------------
+// <copyright file="ToolStripDropDownDirection.cs" company="Microsoft">
+//     Copyright (c) Microsoft Corporation.  All rights reserved.
+// </copyright>                                                                
+//------------------------------------------------------------------------------
+
+namespace System.Windows.Forms {
+
+    using System;
+
+    public enum ToolStripDropDownDirection {
+
+                             // Dir L=0
+        AboveLeft  = 0x0000, // 0 0 0   Above =00
+        AboveRight = 0x0001, // 0 0 1   Below =01
+        BelowLeft  = 0x0002, // 0 1 0   Side  =10 
+        BelowRight = 0x0003, // 0 1 1   Last bit indicates left or right.
+        Left       = 0x0004, // 1 0 0
+        Right      = 0x0005, // 1 0 1 
+        Default    = 0x0007  // 1 1 1
+    }
+   
+
+}
